@@ -1,14 +1,9 @@
 #include "MasterRenderer.hpp"
+#include "Renderer/GLSL.hpp"
 
 #include "World/World.hpp"
 
 #include "Entity/EntityShader/EntityShader.hpp"
-#include "Skybox/SkyboxShader/SkyboxShader.hpp"
-#include "Cloud/CloudShader/CloudShader.hpp"
-#include "Sun/SunShader/SunShader.hpp"
-#include "Atmosphere/AtmosphereShader/AtmosphereShader.hpp"
-
-#include "Renderer/GLSL.hpp"
 
 #include <iostream>
 
@@ -112,71 +107,6 @@ void MasterRenderer::activateEntityShader(std::vector<Entity *> *entities) {
         }
     }
 }
-
-void MasterRenderer::activateSkyboxShader(Skybox *sb) {
-    SkyboxShader *sShader = new SkyboxShader;
-    if (sShader->init(sb)) {
-        shaders.push_back(sShader);
-        if (verbose) {
-            std::cout << "Skybox Shader activated" << std::endl;
-        }
-    }
-    else {
-        delete sShader;
-        if (verbose) {
-            std::cout << "Skybox Shader failed to activate" << std::endl;
-       }
-    }
-}
-
-void MasterRenderer::activateCloudShader(std::vector<CloudBillboard *> *billboards) {
-    CloudShader *cShader = new CloudShader;
-    if (cShader->init(billboards)) {
-        shaders.push_back(cShader);
-        if (verbose) {
-            std::cout << "Cloud Shader activated" << std::endl;
-        }
-    }
-    else {
-        delete cShader;
-        if (verbose) {
-            std::cout << "Cloud Shader failed to activate" << std::endl;
-        }
-    }
-}
-
-void MasterRenderer::activateSunShader(Sun *sun) {
-    SunShader *sShader = new SunShader;
-    if (sShader->init(sun)) {
-        shaders.push_back(sShader);
-        if (verbose) {
-            std::cout << "Sun Shader activated" << std::endl;
-        }
-    }
-    else {
-        delete sShader;
-        if (verbose) {
-            std::cout << "Sun Shader failed to activate" << std::endl;
-        }
-    }
-}
-
-void MasterRenderer::activateAtmosphereShader(Atmosphere *atm) {
-    AtmosphereShader *aShader = new AtmosphereShader;
-    if (aShader->init(atm)) {
-        shaders.push_back(aShader);
-        if (verbose) {
-            std::cout << "Atmosphere Shader activated" << std::endl;
-        }
-    }
-    else {
-        delete aShader;
-        if (verbose) {
-            std::cout << "Atmosphere Shader failed to activate" << std::endl;
-        }
-    }
-}
-
 void MasterRenderer::cleanUp() {
     /* Clean up all active subrenderers */
     for (auto &shader : shaders) {

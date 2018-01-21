@@ -1,31 +1,28 @@
-/* Sky world 
- * Dervices World interface
- * Used to experiment with different sky objects:
- *  Skybox
- *  Sun
- *  Atmosphere */
+/* Basic world for general development
+ * Derives World interface */
 #pragma once
-#ifndef _SKY_WORLD_HPP_
-#define _SKY_WORLD_HPP_
+#ifndef _TUTORIAL_WORLD_HPP_
+#define _TUTORIAL_WORLD_HPP_
 
 #include "World/World.hpp"
-#include "Skybox/Skybox.hpp"
-#include "Sun/Sun.hpp"
-#include "Atmosphere/Atmosphere.hpp"
+#include "Toolbox/Toolbox.hpp"
 
-class SkyWorld : public World {
+#include "Entity/Entity.hpp"
+
+class TutorialWorld : public World {
     public:
         /* World-specific render targets */
-        Skybox *skybox = nullptr;
-        Sun *sun = nullptr;
-        Atmosphere *atmosphere = nullptr;
+        std::vector<Entity *> entities;
 
         /* World-specific members */
+        Light *light;
+        Camera *camera;
         glm::mat4 P;
         glm::mat4 V;
+        bool isPaused = false;
 
         /* Constructor */
-        SkyWorld() : World("Sky World") { }
+        TutorialWorld() : World("Tutorial World") { }
 
         /* Derived functions */
         void init(Context &, Loader &);

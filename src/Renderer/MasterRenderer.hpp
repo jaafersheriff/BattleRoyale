@@ -15,10 +15,6 @@
 class World;
 class Shader;
 class Entity;
-class Skybox;
-class CloudBillboard;
-class Sun;
-class Atmosphere;
 
 class MasterRenderer {
     public:
@@ -26,20 +22,12 @@ class MasterRenderer {
         enum ShaderTypes {
             ERROR,
             ENTITY_SHADER,
-            CLOUD_SHADER,
-            SKYBOX_SHADER,
-            SUN_SHADER,
-            ATMOSPHERE_SHADER
         };
         /* List of active renderers */
         std::vector<Shader *> shaders;
 
         /* Activate subrenderers */
         void activateEntityShader(std::vector<Entity *> *);
-        void activateCloudShader(std::vector<CloudBillboard *> *);
-        void activateSkyboxShader(Skybox *);
-        void activateSunShader(Sun *);
-        void activateAtmosphereShader(Atmosphere *);
 
         /* Init */
         void init(const Context &);
@@ -56,6 +44,7 @@ class MasterRenderer {
     private:
         /* Utility functions */
         void bindWorldUniforms(const World *, Shader *);
+
         /* Utility members */
         bool wireFrame = false;
         bool verbose = false;

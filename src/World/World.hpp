@@ -26,10 +26,6 @@ class World {
         World(const std::string n) : name(n) { }
         std::string name;
 
-        /* World members */
-        Camera *camera;
-        Light *light;
-
         /* Uniform map */
         std::unordered_map<MasterRenderer::ShaderTypes, std::vector<UniformData *>> uniforms;
         virtual void prepareUniforms() = 0;

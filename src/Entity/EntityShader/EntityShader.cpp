@@ -29,7 +29,7 @@ void EntityShader::addAllLocations() {
     addUniform("P");
     addUniform("M");
     addUniform("V");
-    addUniform("cameraPosition");
+    addUniform("cameraPos");
 
     /* Add texture info */
     addUniform("usesTexture");
