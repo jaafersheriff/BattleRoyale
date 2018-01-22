@@ -49,7 +49,7 @@ void TutorialWorld::update(Context &ctx) {
     /* Update entities */
     for (auto e : entities) {
         e->update();
-        e->rotation.y += 1.f * ctx.timeStep;
+        e->rotation.y += 15.f * ctx.timeStep;
     }
 }
 
