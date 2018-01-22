@@ -7,7 +7,6 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 
-#include "Skybox/CubeTexture.hpp"
 #include "Model/Texture.hpp"
 #include "Context/Context.hpp"
 
@@ -22,9 +21,6 @@ class Loader {
         /* Create a texture for a provided file name and optional wrpa mode */
         Texture* loadTexture(const std::string);
         Texture* loadTexture(const std::string, Texture::WRAP_MODE);
-
-        /* Create entire skybox with cube texture generated from provided file names */ 
-        CubeTexture* loadCubeTexture(const std::string[6]);
 
         /* Create a mesh for a provided file name */
         Mesh* loadObjMesh(const std::string);

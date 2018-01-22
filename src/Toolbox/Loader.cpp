@@ -100,36 +100,6 @@ Mesh* Loader::loadObjMesh(const std::string fileName) {
     return mesh;
 }
 
-CubeTexture* Loader::loadCubeTexture(const std::string fileNames[6]) {
-
-    /* If texture has already been loaded, just return it */
-    std::map<std::string, Texture *>::iterator it = textures.find(fileNames[0]);
-    if (it != textures.end()) {
-        return (CubeTexture *) it->second;
-    }
-
-    CubeTexture *cubeTexture = new CubeTexture;
-    /* Load in texture data to CPU */
-    uint8_t* data[6];
-    for (int i = 0; i < 6; i++) {
-        data[i] = loadTextureData(cubeTexture, fileNames[i], false);
-    }
-
-    /* Copy cube texture data to GPU */
-    cubeTexture->init(data);
-    
-    /* Add to map based on first file name */
-    if (cubeTexture->textureId) {
-        textures.insert(std::map<std::string, Texture*>::value_type(fileNames[0], cubeTexture));
-    }
-    /* Free data from CPU */
-    for (int i = 0; i < 6; i++) {
-        stbi_image_free(data[i]);
-    }
-    
-    return cubeTexture;
-}
-
 /* Provided function to resize a mesh so all vertex positions are [0, 1.f] */
 void Loader::resize(Mesh *mesh) {
     float minX, minY, minZ;
