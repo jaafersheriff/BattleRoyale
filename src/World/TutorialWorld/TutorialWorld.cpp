@@ -9,7 +9,11 @@ void TutorialWorld::init(Context &ctx, Loader &loader) {
     this->camera = new Camera;
 
     /* Entities */
-    // TODO
+    Mesh *mesh = loader.loadObjMesh("bunny.obj");
+    ModelTexture modelTexture(0.3f,
+                    glm::vec3(0.f, 0.f, 1.f),
+                    glm::vec3(1.f));
+    entities.push_back(new Entity(mesh, modelTexture, glm::vec3(5.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(3.f)));
 
     /* World-specific members */
     this->P = ctx.display.projectionMatrix;
@@ -37,6 +41,7 @@ void TutorialWorld::prepareUniforms() {
 }
 
 void TutorialWorld::update(Context &ctx) {
+    this->P = ctx.display.projectionMatrix;
     this->V = glm::lookAt(camera->position, camera->lookAt, glm::vec3(0, 1, 0));
     takeInput(ctx.mouse, ctx.keyboard);
     camera->update();
@@ -44,6 +49,7 @@ void TutorialWorld::update(Context &ctx) {
     /* Update entities */
     for (auto e : entities) {
         e->update();
+        e->rotation.y += 15.f * ctx.timeStep;
     }
 }
 

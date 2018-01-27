@@ -38,7 +38,7 @@ void MasterRenderer::bindWorldUniforms(const World *world, Shader *shader) {
         }
         switch (uniformData->type) {
             case(UniformType::Bool):
-                shader->loadBool(pos, (bool)uniformData->dataptr);
+                shader->loadBool(pos, *(bool *) uniformData->dataptr);
                 break;
             case(UniformType::SignedInt8):
                 // TODO 
