@@ -145,15 +145,15 @@ void Loader::resize(Mesh *mesh) {
     shiftZ = minZ + (zExtent)/2.0;
 
     //Go through all verticies shift and scale them
-	for (size_t v = 0; v < mesh->vertBuf.size() / 3; v++) {
-		mesh->vertBuf[3*v+0] = (mesh->vertBuf[3*v+0] - shiftX) * scaleX;
-		assert(mesh->vertBuf[3*v+0] >= -1.0 - epsilon);
-		assert(mesh->vertBuf[3*v+0] <= 1.0 + epsilon);
-		mesh->vertBuf[3*v+1] = (mesh->vertBuf[3*v+1] - shiftY) * scaleY;
-		assert(mesh->vertBuf[3*v+1] >= -1.0 - epsilon);
-		assert(mesh->vertBuf[3*v+1] <= 1.0 + epsilon);
-		mesh->vertBuf[3*v+2] = (mesh->vertBuf[3*v+2] - shiftZ) * scaleZ;
-		assert(mesh->vertBuf[3*v+2] >= -1.0 - epsilon);
+    for (size_t v = 0; v < mesh->vertBuf.size() / 3; v++) {
+        mesh->vertBuf[3*v+0] = (mesh->vertBuf[3*v+0] - shiftX) * scaleX;
+        assert(mesh->vertBuf[3*v+0] >= -1.0 - epsilon);
+        assert(mesh->vertBuf[3*v+0] <= 1.0 + epsilon);
+        mesh->vertBuf[3*v+1] = (mesh->vertBuf[3*v+1] - shiftY) * scaleY;
+        assert(mesh->vertBuf[3*v+1] >= -1.0 - epsilon);
+        assert(mesh->vertBuf[3*v+1] <= 1.0 + epsilon);
+        mesh->vertBuf[3*v+2] = (mesh->vertBuf[3*v+2] - shiftZ) * scaleZ;
+        assert(mesh->vertBuf[3*v+2] >= -1.0 - epsilon);
         assert(mesh->vertBuf[3*v+2] <= 1.0 + epsilon);
-	}
+    }
 }
