@@ -103,7 +103,7 @@ World* Context::createWorld() {
     World *world;
     switch(selectedWorld) {
         case(TUTORIAL_WORLD):
-            world = new TutorialWorld;
+            world = (World *)new TutorialWorld;
             break;
         /* Error state -- we should never get here */
         default:

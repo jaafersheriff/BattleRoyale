@@ -4,10 +4,13 @@
 #ifndef _TUTORIAL_WORLD_HPP_
 #define _TUTORIAL_WORLD_HPP_
 
+#include <iostream>
+
 #include "World/World.hpp"
 #include "Toolbox/Toolbox.hpp"
 
 #include "Entity/Entity.hpp"
+#include "Entity/Enemy.hpp"
 
 class TutorialWorld : public World {
     public:

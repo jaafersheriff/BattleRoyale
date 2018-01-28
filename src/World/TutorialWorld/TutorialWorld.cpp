@@ -9,11 +9,16 @@ void TutorialWorld::init(Context &ctx, Loader &loader) {
     this->camera = new Camera;
 
     /* Entities */
-    Mesh *mesh = loader.loadObjMesh("bunny.obj");
+    Mesh *mesh = loader.loadObjMesh("sword.obj");
     ModelTexture modelTexture(0.3f,
                     glm::vec3(0.f, 0.f, 1.f),
                     glm::vec3(1.f));
-    entities.push_back(new Entity(mesh, modelTexture, glm::vec3(5.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(3.f)));
+    //Where I'm adding all of my models
+    entities.push_back(new Enemy(mesh, modelTexture, glm::vec3(5.f, 0.f, 0.f), glm::vec3(0.f), glm::vec3(3.f)));
+    entities.push_back(new Enemy(mesh, modelTexture, glm::vec3(16.f, 30.f, 29.f), glm::vec3(0.f), glm::vec3(3.f)));
+    entities.push_back(new Enemy(mesh, modelTexture, glm::vec3(17.f, 19.f, 27.f), glm::vec3(0.f), glm::vec3(3.f)));
+    entities.push_back(new Enemy(mesh, modelTexture, glm::vec3(30.f, 29.f, 14.f), glm::vec3(0.f), glm::vec3(3.f)));
+    entities.push_back(new Enemy(mesh, modelTexture, glm::vec3(17.f, 4.f, 17.f), glm::vec3(0.f), glm::vec3(3.f)));
 
     /* World-specific members */
     this->P = ctx.display.projectionMatrix;
@@ -48,7 +53,8 @@ void TutorialWorld::update(Context &ctx) {
   
     /* Update entities */
     for (auto e : entities) {
-        e->update();
+        ((Enemy *)e)->playerPos = this->camera->position;
+        ((Enemy *)e)->update(entities);
         e->rotation.y += 15.f * ctx.timeStep;
     }
 }
