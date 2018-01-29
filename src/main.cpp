@@ -1,4 +1,4 @@
-#include "Engine/EngineApp/EngineApp.hpp"
+#include "Engine/Engine.hpp"
 
 #include <iostream>
 
@@ -6,8 +6,11 @@
 int main(int argc, char **argv) {
     /* Singular engine */
     EngineApp engine;
-    engine.processArgs(argc, argv);
-    engine.init();
+ 
+    /* Process args and initialize engine */
+    if (engine.processArgs(argc, argv) || engine.init()) {
+        return 1;
+    }
 
     /* Main loop */
     engine.run();
