@@ -38,7 +38,6 @@ void EngineApp::run() {
 
         /* Update display */
         windowHandler.update();
-        // TODO : update IO system
         // TODO : update collision system
         // TODO : update game logic system
         // TODO : render 

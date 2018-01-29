@@ -12,14 +12,15 @@ class Mouse {
         GLFWwindow *window;
 
         /* x-y position and speed */
-        double xPos, yPos;
+        double x, y;
         double dx, dy;
 
         /* Update */
         void update();
 
         /* Denotes if mouse buttons are pressed */
-        bool isButtonPressed(const int);
+        bool isLeftPressed();
+        bool isRightPressed();
 };
 
 #endif

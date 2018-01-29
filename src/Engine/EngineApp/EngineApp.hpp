@@ -2,7 +2,7 @@
 #ifndef _ENGINE_APP_HPP_
 #define _ENGINE_APP_HPP_
 
-#include "Engine/GLFWWrapper/Window.hpp"
+#include "Engine/IO/Window.hpp"
 
 #include <string>
 

@@ -2,7 +2,14 @@
 
 #include <iostream> /* cout, cerr */
 
+void Window::errorCallback(int error, const char *desc) {
+    std::cerr << "Error " << error << ": " << desc << std::endl;
+}
+
 int Window::init() {
+    /* Set error callback */
+    glfwSetErrorCallback(errorCallback);
+
     /* Init GLFW */
     if(!glfwInit()) {
         std::cerr << "Error initializing GLFW" << std::endl;
@@ -23,6 +30,7 @@ int Window::init() {
         return 1;
     }
     glfwMakeContextCurrent(window);
+    mouse.window = keyboard.window = window;
 
     /* Init GLEW */
     glewExperimental = GL_FALSE;
