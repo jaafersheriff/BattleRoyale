@@ -39,12 +39,10 @@ public:
         return "<" + std::to_string(in.x) + ", " + 
                      std::to_string(in.y) + ", " + 
                      std::to_string(in.z) + ">";
-
     }
     static inline std::string vectorToString(const glm::vec2 in) {
         return "<" + std::to_string(in.x) + ", " + 
                      std::to_string(in.y) + ">";
-
     }
 };
 
