@@ -21,9 +21,21 @@ class Scene {
         template<class T, class... Args>
         T* createComponent(Args &&...);
 
+        /* Main udate function */
+        void update(float);
+
     private:
+        /* Lists of all game objects/components */
         std::vector<GameObject *> allGameObjects;
         std::vector<Component *> allComponents;
+
+        /* Instantiate/Kill queues */
+        void createQueues();
+        void killQueues();
+        std::vector<GameObject *> createGameObjectQueue;
+        std::vector<Component *> createComponentQueue;
+        std::vector<GameObject *> killGameObjectQueue;
+        std::vector<Component *> killComponentQueue;
 };
 
 #endif

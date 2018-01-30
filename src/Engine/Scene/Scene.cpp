@@ -1,4 +1,5 @@
 #include "Scene.hpp"
+#include <algorithm>
 
 Scene::Scene() {
     allGameObjects.clear();
@@ -10,7 +11,8 @@ Scene::Scene() {
 }
 
 void Scene::addGameObject(GameObject *go) {
-    // TODO
+    allGameObjects.push_back(go);
+    // TODO : add to systems?
 }
 
 GameObject* Scene::createGameObject() {
@@ -26,3 +28,32 @@ T* Scene::createComponent(Args&&...args) {
     return ptr;
 }
 
+void Scene::update(float dt) {
+    createQueues();
+
+    for (auto go : allGameObjects) {
+        go->update(dt);
+    }
+
+    killQueues();
+}
+
+void Scene::createQueues() {
+    allComponents.insert(allComponents.end(), createComponentQueue.begin(), createComponentQueue.end());
+    allGameObjects.insert(allGameObjects.end(), createGameObjectQueue.begin(), createGameObjectQueue.end());
+    createComponentQueue.clear();
+    createGameObjectQueue.clear();
+}
+
+void Scene::killQueues() {
+    for (auto go : killGameObjectQueue) {
+        allGameObjects.erase(std::remove(allGameObjects.begin(), allGameObjects.end(), go));
+        delete go;
+    }
+    for (auto cp : killComponentQueue) {
+        allComponents.erase(std::remove(allComponents.begin(), allComponents.end(), cp));
+        delete cp;
+    }
+    killGameObjectQueue.clear();
+    killComponentQueue.clear();
+}
