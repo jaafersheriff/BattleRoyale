@@ -31,11 +31,9 @@ class Scene {
 
         /* Instantiate/Kill queues */
         void createQueues();
-        void killQueues();
+        void killObjects();
         std::vector<GameObject *> createGameObjectQueue;
         std::vector<Component *> createComponentQueue;
-        std::vector<GameObject *> killGameObjectQueue;
-        std::vector<Component *> killComponentQueue;
 };
 
 #endif

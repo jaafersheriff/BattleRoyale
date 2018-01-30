@@ -35,7 +35,7 @@ void Scene::update(float dt) {
         go->update(dt);
     }
 
-    killQueues();
+    killObjects();
 }
 
 void Scene::createQueues() {
@@ -45,15 +45,23 @@ void Scene::createQueues() {
     createGameObjectQueue.clear();
 }
 
-void Scene::killQueues() {
-    for (auto go : killGameObjectQueue) {
-        allGameObjects.erase(std::remove(allGameObjects.begin(), allGameObjects.end(), go));
-        delete go;
+void Scene::killObjects() {
+    unsigned int size = allGameObjects.size();
+    for (int i = 0; i < size; i++) {
+        if (allGameObjects.at(i) && allGameObjects.at(i)->isDeleted) {
+            auto go = allGameObjects.erase(allGameObjects.begin() + i);
+            delete go._Ptr;
+            i--;
+            size--;
+        }
     }
-    for (auto cp : killComponentQueue) {
-        allComponents.erase(std::remove(allComponents.begin(), allComponents.end(), cp));
-        delete cp;
+    unsigned int size = allComponents.size();
+    for (int i = 0; i < size; i++) {
+        if (allComponents.at(i) && allComponents.at(i)->isDeleted) {
+            auto cp = allComponents.erase(allComponents.begin() + i);
+            delete cp._Ptr;
+            i--;
+            size--;
+        }
     }
-    killGameObjectQueue.clear();
-    killComponentQueue.clear();
 }
