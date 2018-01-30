@@ -9,3 +9,10 @@ GameObject* Scene::createGameObject() {
     allGameObjects.push_back(go);
     return go;
 }
+
+template<class T, class... Args>
+T* Scene::createComponent(Args&&..args) {
+    T* ptr = new T(args);
+    allComponents.push_back(ptr);
+    return ptr;
+}
