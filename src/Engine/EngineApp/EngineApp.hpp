@@ -2,8 +2,8 @@
 #ifndef _ENGINE_APP_HPP_
 #define _ENGINE_APP_HPP_
 
-#include "Engine/IO/Window.hpp"
-#include "Engine/Loader/Loader.hpp"
+#include "IO/Window.hpp"
+#include "Loader/Loader.hpp"
 
 #include <string>
 

@@ -8,23 +8,10 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE HEADERS "src/*.h" "src/*.hpp")
 file(GLOB_RECURSE GLSL "resources/*.glsl" "src/*.glsl")
 
-#Set up link targets
-if(MINGWW) 
-    set(GLEW_DIR "$ENV{GLEW_DIR_MINGW}")
-else()
-    set(GLEW_DIR "$ENV{GLEW_DIR}")
-endif()
-if(NOT GLEW_DIR)
-  message(FATAL_ERROR "Please point the environment variable GLEW_DIR to the root directory of your GLEW installation.")
-else()
-  message(${GLEW_DIR})
-endif()
+# Set the executable.
+add_executable(${CMAKE_PROJECT_NAME} ${SOURCES} ${HEADERS} ${GLSL})
 
-if(WIN32 AND NOT MINGW)
-  # With prebuilt binaries
-  link_directories(${GLEW_DIR}/lib/Release/Win32)
-endif()
-
+# Visual Studio macro
 macro(GroupSources curdir)
     file(GLOB children RELATIVE ${PROJECT_SOURCE_DIR}/${curdir} ${PROJECT_SOURCE_DIR}/${curdir}/*)
     foreach(child ${children})
@@ -37,42 +24,19 @@ macro(GroupSources curdir)
         endif()
     endforeach()
 endmacro()
+GroupSources(src)
 
- # Execute the macro
- GroupSources(src)
-
-# Set the executable.
-add_executable(${CMAKE_PROJECT_NAME} ${SOURCES} ${HEADERS} ${GLSL})
-
-# Get the GLM environment variable. Since GLM is a header-only library, we
-# just need to add it to the include directory.
-set(GLM_INCLUDE_DIR "$ENV{GLM_INCLUDE_DIR}")
-if(NOT GLM_INCLUDE_DIR)
-  MESSAGE(FATAL_ERROR "Please point the environment variable GLM_INCLUDE_DIR to the include directory of your GLM installation.")
+# GLEW
+set(GLEW_DIR "$ENV{GLEW_DIR}")
+if(NOT GLEW_DIR)
+  message(FATAL_ERROR "Please point the environment variable GLEW_DIR to the root directory of your GLEW installation.")
 else()
-  message(${GLM_INCLUDE_DIR})
+  message(STATUS "GLEW DIR: ${GLEW_DIR}")
 endif()
-include_directories(${GLM_INCLUDE_DIR})
-
-# Get the GLFW environment variable. There should be a CMakeLists.txt in the 
-# specified directory.
-set(GLFW_DIR "$ENV{GLFW_DIR}")
-if(NOT GLFW_DIR)
-  message(FATAL_ERROR "Please point the environment variable GLFW_DIR to the root directory of your GLFW3 installation.")
-else()
-   message(${GLFW_DIR})
+if(WIN32)
+  # With prebuilt binaries
+  link_directories(${GLEW_DIR}/lib/Release/Win32)
 endif()
-option(GLFW_BUILD_EXAMPLES "GLFW_BUILD_EXAMPLES" OFF)
-option(GLFW_BUILD_TESTS "GLFW_BUILD_TESTS" OFF)
-option(GLFW_BUILD_DOCS "GLFW_BUILD_DOCS" OFF)
-if(CMAKE_BUILD_TYPE MATCHES Release)
-  add_subdirectory(${GLFW_DIR} ${GLFW_DIR}/release)
-else()
-  add_subdirectory(${GLFW_DIR} ${GLFW_DIR}/debug)
-endif()
-include_directories(${GLFW_DIR}/include)
-target_link_libraries(${CMAKE_PROJECT_NAME} glfw ${GLFW_LIBRARIES})
-
 # Get the GLEW environment variable.
 include_directories(${GLEW_DIR}/include)
 if(WIN32)
@@ -84,6 +48,33 @@ if(WIN32)
 else()
   target_link_libraries(${CMAKE_PROJECT_NAME} ${GLEW_DIR}/lib/libGLEW.a)
 endif()
+
+# GLM
+set(GLM_INCLUDE_DIR "$ENV{GLM_INCLUDE_DIR}")
+if(NOT GLM_INCLUDE_DIR)
+  MESSAGE(FATAL_ERROR "Please point the environment variable GLM_INCLUDE_DIR to the include directory of your GLM installation.")
+else()
+  message(STATUS "GLM DIR: ${GLM_INCLUDE_DIR}")
+endif()
+include_directories(${GLM_INCLUDE_DIR})
+
+# GLFW
+set(GLFW_DIR "$ENV{GLFW_DIR}")
+if(NOT GLFW_DIR)
+  message(FATAL_ERROR "Please point the environment variable GLFW_DIR to the root directory of your GLFW3 installation.")
+else()
+   message(STATUS "GLFW DIR: ${GLFW_DIR}")
+endif()
+option(GLFW_BUILD_EXAMPLES "GLFW_BUILD_EXAMPLES" OFF)
+option(GLFW_BUILD_TESTS "GLFW_BUILD_TESTS" OFF)
+option(GLFW_BUILD_DOCS "GLFW_BUILD_DOCS" OFF)
+if(CMAKE_BUILD_TYPE MATCHES Release)
+  add_subdirectory(${GLFW_DIR} ${GLFW_DIR}/release)
+else()
+  add_subdirectory(${GLFW_DIR} ${GLFW_DIR}/debug)
+endif()
+include_directories(${GLFW_DIR}/include)
+target_link_libraries(${CMAKE_PROJECT_NAME} glfw ${GLFW_LIBRARIES})
 
 # OS specific options and libraries
 if(WIN32)
@@ -104,6 +95,6 @@ else()
 endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(${PROJECT_SOURCE_DIR}/src/Engine)
 
-# Set C++11
 set (CMAKE_CXX_STANDARD 11)

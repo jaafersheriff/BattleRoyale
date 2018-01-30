@@ -1,9 +1,9 @@
 #include "Loader.hpp"
 
 #define TINYOBJLOADER_IMPLEMENTATION
-#include "Engine/thirdparty/tiny_obj_loader.h"
+#include "thirdparty/tiny_obj_loader.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "Engine/thirdparty/stb_image.h"
+#include "thirdparty/stb_image.h"
 
 #include <iostream>
 #include <vector>

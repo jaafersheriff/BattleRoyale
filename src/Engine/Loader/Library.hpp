@@ -2,8 +2,8 @@
 #ifndef _LIBRARY_HPP_
 #define _LIBRARY_HPP_
 
-#include "Engine/Model/Mesh.hpp"
-#include "Engine/Model/Texture.hpp"
+#include "Model/Mesh.hpp"
+#include "Model/Texture.hpp"
 
 #include <unordered_map>
 
