@@ -24,6 +24,9 @@ class Scene {
         /* Main udate function */
         void update(float);
 
+        /* Destroy everything */
+        void shutDown();
+
     private:
         /* Lists of all game objects/components */
         std::vector<GameObject *> allGameObjects;

@@ -20,8 +20,6 @@ int EngineApp::init() {
     loader.init(verbose, RESOURCE_DIR);
 
     lastFrameTime = runTime = (float)windowHandler.getTime();
-    // TODO : set library/loader dir
-    // TODO : init scene
 
     return 0;
 }
@@ -41,14 +39,17 @@ void EngineApp::run() {
 
         /* Update display */
         windowHandler.update();
-        // TODO : update collision system
-        // TODO : update game logic system
+
+        /* Update all game objects and components */
+        scene.update(timeStep);
+
         // TODO : render 
     }
 }
 
 void EngineApp::terminate() {
     windowHandler.shutDown();
+    scene.shutDown();
 }
 
 int EngineApp::processArgs(int argc, char **argv) {

@@ -4,12 +4,15 @@
 
 #include "IO/Window.hpp"
 #include "Loader/Loader.hpp"
+#include "Scene/Scene.hpp"
 
 #include <string>
 
 class EngineApp {
     public:
         EngineApp();
+
+        Scene scene;
 
         int processArgs(int, char**);
         int init();

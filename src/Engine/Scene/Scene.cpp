@@ -6,8 +6,6 @@ Scene::Scene() {
     allComponents.clear();
     createGameObjectQueue.clear();
     createComponentQueue.clear();
-    killGameObjectQueue.clear();
-    killComponentQueue.clear();
 }
 
 void Scene::addGameObject(GameObject *go) {
@@ -64,4 +62,14 @@ void Scene::killObjects() {
             size--;
         }
     }
+}
+
+void Scene::shutDown() {
+    for (auto go : allGameObjects) {
+        go->isDeleted = true;
+    }
+    for (auto cp : allComponents) {
+        cp->isDeleted = true;
+    }
+    killObjects();
 }
