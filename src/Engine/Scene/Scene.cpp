@@ -4,46 +4,47 @@
 Scene::Scene() {
     allGameObjects.clear();
     allComponents.clear();
-    createGameObjectQueue.clear();
-    createComponentQueue.clear();
+    newGameObjectQueue.clear();
+    newComponentQueue.clear();
 }
 
 void Scene::addGameObject(GameObject *go) {
     allGameObjects.push_back(go);
+    // TODO : should these go in main GO list or new GO queue?
     // TODO : add to systems?
 }
 
 GameObject* Scene::createGameObject() {
     GameObject *go = new GameObject;
-    allGameObjects.push_back(go);
+    newGameObjectQueue.push_back(go);
     return go;
 }
 
 template<class T, class... Args>
 T* Scene::createComponent(Args&&...args) {
     T* ptr = new T(args);
-    allComponents.push_back(ptr);
+    newComponentQueue.push_back(ptr);
     return ptr;
 }
 
 void Scene::update(float dt) {
-    createQueues();
+    addNewObjects();
 
     for (auto go : allGameObjects) {
         go->update(dt);
     }
 
-    killObjects();
+    killDeletedObjects();
 }
 
-void Scene::createQueues() {
-    allComponents.insert(allComponents.end(), createComponentQueue.begin(), createComponentQueue.end());
-    allGameObjects.insert(allGameObjects.end(), createGameObjectQueue.begin(), createGameObjectQueue.end());
-    createComponentQueue.clear();
-    createGameObjectQueue.clear();
+void Scene::addNewObjects() {
+    allComponents.insert(allComponents.end(), newComponentQueue.begin(), newComponentQueue.end());
+    allGameObjects.insert(allGameObjects.end(), newGameObjectQueue.begin(), newGameObjectQueue.end());
+    newComponentQueue.clear();
+    newGameObjectQueue.clear();
 }
 
-void Scene::killObjects() {
+void Scene::killDeletedObjects() {
     unsigned int size = allGameObjects.size();
     for (int i = 0; i < size; i++) {
         if (allGameObjects.at(i) && allGameObjects.at(i)->isDeleted) {
@@ -71,5 +72,5 @@ void Scene::shutDown() {
     for (auto cp : allComponents) {
         cp->isDeleted = true;
     }
-    killObjects();
+    killDeletedObjects();
 }

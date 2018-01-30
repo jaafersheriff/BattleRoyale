@@ -33,10 +33,10 @@ class Scene {
         std::vector<Component *> allComponents;
 
         /* Instantiate/Kill queues */
-        void createQueues();
-        void killObjects();
-        std::vector<GameObject *> createGameObjectQueue;
-        std::vector<Component *> createComponentQueue;
+        void addNewObjects();
+        void killDeletedObjects();
+        std::vector<GameObject *> newGameObjectQueue;
+        std::vector<Component *> newComponentQueue;
 };
 
 #endif
