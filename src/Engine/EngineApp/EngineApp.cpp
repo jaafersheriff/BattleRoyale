@@ -16,6 +16,9 @@ int EngineApp::init() {
     if (windowHandler.init()) {
         return 1;
     }
+
+    loader.init(verbose, RESOURCE_DIR);
+
     lastFrameTime = runTime = (float)windowHandler.getTime();
     // TODO : set library/loader dir
     // TODO : init scene

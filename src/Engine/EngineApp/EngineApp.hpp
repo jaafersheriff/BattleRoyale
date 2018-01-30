@@ -3,6 +3,7 @@
 #define _ENGINE_APP_HPP_
 
 #include "Engine/IO/Window.hpp"
+#include "Engine/Loader/Loader.hpp"
 
 #include <string>
 
@@ -26,7 +27,9 @@ class EngineApp {
         int nFrames;                /* Number of frames in current second */
         double lastFrameTime;       /* Time at which last frame was rendered */
         double runTime;             /* Global timer */
+
         Window windowHandler;       /* GLFW window */
+        Loader loader;              /* Used to load in files and GPU memory */
 
         void printUsage();
 };
