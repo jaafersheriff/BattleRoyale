@@ -9,10 +9,13 @@
 class Mesh {
     public:
         /* Constructor */
-        Mesh();
-
-        /* Copy data buffers to GPU */
-        void init();
+        Mesh() :
+            vaoId(0),
+            vertBufId(0),
+            norBufId(0),
+            texBufId(0),
+            eleBufId(0)
+        {}
 
         /* Data buffers */
         std::vector<float> vertBuf;
