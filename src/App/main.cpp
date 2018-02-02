@@ -54,6 +54,9 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    /* Create scene */
+    // TODO
+
     /* Main loop */
     engine.run();
 
