@@ -30,8 +30,8 @@ T* Scene::createComponent(Args&&...args) {
 void Scene::update(float dt) {
     addNewObjects();
 
-    for (auto go : allGameObjects) {
-        go->update(dt);
+    for (auto system : systems) {
+        system->update(dt);
     }
 
     terminateObjects();

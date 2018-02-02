@@ -4,6 +4,8 @@
 #ifndef _SCENE_HPP_
 #define _SCENE_HPP_
 
+#include "System/System.hpp"
+
 #include "GameObject/GameObject.hpp"
 #include "Component/Component.hpp"
 
@@ -31,6 +33,9 @@ class Scene {
         /* Lists of all game objects/components */
         std::vector<GameObject *> allGameObjects;
         std::vector<Component *> allComponents;
+
+        /* List of systems */
+        std::vector<System *> systems;
 
         /* Instantiate/Kill queues */
         void addNewObjects();
