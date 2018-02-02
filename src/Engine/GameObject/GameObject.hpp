@@ -4,6 +4,7 @@
 #ifndef _GAME_OBJECT_HPP_
 #define _GAME_OBJECT_HPP_
 
+#include "Message.hpp"
 #include "Component/Component.hpp"
 
 #include <vector>
@@ -21,10 +22,10 @@ class GameObject {
 
         void sendMessage(Message *);
 
+        /* Denotes if the game object should be removed */
+        bool isTerminated;
     private:
         std::vector<Component *> components;
-
-        bool isTerminated;
 };
 
 #endif
