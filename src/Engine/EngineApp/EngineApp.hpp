@@ -14,7 +14,6 @@ class EngineApp {
 
         Scene scene;
 
-        int processArgs(int, char**);
         int init();
         void run();
         void terminate();
@@ -33,8 +32,6 @@ class EngineApp {
 
         Window windowHandler;       /* GLFW window */
         Loader loader;              /* Used to load in files and GPU memory */
-
-        void printUsage();
 };
 
 #endif

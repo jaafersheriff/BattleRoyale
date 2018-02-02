@@ -42,58 +42,10 @@ void EngineApp::run() {
 
         /* Update all game objects and components */
         scene.update(timeStep);
-
-        // TODO : render 
     }
 }
 
 void EngineApp::terminate() {
     windowHandler.shutDown();
     scene.shutDown();
-}
-
-int EngineApp::processArgs(int argc, char **argv) {
-    for (int i = 0; i < argc; i++) {
-        /* Help */
-        if (!strcmp(argv[i], "-h")) {
-            printUsage();
-            return 1;
-        }
-        /* Verbose */
-        if (!strcmp(argv[i], "-v")) {
-            verbose = true;
-        }
-        /* Set resource dir */
-        if (!strcmp(argv[i], "-r")) {
-            if (i + 1 >= argc) {
-                printUsage();
-                return 1;
-            }
-            RESOURCE_DIR = argv[i + 1];
-        }
-        /* Set application name */
-        if (!strcmp(argv[i], "-n")) {
-            if (i + 1 >= argc) {
-                printUsage();
-                return 1;
-            }
-            APP_NAME = argv[i + 1];
-        }
-    } 
-    
-}
-
-void EngineApp::printUsage() {
-    std::cout << "Valid arguments: " << std::endl;
-
-    std::cout << "\t-h\n\t\tPrint help" << std::endl;
-    
-    std::cout << "\t-v\n\t\tSet verbose nature logging" << std::endl;
-
-    std::cout << "\t-r <resource_dir>" << std::endl;
-    std::cout << "\t\tSet the resource directory" << std::endl;
-    std::cout << "\t\tDefault: " << RESOURCE_DIR << std::endl;
-
-    std::cout << "\t-n <application_name>" << std::endl;
-    std::cout << "\t\tSet the application name" << std::endl;
 }
