@@ -34,7 +34,7 @@ void Scene::update(float dt) {
         go->update(dt);
     }
 
-    killDeletedObjects();
+    terminateObjects();
 }
 
 void Scene::addNewObjects() {
@@ -44,10 +44,11 @@ void Scene::addNewObjects() {
     newGameObjectQueue.clear();
 }
 
-void Scene::killDeletedObjects() {
+// TODO : test this works
+void Scene::terminateObjects() {
     unsigned int size = allGameObjects.size();
     for (int i = 0; i < size; i++) {
-        if (allGameObjects.at(i) && allGameObjects.at(i)->isDeleted) {
+        if (allGameObjects.at(i) && allGameObjects.at(i)->isTerminated) {
             auto go = allGameObjects.erase(allGameObjects.begin() + i);
             delete go._Ptr;
             i--;
@@ -56,7 +57,7 @@ void Scene::killDeletedObjects() {
     }
     unsigned int size = allComponents.size();
     for (int i = 0; i < size; i++) {
-        if (allComponents.at(i) && allComponents.at(i)->isDeleted) {
+        if (allComponents.at(i) && allComponents.at(i)->isTerminated) {
             auto cp = allComponents.erase(allComponents.begin() + i);
             delete cp._Ptr;
             i--;
@@ -67,10 +68,10 @@ void Scene::killDeletedObjects() {
 
 void Scene::shutDown() {
     for (auto go : allGameObjects) {
-        go->isDeleted = true;
+        go->isTerminated = true;
     }
     for (auto cp : allComponents) {
-        cp->isDeleted = true;
+        cp->isTerminated = true;
     }
-    killDeletedObjects();
+    terminateObjects();
 }
