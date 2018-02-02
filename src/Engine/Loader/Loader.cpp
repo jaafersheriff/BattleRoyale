@@ -61,7 +61,6 @@ Mesh* Loader::getMesh(std::string name) {
 
 uint8_t* Loader::loadTextureData(const std::string fileName, const bool flip, int *width, int *height, int *comp) {
     uint8_t *data;
-    int width, height, components;
 
     stbi_set_flip_vertically_on_load(flip);
     data = stbi_load((RESOURCE_DIR + fileName).c_str(), width, height, comp, STBI_rgb_alpha);
@@ -142,12 +141,12 @@ void Loader::resize(Mesh *mesh) {
     if (zExtent >= xExtent && zExtent >= yExtent) {
         maxExtent = zExtent;
     }
-    scaleX = 2.0 /maxExtent;
-    shiftX = minX + (xExtent/ 2.0);
-    scaleY = 2.0 / maxExtent;
-    shiftY = minY + (yExtent / 2.0);
-    scaleZ = 2.0/ maxExtent;
-    shiftZ = minZ + (zExtent)/2.0;
+    scaleX = 2.f /maxExtent;
+    shiftX = minX + (xExtent/ 2.f);
+    scaleY = 2.f / maxExtent;
+    shiftY = minY + (yExtent / 2.f);
+    scaleZ = 2.f/ maxExtent;
+    shiftZ = minZ + (zExtent)/2.f;
 
     //Go through all verticies shift and scale them
     for (size_t v = 0; v < mesh->vertBuf.size() / 3; v++) {

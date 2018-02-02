@@ -33,8 +33,8 @@ void GameObject::addComponent(Component *component) {
 void GameObject::sendMessage(Message *msg) {
     for (Component *c : components) {
         // TODO : how does message know which component to send to?
-        if (c != nullptr && c->type == msg->type) {
-            c->receiveMessage(msg);
-        }
+        // if (c != nullptr && c->type == msg->type) {
+        //     c->receiveMessage(msg);
+        // }
     }
 }

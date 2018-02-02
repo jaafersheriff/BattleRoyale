@@ -11,6 +11,8 @@
 #include "Mouse.hpp"
 #include "Keyboard.hpp"
 
+#include <string>
+
 #define DEFAULT_WIDTH 1280
 #define DEFAULT_HEIGHT 960
 
@@ -29,7 +31,7 @@ class Window {
         static void errorCallback(int, const char *);
 
         /* Init */
-        int init();
+        int init(std::string);
 
         /* Set window title */
         void setTitle(const char *);

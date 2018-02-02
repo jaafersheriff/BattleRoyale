@@ -47,7 +47,7 @@ void Scene::addNewObjects() {
 // TODO : test this works
 void Scene::terminateObjects() {
     unsigned int size = allGameObjects.size();
-    for (int i = 0; i < size; i++) {
+    for (unsigned int i = 0; i < size; i++) {
         if (allGameObjects.at(i) && allGameObjects.at(i)->isTerminated) {
             auto go = allGameObjects.erase(allGameObjects.begin() + i);
             delete go._Ptr;
@@ -55,8 +55,8 @@ void Scene::terminateObjects() {
             size--;
         }
     }
-    unsigned int size = allComponents.size();
-    for (int i = 0; i < size; i++) {
+    size = allComponents.size();
+    for (unsigned int i = 0; i < size; i++) {
         if (allComponents.at(i) && allComponents.at(i)->isTerminated) {
             auto cp = allComponents.erase(allComponents.begin() + i);
             delete cp._Ptr;

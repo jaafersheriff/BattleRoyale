@@ -23,7 +23,7 @@ class GameObject {
         void sendMessage(Message *);
 
         /* Denotes if the game object should be removed */
-        bool isTerminated;
+        bool isTerminated = false;
     private:
         std::vector<Component *> components;
 };

@@ -13,7 +13,7 @@ EngineApp::EngineApp() {
 }
 
 int EngineApp::init() {
-    if (windowHandler.init()) {
+    if (windowHandler.init(APP_NAME)) {
         return 1;
     }
 

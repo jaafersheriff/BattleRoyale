@@ -6,7 +6,7 @@ void Window::errorCallback(int error, const char *desc) {
     std::cerr << "Error " << error << ": " << desc << std::endl;
 }
 
-int Window::init() {
+int Window::init(std::string name) {
     /* Set error callback */
     glfwSetErrorCallback(errorCallback);
 
@@ -23,7 +23,7 @@ int Window::init() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
     /* Create GLFW window */
-    window = glfwCreateWindow(this->width, this->height, "Neo", NULL, NULL);
+    window = glfwCreateWindow(this->width, this->height, name.c_str(), NULL, NULL);
     if (!window) {
         std::cerr << "Failed to create window" << std::endl;
         glfwTerminate();

@@ -5,11 +5,11 @@
 
 #include <vector>
 
+class Component;
 class System {
     public:
         /* List of component interface that this system is responsible for */
-        template <class T>
-        std::vector<T *> components;
+        std::vector<Component *> components;
 
         /* Generic update function */
         virtual void update(float dt) = 0;
