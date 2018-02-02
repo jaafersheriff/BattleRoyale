@@ -24,11 +24,6 @@ class Window {
 
         /* Reference to GLFW window, mouse, keyboard */
         GLFWwindow *window;
-        Mouse mouse;
-        Keyboard keyboard;
-
-        /* Callback functions */
-        static void errorCallback(int, const char *);
 
         /* Init */
         int init(std::string);
@@ -47,6 +42,12 @@ class Window {
 
         /* Shut down */
         void shutDown();
+    private:
+        /* Callback functions */
+        static void errorCallback(int, const char *);
+        static void keyCallback(GLFWwindow *, int, int, int, int);
+        static void mousePositionCallback(GLFWwindow *, double, double);
+        static void mouseButtonCallback(GLFWwindow *, int, int, int);
 };
 
 #endif

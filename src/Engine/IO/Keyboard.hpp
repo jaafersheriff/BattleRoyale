@@ -4,15 +4,18 @@
 #ifndef _KEYBOARD_HPP_
 #define _KEYBOARD_HPP_
 
-#include <GLFW/glfw3.h>
+#define NUM_KEYS 1024
 
 class Keyboard {
     public: 
-        /* Reference to GLFW window */
-        GLFWwindow *window;
-        
         /* Denotes whether a key is pressed */
-        bool isKeyPressed(const char) const;
+        static bool isKeyPressed(int);
+
+        static void setKeyStatus(int, int);
+
+        static void update();
+    private:
+        static bool keyStatus[NUM_KEYS];
 };
 
 #endif

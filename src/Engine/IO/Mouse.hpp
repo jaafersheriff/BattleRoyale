@@ -8,19 +8,19 @@
 
 class Mouse {
     public:
-        /* Reference to GLFW window */
-        GLFWwindow *window;
-
         /* x-y position and speed */
-        double x, y;
-        double dx, dy;
+        static double x, y;
+        static double dx, dy;
 
         /* Update */
-        void update();
+        static void updateMousePos(double, double);
+        static void update();
 
         /* Denotes if mouse buttons are pressed */
-        bool isLeftPressed();
-        bool isRightPressed();
+        static void setButtonStatus(int, int);
+        static bool isDown(int);
+    private:
+        static bool mouseButtons[GLFW_MOUSE_BUTTON_LAST];
 };
 
 #endif

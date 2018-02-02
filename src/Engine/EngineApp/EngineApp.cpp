@@ -37,7 +37,7 @@ void EngineApp::run() {
             lastFpsTime = runTime;
         }
 
-        /* Update display */
+        /* Update display, mouse, and keyboard */
         windowHandler.update();
 
         /* Update all game objects and components */

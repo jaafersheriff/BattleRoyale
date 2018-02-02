@@ -6,6 +6,21 @@ void Window::errorCallback(int error, const char *desc) {
     std::cerr << "Error " << error << ": " << desc << std::endl;
 }
 
+void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mode) {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+    }
+    Keyboard::setKeyStatus(key, action);
+}
+
+void Window::mousePositionCallback(GLFWwindow *window, double x, double y) {
+    Mouse::updateMousePos(x, y);
+}
+
+void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
+    Mouse::setButtonStatus(button, action);
+}
+
 int Window::init(std::string name) {
     /* Set error callback */
     glfwSetErrorCallback(errorCallback);
@@ -30,7 +45,11 @@ int Window::init(std::string name) {
         return 1;
     }
     glfwMakeContextCurrent(window);
-    mouse.window = keyboard.window = window;
+
+    /* Set callbacks */
+    glfwSetKeyCallback(window, keyCallback);
+    glfwSetCursorPosCallback(window, mousePositionCallback);
+    glfwSetMouseButtonCallback(window, mouseButtonCallback);
 
     /* Init GLEW */
     glewExperimental = GL_FALSE;
@@ -66,13 +85,16 @@ void Window::update() {
         return;
     }
 
+    /* Update mouse and keyboard */
+    Mouse::update();
+    Keyboard::update();
+
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
 
 int Window::shouldClose() { 
-    return glfwWindowShouldClose(window) || 
-           glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
+    return glfwWindowShouldClose(window);
 }
 
 double Window::getTime() {

@@ -1,26 +1,32 @@
 #include "Mouse.hpp"
 
-void Mouse::update() {
-    /* Get new x-y positions on screen */
-    double newX, newY;
-    glfwGetCursorPos(window, &newX, &newY);
+double Mouse::x = 0.0;
+double Mouse::y = 0.0;
+double Mouse::dx = 0.0;
+double Mouse::dy = 0.0;
+bool Mouse::mouseButtons[GLFW_MOUSE_BUTTON_LAST] = { false };
 
+void Mouse::updateMousePos(double newX, double newY) {
     /* Calculate x-y speed */
-    dx = newX - this->x;
-    dy = newY - this->y;
+    dx = newX - x;
+    dy = newY - y;
 
     /* Set new positions */
     // TODO: if newX > 0 and newY > 0
-    this->x= newX;
-    this->y= newY;
+    x = newX;
+    y = newY;
 
     // TODO : dw = scroll whell
 }
 
-bool Mouse::isLeftPressed() {
-    return glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+bool Mouse::isDown(int button) {
+    return mouseButtons[button] == GLFW_PRESS;
 }
 
-bool Mouse::isRightPressed() {
-    return glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
+void Mouse::setButtonStatus(int button, int action) {
+    mouseButtons[button] = (action == GLFW_PRESS);
+}
+
+void Mouse::update() {
+
 }
