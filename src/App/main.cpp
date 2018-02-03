@@ -44,13 +44,15 @@ int parseArgs(EngineApp *engine, int argc, char **argv) {
             }
             engine->APP_NAME = argv[i + 1];
         }
-    } 
+    }
+    return 0;
 }
 
 int main(int argc, char **argv) {
     /* Singular engine */
     EngineApp engine;
- 
+    Scene *scene = &engine.scene;
+
     if (parseArgs(&engine, argc, argv)) {
         return 1;
     }
@@ -61,7 +63,15 @@ int main(int argc, char **argv) {
     }
 
     /* Create scene */
-    // TODO
+    GameObject *camera = scene->createGameObject();
+    CameraComponent *cc = new CameraComponent(45.f, 1280.f / 960.f, 0.01f, 250.f, glm::vec3(0.f, 0.f, 0.f));
+    Component *ccc = new CameraController(cc, 20.f, 30.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_E, GLFW_KEY_R);
+    
+    camera->addComponent(cc);
+    camera->addComponent(ccc);
+
+    scene->addComponent(Scene::GAMELOGIC, cc);
+    scene->addComponent(Scene::GAMELOGIC, ccc);
 
     /* Main loop */
     engine.run();
