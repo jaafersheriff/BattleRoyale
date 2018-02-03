@@ -29,7 +29,8 @@ void GameObject::addComponent(Component *component) {
     components.push_back(component);
 }
 
-/* Take in a message and pass it to all components that match the sender's desired type */
+/* Take in a message and pass it to all components that match the sender's 
+ * desired type */
 void GameObject::sendMessage(Message *msg) {
     for (Component *c : components) {
         // TODO : how does message know which component to send to?

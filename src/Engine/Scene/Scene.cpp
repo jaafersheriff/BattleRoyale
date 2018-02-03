@@ -21,8 +21,8 @@ GameObject* Scene::createGameObject() {
 }
 
 template<class T, class... Args>
-T* Scene::createComponent(Args&&...args) {
-    T* ptr = new T(args);
+T* Scene::createComponent(Args && ... args) {
+    T* ptr = new T(args...);
     newComponentQueue.push_back(ptr);
     return ptr;
 }

@@ -6,7 +6,7 @@
 #include "Component/Component.hpp"
 #include "CameraComponent.hpp"
 
-class CameraController : Component {
+class CameraController : public Component {
     public:
         CameraController(CameraComponent *cc, float ls, float ms, int f, int b, int l, int r, int u, int d) :
             camera(cc),

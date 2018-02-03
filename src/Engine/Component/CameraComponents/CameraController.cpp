@@ -8,23 +8,28 @@ void CameraController::init() {
 }
 
 void CameraController::update(float dt) {
-    if (Mouse::isDown(1)) {
+    if (Mouse::isDown(0)) {
         lookAround(dt, Mouse::dx, Mouse::dy);
     }
 
-    if (Keyboard::isKeyPressed(front)) 
+    if (Keyboard::isKeyPressed(front)) {
         moveFront(dt);
-    if (Keyboard::isKeyPressed(back)) 
+    }
+    if (Keyboard::isKeyPressed(back)) {
         moveBack(dt);
-    if (Keyboard::isKeyPressed(left)) 
+    }
+    if (Keyboard::isKeyPressed(left)) {
         moveLeft(dt);
-    if (Keyboard::isKeyPressed(right)) 
+    }
+    if (Keyboard::isKeyPressed(right)) {
         moveRight(dt);
-    if (Keyboard::isKeyPressed(up)) 
+    }
+    if (Keyboard::isKeyPressed(up)) {
         moveUp(dt);
-    if (Keyboard::isKeyPressed(down)) 
+    }
+    if (Keyboard::isKeyPressed(down)) {
         moveDown(dt);
-
+    }
 }
 
 void CameraController::lookAround(float dt, float dx, float dy) {

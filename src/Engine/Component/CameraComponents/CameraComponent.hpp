@@ -7,7 +7,7 @@
 
 #include "glm/glm.hpp"
 
-class CameraComponent : Component {
+class CameraComponent : public Component {
     public:
         /* Constructor */
         CameraComponent(float fov, float aspect, float near, float far, glm::vec3 pos) :
