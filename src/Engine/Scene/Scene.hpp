@@ -4,15 +4,18 @@
 #ifndef _SCENE_HPP_
 #define _SCENE_HPP_
 
-#include "System/System.hpp"
+#include "System/Systems.hpp"
 
 #include "GameObject/GameObject.hpp"
-#include "Component/Component.hpp"
+#include "Component/Components.hpp"
 
 #include <vector>
 
 class Scene {
     public:
+        enum SystemType{
+            GAMELOGIC
+        };
         Scene();
 
         /* Game Objects */
@@ -20,22 +23,19 @@ class Scene {
         void addGameObject(GameObject *);
     
         /* Components */
-        template<class T, class... Args>
-        T* createComponent(Args &&...);
+        void addComponent(SystemType, Component *);
 
         /* Main udate function */
         void update(float);
 
         /* Destroy everything */
         void shutDown();
-
     private:
+        GameLogicSystem gameLogic;
+
         /* Lists of all game objects/components */
         std::vector<GameObject *> allGameObjects;
         std::vector<Component *> allComponents;
-
-        /* List of systems */
-        std::vector<System *> systems;
 
         /* Instantiate/Kill queues */
         void addNewObjects();

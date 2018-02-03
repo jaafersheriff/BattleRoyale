@@ -20,19 +20,22 @@ GameObject* Scene::createGameObject() {
     return go;
 }
 
-template<class T, class... Args>
-T* Scene::createComponent(Args && ... args) {
-    T* ptr = new T(args...);
-    newComponentQueue.push_back(ptr);
-    return ptr;
+void Scene::addComponent(SystemType st, Component *cp) {
+    newComponentQueue.push_back(cp);
+    switch (st) {
+        case GAMELOGIC:
+            gameLogic.addComponent(cp);
+            break;
+        default:
+            break;
+    }
 }
 
 void Scene::update(float dt) {
     addNewObjects();
 
-    for (auto system : systems) {
-        system->update(dt);
-    }
+    /* Update systems */
+    gameLogic.update(dt);
 
     terminateObjects();
 }
@@ -45,6 +48,7 @@ void Scene::addNewObjects() {
 }
 
 // TODO : test this works
+// TODO : remove from system component lists?
 void Scene::terminateObjects() {
     unsigned int size = allGameObjects.size();
     for (unsigned int i = 0; i < size; i++) {
