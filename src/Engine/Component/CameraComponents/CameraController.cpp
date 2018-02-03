@@ -33,8 +33,8 @@ void CameraController::update(float dt) {
 }
 
 void CameraController::lookAround(float dt, float dx, float dy) {
-    camera->theta += dx * lookSpeed * dt;
-    camera->phi -= dy * lookSpeed * dt;
+    camera->updateTheta(dx * lookSpeed * dt);
+    camera->updatePhi(dy * lookSpeed * dt);
 }
 
 void CameraController::moveFront(float dt) {
