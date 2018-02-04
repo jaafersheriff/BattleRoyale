@@ -16,7 +16,6 @@ Scene::Scene() {
 void Scene::addGameObject(GameObject *go) {
     allGameObjects.push_back(go);
     // TODO : should these go in main GO list or new GO queue?
-    // TODO : add to systems?
 }
 
 GameObject* Scene::createGameObject() {
@@ -40,6 +39,7 @@ void Scene::update(float dt) {
 
 void Scene::addNewObjects() {
     for (auto iter = allComponents.begin(); iter != allComponents.end(); ++iter) {
+        // TODO : call component init functions
         iter->second.insert(iter->second.end(), newComponentQueue[iter->first].begin(), newComponentQueue[iter->first].end());
         newComponentQueue[iter->first].clear();
     }

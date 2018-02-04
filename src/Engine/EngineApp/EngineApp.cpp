@@ -25,6 +25,9 @@ int EngineApp::init() {
 }
 
 void EngineApp::run() {
+
+    // TODO : call all active component init functions
+
     while (!windowHandler.shouldClose()) {
         /* Update time and FPS */
         runTime = (float)windowHandler.getTime();
