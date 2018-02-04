@@ -21,7 +21,7 @@ GameObject* Scene::createGameObject() {
 }
 
 void Scene::addComponent(SystemType st, Component *cp) {
-    newComponentQueue.push_back(cp);
+    newComponentQueue[st].push_back(cp);
     switch (st) {
         case GAMELOGIC:
             gameLogic.addComponent(cp);
@@ -41,31 +41,34 @@ void Scene::update(float dt) {
 }
 
 void Scene::addNewObjects() {
-    allComponents.insert(allComponents.end(), newComponentQueue.begin(), newComponentQueue.end());
+    for (auto iter = allComponents.begin(); iter != allComponents.end(); ++iter) {
+        iter->second.insert(iter->second.end(), newComponentQueue[iter->first].begin(), newComponentQueue[iter->first].end());
+        newComponentQueue[iter->first].clear();
+    }
     allGameObjects.insert(allGameObjects.end(), newGameObjectQueue.begin(), newGameObjectQueue.end());
-    newComponentQueue.clear();
     newGameObjectQueue.clear();
 }
 
 // TODO : test this works
-// TODO : remove from system component lists?
 void Scene::terminateObjects() {
     unsigned int size = allGameObjects.size();
     for (unsigned int i = 0; i < size; i++) {
         if (allGameObjects.at(i) && allGameObjects.at(i)->isTerminated) {
             auto go = allGameObjects.erase(allGameObjects.begin() + i);
-            delete go._Ptr;
+            delete *go;
             i--;
             size--;
         }
     }
-    size = allComponents.size();
-    for (unsigned int i = 0; i < size; i++) {
-        if (allComponents.at(i) && allComponents.at(i)->isTerminated) {
-            auto cp = allComponents.erase(allComponents.begin() + i);
-            delete cp._Ptr;
-            i--;
-            size--;
+    for (auto iter = allComponents.begin(); iter != allComponents.end(); ++iter) {
+        size = iter->second.size();
+        for (unsigned i = 0; i < size; i++) {
+            if (!iter->second[i] || iter->second[i]->isTerminated) {
+                auto cp = iter->second.erase(iter->second.begin() + i);
+                delete *cp;
+                i--;
+                size--;
+            }
         }
     }
 }
@@ -74,8 +77,10 @@ void Scene::shutDown() {
     for (auto go : allGameObjects) {
         go->isTerminated = true;
     }
-    for (auto cp : allComponents) {
-        cp->isTerminated = true;
+    for (auto cl : allComponents) {
+        for (auto c : cl.second) {
+            c->isTerminated = true;
+        }
     }
     terminateObjects();
 }

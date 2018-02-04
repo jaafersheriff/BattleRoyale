@@ -9,6 +9,7 @@
 #include "GameObject/GameObject.hpp"
 #include "Component/Components.hpp"
 
+#include <map>
 #include <vector>
 
 class Scene {
@@ -33,15 +34,17 @@ class Scene {
     private:
         GameLogicSystem gameLogic;
 
-        /* Lists of all game objects/components */
+        /* Lists of all game objects */
         std::vector<GameObject *> allGameObjects;
-        std::vector<Component *> allComponents;
+
+        /* List of all systems and their component lists */
+        std::map<SystemType, std::vector<Component *>> allComponents;
 
         /* Instantiate/Kill queues */
         void addNewObjects();
         void terminateObjects();
         std::vector<GameObject *> newGameObjectQueue;
-        std::vector<Component *> newComponentQueue;
+        std::map<SystemType, std::vector<Component *>> newComponentQueue;
 };
 
 #endif
