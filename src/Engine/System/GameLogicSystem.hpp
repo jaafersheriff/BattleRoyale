@@ -6,6 +6,10 @@
 
 class GameLogicSystem : public System {
     public:
+        GameLogicSystem(std::vector<Component *> *cp) :
+            System(cp)
+        {}
+
         void update(float);
 };
 

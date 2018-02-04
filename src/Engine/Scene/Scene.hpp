@@ -32,7 +32,8 @@ class Scene {
         /* Destroy everything */
         void shutDown();
     private:
-        GameLogicSystem gameLogic;
+        /* System */
+        GameLogicSystem *gameLogic;
 
         /* Lists of all game objects */
         std::vector<GameObject *> allGameObjects;

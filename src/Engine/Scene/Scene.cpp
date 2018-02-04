@@ -1,11 +1,16 @@
 #include "Scene.hpp"
+
 #include <algorithm>
 
 Scene::Scene() {
+    /* Clear lists */
     allGameObjects.clear();
     allComponents.clear();
     newGameObjectQueue.clear();
     newComponentQueue.clear();
+
+    /* Instantiate systems */
+    gameLogic = new GameLogicSystem(&allComponents[GAMELOGIC]);
 }
 
 void Scene::addGameObject(GameObject *go) {
@@ -22,20 +27,13 @@ GameObject* Scene::createGameObject() {
 
 void Scene::addComponent(SystemType st, Component *cp) {
     newComponentQueue[st].push_back(cp);
-    switch (st) {
-        case GAMELOGIC:
-            gameLogic.addComponent(cp);
-            break;
-        default:
-            break;
-    }
 }
 
 void Scene::update(float dt) {
     addNewObjects();
 
     /* Update systems */
-    gameLogic.update(dt);
+    gameLogic->update(dt);
 
     terminateObjects();
 }
