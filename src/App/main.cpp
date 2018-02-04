@@ -64,14 +64,9 @@ int main(int argc, char **argv) {
 
     /* Create scene */
     GameObject *camera = scene->createGameObject();
-    CameraComponent *cc = new CameraComponent(45.f, 1280.f / 960.f, 0.01f, 250.f);
-    Component *ccc = new CameraController(cc, 20.f, 30.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_E, GLFW_KEY_R);
-    
+    CameraComponent *cc = scene->createComponent<Scene::GAMELOGIC, CameraComponent>(45.f, 1280.f / 960.f, 0.01f, 250.f);
     camera->addComponent(cc);
-    camera->addComponent(ccc);
-
-    scene->addComponent(Scene::GAMELOGIC, cc);
-    scene->addComponent(Scene::GAMELOGIC, ccc);
+    camera->addComponent(scene->createComponent<Scene::GAMELOGIC, CameraController>(cc, 20.f, 30.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_E, GLFW_KEY_R));
 
     /* Main loop */
     engine.run();
