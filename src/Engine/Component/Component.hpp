@@ -2,9 +2,9 @@
 #ifndef _COMPONENT_HPP_
 #define _COMPONENT_HPP_
 
+#include "GameObject/GameObject.hpp"
 #include "GameObject/Message.hpp"
 
-class GameObject;
 class Component {
     public:
 
@@ -20,7 +20,7 @@ class Component {
 
         /* Denotes if component should be removed */
         bool isTerminated = false;
-    private:
+    protected:
         /* Parent game object */
         GameObject* gameObject;
 };

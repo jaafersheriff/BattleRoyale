@@ -1,4 +1,5 @@
 #include "GameObject.hpp"
+#include "Component/Component.hpp"
 
 GameObject::GameObject() {
 

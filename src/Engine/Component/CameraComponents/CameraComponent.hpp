@@ -10,13 +10,12 @@
 class CameraComponent : public Component {
     public:
         /* Constructor */
-        CameraComponent(float fov, float aspect, float near, float far, glm::vec3 pos) :
+        CameraComponent(float fov, float aspect, float near, float far) :
             fov(fov),
             aspect(aspect),
             near(near),
-            far(far),
-            position(pos) 
-        {}
+            far(far) {
+        }
         
         /* Derived functions */
         void init();
@@ -30,7 +29,6 @@ class CameraComponent : public Component {
 
         /* Member vars */
         glm::vec3 u, v, w;
-        glm::vec3 position;
         glm::vec3 lookAt;
     private:
         /* Projection */

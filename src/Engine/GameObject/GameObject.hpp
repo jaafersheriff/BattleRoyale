@@ -5,10 +5,11 @@
 #define _GAME_OBJECT_HPP_
 
 #include "Message.hpp"
-#include "Component/Component.hpp"
+#include "Transform.hpp"
 
 #include <vector>
 
+class Component;
 class GameObject {
     public:
         GameObject();
@@ -24,6 +25,8 @@ class GameObject {
 
         /* Denotes if the game object should be removed */
         bool isTerminated = false;
+        /* All game objects live in the world, so they all get a transformation */
+        Transform transform;
     private:
         std::vector<Component *> components;
 };
