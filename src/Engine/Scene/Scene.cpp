@@ -13,15 +13,22 @@ Scene::Scene() {
     gameLogic = new GameLogicSystem(&allComponents[GAMELOGIC]);
 }
 
+GameObject* Scene::createGameObject() {
+    GameObject *go = new GameObject;
+    newGameObjectQueue.push_back(go);
+    return go;
+}
+
 void Scene::addGameObject(GameObject *go) {
     allGameObjects.push_back(go);
     // TODO : should these go in main GO list or new GO queue?
 }
 
-GameObject* Scene::createGameObject() {
-    GameObject *go = new GameObject;
-    newGameObjectQueue.push_back(go);
-    return go;
+template<SystemType V, class T, class... Args>
+T* createComponent(Args&&... args) {
+    T* ptr = new T(args...);
+    addComponent(V, ptr);
+    return ptr;
 }
 
 void Scene::addComponent(SystemType st, Component *cp) {
