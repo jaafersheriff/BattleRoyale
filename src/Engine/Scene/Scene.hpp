@@ -25,7 +25,11 @@ class Scene {
     
         /* Components */
         template<SystemType V, class T, class... Args>
-        T* createComponent(Args&&... args);
+        T* createComponent(Args&&... args) {
+            T* ptr = new T(args...);
+            addComponent(V, ptr);
+            return ptr;
+        }
         void addComponent(SystemType, Component *);
 
         /* Main udate function */

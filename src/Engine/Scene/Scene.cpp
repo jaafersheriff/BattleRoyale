@@ -24,13 +24,6 @@ void Scene::addGameObject(GameObject *go) {
     // TODO : should these go in main GO list or new GO queue?
 }
 
-template<SystemType V, class T, class... Args>
-T* createComponent(Args&&... args) {
-    T* ptr = new T(args...);
-    addComponent(V, ptr);
-    return ptr;
-}
-
 void Scene::addComponent(SystemType st, Component *cp) {
     newComponentQueue[st].push_back(cp);
 }
