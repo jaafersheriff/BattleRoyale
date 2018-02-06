@@ -6,3 +6,13 @@ build/
 other/
 Win32/
 
+*.lastbuildstate
+*.tlog
+*.log
+*.idb
+*.pdb
+/x64/Debug
+/x64/Release
+*.vcxproj
+*.filters
+*.user
