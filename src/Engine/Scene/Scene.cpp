@@ -11,6 +11,7 @@ Scene::Scene() {
 
     /* Instantiate systems */
     gameLogic = new GameLogicSystem(&allComponents[GAMELOGIC]);
+    renderer = new RenderSystem(&allComponents[RENDERABLE]);
 }
 
 GameObject* Scene::createGameObject() {
@@ -33,6 +34,7 @@ void Scene::update(float dt) {
 
     /* Update systems */
     gameLogic->update(dt);
+    renderer->update(dt);
 
     terminateObjects();
 }

@@ -17,10 +17,11 @@ int EngineApp::init() {
         return 1;
     }
 
+    scene = new Scene();
     loader.init(verbose, RESOURCE_DIR);
 
     lastFrameTime = runTime = (float)windowHandler.getTime();
-
+   
     return 0;
 }
 
@@ -44,11 +45,11 @@ void EngineApp::run() {
         windowHandler.update();
 
         /* Update all game objects and components */
-        scene.update(timeStep);
+        scene->update(timeStep);
     }
 }
 
 void EngineApp::terminate() {
     windowHandler.shutDown();
-    scene.shutDown();
+    scene->shutDown();
 }

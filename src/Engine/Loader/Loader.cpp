@@ -51,6 +51,9 @@ Mesh* Loader::getMesh(std::string name) {
 
     /* Add new mesh to library */
     library.addMesh(name, mesh);
+    
+    /* Load mesh to GPU */
+    this->loadMesh(mesh);
 
     if (verbose) {
         std::cout << "Loaded mesh (" << vertCount << " vertices): " << name << std::endl;

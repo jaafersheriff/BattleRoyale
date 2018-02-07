@@ -15,9 +15,14 @@
 class Scene {
     public:
         enum SystemType{
-            GAMELOGIC
+            GAMELOGIC,
+            RENDERABLE
         };
         Scene();
+ 
+        /* Systems */
+        GameLogicSystem *gameLogic;
+        RenderSystem *renderer;
 
         /* Game Objects */
         GameObject* createGameObject();
@@ -38,9 +43,6 @@ class Scene {
         /* Destroy everything */
         void shutDown();
     private:
-        /* System */
-        GameLogicSystem *gameLogic;
-
         /* Lists of all game objects */
         std::vector<GameObject *> allGameObjects;
 

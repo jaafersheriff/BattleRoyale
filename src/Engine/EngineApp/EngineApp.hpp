@@ -12,11 +12,13 @@ class EngineApp {
     public:
         EngineApp();
 
-        Scene scene;
+        Scene *scene;
 
         int init();
         void run();
         void terminate();
+
+        Loader loader;              /* Used to load in files and GPU memory */
 
         std::string RESOURCE_DIR;   /* Static resource directory */
         std::string APP_NAME;       /* Name of application */
@@ -31,7 +33,6 @@ class EngineApp {
         double runTime;             /* Global timer */
 
         Window windowHandler;       /* GLFW window */
-        Loader loader;              /* Used to load in files and GPU memory */
 };
 
 #endif
