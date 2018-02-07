@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
     scene->renderer->addShader<DiffuseShader>("diffuse",                                    /* Shader name */
                                               engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex GLSL file */
                                               engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment GLSL file*/
-                                              &camera->transform.position,                  /* Shader-specific uniforms */
+                                              cc,                                           /* Shader-specific uniforms */
                                               &lightPos);                                   /*                          */
 
     /* Main loop */

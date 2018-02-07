@@ -4,14 +4,15 @@
 #define _DIFFUSE_SHADER_HPP_
 
 #include "Shader.hpp"
+#include "Component/CameraComponents/CameraComponent.hpp"
 
 class DiffuseShader : public Shader {
     public:
-        DiffuseShader(std::string vert, std::string frag, glm::vec3 *, glm::vec3 *);
+        DiffuseShader(std::string vert, std::string frag, CameraComponent *, glm::vec3 *);
 
         void render(std::string, std::vector<Component *> *);
 
-        glm::vec3 *cameraPos;
+        CameraComponent *camera;
         glm::vec3 *lightPos;
 };
 

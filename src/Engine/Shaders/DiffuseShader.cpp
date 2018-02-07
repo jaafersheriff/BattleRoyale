@@ -1,16 +1,21 @@
 #include "DiffuseShader.hpp"
 
-DiffuseShader::DiffuseShader(std::string vert, std::string frag, glm::vec3 *camera, glm::vec3 *light) :
+DiffuseShader::DiffuseShader(std::string vert, std::string frag, CameraComponent *cam, glm::vec3 *light) :
     Shader(vert, frag) {
     /* Set global uniforms */
-    this->cameraPos = camera;
+    this->camera = cam;
     this->lightPos = light;
+
     /* Add attributes */
     addAttribute("vertPos");
     addAttribute("vertNor");
     addAttribute("vertTex");
 
     /* Add uniforms */
+    addUniform("P");
+    addUniform("M");
+    addUniform("V");
+
     addUniform("cameraPos");
     addUniform("lightPos");
 
@@ -22,10 +27,12 @@ DiffuseShader::DiffuseShader(std::string vert, std::string frag, glm::vec3 *came
 
 void DiffuseShader::render(std::string name, std::vector<Component *> *components) {
     /* Bind uniforms */
-    loadVec3(getUniform("cameraPos"), *this->cameraPos);
-    loadVec3(getUniform("lightPos"), *this->lightPos);
+    loadMat4(getUniform("P"), &camera->getProj());
+    loadMat4(getUniform("V"), &camera->getView());
+    loadVec3(getUniform("cameraPos"), camera->getGameObject()->transform.position);
+    loadVec3(getUniform("lightPos"), *lightPos);
 
     for (auto cp : *components) {
-        // TODO
+        // TODO attributes, M, texture stuff
     }
 }
