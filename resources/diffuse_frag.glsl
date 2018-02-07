@@ -28,5 +28,5 @@ void main() {
         diffuseColor = vec3(texture(textureImage, texCoords));
     }
 
-    color = vec4(fragNor.xyz, 1.0); //diffuseColor*diffuseContrib, 1);
+    color = vec4(diffuseColor*diffuseContrib, 1);
 }

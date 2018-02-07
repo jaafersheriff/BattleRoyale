@@ -22,5 +22,6 @@ void CameraComponent::update(float dt) {
     lookAt = gameObject->transform.position + glm::normalize(sphere);
 
     /* Update view matrix */
+    this->projection = glm::perspective(fov, aspect, near, far);
     this->view = glm::lookAt(gameObject->transform.position, lookAt, glm::vec3(0, 1, 0));
 }

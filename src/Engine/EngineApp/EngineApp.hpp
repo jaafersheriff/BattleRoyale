@@ -12,7 +12,7 @@ class EngineApp {
     public:
         EngineApp();
 
-        Scene scene;
+        Scene *scene;
 
         int init();
         void run();
