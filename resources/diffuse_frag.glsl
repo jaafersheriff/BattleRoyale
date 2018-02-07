@@ -19,8 +19,6 @@ void main() {
     vec3 L = normalize(lightDir);
     vec3 N = normalize(fragNor);
 
-    float lightDistance = length(lightDir);
-
     /* Diffuse */
     float diffuseContrib = max(dot(L, N), matAmbient);
     vec3 diffuseColor = matDiffuse;
