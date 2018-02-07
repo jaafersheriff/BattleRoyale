@@ -15,9 +15,8 @@ class DiffuseRenderableComponent : public Component {
             modelTexture(texture)
         {}
 
-    private:
-        int pid;
-        Mesh *mesh;
+        int pid = -1;;
+        Mesh *mesh = nullptr;
         ModelTexture modelTexture;
 };
 
