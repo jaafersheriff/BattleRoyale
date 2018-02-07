@@ -1,4 +1,4 @@
-/
+//
 //    Many useful helper functions for GLSL shaders - gleaned from various sources including orange book
 //    Created by zwood on 2/21/10.
 //    Modified by sueda 10/15/15.
@@ -106,6 +106,25 @@ void checkVersion()
 		printf("This shader example will not work due to the installed Opengl version, which is %d.%d.\n", major, minor);
 		exit(0);
 	}
+}
+
+GLuint createShader(std::string name, GLenum type) {
+    GLint rc;
+    GLuint shaderId = glCreateShader(type);
+
+    const char *shader = GLSL::textFileRead(name.c_str());
+    glShaderSource(shaderId , 1, &shader, NULL);
+
+    // Compile shader
+    glCompileShader(shaderId);
+    glGetShaderiv(shaderId, GL_COMPILE_STATUS, &rc);
+    if (!rc) {
+        GLSL::printShaderInfoLog(shaderId);
+        std::cerr << "Error compiling " << name << std::endl;
+        return -1;
+    }
+
+    return shaderId;
 }
 
 char *textFileRead(const char *fn)

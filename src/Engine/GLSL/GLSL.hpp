@@ -35,6 +35,7 @@ namespace GLSL {
 	void checkVersion();
 	int textFileWrite(const char *filename, char *s);
 	char *textFileRead(const char *filename);
+    GLuint createShader(std::string, GLenum type);
 }
 
 #endif
