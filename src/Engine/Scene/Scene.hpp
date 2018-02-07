@@ -19,6 +19,10 @@ class Scene {
             RENDERABLE
         };
         Scene();
+ 
+        /* Systems */
+        GameLogicSystem *gameLogic;
+        RenderSystem *renderer;
 
         /* Game Objects */
         GameObject* createGameObject();
@@ -39,9 +43,6 @@ class Scene {
         /* Destroy everything */
         void shutDown();
     private:
-        /* Systems */
-        std::vector<System *> systems;
-
         /* Lists of all game objects */
         std::vector<GameObject *> allGameObjects;
 

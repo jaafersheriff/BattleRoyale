@@ -4,7 +4,8 @@
 
 #include "System.hpp"
 
-#include "GLSL/Shader.hpp"
+#include "Shaders/Shader.hpp"
+#include "Shaders/DiffuseShader.hpp"
 
 #include <map>
 
@@ -19,16 +20,20 @@ class RenderSystem : public System {
          * Otherwise, initialize shader object
          *   Compile GLSL shaders
          *   On success, add to shader map and return true
-         *   On failure, exit */
+         *   On failure, print */
         template<class T>
-        T* addShader(std::string name, std::string vertex, std::string fragment) {
+        void addShader(std::string name, std::string vertex, std::string fragment) {
             auto it = shaders.find(name);
             if (it != shaders.end()) {
-                return it->second;
+                return;
             }
             T* shader = new T(vertex, fragment);
             if (shader->init()) {
                 shaders.insert(std::map<std::string, Shader *>::value_type(name, shader));
+            }
+            else {
+                std::cerr << "Failed to compile shader " << name << 
+                    "\n\t" << vertex << "\n\t" << fragment << std::endl;
             }
         }
 

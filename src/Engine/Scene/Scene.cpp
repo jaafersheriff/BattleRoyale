@@ -10,8 +10,8 @@ Scene::Scene() {
     newComponentQueue.clear();
 
     /* Instantiate systems */
-    systems.push_back(new GameLogicSystem(&allComponents[GAMELOGIC]));
-    systems.push_back(new RenderSystem(&allComponents[RENDERABLE]));
+    gameLogic = new GameLogicSystem(&allComponents[GAMELOGIC]);
+    renderer = new RenderSystem(&allComponents[RENDERABLE]);
 }
 
 void Scene::addGameObject(GameObject *go) {
@@ -33,9 +33,8 @@ void Scene::update(float dt) {
     addNewObjects();
 
     /* Update systems */
-    for (System *system : systems) {
-        system->update(dt);
-    }
+    gameLogic->update(dt);
+    renderer->update(dt);
 
     terminateObjects();
 }
