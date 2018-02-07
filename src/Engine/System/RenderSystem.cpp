@@ -17,9 +17,11 @@ void RenderSystem::update(float dt) {
     /* Loop through active shaders */
     for (auto &shader : shaders) {
         shader.second->bind();
-        // TODO : pass a list of renderable components that are
-        // TODO : specific to this shader -- right now we are passing 
-        // TODO : the entire list and expecting each shader to filter through
+        ///////////////////////////  TODO  ///////////////////////////
+        // pass a list of renderable components that are specific   //
+        // to this shader -- right now we are passing the entire    //
+        // list and expecting each shader to filter through         //
+        //////////////////////////////////////////////////////////////
         shader.second->render(shader.first, this->components);
         shader.second->unbind();
     }
