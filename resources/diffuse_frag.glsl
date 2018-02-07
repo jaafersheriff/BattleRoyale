@@ -6,8 +6,6 @@ in vec2 textureCoords;
 
 uniform float matAmbient;
 uniform vec3 matDiffuse;
-uniform vec3 matSpecular;
-uniform float shine;
 
 uniform vec3 lightPos;
 

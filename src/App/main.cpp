@@ -70,7 +70,12 @@ int main(int argc, char **argv) {
     camera->addComponent(scene->createComponent<Scene::GAMELOGIC, CameraController>(cc, 20.f, 30.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_E, GLFW_KEY_R));
 
     /* Create diffuse shader */
-    scene->renderer->addShader<DiffuseShader>("diffuse", engine.RESOURCE_DIR + "diffuse_vert.glsl", engine.RESOURCE_DIR + "diffuse_frag.glsl");
+    glm::vec3 lightPos(100.f, 100.f, 100.f);
+    scene->renderer->addShader<DiffuseShader>("diffuse",                                    /* Shader name */
+                                              engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex GLSL file */
+                                              engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment GLSL file*/
+                                              &camera->transform.position,                  /* Shader-specific uniforms */
+                                              &lightPos);                                   /*                          */
 
     /* Main loop */
     engine.run();

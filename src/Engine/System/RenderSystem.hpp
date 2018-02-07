@@ -12,28 +12,21 @@
 
 class RenderSystem : public System {
     public:
-        RenderSystem(std::vector<Component *> *cp) :
-            System(cp)
-        {}
+        RenderSystem(std::vector<Component *> *);
 
         /* If the shader already exists, return it
          * Otherwise, initialize shader object
          *   Compile GLSL shaders
-         *   On success, add to shader map and return true
-         *   On failure, print */
-        template<class T>
-        void addShader(std::string name, std::string vertex, std::string fragment) {
+         *   On success, add to shader map and return true */
+        template<class T, class... Args>
+        void addShader(std::string name, std::string vertex, std::string fragment, Args&&... args) {
             auto it = shaders.find(name);
             if (it != shaders.end()) {
                 return;
             }
-            T* shader = new T(vertex, fragment);
+            T* shader = new T(vertex, fragment, args...);
             if (shader->init()) {
                 shaders.insert(std::map<std::string, Shader *>::value_type(name, shader));
-            }
-            else {
-                std::cerr << "Failed to compile shader " << name << 
-                    "\n\t" << vertex << "\n\t" << fragment << std::endl;
             }
         }
 

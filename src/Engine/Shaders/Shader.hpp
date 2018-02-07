@@ -9,6 +9,8 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+#include "Component/Component.hpp"
+
 #include <map>
 #include <string>
 
@@ -30,7 +32,7 @@ class Shader {
         void unloadTexture(int);
 
         /* Render functions */
-        virtual void render() = 0;
+        virtual void render(std::string, std::vector<Component *> *) = 0;
 
         /* Parent load functions */
         void loadBool(const int, const bool) const;
