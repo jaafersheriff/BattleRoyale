@@ -80,6 +80,7 @@ int main(int argc, char **argv) {
 
     /* Create bunny */
     GameObject *bunny = scene->createGameObject();
+    bunny->transform.scale = glm::vec3(1.f);
     bunny->addComponent(scene->createComponent<Scene::RENDERABLE, DiffuseRenderableComponent>(
         scene->renderer->shaders.find("diffuse")->second->pid,
         engine.loader.getMesh("bunny.obj"),

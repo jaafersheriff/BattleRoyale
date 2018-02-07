@@ -3,12 +3,10 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
-DiffuseShader::DiffuseShader(std::string vert, std::string frag, CameraComponent *cam, glm::vec3 *light) :
-    Shader(vert, frag) {
-    /* Set global uniforms */
-    this->camera = cam;
-    this->lightPos = light;
-
+bool DiffuseShader::init() {
+    if (!Shader::init()) {
+        return false;
+    }
     /* Add attributes */
     addAttribute("vertPos");
     addAttribute("vertNor");
@@ -19,32 +17,33 @@ DiffuseShader::DiffuseShader(std::string vert, std::string frag, CameraComponent
     addUniform("M");
     addUniform("V");
 
-    addUniform("cameraPos");
     addUniform("lightPos");
 
     addUniform("matAmbient");
     addUniform("matDiffuse");
     addUniform("textureImage");
     addUniform("usesTexture");
+
+    return true;
 }
 
 void DiffuseShader::render(std::string name, std::vector<Component *> *components) {
     /* Bind uniforms */
     loadMat4(getUniform("P"), &camera->getProj());
     loadMat4(getUniform("V"), &camera->getView());
-    loadVec3(getUniform("cameraPos"), camera->getGameObject()->transform.position);
     loadVec3(getUniform("lightPos"), *lightPos);
 
     glm::mat4 M;
     for (auto cp : *components) {
         // TODO : component list should be passed in as diffuserenderablecomponent
         DiffuseRenderableComponent *drc;
-        if (!(drc = dynamic_cast<DiffuseRenderableComponent *>(cp))) {
+        if (!(drc = dynamic_cast<DiffuseRenderableComponent *>(cp)) || drc->pid != this->pid) {
             continue;
         }
 
         /* Model matrix */
         M  = glm::mat4(1.f);
+        M *= glm::translate(glm::mat4(1.f), drc->getGameObject()->transform.position);
         M *= glm::rotate(glm::mat4(1.f), glm::radians(drc->getGameObject()->transform.rotation.x), glm::vec3(1, 0, 0));
         M *= glm::rotate(glm::mat4(1.f), glm::radians(drc->getGameObject()->transform.rotation.y), glm::vec3(0, 1, 0));
         M *= glm::rotate(glm::mat4(1.f), glm::radians(drc->getGameObject()->transform.rotation.z), glm::vec3(0, 0, 1));
@@ -53,7 +52,7 @@ void DiffuseShader::render(std::string name, std::vector<Component *> *component
 
         /* Bind materials */
         loadFloat(getUniform("matAmbient"), drc->modelTexture.material.ambient);
-        loadVec3(getUniform("matdiffuse"), drc->modelTexture.material.diffuse);
+        loadVec3(getUniform("matDiffuse"), drc->modelTexture.material.diffuse);
    
         /* Load texture */
         if(drc->modelTexture.texture && drc->modelTexture.texture->textureId != 0) {

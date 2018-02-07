@@ -1,8 +1,8 @@
 #version 330 core
 
 in vec4 worldPos;
-in vec3 fragNormal;
-in vec2 textureCoords;
+in vec3 fragNor;
+in vec2 texCoords;
 
 uniform float matAmbient;
 uniform vec3 matDiffuse;
@@ -17,16 +17,16 @@ out vec4 color;
 void main() {
     vec3 lightDir = lightPos - worldPos.xyz;
     vec3 L = normalize(lightDir);
-    vec3 N = normalize(fragNormal);
+    vec3 N = normalize(fragNor);
 
     float lightDistance = length(lightDir);
 
     /* Diffuse */
-    vec3 diffuseContrib = max(dot(L, N), matAmbient) / attFactor;
+    float diffuseContrib = max(dot(L, N), matAmbient);
     vec3 diffuseColor = matDiffuse;
     if (usesTexture) {
-        diffuseColor = vec3(texture(textureImage, textureCoords));
+        diffuseColor = vec3(texture(textureImage, texCoords));
     }
 
-    color = vec4(diffuseColor*diffuseContrib, 1);
+    color = vec4(fragNor.xyz, 1.0); //diffuseColor*diffuseContrib, 1);
 }
