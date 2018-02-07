@@ -34,7 +34,7 @@ class RenderSystem : public System {
          * Bind individual shaders 
          * Call shaders' render function with the appropriate renderable component list */
         void update(float);
-    private:
+    
         /* Map of shader name to Shader objects 
          * Rendering components only need to contain a reference to the 
          * Shader name string -- the render system will handle the rest */

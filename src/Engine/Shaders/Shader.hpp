@@ -45,6 +45,8 @@ class Shader {
         /* Get shader location */
         GLint getAttribute(const std::string &);
         GLint getUniform(const std::string &);
+
+        GLuint pid = 0;
     protected:
         /* GLSL shader names */
         const std::string vShaderName;
@@ -55,7 +57,6 @@ class Shader {
         void addUniform(const std::string &);
     private:    
         /* GLSL shader attributes */
-        GLuint pid = 0;
         GLint vShaderId;
         GLint fShaderId;
         std::map<std::string, GLint> attributes;
