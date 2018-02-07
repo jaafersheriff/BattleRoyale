@@ -14,15 +14,15 @@ Scene::Scene() {
     renderer = new RenderSystem(&allComponents[RENDERABLE]);
 }
 
-void Scene::addGameObject(GameObject *go) {
-    allGameObjects.push_back(go);
-    // TODO : should these go in main GO list or new GO queue?
-}
-
 GameObject* Scene::createGameObject() {
     GameObject *go = new GameObject;
     newGameObjectQueue.push_back(go);
     return go;
+}
+
+void Scene::addGameObject(GameObject *go) {
+    allGameObjects.push_back(go);
+    // TODO : should these go in main GO list or new GO queue?
 }
 
 void Scene::addComponent(SystemType st, Component *cp) {
