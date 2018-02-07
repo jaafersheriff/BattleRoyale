@@ -8,13 +8,13 @@
 #include "Shaders/DiffuseShader.hpp"
 
 #include <map>
+#include <string>
 
 class RenderSystem : public System {
     public:
         RenderSystem(std::vector<Component *> *cp) :
             System(cp)
         {}
-
 
         /* If the shader already exists, return it
          * Otherwise, initialize shader object

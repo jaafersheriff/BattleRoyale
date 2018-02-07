@@ -1,5 +1,6 @@
 #include "EngineApp/EngineApp.hpp"
 
+#include <string>
 #include <iostream>
 
 void printUsage() {
@@ -62,11 +63,14 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    /* Create scene */
+    /* Create camera */
     GameObject *camera = scene->createGameObject();
     CameraComponent *cc = scene->createComponent<Scene::GAMELOGIC, CameraComponent>(45.f, 1280.f / 960.f, 0.01f, 250.f);
     camera->addComponent(cc);
     camera->addComponent(scene->createComponent<Scene::GAMELOGIC, CameraController>(cc, 20.f, 30.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_E, GLFW_KEY_R));
+
+    /* Create diffuse shader */
+    scene->renderer->addShader<DiffuseShader>("diffuse", engine.RESOURCE_DIR + "diffuse_vert.glsl", engine.RESOURCE_DIR + "diffuse_frag.glsl");
 
     /* Main loop */
     engine.run();
