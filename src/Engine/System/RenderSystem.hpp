@@ -19,14 +19,19 @@ class RenderSystem : public System {
          *   Compile GLSL shaders
          *   On success, add to shader map and return true */
         template<class T, class... Args>
-        void addShader(std::string name, std::string vertex, std::string fragment, Args&&... args) {
+        bool addShader(std::string name, std::string vertex, std::string fragment, Args&&... args) {
             auto it = shaders.find(name);
             if (it != shaders.end()) {
-                return;
+                return true;
             }
             T* shader = new T(vertex, fragment, args...);
             if (shader->init()) {
                 shaders.insert(std::map<std::string, Shader *>::value_type(name, shader));
+                return true;
+            }
+            else {
+                std::cerr << "Failed to initialize shader [" << name << "]" << std::endl;
+                return false;
             }
         }
 
