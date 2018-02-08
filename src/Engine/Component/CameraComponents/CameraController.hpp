@@ -24,7 +24,7 @@ class CameraController : public Component {
 
         void update(float dt);
 
-        void lookAround(float dt, float dx, float dy);
+        void lookAround(float dt);
         void moveFront(float dt);
         void moveBack(float dt);
         void moveLeft(float dt);

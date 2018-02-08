@@ -8,8 +8,8 @@ void CameraController::init() {
 }
 
 void CameraController::update(float dt) {
-    if (Mouse::isDown(0)) {
-        lookAround(dt, float(Mouse::dx), float(Mouse::dy));
+    if (Mouse::isDown(GLFW_MOUSE_BUTTON_1)) {
+        lookAround(dt);
     }
 
     if (Keyboard::isKeyPressed(front)) {
@@ -31,10 +31,9 @@ void CameraController::update(float dt) {
         moveDown(dt);
     }
 }
-
-void CameraController::lookAround(float dt, float dx, float dy) {
-    camera->updateTheta(dx * lookSpeed * dt);
-    camera->updatePhi(dy * lookSpeed * dt);
+void CameraController::lookAround(float dt) {
+    camera->theta += Mouse::dx * lookSpeed * dt;
+    camera->phi -= Mouse::dy * lookSpeed * dt;
 }
 
 void CameraController::moveFront(float dt) {

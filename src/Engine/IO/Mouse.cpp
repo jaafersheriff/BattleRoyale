@@ -4,9 +4,9 @@ double Mouse::x = 0.0;
 double Mouse::y = 0.0;
 double Mouse::dx = 0.0;
 double Mouse::dy = 0.0;
-bool Mouse::mouseButtons[GLFW_MOUSE_BUTTON_LAST] = { false };
+int Mouse::mouseButtons[GLFW_MOUSE_BUTTON_LAST] = { GLFW_RELEASE };
 
-void Mouse::updateMousePos(double newX, double newY) {
+void Mouse::update(double newX, double newY) {
     /* Calculate x-y speed */
     dx = newX - x;
     dy = newY - y;
@@ -20,13 +20,9 @@ void Mouse::updateMousePos(double newX, double newY) {
 }
 
 bool Mouse::isDown(int button) {
-    return mouseButtons[button] == GLFW_PRESS;
+    return mouseButtons[button] >= GLFW_PRESS;
 }
 
 void Mouse::setButtonStatus(int button, int action) {
-    mouseButtons[button] = (action == GLFW_PRESS);
-}
-
-void Mouse::update() {
-
+    mouseButtons[button] = action;
 }

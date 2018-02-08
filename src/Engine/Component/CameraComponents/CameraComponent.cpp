@@ -5,6 +5,7 @@
 
 void CameraComponent::init() {
     this->projection = glm::perspective(fov, aspect, near, far);
+    phi = theta = 0.0;
     update(0.f);
 }
 

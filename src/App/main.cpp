@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
     GameObject *camera = scene->createGameObject();
     CameraComponent *cc = scene->createComponent<Scene::GAMELOGIC, CameraComponent>(45.f, 1280.f / 960.f, 0.01f, 250.f);
     camera->addComponent(cc);
-    camera->addComponent(scene->createComponent<Scene::GAMELOGIC, CameraController>(cc, 20.f, 30.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_R, GLFW_KEY_E));
+    camera->addComponent(scene->createComponent<Scene::GAMELOGIC, CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_R, GLFW_KEY_E));
 
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);

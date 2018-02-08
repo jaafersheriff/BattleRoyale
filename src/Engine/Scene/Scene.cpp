@@ -42,9 +42,11 @@ void Scene::update(float dt) {
 }
 
 void Scene::addNewObjects() {
-    for (auto iter = allComponents.begin(); iter != allComponents.end(); ++iter) {
-        // TODO : call component init functions
-        iter->second.insert(iter->second.end(), newComponentQueue[iter->first].begin(), newComponentQueue[iter->first].end());
+    for (auto iter = newComponentQueue.begin(); iter != newComponentQueue.end(); ++iter) {
+        for (unsigned int i = 0; i < iter->second.size(); i++) {
+            iter->second[i]->init();
+            allComponents[iter->first].push_back(iter->second[i]);
+        }
         newComponentQueue[iter->first].clear();
     }
     allGameObjects.insert(allGameObjects.end(), newGameObjectQueue.begin(), newGameObjectQueue.end());

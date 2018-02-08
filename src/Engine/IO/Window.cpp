@@ -13,10 +13,6 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
     Keyboard::setKeyStatus(key, action);
 }
 
-void Window::mousePositionCallback(GLFWwindow *window, double x, double y) {
-    Mouse::updateMousePos(x, y);
-}
-
 void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
     Mouse::setButtonStatus(button, action);
 }
@@ -48,7 +44,6 @@ int Window::init(std::string name) {
 
     /* Set callbacks */
     glfwSetKeyCallback(window, keyCallback);
-    glfwSetCursorPosCallback(window, mousePositionCallback);
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
 
     /* Init GLEW */
@@ -85,9 +80,10 @@ void Window::update() {
         return;
     }
 
-    /* Update mouse and keyboard */
-    Mouse::update();
-    Keyboard::update();
+    /* Update mouse */
+    double x, y;
+    glfwGetCursorPos(window, &x, &y);
+    Mouse::update(x, y);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

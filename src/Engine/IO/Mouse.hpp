@@ -13,14 +13,13 @@ class Mouse {
         static double dx, dy;
 
         /* Update */
-        static void updateMousePos(double, double);
-        static void update();
+        static void update(double, double);
 
         /* Denotes if mouse buttons are pressed */
         static void setButtonStatus(int, int);
         static bool isDown(int);
     private:
-        static bool mouseButtons[GLFW_MOUSE_BUTTON_LAST];
+        static int mouseButtons[GLFW_MOUSE_BUTTON_LAST];
 };
 
 #endif
