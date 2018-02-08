@@ -13,9 +13,8 @@ class Keyboard {
 
         static void setKeyStatus(int, int);
 
-        static void update();
     private:
-        static bool keyStatus[NUM_KEYS];
+        static int keyStatus[NUM_KEYS];
 };
 
 #endif
