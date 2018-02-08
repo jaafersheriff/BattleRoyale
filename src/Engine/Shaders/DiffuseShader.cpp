@@ -33,7 +33,6 @@ void DiffuseShader::render(std::string name, std::vector<Component *> *component
     loadMat4(getUniform("V"), &camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
 
-    glm::mat4 M;
     for (auto cp : *components) {
         // TODO : component list should be passed in as diffuserenderablecomponent
         DiffuseRenderableComponent *drc;
@@ -42,13 +41,7 @@ void DiffuseShader::render(std::string name, std::vector<Component *> *component
         }
 
         /* Model matrix */
-        M  = glm::mat4(1.f);
-        M *= glm::translate(glm::mat4(1.f), drc->getGameObject()->transform.position);
-        M *= glm::rotate(glm::mat4(1.f), glm::radians(drc->getGameObject()->transform.rotation.x), glm::vec3(1, 0, 0));
-        M *= glm::rotate(glm::mat4(1.f), glm::radians(drc->getGameObject()->transform.rotation.y), glm::vec3(0, 1, 0));
-        M *= glm::rotate(glm::mat4(1.f), glm::radians(drc->getGameObject()->transform.rotation.z), glm::vec3(0, 0, 1));
-        M *= glm::scale(glm::mat4(1.f), drc->getGameObject()->transform.scale);
-        loadMat4(getUniform("M"), &M);
+        loadMat4(getUniform("M"), &drc->getGameObject()->transform.modelMatrix());
 
         /* Bind materials */
         loadFloat(getUniform("matAmbient"), drc->modelTexture.material.ambient);

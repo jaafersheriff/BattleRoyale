@@ -1,33 +1,57 @@
-/* Transformation class */
-#pragma once 
-#ifndef _TRANSFORM_HPP_
-#define _TRANSFORM_HPP_
+#pragma once
+
+
 
 #include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 
-// TODO : only update matrices after pos, rot, or scale has been updated
-// TODO : each member var needs its own getter and setter in that case
+
+
 class Transform {
+
+    private:
+
+    glm::vec3 m_position;
+    glm::mat3 m_rotation;
+    glm::vec3 m_scale;
+
+    mutable glm::mat4 m_modelMatrix;
+    mutable glm::mat3 m_normalMatrix;
+    mutable bool m_modelMatrixValid;
+    mutable bool m_normalMatrixValid;
+
     public:
-        Transform() :
-            position(glm::vec3(0.f)),
-            rotation(glm::vec3(0.f)),
-            scale(glm::vec3(0.f)),
-            modelMatrix(glm::mat4(1.f))
-        {}
 
-        void update() {
-            this->modelMatrix  = glm::mat4(1.f);
-            this->modelMatrix *= glm::translate(glm::mat4(1.f), position);
-            this->modelMatrix *= glm::rotate(glm::mat4(1.f), glm::radians(rotation.x), glm::vec3(1, 0, 0));
-            this->modelMatrix *= glm::rotate(glm::mat4(1.f), glm::radians(rotation.y), glm::vec3(0, 1, 0));
-            this->modelMatrix *= glm::rotate(glm::mat4(1.f), glm::radians(rotation.z), glm::vec3(0, 0, 1));
-            this->modelMatrix *= glm::scale(glm::mat4(1.f), scale);
-        }
+    Transform();
+    Transform(const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & rotation);
 
-        glm::vec3 position, rotation, scale;
-        glm::mat4 modelMatrix;
+    // sets the absolute position
+    void setPosition(const glm::vec3 & pos);
+
+    // moves current position by delta
+    void move(const glm::vec3 & delta);
+
+    // sets the absolute scale
+    void setScale(const glm::vec3 & scale);
+
+    // multiplies current scale by factor
+    void scale(const glm::vec3 & factor);
+
+    // sets the absolute rotation
+    void setRotation(const glm::mat3 & rot);
+    
+    // rotates current rotation by mat
+    void rotate(const glm::mat3 & mat);
+
+    const glm::vec3 & position() const { return m_position; }
+    const glm::vec3 & scale() const { return m_scale; }
+    const glm::mat3 & rotation() const { return m_rotation; }
+
+    const glm::mat4 & modelMatrix() const;
+    const glm::mat3 & normalMatrix() const;
+
+    private:
+
+    void detModelMatrix() const;
+    void detNormalMatrix() const;
+
 };
-
-#endif
