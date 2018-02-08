@@ -14,8 +14,9 @@ bool DiffuseShader::init() {
 
     /* Add uniforms */
     addUniform("P");
-    addUniform("M");
     addUniform("V");
+    addUniform("M");
+    addUniform("N");
 
     addUniform("lightPos");
 
@@ -42,6 +43,8 @@ void DiffuseShader::render(std::string name, std::vector<Component *> *component
 
         /* Model matrix */
         loadMat4(getUniform("M"), &drc->getGameObject()->transform.modelMatrix());
+        /* Normal matrix */
+        loadMat3(getUniform("N"), &drc->getGameObject()->transform.normalMatrix());
 
         /* Bind materials */
         loadFloat(getUniform("matAmbient"), drc->modelTexture.material.ambient);

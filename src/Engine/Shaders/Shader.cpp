@@ -122,6 +122,10 @@ void Shader::loadVec3(const int location, const glm::vec3 v) const {
     glUniform3f(location, v.x, v.y, v.z);
 }
 
+void Shader::loadMat3(const int location, const glm::mat3 *m) const { 
+    glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(*m));
+}
+
 void Shader::loadMat4(const int location, const glm::mat4 *m) const { 
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(*m));
 }

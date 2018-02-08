@@ -54,7 +54,8 @@ int main(int argc, char **argv) {
     EngineApp engine;
 
     if (parseArgs(&engine, argc, argv) || engine.init()) {
-        return 1;
+        std::cin.get(); // don't immediately close the console
+        return EXIT_FAILURE;
     }
 
     /* Scene reference for QOL */
@@ -69,11 +70,17 @@ int main(int argc, char **argv) {
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
-    scene->renderer->addShader<DiffuseShader>("diffuse",                                    /* Shader name */
-                                              engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex GLSL file */
-                                              engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment GLSL file*/
-                                              cc,                                           /* Shader-specific uniforms */
-                                              &lightPos);                                   /*                          */
+    if (!scene->renderer->addShader<DiffuseShader>(
+            "diffuse",                                    /* Shader name */
+            engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex GLSL file */
+            engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment GLSL file*/
+            cc,                                           /* Shader-specific uniforms */
+            &lightPos                                     /*                          */
+        )) {
+        std::cerr << "Failed to add diffuse shader" << std::endl;
+        std::cin.get(); // don't immediately close the console
+        return EXIT_FAILURE;
+    }
 
     /* Create bunny */
     GameObject *bunny = scene->createGameObject();
@@ -88,7 +95,7 @@ int main(int argc, char **argv) {
     /* Main loop */
     engine.run();
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 
