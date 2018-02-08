@@ -13,6 +13,9 @@ class System {
             this->components = components;
         }
 
+        /* virtual destructor necessary for polymorphic destruction */
+        virtual ~System() = default;
+
         /* Generic update function */
         virtual void update(float dt) = 0;
     protected:

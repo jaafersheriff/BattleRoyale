@@ -9,7 +9,7 @@ void CameraController::init() {
 
 void CameraController::update(float dt) {
     if (Mouse::isDown(0)) {
-        lookAround(dt, Mouse::dx, Mouse::dy);
+        lookAround(dt, float(Mouse::dx), float(Mouse::dy));
     }
 
     if (Keyboard::isKeyPressed(front)) {

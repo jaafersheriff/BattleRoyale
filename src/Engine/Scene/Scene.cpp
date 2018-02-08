@@ -12,6 +12,7 @@ Scene::Scene() {
     /* Instantiate systems */
     gameLogic = new GameLogicSystem(&allComponents[GAMELOGIC]);
     renderer = new RenderSystem(&allComponents[RENDERABLE]);
+    collision = new CollisionSystem(&allComponents[COLLISION]);
 }
 
 GameObject* Scene::createGameObject() {
@@ -35,6 +36,7 @@ void Scene::update(float dt) {
     /* Update systems */
     gameLogic->update(dt);
     renderer->update(dt);
+    collision->update(dt);
 
     terminateObjects();
 }
@@ -51,8 +53,8 @@ void Scene::addNewObjects() {
 
 // TODO : test this works
 void Scene::terminateObjects() {
-    unsigned int size = allGameObjects.size();
-    for (unsigned int i = 0; i < size; i++) {
+    size_t size = allGameObjects.size();
+    for (size_t i = 0; i < size; i++) {
         if (allGameObjects.at(i) && allGameObjects.at(i)->isTerminated) {
             auto go = allGameObjects.erase(allGameObjects.begin() + i);
             delete *go;
@@ -62,7 +64,7 @@ void Scene::terminateObjects() {
     }
     for (auto iter = allComponents.begin(); iter != allComponents.end(); ++iter) {
         size = iter->second.size();
-        for (unsigned i = 0; i < size; i++) {
+        for (size_t i = 0; i < size; i++) {
             if (!iter->second[i] || iter->second[i]->isTerminated) {
                 auto cp = iter->second.erase(iter->second.begin() + i);
                 delete *cp;

@@ -9,6 +9,10 @@ class Component {
     public:
 
         Component();
+
+        /* virtual destructor necessary for polymorphic destruction */
+        virtual ~Component() = default;
+
         virtual void init();
         virtual void update(float);
 

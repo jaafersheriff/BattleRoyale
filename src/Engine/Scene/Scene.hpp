@@ -16,13 +16,15 @@ class Scene {
     public:
         enum SystemType{
             GAMELOGIC,
-            RENDERABLE
+            RENDERABLE,
+            COLLISION
         };
         Scene();
  
         /* Systems */
         GameLogicSystem *gameLogic;
         RenderSystem *renderer;
+        CollisionSystem *collision;
 
         /* Game Objects */
         GameObject* createGameObject();
@@ -37,7 +39,7 @@ class Scene {
         }
         void addComponent(SystemType, Component *);
 
-        /* Main udate function */
+        /* Main update function */
         void update(float);
 
         /* Destroy everything */
