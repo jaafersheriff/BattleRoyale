@@ -4,12 +4,12 @@
 #include <iostream>
 
 EngineApp::EngineApp() {
-    srand(time(0));
+    srand(unsigned int(time(0)));
     RESOURCE_DIR = "../resources/";
     APP_NAME = "";
     verbose = false;
     nFrames = 0;
-    timeStep = lastFrameTime = runTime = 0.f;
+    timeStep = lastFrameTime = runTime = 0.0;
 }
 
 int EngineApp::init() {
@@ -20,7 +20,7 @@ int EngineApp::init() {
     scene = new Scene();
     loader.init(verbose, RESOURCE_DIR);
 
-    lastFrameTime = runTime = (float)windowHandler.getTime();
+    lastFrameTime = runTime = windowHandler.getTime();
    
     return 0;
 }
@@ -31,7 +31,7 @@ void EngineApp::run() {
 
     while (!windowHandler.shouldClose()) {
         /* Update time and FPS */
-        runTime = (float)windowHandler.getTime();
+        runTime = windowHandler.getTime();
         timeStep = (runTime - lastFrameTime);
         lastFrameTime = runTime;
         nFrames++;
@@ -45,7 +45,7 @@ void EngineApp::run() {
         windowHandler.update();
 
         /* Update all game objects and components */
-        scene->update(timeStep);
+        scene->update(float(timeStep));
     }
 }
 

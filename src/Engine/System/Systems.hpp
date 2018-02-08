@@ -4,4 +4,4 @@
 
 #include "GameLogicSystem.hpp"
 #include "RenderSystem.hpp"
-#include "CollisionSystem.hpp"
+#include "Collision/CollisionSystem.hpp"
