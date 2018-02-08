@@ -24,12 +24,11 @@ class CameraComponent : public Component {
         /* Member functions */
         const glm::mat4 &getView() { return view; }
         const glm::mat4 &getProj() { return projection; }
-        void updateTheta(float dt) { this->theta += dt; }
-        void updatePhi(float dp) { this->phi += dp; }
 
         /* Member vars */
         glm::vec3 u, v, w;
         glm::vec3 lookAt;
+        double phi, theta;
     private:
         /* Projection */
         float fov, aspect, near, far;
@@ -37,7 +36,6 @@ class CameraComponent : public Component {
 
         /* View */
         glm::mat4 view;
-        float phi, theta;
 };
 
 #endif
