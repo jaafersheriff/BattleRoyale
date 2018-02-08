@@ -78,11 +78,14 @@ struct Sphere {
 
 
 
+// A capsule looks like a pill. It is comprised of two hemispheres sandwiching
+// a cylinder. A capsule is always upright, with the cylinder parallel to the
+// y axis.
 struct Capsule {
 
-    glm::vec3 center;
-    float radius;
-    float height;
+    glm::vec3 center; // the center point of the cylinder
+    float radius; // the radius of both the cylinder and the hemispheres
+    float height; // the height of the cylinder
 
     Capsule() :
         center(),
