@@ -1,3 +1,11 @@
+// allows program to be run on dedicated graphics processor for laptops with
+// both integrated and dedicated graphics using Nvidia Optimus
+#ifdef _WIN32
+extern "C" {
+    _declspec(dllexport) unsigned int NvOptimusEnablement = 0x00000001;
+}
+#endif
+
 #include "EngineApp/EngineApp.hpp"
 
 #include <string>
@@ -65,7 +73,7 @@ int main(int argc, char **argv) {
     GameObject & camera(*scene.createGameObject());
     CameraComponent & cc(*scene.createComponent<CameraComponent>(45.f, 1280.f / 960.f, 0.01f, 250.f));
     camera.addComponent(cc);
-    camera.addComponent(*scene.createComponent<CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_R, GLFW_KEY_E));
+    camera.addComponent(*scene.createComponent<CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT));
     camera.addComponent(*scene.createComponent<SpatialComponent>());
     camera.getSpatial()->setPosition(glm::vec3(-4.0f, 0.0f, 0.0f));
 
