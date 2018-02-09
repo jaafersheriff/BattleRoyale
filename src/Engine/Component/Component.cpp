@@ -14,6 +14,6 @@ void Component::update(float dt) {
 
 }
 
-void Component::receiveMessage(Message *msg) {
+void Component::receiveMessage(Message & msg) {
 
 }

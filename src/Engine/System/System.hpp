@@ -3,21 +3,25 @@
 #ifndef _SYSTEM_HPP_
 #define _SYSTEM_HPP_
 
+#include <vector>
+#include <memory>
+
 #include "Component/Component.hpp"
 
-#include <vector>
-
 class System {
+
     public:
-        System(std::vector<Component *> *components) {
-            this->components = components;
-        }
+
+        System(const std::vector<Component *> & components);
 
         /* Generic update function */
-        virtual void update(float dt) = 0;
+        virtual void update(float dt);
+
     protected:
-        /* List of component interface that this system is responsible for */
-        std::vector<Component *> *components;
+
+        /* Reference to components of this system */
+        const std::vector<Component *> & components;
+
 };
 
 #endif

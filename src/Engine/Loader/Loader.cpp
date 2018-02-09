@@ -8,12 +8,12 @@
 #include <iostream>
 #include <vector>
 
-void Loader::init(bool verbose, std::string res) {
+void Loader::init(bool verbose, const std::string & res) {
     this->verbose = verbose;
     this->RESOURCE_DIR = res;
 }
 
-Mesh* Loader::getMesh(std::string name) {
+Mesh* Loader::getMesh(const std::string & name) {
     Mesh* mesh = library.getMesh(name);
     if (mesh) {
         return mesh;
@@ -43,17 +43,17 @@ Mesh* Loader::getMesh(std::string name) {
         for (unsigned int i : shapes[i].mesh.indices) {
             mesh->eleBuf.push_back(i + vertCount);
         }
-        vertCount += shapes[i].mesh.positions.size() / 3;
+        vertCount += int(shapes[i].mesh.positions.size()) / 3;
     }
 
     /* Resize the mesh to be centered around origin and have vertex values [0, 1.0] */
-    resize(mesh);
+    resize(*mesh);
 
     /* Add new mesh to library */
-    library.addMesh(name, mesh);
+    library.addMesh(name, *mesh);
     
     /* Load mesh to GPU */
-    this->loadMesh(mesh);
+    this->loadMesh(*mesh);
 
     if (verbose) {
         std::cout << "Loaded mesh (" << vertCount << " vertices): " << name << std::endl;
@@ -62,7 +62,7 @@ Mesh* Loader::getMesh(std::string name) {
     return mesh;
 }
 
-uint8_t* Loader::loadTextureData(const std::string fileName, const bool flip, int *width, int *height, int *comp) {
+uint8_t* Loader::loadTextureData(const std::string & fileName, const bool flip, int *width, int *height, int *comp) {
     uint8_t *data;
 
     stbi_set_flip_vertically_on_load(flip);
@@ -80,7 +80,7 @@ uint8_t* Loader::loadTextureData(const std::string fileName, const bool flip, in
 }
 
 
-Texture* Loader::getTexture(const std::string name, GLenum mode, bool flip) {
+Texture* Loader::getTexture(const std::string & name, GLenum mode, bool flip) {
     if (mode != GL_REPEAT || mode != GL_MIRRORED_REPEAT || mode != GL_CLAMP_TO_EDGE || mode != GL_CLAMP_TO_BORDER) {
         std::cerr << "Invalid wrap mode for texture " << name << std::endl;
         return nullptr;
@@ -103,31 +103,31 @@ Texture* Loader::getTexture(const std::string name, GLenum mode, bool flip) {
     return texture;
 }
 
-Texture* Loader::getTexture(const std::string name) {
+Texture* Loader::getTexture(const std::string & name) {
     return getTexture(name, GL_REPEAT, true);
 }
 
 /* Provided function to resize a mesh so all vertex positions are [0, 1.f] */
-void Loader::resize(Mesh *mesh) {
+void Loader::resize(Mesh & mesh) {
     float minX, minY, minZ;
     float maxX, maxY, maxZ;
     float scaleX, scaleY, scaleZ;
     float shiftX, shiftY, shiftZ;
-    float epsilon = 0.001;
+    float epsilon = 0.001f;
 
     minX = minY = minZ = 1.1754E+38F;
     maxX = maxY = maxZ = -1.1754E+38F;
 
     //Go through all vertices to determine min and max of each dimension
-    for (size_t v = 0; v < mesh->vertBuf.size() / 3; v++) {
-        if(mesh->vertBuf[3*v+0] < minX) minX = mesh->vertBuf[3*v+0];
-        if(mesh->vertBuf[3*v+0] > maxX) maxX = mesh->vertBuf[3*v+0];
+    for (size_t v = 0; v < mesh.vertBuf.size() / 3; v++) {
+        if(mesh.vertBuf[3*v+0] < minX) minX = mesh.vertBuf[3*v+0];
+        if(mesh.vertBuf[3*v+0] > maxX) maxX = mesh.vertBuf[3*v+0];
 
-        if(mesh->vertBuf[3*v+1] < minY) minY = mesh->vertBuf[3*v+1];
-        if(mesh->vertBuf[3*v+1] > maxY) maxY = mesh->vertBuf[3*v+1];
+        if(mesh.vertBuf[3*v+1] < minY) minY = mesh.vertBuf[3*v+1];
+        if(mesh.vertBuf[3*v+1] > maxY) maxY = mesh.vertBuf[3*v+1];
 
-        if(mesh->vertBuf[3*v+2] < minZ) minZ = mesh->vertBuf[3*v+2];
-        if(mesh->vertBuf[3*v+2] > maxZ) maxZ = mesh->vertBuf[3*v+2];
+        if(mesh.vertBuf[3*v+2] < minZ) minZ = mesh.vertBuf[3*v+2];
+        if(mesh.vertBuf[3*v+2] > maxZ) maxZ = mesh.vertBuf[3*v+2];
     }
 
     //From min and max compute necessary scale and shift for each dimension
@@ -152,16 +152,16 @@ void Loader::resize(Mesh *mesh) {
     shiftZ = minZ + (zExtent)/2.f;
 
     //Go through all verticies shift and scale them
-    for (size_t v = 0; v < mesh->vertBuf.size() / 3; v++) {
-        mesh->vertBuf[3*v+0] = (mesh->vertBuf[3*v+0] - shiftX) * scaleX;
-        assert(mesh->vertBuf[3*v+0] >= -1.0 - epsilon);
-        assert(mesh->vertBuf[3*v+0] <= 1.0 + epsilon);
-        mesh->vertBuf[3*v+1] = (mesh->vertBuf[3*v+1] - shiftY) * scaleY;
-        assert(mesh->vertBuf[3*v+1] >= -1.0 - epsilon);
-        assert(mesh->vertBuf[3*v+1] <= 1.0 + epsilon);
-        mesh->vertBuf[3*v+2] = (mesh->vertBuf[3*v+2] - shiftZ) * scaleZ;
-        assert(mesh->vertBuf[3*v+2] >= -1.0 - epsilon);
-        assert(mesh->vertBuf[3*v+2] <= 1.0 + epsilon);
+    for (size_t v = 0; v < mesh.vertBuf.size() / 3; v++) {
+        mesh.vertBuf[3*v+0] = (mesh.vertBuf[3*v+0] - shiftX) * scaleX;
+        assert(mesh.vertBuf[3*v+0] >= -1.0 - epsilon);
+        assert(mesh.vertBuf[3*v+0] <= 1.0 + epsilon);
+        mesh.vertBuf[3*v+1] = (mesh.vertBuf[3*v+1] - shiftY) * scaleY;
+        assert(mesh.vertBuf[3*v+1] >= -1.0 - epsilon);
+        assert(mesh.vertBuf[3*v+1] <= 1.0 + epsilon);
+        mesh.vertBuf[3*v+2] = (mesh.vertBuf[3*v+2] - shiftZ) * scaleZ;
+        assert(mesh.vertBuf[3*v+2] >= -1.0 - epsilon);
+        assert(mesh.vertBuf[3*v+2] <= 1.0 + epsilon);
     }
 }
 
@@ -196,35 +196,35 @@ void Loader::loadTexture(Texture *texture, uint8_t *data, GLenum mode) {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Loader::loadMesh(Mesh *mesh) {
+void Loader::loadMesh(Mesh & mesh) {
     /* Initialize VAO */
-    glGenVertexArrays(1, &mesh->vaoId);
-    glBindVertexArray(mesh->vaoId);
+    glGenVertexArrays(1, &mesh.vaoId);
+    glBindVertexArray(mesh.vaoId);
 
     /* Copy vertex array */
-    glGenBuffers(1, &mesh->vertBufId);
-    glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufId);
-    glBufferData(GL_ARRAY_BUFFER, mesh->vertBuf.size() * sizeof(float), &mesh->vertBuf[0], GL_STATIC_DRAW);
+    glGenBuffers(1, &mesh.vertBufId);
+    glBindBuffer(GL_ARRAY_BUFFER, mesh.vertBufId);
+    glBufferData(GL_ARRAY_BUFFER, mesh.vertBuf.size() * sizeof(float), &mesh.vertBuf[0], GL_STATIC_DRAW);
 
     /* Copy element array if it exists */
-    if (!mesh->eleBuf.empty()) {
-        glGenBuffers(1, &mesh->eleBufId);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->eleBufId);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->eleBuf.size() * sizeof(unsigned int), &mesh->eleBuf[0], GL_STATIC_DRAW);
+    if (!mesh.eleBuf.empty()) {
+        glGenBuffers(1, &mesh.eleBufId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.eleBufId);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.eleBuf.size() * sizeof(unsigned int), &mesh.eleBuf[0], GL_STATIC_DRAW);
     }
 
     /* Copy normal array if it exists */
-    if (!mesh->norBuf.empty()) {
-        glGenBuffers(1, &mesh->norBufId);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh->norBufId);
-        glBufferData(GL_ARRAY_BUFFER, mesh->norBuf.size() * sizeof(float), &mesh->norBuf[0], GL_STATIC_DRAW);
+    if (!mesh.norBuf.empty()) {
+        glGenBuffers(1, &mesh.norBufId);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.norBufId);
+        glBufferData(GL_ARRAY_BUFFER, mesh.norBuf.size() * sizeof(float), &mesh.norBuf[0], GL_STATIC_DRAW);
     }
 
     /* Copy texture array if it exists */
-    if (!mesh->texBuf.empty()) {
-        glGenBuffers(1, &mesh->texBufId);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh->texBufId);
-        glBufferData(GL_ARRAY_BUFFER, mesh->texBuf.size() * sizeof(float), &mesh->texBuf[0], GL_STATIC_DRAW);
+    if (!mesh.texBuf.empty()) {
+        glGenBuffers(1, &mesh.texBufId);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.texBufId);
+        glBufferData(GL_ARRAY_BUFFER, mesh.texBuf.size() * sizeof(float), &mesh.texBuf[0], GL_STATIC_DRAW);
     }
 
     /* Unbind  */

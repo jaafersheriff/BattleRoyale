@@ -9,10 +9,10 @@
 #include <string>
 
 class EngineApp {
-    public:
-        EngineApp();
 
-        Scene *scene;
+    public:
+
+        EngineApp();
 
         int init();
         void run();
@@ -25,7 +25,12 @@ class EngineApp {
         double timeStep;            /* Delta time */
         bool verbose;               /* Log things or not */
 
+        Scene * scene() const { return m_scene.get(); }
+
     private:
+
+        std::unique_ptr<Scene> m_scene;
+
         double fps;                 /* Frames per second */
         double lastFpsTime;         /* Time at which last FPS was calculated */
         int nFrames;                /* Number of frames in current second */
@@ -33,6 +38,7 @@ class EngineApp {
         double runTime;             /* Global timer */
 
         Window windowHandler;       /* GLFW window */
+
 };
 
 #endif

@@ -1,12 +1,10 @@
-#pragma once
-
-
+#include "Component/Component.hpp"
 
 #include "glm/glm.hpp"
 
 
 
-class Transform {
+class SpatialComponent : public Component {
 
     private:
 
@@ -21,8 +19,8 @@ class Transform {
 
     public:
 
-    Transform();
-    Transform(const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & rotation);
+    SpatialComponent();
+    SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & rotation);
 
     // sets the absolute position
     void setPosition(const glm::vec3 & pos);

@@ -4,3 +4,4 @@
 
 #include "GameLogicSystem.hpp"
 #include "RenderSystem.hpp"
+#include "SpatialSystem.hpp"

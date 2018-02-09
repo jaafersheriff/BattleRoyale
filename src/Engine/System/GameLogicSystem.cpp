@@ -1,7 +1,7 @@
 #include "GameLogicSystem.hpp"
 
-void GameLogicSystem::update(float dt) {
-    for (Component *cp : *components) {
-        cp->update(dt);
-    }
-}
+
+
+GameLogicSystem::GameLogicSystem(std::vector<Component *> & components) :
+    System(components)
+{}

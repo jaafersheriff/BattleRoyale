@@ -22,8 +22,8 @@ class CameraComponent : public Component {
         void update(float dt);
 
         /* Member functions */
-        const glm::mat4 &getView() { return view; }
-        const glm::mat4 &getProj() { return projection; }
+        const glm::mat4 & getView() const { return view; }
+        const glm::mat4 & getProj() const { return projection; }
 
         /* Member vars */
         glm::vec3 u, v, w;
