@@ -6,3 +6,5 @@
 #include "CameraComponents/CameraController.hpp"
 
 #include "RenderComponents/DiffuseRenderableComponent.hpp"
+
+#include "Collision/CollisionComponent.hpp"

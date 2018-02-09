@@ -8,6 +8,10 @@
 
 class CollisionSystem : public System {
 
+    private:
+
+    static CollisionSystem & getInstance()
+
     public:
 
     CollisionSystem(std::vector<Component *> * cp) :
@@ -15,5 +19,7 @@ class CollisionSystem : public System {
     {}
 
     virtual void update(float dt) override;
+
+
 
 };
