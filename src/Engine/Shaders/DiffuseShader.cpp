@@ -33,7 +33,7 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
     /* Bind uniforms */
     loadMat4(getUniform("P"), camera->getProj());
     loadMat4(getUniform("V"), camera->getView());
-    loadVec3(getUniform("lightPos"), lightPos);
+    loadVec3(getUniform("lightPos"), *lightPos);
 
     for (auto cp : components) {
         // TODO : component list should be passed in as diffuserendercomponent

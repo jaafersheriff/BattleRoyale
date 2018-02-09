@@ -11,14 +11,14 @@ class DiffuseShader : public Shader {
         DiffuseShader(const std::string & vert, const std::string & frag, const CameraComponent & cam, const glm::vec3 & light) :
             Shader(vert, frag),
             camera(&cam),
-            lightPos(light)
+            lightPos(&light)
         {}
 
         bool init();
         void render(const std::string &, const std::vector<Component *> &);
 
         const CameraComponent * camera;
-        const glm::vec3 lightPos;
+        const glm::vec3 * lightPos;
 };
 
 #endif 
