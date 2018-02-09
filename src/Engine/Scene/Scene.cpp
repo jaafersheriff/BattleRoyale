@@ -18,14 +18,14 @@ Scene::Scene() :
     m_componentKillQueue()
 {
     /* Instantiate systems */
-    m_componentRefs[GAMELOGIC].reset(new std::vector<Component *>());
-    m_gameLogicSystemRef = Depot<GameLogicSystem>::add(new GameLogicSystem(*m_componentRefs[GAMELOGIC].get()));
+    m_componentRefs[System::GAMELOGIC].reset(new std::vector<Component *>());
+    m_gameLogicSystemRef = Depot<GameLogicSystem>::add(new GameLogicSystem(*m_componentRefs[System::GAMELOGIC].get()));
 
-    m_componentRefs[RENDER].reset(new std::vector<Component *>());
-    m_renderSystemRef = Depot<RenderSystem>::add(new RenderSystem(*m_componentRefs[RENDER].get()));
+    m_componentRefs[System::RENDER].reset(new std::vector<Component *>());
+    m_renderSystemRef = Depot<RenderSystem>::add(new RenderSystem(*m_componentRefs[System::RENDER].get()));
     
-    m_componentRefs[SPATIAL].reset(new std::vector<Component *>());
-    m_spatialSystemRef = Depot<SpatialSystem>::add(new SpatialSystem(*m_componentRefs[SPATIAL].get()));
+    m_componentRefs[System::SPATIAL].reset(new std::vector<Component *>());
+    m_spatialSystemRef = Depot<SpatialSystem>::add(new SpatialSystem(*m_componentRefs[System::SPATIAL].get()));
 }
 
 GameObject * Scene::createGameObject() {
@@ -51,7 +51,7 @@ void Scene::doInitQueue() {
     m_gameObjectInitQueue.clear();
 
     for (auto & p : m_componentInitQueue) {
-        SystemType sys(p.first);
+        System::Type sys(p.first);
         std::vector<std::unique_ptr<Component>> & comps(p.second);
 
         auto & compRefs(m_componentRefs[sys]);
@@ -89,7 +89,7 @@ void Scene::doKillQueue() {
     m_gameObjectKillQueue.clear();
 
     for (auto sysIt(m_componentKillQueue.begin()); sysIt != m_componentKillQueue.end(); ++sysIt) {
-        SystemType sys(sysIt->first);
+        System::Type sys(sysIt->first);
         std::vector<Component *> & killComps(sysIt->second);
 
         if (!m_componentRefs[sys].get()) {

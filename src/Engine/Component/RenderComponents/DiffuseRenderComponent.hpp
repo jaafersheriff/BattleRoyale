@@ -7,7 +7,14 @@
 #include "Model/Mesh.hpp"
 #include "Model/ModelTexture.hpp"
 
+class RenderSystem;
+
 class DiffuseRenderComponent : public Component {
+
+    public:
+
+    using SystemClass = RenderSystem;
+
     public:
         DiffuseRenderComponent(int pid, Mesh & mesh, ModelTexture texture) :
             pid(pid),

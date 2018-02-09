@@ -8,6 +8,10 @@ class GameLogicSystem : public System {
 
     public:
 
+    constexpr static Type type = GAMELOGIC;
+
+    public:
+
     GameLogicSystem(std::vector<Component *> & components);
 
 };

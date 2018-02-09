@@ -7,7 +7,14 @@
 
 #include "glm/glm.hpp"
 
+class GameLogicSystem;
+
 class CameraComponent : public Component {
+
+    public:
+
+    using SystemClass = GameLogicSystem;
+
     public:
         /* Constructor */
         CameraComponent(float fov, float aspect, float near, float far) :

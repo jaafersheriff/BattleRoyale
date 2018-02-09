@@ -3,12 +3,24 @@
 #ifndef _SYSTEM_HPP_
 #define _SYSTEM_HPP_
 
+
+
 #include <vector>
 #include <memory>
 
 #include "Component/Component.hpp"
 
+
+
 class System {
+
+    public:
+
+    enum Type {
+        GAMELOGIC,
+        RENDER,
+        SPATIAL
+    };
 
     public:
 
@@ -23,5 +35,7 @@ class System {
         const std::vector<Component *> & components;
 
 };
+
+
 
 #endif

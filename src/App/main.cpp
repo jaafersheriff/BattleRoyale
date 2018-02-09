@@ -63,10 +63,10 @@ int main(int argc, char **argv) {
 
     /* Create camera and camera controller components */
     GameObject & camera(*scene.createGameObject());
-    CameraComponent & cc(*scene.createComponent<Scene::GAMELOGIC, CameraComponent>(45.f, 1280.f / 960.f, 0.01f, 250.f));
+    CameraComponent & cc(*scene.createComponent<CameraComponent>(45.f, 1280.f / 960.f, 0.01f, 250.f));
     camera.addComponent(cc);
-    camera.addComponent(*scene.createComponent<Scene::GAMELOGIC, CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_R, GLFW_KEY_E));
-    camera.addComponent(*scene.createComponent<Scene::SPATIAL, SpatialComponent>());
+    camera.addComponent(*scene.createComponent<CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_R, GLFW_KEY_E));
+    camera.addComponent(*scene.createComponent<SpatialComponent>());
     camera.getSpatial()->setPosition(glm::vec3(-4.0f, 0.0f, 0.0f));
 
     /* Create diffuse shader */
@@ -86,12 +86,12 @@ int main(int argc, char **argv) {
 
     /* Create bunny */
     GameObject & bunny(*scene.createGameObject());
-    bunny.addComponent(*scene.createComponent<Scene::SPATIAL, SpatialComponent>(
+    bunny.addComponent(*scene.createComponent<SpatialComponent>(
         glm::vec3(0.0f, 0.0f, 0.0f), // position
         glm::vec3(1.0f, 1.0f, 1.0f), // scale
         glm::mat3() // rotation
     ));
-    bunny.addComponent(*scene.createComponent<Scene::RENDER, DiffuseRenderComponent>(
+    bunny.addComponent(*scene.createComponent<DiffuseRenderComponent>(
         scene.renderSystem().shaders.find("diffuse")->second->pid,
         *engine.loader.getMesh("bunny.obj"),
         ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));

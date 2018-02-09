@@ -4,7 +4,15 @@
 
 
 
+class SpatialSystem;
+
+
+
 class SpatialComponent : public Component {
+
+    public:
+
+    using SystemClass = SpatialSystem;
 
     private:
 

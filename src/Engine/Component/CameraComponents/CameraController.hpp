@@ -6,7 +6,14 @@
 #include "Component/Component.hpp"
 #include "CameraComponent.hpp"
 
+class GameLogicSystem;
+
 class CameraController : public Component {
+
+    public:
+
+    using SystemClass = GameLogicSystem;
+
     public:
         CameraController(CameraComponent & cc, float ls, float ms, int f, int b, int l, int r, int u, int d) :
             camera(&cc),

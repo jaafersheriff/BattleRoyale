@@ -19,21 +19,13 @@ class Scene {
 
     public:
 
-        enum SystemType {
-            GAMELOGIC,
-            RENDER,
-            SPATIAL
-        };
-
-    public:
-
         Scene();
 
         /* Game Objects */
         GameObject * createGameObject();
     
         /* Components */
-        template <SystemType V, typename T, typename... Args>
+        template <typename T, typename... Args>
         T * createComponent(Args &&... args);
 
         /* Main udate function */
@@ -63,12 +55,12 @@ class Scene {
         std::vector<GameObject *> m_gameObjectRefs;
  
         /* List of all components by system */
-        std::unordered_map<SystemType, std::unique_ptr<std::vector<Component *>>> m_componentRefs;
+        std::unordered_map<System::Type, std::unique_ptr<std::vector<Component *>>> m_componentRefs;
 
         std::vector<std::unique_ptr<GameObject>> m_gameObjectInitQueue;
         std::vector<GameObject *> m_gameObjectKillQueue;
-        std::unordered_map<SystemType, std::vector<std::unique_ptr<Component>>> m_componentInitQueue;
-        std::unordered_map<SystemType, std::vector<Component *>> m_componentKillQueue;
+        std::unordered_map<System::Type, std::vector<std::unique_ptr<Component>>> m_componentInitQueue;
+        std::unordered_map<System::Type, std::vector<Component *>> m_componentKillQueue;
 
 };
 
@@ -78,10 +70,10 @@ class Scene {
 
 
 
-template <Scene::SystemType t_sys, typename T, typename... Args>
+template <typename T, typename... Args>
 T * Scene::createComponent(Args &&... args) {
     T * c(new T(args...));
-    m_componentInitQueue[t_sys].emplace_back(c);
+    m_componentInitQueue[T::SystemClass::type].emplace_back(c);
     return c;
 }
 
