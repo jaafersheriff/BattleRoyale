@@ -68,10 +68,20 @@ void Scene::doInitQueue() {
 
 void Scene::doKillQueue() {
     for (auto killIt(m_gameObjectKillQueue.begin()); killIt != m_gameObjectKillQueue.end(); ++killIt) {
+        bool found(false);
         for (auto refIt(m_gameObjectRefs.begin()); refIt != m_gameObjectRefs.end(); ++refIt) {
             if (*refIt == *killIt) {
                 m_gameObjectRefs.erase(refIt);
+                found = true;
                 break;
+            }
+        }
+        if (!found) {
+            for (auto initIt(m_gameObjectInitQueue.begin()); initIt != m_gameObjectInitQueue.end(); ++initIt) {
+                if (initIt->get() == *killIt) {
+                    m_gameObjectInitQueue.erase(initIt);
+                    break;
+                }
             }
         }
         Depot<GameObject>::remove(*killIt);
@@ -88,12 +98,23 @@ void Scene::doKillQueue() {
 
         for (auto killIt(killComps.begin()); killIt != killComps.end(); ++killIt) {
             std::vector<Component *> & compRefs(*m_componentRefs[sys]);
+            bool found(false);
             for (auto refIt(compRefs.begin()); refIt != compRefs.end(); ++refIt) {
                 if (*refIt == *killIt) {
                     compRefs.erase(refIt);
+                    found = true;
                     break;
                 }
             }
+            if (!found) {
+                for (auto initIt(m_componentInitQueue[sys].begin()); initIt != m_componentInitQueue[sys].end(); ++initIt) {
+                    if (initIt->get() == *killIt) {
+                        m_componentInitQueue[sys].erase(initIt);
+                        break;
+                    }
+                }
+            }
+            Depot<Component>::remove(*killIt);
         }
 
         killComps.clear();
@@ -106,6 +127,7 @@ void Scene::shutDown() {
         Depot<GameObject>::remove(goRef);
     }
     m_gameObjectRefs.clear();
+    m_gameObjectInitQueue.clear();
 
     // kill all components
     for (auto & p : m_componentRefs) {
@@ -117,4 +139,6 @@ void Scene::shutDown() {
             compRefs.clear();
         }
     }
+    m_componentRefs.clear();
+    m_componentInitQueue.clear();
 }
