@@ -16,10 +16,8 @@ class Component {
         void setGameObject(GameObject *go) { this->gameObject = go; }
 
         /* Receive a message sent by another component */
-        virtual void receiveMessage(Message *);
+        virtual void receiveMessage(Message &);
 
-        /* Denotes if component should be removed */
-        bool isTerminated = false;
     protected:
         /* Parent game object */
         GameObject* gameObject;

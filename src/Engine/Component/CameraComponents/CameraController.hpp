@@ -6,10 +6,17 @@
 #include "Component/Component.hpp"
 #include "CameraComponent.hpp"
 
+class GameLogicSystem;
+
 class CameraController : public Component {
+
     public:
-        CameraController(CameraComponent *cc, float ls, float ms, int f, int b, int l, int r, int u, int d) :
-            camera(cc),
+
+    using SystemClass = GameLogicSystem;
+
+    public:
+        CameraController(CameraComponent & cc, float ls, float ms, int f, int b, int l, int r, int u, int d) :
+            camera(&cc),
             lookSpeed(ls),
             moveSpeed(ms),
             front(f),
@@ -32,7 +39,7 @@ class CameraController : public Component {
         void moveUp(float dt);
         void moveDown(float dt);
     private:
-        CameraComponent* camera;
+        CameraComponent * camera;
         float lookSpeed, moveSpeed;
         int front, back, left, right, up, down;
 };

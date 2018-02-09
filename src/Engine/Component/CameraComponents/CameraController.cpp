@@ -2,6 +2,7 @@
 
 #include "IO/Mouse.hpp"
 #include "IO/Keyboard.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
 
 void CameraController::init() {
 
@@ -37,32 +38,32 @@ void CameraController::lookAround(float dt) {
 }
 
 void CameraController::moveFront(float dt) {
-    gameObject->transform.move(camera->w * moveSpeed * dt);
+    gameObject->getSpatial()->move(camera->w * moveSpeed * dt);
     camera->lookAt += camera->w * moveSpeed * dt;
 }
 
 void CameraController::moveBack(float dt) {
-    gameObject->transform.move(-(camera->w * moveSpeed * dt));
+    gameObject->getSpatial()->move(-(camera->w * moveSpeed * dt));
     camera->lookAt -= camera->w * moveSpeed * dt;
 }
 
 void CameraController::moveRight(float dt) {
-    gameObject->transform.move(camera->u * moveSpeed * dt);
+    gameObject->getSpatial()->move(camera->u * moveSpeed * dt);
     camera->lookAt += camera->u * moveSpeed * dt;
 }
 
 void CameraController::moveLeft(float dt) {
-    gameObject->transform.move(-(camera->u * moveSpeed * dt));
+    gameObject->getSpatial()->move(-(camera->u * moveSpeed * dt));
     camera->lookAt -= camera->u * moveSpeed * dt;
 }
 
 void CameraController::moveUp(float dt) {
-    gameObject->transform.move(camera->v * moveSpeed * dt);
+    gameObject->getSpatial()->move(camera->v * moveSpeed * dt);
     camera->lookAt += camera->v * moveSpeed * dt;
 }
 
 void CameraController::moveDown(float dt) {
-    gameObject->transform.move(-(camera->v * moveSpeed * dt));
+    gameObject->getSpatial()->move(-(camera->v * moveSpeed * dt));
     camera->lookAt -= camera->v * moveSpeed * dt;
 }
 

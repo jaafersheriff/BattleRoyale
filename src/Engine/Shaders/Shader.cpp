@@ -114,18 +114,18 @@ void Shader::loadFloat(const int location, const float f) const {
     glUniform1f(location, f);
 }
 
-void Shader::loadVec2(const int location, const glm::vec2 v) const { 
+void Shader::loadVec2(const int location, const glm::vec2 & v) const { 
     glUniform2f(location, v.x, v.y);
 }
 
-void Shader::loadVec3(const int location, const glm::vec3 v) const { 
+void Shader::loadVec3(const int location, const glm::vec3 & v) const { 
     glUniform3f(location, v.x, v.y, v.z);
 }
 
-void Shader::loadMat3(const int location, const glm::mat3 *m) const { 
-    glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(*m));
+void Shader::loadMat3(const int location, const glm::mat3 & m) const { 
+    glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(m));
 }
 
-void Shader::loadMat4(const int location, const glm::mat4 *m) const { 
-    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(*m));
+void Shader::loadMat4(const int location, const glm::mat4 & m) const { 
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(m));
 }

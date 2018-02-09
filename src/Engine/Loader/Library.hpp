@@ -9,26 +9,26 @@
 
 class Library {
     public:
-        Mesh* getMesh(std::string name) {
+        Mesh* getMesh(const std::string & name) {
             auto it = meshes.find(name);
             if (it != meshes.end()) {
                 return it->second;
             }
             return nullptr;
         }
-        void addMesh(std::string name, Mesh *mesh) {
-            meshes.insert(std::unordered_map<std::string, Mesh *>::value_type(name, mesh));
+        void addMesh(const std::string & name, Mesh & mesh) {
+            meshes.insert({ name, &mesh });
         }
 
-        Texture* getTexture(std::string name) {
+        Texture* getTexture(const std::string & name) {
             auto it = textures.find(name);
             if (it != textures.end()) {
                 return it->second;
             }
             return nullptr;
         }
-        void addTexture(std::string name, Texture *texture) {
-            textures.insert(std::unordered_map<std::string, Texture*>::value_type(name, texture));
+        void addTexture(const std::string & name, Texture *texture) {
+            textures.insert({ name, texture });
         }
 
     private:

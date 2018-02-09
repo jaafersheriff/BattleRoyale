@@ -1,3 +1,11 @@
+// allows program to be run on dedicated graphics processor for laptops with
+// both integrated and dedicated graphics using Nvidia Optimus
+#ifdef _WIN32
+extern "C" {
+    _declspec(dllexport) unsigned int NvOptimusEnablement = 0x00000001;
+}
+#endif
+
 #include "EngineApp/EngineApp.hpp"
 
 #include <string>
@@ -59,23 +67,25 @@ int main(int argc, char **argv) {
     }
 
     /* Scene reference for QOL */
-    Scene *scene = engine.scene;
+    Scene & scene(*engine.scene());
 
     /* Create camera and camera controller components */
-    GameObject *camera = scene->createGameObject();
-    CameraComponent *cc = scene->createComponent<Scene::GAMELOGIC, CameraComponent>(45.f, 1280.f / 960.f, 0.01f, 250.f);
-    camera->addComponent(cc);
-    camera->addComponent(scene->createComponent<Scene::GAMELOGIC, CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_R, GLFW_KEY_E));
+    GameObject & camera(*scene.createGameObject());
+    CameraComponent & cc(*scene.createComponent<CameraComponent>(45.f, 1280.f / 960.f, 0.01f, 250.f));
+    camera.addComponent(cc);
+    camera.addComponent(*scene.createComponent<CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT));
+    camera.addComponent(*scene.createComponent<SpatialComponent>());
+    camera.getSpatial()->setPosition(glm::vec3(-4.0f, 0.0f, 0.0f));
 
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
-    if (!scene->renderer->addShader<DiffuseShader>(
+    if (!scene.renderSystem().addShader<DiffuseShader>(
             "diffuse",                                    /* Shader name */
             engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex GLSL file */
             engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment GLSL file*/
             cc,                                           /* Shader-specific uniforms */
-            &lightPos                                     /*                          */
+            lightPos                                     /*                          */
         )) {
         std::cerr << "Failed to add diffuse shader" << std::endl;
         std::cin.get(); // don't immediately close the console
@@ -83,12 +93,15 @@ int main(int argc, char **argv) {
     }
 
     /* Create bunny */
-    GameObject *bunny = scene->createGameObject();
-    bunny->transform.setPosition(glm::vec3(5.f, 0.f, 0.f));
-    bunny->transform.setScale(glm::vec3(1.0f));
-    bunny->addComponent(scene->createComponent<Scene::RENDERABLE, DiffuseRenderableComponent>(
-        scene->renderer->shaders.find("diffuse")->second->pid,
-        engine.loader.getMesh("bunny.obj"),
+    GameObject & bunny(*scene.createGameObject());
+    bunny.addComponent(*scene.createComponent<SpatialComponent>(
+        glm::vec3(0.0f, 0.0f, 0.0f), // position
+        glm::vec3(1.0f, 1.0f, 1.0f), // scale
+        glm::mat3() // rotation
+    ));
+    bunny.addComponent(*scene.createComponent<DiffuseRenderComponent>(
+        scene.renderSystem().shaders.find("diffuse")->second->pid,
+        *engine.loader.getMesh("bunny.obj"),
         ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
                             
 

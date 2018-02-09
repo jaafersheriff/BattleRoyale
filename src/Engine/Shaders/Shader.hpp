@@ -18,7 +18,7 @@ class Shader {
     public:
         /* Empty constructor
          * Only used to set GLSL shader names */
-        Shader(std::string v = "", std::string f = "") : vShaderName(v), fShaderName(f) { }
+        Shader(const std::string & v = "", const std::string & f = "") : vShaderName(v), fShaderName(f) { }
 
         /* Compile GLSL shaders 
          * Derived shaders can add uniforms/attributes here */  
@@ -32,16 +32,16 @@ class Shader {
         void unloadTexture(int);
 
         /* Render functions */
-        virtual void render(std::string, std::vector<Component *> *) = 0;
+        virtual void render(const std::string &, const std::vector<Component *> & components) = 0;
 
         /* Parent load functions */
         void loadBool(const int, const bool) const;
         void loadInt(const int, const int) const;
         void loadFloat(const int, const float) const;
-        void loadVec2(const int, const glm::vec2) const;
-        void loadVec3(const int, const glm::vec3) const;
-        void loadMat3(const int, const glm::mat3*) const;
-        void loadMat4(const int, const glm::mat4*) const;
+        void loadVec2(const int, const glm::vec2 &) const;
+        void loadVec3(const int, const glm::vec3 &) const;
+        void loadMat3(const int, const glm::mat3 &) const;
+        void loadMat4(const int, const glm::mat4 &) const;
 
         /* Get shader location */
         GLint getAttribute(const std::string &);

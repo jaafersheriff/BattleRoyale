@@ -5,12 +5,15 @@
 #include "System.hpp"
 
 class GameLogicSystem : public System {
-    public:
-        GameLogicSystem(std::vector<Component *> *cp) :
-            System(cp)
-        {}
 
-        void update(float);
+    public:
+
+    constexpr static Type type = GAMELOGIC;
+
+    public:
+
+    GameLogicSystem(std::vector<Component *> & components);
+
 };
 
 #endif

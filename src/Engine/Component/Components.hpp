@@ -5,4 +5,6 @@
 #include "CameraComponents/CameraComponent.hpp"
 #include "CameraComponents/CameraController.hpp"
 
-#include "RenderComponents/DiffuseRenderableComponent.hpp"
+#include "RenderComponents/DiffuseRenderComponent.hpp"
+
+#include "SpatialComponents/SpatialComponent.hpp"

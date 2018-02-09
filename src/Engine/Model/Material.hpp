@@ -14,7 +14,7 @@ class Material {
             shineDamper(1.f)
         {}
 
-        Material(const float a, const glm::vec3 d, const glm::vec3 s) :
+        Material(const float a, const glm::vec3 & d, const glm::vec3 & s) :
             ambient(a),
             diffuse(d),
             specular(s),

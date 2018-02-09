@@ -2,87 +2,143 @@
 
 #include <algorithm>
 
-Scene::Scene() {
-    /* Clear lists */
-    allGameObjects.clear();
-    allComponents.clear();
-    newGameObjectQueue.clear();
-    newComponentQueue.clear();
+#include "Util/Depot.hpp"
 
+
+
+Scene::Scene() :
+    m_gameLogicSystemRef(nullptr),
+    m_renderSystemRef(nullptr),
+    m_spatialSystemRef(nullptr),
+    m_gameObjectRefs(),
+    m_componentRefs(),
+    m_gameObjectInitQueue(),
+    m_gameObjectKillQueue(),
+    m_componentInitQueue(),
+    m_componentKillQueue()
+{
     /* Instantiate systems */
-    gameLogic = new GameLogicSystem(&allComponents[GAMELOGIC]);
-    renderer = new RenderSystem(&allComponents[RENDERABLE]);
+    m_componentRefs[System::GAMELOGIC].reset(new std::vector<Component *>());
+    m_gameLogicSystemRef = Depot<GameLogicSystem>::add(new GameLogicSystem(*m_componentRefs[System::GAMELOGIC].get()));
+
+    m_componentRefs[System::RENDER].reset(new std::vector<Component *>());
+    m_renderSystemRef = Depot<RenderSystem>::add(new RenderSystem(*m_componentRefs[System::RENDER].get()));
+    
+    m_componentRefs[System::SPATIAL].reset(new std::vector<Component *>());
+    m_spatialSystemRef = Depot<SpatialSystem>::add(new SpatialSystem(*m_componentRefs[System::SPATIAL].get()));
 }
 
-GameObject* Scene::createGameObject() {
-    GameObject *go = new GameObject;
-    newGameObjectQueue.push_back(go);
-    return go;
-}
-
-void Scene::addGameObject(GameObject *go) {
-    allGameObjects.push_back(go);
-    // TODO : should these go in main GO list or new GO queue?
-}
-
-void Scene::addComponent(SystemType st, Component *cp) {
-    newComponentQueue[st].push_back(cp);
+GameObject * Scene::createGameObject() {
+    m_gameObjectInitQueue.emplace_back(new GameObject());
+    return m_gameObjectInitQueue.back().get();
 }
 
 void Scene::update(float dt) {
-    addNewObjects();
+    doInitQueue();
 
     /* Update systems */
-    gameLogic->update(dt);
-    renderer->update(dt);
+    m_gameLogicSystemRef->update(dt);
+    m_renderSystemRef->update(dt);
+    m_spatialSystemRef->update(dt);
 
-    terminateObjects();
+    doKillQueue();
 }
 
-void Scene::addNewObjects() {
-    for (auto iter = newComponentQueue.begin(); iter != newComponentQueue.end(); ++iter) {
-        for (unsigned int i = 0; i < iter->second.size(); i++) {
-            iter->second[i]->init();
-            allComponents[iter->first].push_back(iter->second[i]);
-        }
-        newComponentQueue[iter->first].clear();
+void Scene::doInitQueue() {
+    for (auto & o : m_gameObjectInitQueue) {
+        m_gameObjectRefs.push_back(Depot<GameObject>::add(o.release()));
     }
-    allGameObjects.insert(allGameObjects.end(), newGameObjectQueue.begin(), newGameObjectQueue.end());
-    newGameObjectQueue.clear();
+    m_gameObjectInitQueue.clear();
+
+    for (auto & p : m_componentInitQueue) {
+        System::Type sys(p.first);
+        std::vector<std::unique_ptr<Component>> & comps(p.second);
+
+        auto & compRefs(m_componentRefs[sys]);
+        if (!compRefs) compRefs.reset(new std::vector<Component *>());
+
+        for (auto & comp : comps) {
+            compRefs->push_back(Depot<Component>::add(comp.release()));
+            compRefs->back()->init();
+        }
+        
+        comps.clear();
+    }
 }
 
-// TODO : test this works
-void Scene::terminateObjects() {
-    unsigned int size = allGameObjects.size();
-    for (unsigned int i = 0; i < size; i++) {
-        if (allGameObjects.at(i) && allGameObjects.at(i)->isTerminated) {
-            auto go = allGameObjects.erase(allGameObjects.begin() + i);
-            delete *go;
-            i--;
-            size--;
-        }
-    }
-    for (auto iter = allComponents.begin(); iter != allComponents.end(); ++iter) {
-        size = iter->second.size();
-        for (unsigned i = 0; i < size; i++) {
-            if (!iter->second[i] || iter->second[i]->isTerminated) {
-                auto cp = iter->second.erase(iter->second.begin() + i);
-                delete *cp;
-                i--;
-                size--;
+void Scene::doKillQueue() {
+    for (auto killIt(m_gameObjectKillQueue.begin()); killIt != m_gameObjectKillQueue.end(); ++killIt) {
+        bool found(false);
+        for (auto refIt(m_gameObjectRefs.begin()); refIt != m_gameObjectRefs.end(); ++refIt) {
+            if (*refIt == *killIt) {
+                m_gameObjectRefs.erase(refIt);
+                found = true;
+                break;
             }
         }
+        if (!found) {
+            for (auto initIt(m_gameObjectInitQueue.begin()); initIt != m_gameObjectInitQueue.end(); ++initIt) {
+                if (initIt->get() == *killIt) {
+                    m_gameObjectInitQueue.erase(initIt);
+                    break;
+                }
+            }
+        }
+        Depot<GameObject>::remove(*killIt);
+    }
+    m_gameObjectKillQueue.clear();
+
+    for (auto sysIt(m_componentKillQueue.begin()); sysIt != m_componentKillQueue.end(); ++sysIt) {
+        System::Type sys(sysIt->first);
+        std::vector<Component *> & killComps(sysIt->second);
+
+        if (!m_componentRefs[sys].get()) {
+            continue;
+        }
+
+        for (auto killIt(killComps.begin()); killIt != killComps.end(); ++killIt) {
+            std::vector<Component *> & compRefs(*m_componentRefs[sys]);
+            bool found(false);
+            for (auto refIt(compRefs.begin()); refIt != compRefs.end(); ++refIt) {
+                if (*refIt == *killIt) {
+                    compRefs.erase(refIt);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                for (auto initIt(m_componentInitQueue[sys].begin()); initIt != m_componentInitQueue[sys].end(); ++initIt) {
+                    if (initIt->get() == *killIt) {
+                        m_componentInitQueue[sys].erase(initIt);
+                        break;
+                    }
+                }
+            }
+            Depot<Component>::remove(*killIt);
+        }
+
+        killComps.clear();
     }
 }
 
 void Scene::shutDown() {
-    for (auto go : allGameObjects) {
-        go->isTerminated = true;
+    // kill all game objects
+    for (auto & goRef : m_gameObjectRefs) {
+        Depot<GameObject>::remove(goRef);
     }
-    for (auto cl : allComponents) {
-        for (auto c : cl.second) {
-            c->isTerminated = true;
+    m_gameObjectRefs.clear();
+    m_gameObjectInitQueue.clear();
+
+    // kill all components
+    for (auto & p : m_componentRefs) {
+        if (p.second) {
+            auto & compRefs(*p.second);
+            for (auto & ref : compRefs) {
+                Depot<Component>::remove(ref);
+            }
+            compRefs.clear();
         }
     }
-    terminateObjects();
+    m_componentRefs.clear();
+    m_componentInitQueue.clear();
 }
