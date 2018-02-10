@@ -4,58 +4,79 @@
 #ifndef _SCENE_HPP_
 #define _SCENE_HPP_
 
-#include "System/Systems.hpp"
 
+
+#include <unordered_map>
+#include <vector>
+#include <memory>
+
+#include "System/Systems.hpp"
 #include "GameObject/GameObject.hpp"
 #include "Component/Components.hpp"
 
-#include <map>
-#include <vector>
 
 class Scene {
+
     public:
-        enum SystemType{
-            GAMELOGIC,
-            RENDERABLE,
-            COLLISION
-        };
+
         Scene();
- 
-        /* Systems */
-        GameLogicSystem *gameLogic;
-        RenderSystem *renderer;
-        CollisionSystem *collision;
 
         /* Game Objects */
-        GameObject* createGameObject();
-        void addGameObject(GameObject *);
+        GameObject * createGameObject();
     
         /* Components */
-        template<SystemType V, class T, class... Args>
-        T* createComponent(Args&&... args) {
-            T* ptr = new T(args...);
-            addComponent(V, ptr);
-            return ptr;
-        }
-        void addComponent(SystemType, Component *);
+        template <typename T, typename... Args>
+        T * createComponent(Args &&... args);
 
         /* Main update function */
         void update(float);
 
         /* Destroy everything */
         void shutDown();
-    private:
-        /* Lists of all game objects */
-        std::vector<GameObject *> allGameObjects;
 
-        /* List of all systems and their component lists */
-        std::map<SystemType, std::vector<Component *>> allComponents;
+        GameLogicSystem & gameLogicSystem() { return *m_gameLogicSystemRef; }
+        RenderSystem & renderSystem() { return *m_renderSystemRef; }
+        SpatialSystem & spatialSystem() { return *m_spatialSystemRef; }
+
+    private:
 
         /* Instantiate/Kill queues */
-        void addNewObjects();
-        void terminateObjects();
-        std::vector<GameObject *> newGameObjectQueue;
-        std::map<SystemType, std::vector<Component *>> newComponentQueue;
+        void doInitQueue();
+        void doKillQueue();
+
+    private:
+
+        /* Systems */
+        GameLogicSystem * m_gameLogicSystemRef;
+        RenderSystem * m_renderSystemRef;
+        SpatialSystem * m_spatialSystemRef;
+
+        /* Lists of all game objects */
+        std::vector<GameObject *> m_gameObjectRefs;
+ 
+        /* List of all components by system */
+        std::unordered_map<System::Type, std::unique_ptr<std::vector<Component *>>> m_componentRefs;
+
+        std::vector<std::unique_ptr<GameObject>> m_gameObjectInitQueue;
+        std::vector<GameObject *> m_gameObjectKillQueue;
+        std::unordered_map<System::Type, std::vector<std::unique_ptr<Component>>> m_componentInitQueue;
+        std::unordered_map<System::Type, std::vector<Component *>> m_componentKillQueue;
+
 };
+
+
+
+// TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
+
+
+
+template <typename T, typename... Args>
+T * Scene::createComponent(Args &&... args) {
+    T * c(new T(args...));
+    m_componentInitQueue[T::SystemClass::type].emplace_back(c);
+    return c;
+}
+
+
 
 #endif

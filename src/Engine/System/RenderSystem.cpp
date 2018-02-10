@@ -1,7 +1,8 @@
 #include "RenderSystem.hpp"
 
-RenderSystem::RenderSystem(std::vector<Component *> *cp) :
-    System(cp) {
+RenderSystem::RenderSystem(std::vector<Component *> & components) :
+    System(components)
+{
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -18,11 +19,11 @@ void RenderSystem::update(float dt) {
     for (auto &shader : shaders) {
         shader.second->bind();
         ///////////////////////////  TODO  ///////////////////////////
-        // pass a list of renderable components that are specific   //
+        // pass a list of render components that are specific       //
         // to this shader -- right now we are passing the entire    //
         // list and expecting each shader to filter through         //
         //////////////////////////////////////////////////////////////
-        shader.second->render(shader.first, this->components);
+        shader.second->render(shader.first, components);
         shader.second->unbind();
     }
 }

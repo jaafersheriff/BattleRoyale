@@ -1,9 +1,11 @@
 #include "GameObject.hpp"
 #include "Component/Component.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
 
-GameObject::GameObject() {
-
-}
+GameObject::GameObject() :
+    components(),
+    spatialComponent(nullptr)
+{}
 
 /* Initialize all components */
 void GameObject::init() {
@@ -12,27 +14,19 @@ void GameObject::init() {
     }
 }
 
-// TODO : optimize
-template<class T>
-T* GameObject::getComponent() {
-    T* comp;
-    for (auto c : components) {
-        if ((comp = dynamic_cast<T *>(c))) {
-            return comp;
-        }
-    }
-    return nullptr;
-}
-
 /* Add component to list */
-void GameObject::addComponent(Component *component) {
-    component->setGameObject(this);
-    components.push_back(component);
+void GameObject::addComponent(Component & component) {
+    component.setGameObject(this);
+    components.push_back(&component);
+
+    if (dynamic_cast<SpatialComponent *>(&component)) {
+        spatialComponent = static_cast<SpatialComponent *>(&component);
+    }
 }
 
 /* Take in a message and pass it to all components that match the sender's 
  * desired type */
-void GameObject::sendMessage(Message *msg) {
+void GameObject::sendMessage(Message & msg) {
     for (Component *c : components) {
         // TODO : how does message know which component to send to?
         // if (c != nullptr && c->type == msg->type) {

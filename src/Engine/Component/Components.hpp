@@ -7,4 +7,5 @@
 
 #include "RenderComponents/DiffuseRenderableComponent.hpp"
 
+#include "SpatialComponents/SpatialComponent.hpp"
 #include "Collision/CollisionComponent.hpp"

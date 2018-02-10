@@ -17,7 +17,7 @@ int EngineApp::init() {
         return 1;
     }
 
-    scene = new Scene();
+    m_scene.reset(new Scene());
     loader.init(verbose, RESOURCE_DIR);
 
     lastFrameTime = runTime = windowHandler.getTime();
@@ -45,11 +45,11 @@ void EngineApp::run() {
         windowHandler.update();
 
         /* Update all game objects and components */
-        scene->update(float(timeStep));
+        m_scene->update(float(timeStep));
     }
 }
 
 void EngineApp::terminate() {
     windowHandler.shutDown();
-    scene->shutDown();
+    m_scene->shutDown();
 }

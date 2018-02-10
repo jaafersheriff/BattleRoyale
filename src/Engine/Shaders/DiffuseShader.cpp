@@ -1,5 +1,6 @@
 #include "DiffuseShader.hpp"
-#include "Component/RenderComponents/DiffuseRenderableComponent.hpp"
+#include "Component/RenderComponents/DiffuseRenderComponent.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
 
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -28,23 +29,23 @@ bool DiffuseShader::init() {
     return true;
 }
 
-void DiffuseShader::render(std::string name, std::vector<Component *> *components) {
+void DiffuseShader::render(const std::string & name, const std::vector<Component *> & components) {
     /* Bind uniforms */
-    loadMat4(getUniform("P"), &camera->getProj());
-    loadMat4(getUniform("V"), &camera->getView());
+    loadMat4(getUniform("P"), camera->getProj());
+    loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
 
-    for (auto cp : *components) {
-        // TODO : component list should be passed in as diffuserenderablecomponent
-        DiffuseRenderableComponent *drc;
-        if (!(drc = dynamic_cast<DiffuseRenderableComponent *>(cp)) || drc->pid != this->pid) {
+    for (auto cp : components) {
+        // TODO : component list should be passed in as diffuserendercomponent
+        DiffuseRenderComponent *drc;
+        if (!(drc = dynamic_cast<DiffuseRenderComponent *>(cp)) || drc->pid != this->pid) {
             continue;
         }
 
         /* Model matrix */
-        loadMat4(getUniform("M"), &drc->getGameObject()->transform.modelMatrix());
+        loadMat4(getUniform("M"), drc->getGameObject()->getSpatial()->modelMatrix());
         /* Normal matrix */
-        loadMat3(getUniform("N"), &drc->getGameObject()->transform.normalMatrix());
+        loadMat3(getUniform("N"), drc->getGameObject()->getSpatial()->normalMatrix());
 
         /* Bind materials */
         loadFloat(getUniform("matAmbient"), drc->modelTexture.material.ambient);

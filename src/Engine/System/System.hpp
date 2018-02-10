@@ -3,24 +3,42 @@
 #ifndef _SYSTEM_HPP_
 #define _SYSTEM_HPP_
 
-#include "Component/Component.hpp"
+
 
 #include <vector>
+#include <memory>
+
+#include "Component/Component.hpp"
+
+
 
 class System {
+
     public:
-        System(std::vector<Component *> *components) {
-            this->components = components;
-        }
+
+    enum Type {
+        GAMELOGIC,
+        RENDER,
+        SPATIAL
+    };
+
+    public:
+
+        System(const std::vector<Component *> & components);
 
         /* virtual destructor necessary for polymorphic destruction */
         virtual ~System() = default;
 
         /* Generic update function */
-        virtual void update(float dt) = 0;
+        virtual void update(float dt);
+
     protected:
-        /* List of component interface that this system is responsible for */
-        std::vector<Component *> *components;
+
+        /* Reference to components of this system */
+        const std::vector<Component *> & components;
+
 };
+
+
 
 #endif

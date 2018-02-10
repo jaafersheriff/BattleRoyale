@@ -1,7 +1,9 @@
 #include "CameraComponent.hpp"
-#include "Util/Util.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "Util/Util.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
 
 void CameraComponent::init() {
     this->projection = glm::perspective(fov, aspect, near, far);
@@ -11,7 +13,7 @@ void CameraComponent::init() {
 
 void CameraComponent::update(float dt) {
     /* Update basis vectors */
-    w = glm::normalize(lookAt - gameObject->transform.position());
+    w = glm::normalize(lookAt - gameObject->getSpatial()->position());
     u = glm::normalize(glm::cross(w, glm::vec3(0, 1, 0)));
     v = glm::normalize(glm::cross(u, w));
 
@@ -20,9 +22,9 @@ void CameraComponent::update(float dt) {
         glm::cos(phi)*glm::cos(theta),
         glm::sin(phi),
         glm::cos(phi)*glm::cos((Util::PI / 2.f) - theta));
-    lookAt = gameObject->transform.position() + glm::normalize(sphere);
+    lookAt = gameObject->getSpatial()->position() + glm::normalize(sphere);
 
     /* Update view matrix */
     this->projection = glm::perspective(fov, aspect, near, far);
-    this->view = glm::lookAt(gameObject->transform.position(), lookAt, glm::vec3(0, 1, 0));
+    this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
 }
