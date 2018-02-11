@@ -95,49 +95,6 @@ bool collide(BounderComponent & b1, BounderComponent & b2, std::unordered_map<Bo
 
 
 
-void add(GameObject & entity, int weight) {
-    fspan3 span(entity.mesh().detSpan());
-    AABox box(span);
-    float boxV(box.volume());
-
-    glm::vec3 center((span.max - span.min) * 0.5f + span.min);
-    float radius(detMaxRadius(entity.mesh().nVerts, entity.mesh().getLocations(), center));
-    Sphere sphere(center, radius);
-    float sphereV(sphere.volume());
-
-    glm::vec3 capsuleSpecs(detCapsuleSpecs(entity.mesh().nVerts, entity.mesh().getLocations(), center));
-    float capsuleHeight(capsuleSpecs.y - capsuleSpecs.z);
-    glm::vec3 capsuleCenter(center.x, center.y, capsuleSpecs.z + capsuleHeight * 0.5f);
-    Capsule capsule(capsuleCenter, capsuleSpecs.x, capsuleHeight);
-    float capsuleV(capsule.volume());
-
-    BounderComponent * bounder;
-    if (boxV <= sphereV) {
-        if (boxV <= capsuleV) {
-            bounder = qcu::Depot<BounderComponent>::add(new AABounderComponent(entity, weight, box));
-        }
-        else {
-            bounder = qcu::Depot<BounderComponent>::add(new CapsuleBounderComponent(entity, weight, capsule));
-        }
-    }
-    else {
-        if (sphereV <= capsuleV) {
-            bounder = qcu::Depot<BounderComponent>::add(new SphereBounderComponent(entity, weight, sphere));
-        }
-        else {
-            bounder = qcu::Depot<BounderComponent>::add(new CapsuleBounderComponent(entity, weight, capsule));
-        }
-    }
-
-    f_bounders.push_back(bounder);
-    f_entityBounderComponents[&entity].push_back(bounder);
-    f_potentials.insert(bounder);
-    BounderComponentRenderer::get().add(*bounder);
-    bounder->update();
-}
-
-
-
 CollisionSystem::CollisionSystem(const std::vector<Component *> & comps) :
     System(comps)
 {}
