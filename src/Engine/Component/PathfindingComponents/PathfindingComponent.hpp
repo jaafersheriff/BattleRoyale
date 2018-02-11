@@ -15,15 +15,16 @@ class PathfindingComponent : public Component {
 		using SystemClass = PathfindingSystem;
 
 		PathfindingComponent(CameraComponent & cc, float ms) :
-			target(&cc),
+			player(&cc),
 			moveSpeed(ms)
-		{}
+		{
+		}
 
 
 		void init();
 		void update(float);
 
 	private:
-		CameraComponent *target;
+		CameraComponent *player;
 		float moveSpeed;
 };

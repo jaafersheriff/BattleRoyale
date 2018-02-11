@@ -18,7 +18,9 @@ class Component {
         /* Receive a message sent by another component */
         virtual void receiveMessage(Message &);
 
-    protected:
+
+
+    //protected:
         /* Parent game object */
         GameObject* gameObject;
 };
