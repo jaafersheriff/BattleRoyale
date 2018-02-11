@@ -38,9 +38,11 @@ void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int
 }
 
 void Window::characterCallback(GLFWwindow *window, unsigned int c) {
+#ifdef DEBUG
     if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
         ImGui_ImplGlfwGL3_CharCallback(window, c);
     }
+#endif
 }
 
 int Window::init(std::string name) {
@@ -68,8 +70,10 @@ int Window::init(std::string name) {
     }
     glfwMakeContextCurrent(window);
 
+#ifdef DEBUG
     /* Init ImGui */
     ImGui_ImplGlfwGL3_Init(this->window, false);
+#endif
 
     /* Set callbacks */
     glfwSetKeyCallback(window, keyCallback);
@@ -116,11 +120,13 @@ void Window::update() {
     Mouse::update(x, y);
 
     /* Update ImGui */
+#ifdef DEBUG
     if (Keyboard::isKeyPressed(GLFW_KEY_GRAVE_ACCENT) && 
        (Keyboard::isKeyPressed(GLFW_KEY_LEFT_SHIFT) || Keyboard::isKeyPressed(GLFW_KEY_RIGHT_SHIFT))) {
         toggleImGui();
     }
     ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
+#endif
     
     glfwSwapBuffers(window);
     glfwPollEvents();
