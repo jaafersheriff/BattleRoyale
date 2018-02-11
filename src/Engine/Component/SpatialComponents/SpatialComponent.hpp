@@ -19,6 +19,7 @@ class SpatialComponent : public Component {
     glm::vec3 m_position;
     glm::mat3 m_rotation;
     glm::vec3 m_scale;
+    bool m_transformed; // has the object been spatially modified this tick
 
     mutable glm::mat4 m_modelMatrix;
     mutable glm::mat3 m_normalMatrix;
@@ -29,6 +30,8 @@ class SpatialComponent : public Component {
 
     SpatialComponent();
     SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & rotation);
+
+    virtual void update(float dt) override;
 
     // sets the absolute position
     void setPosition(const glm::vec3 & pos);
@@ -51,6 +54,7 @@ class SpatialComponent : public Component {
     const glm::vec3 & position() const { return m_position; }
     const glm::vec3 & scale() const { return m_scale; }
     const glm::mat3 & rotation() const { return m_rotation; }
+    bool transformed() const { return m_transformed; }
 
     const glm::mat4 & modelMatrix() const;
     const glm::mat3 & normalMatrix() const;

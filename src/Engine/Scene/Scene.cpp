@@ -10,6 +10,7 @@ Scene::Scene() :
     m_gameLogicSystemRef(nullptr),
     m_renderSystemRef(nullptr),
     m_spatialSystemRef(nullptr),
+    m_collisionSystemRef(nullptr),
     m_gameObjectRefs(),
     m_componentRefs(),
     m_gameObjectInitQueue(),
@@ -20,13 +21,15 @@ Scene::Scene() :
     /* Instantiate systems */
     m_componentRefs[System::GAMELOGIC].reset(new std::vector<Component *>());
     m_gameLogicSystemRef = Depot<GameLogicSystem>::add(new GameLogicSystem(*m_componentRefs[System::GAMELOGIC].get()));
-    m_collisionSystemRef = Depot<CollisionSystem>::add(new CollisionSystem(&allComponents[COLLISION].get()));
 
     m_componentRefs[System::RENDER].reset(new std::vector<Component *>());
     m_renderSystemRef = Depot<RenderSystem>::add(new RenderSystem(*m_componentRefs[System::RENDER].get()));
     
     m_componentRefs[System::SPATIAL].reset(new std::vector<Component *>());
     m_spatialSystemRef = Depot<SpatialSystem>::add(new SpatialSystem(*m_componentRefs[System::SPATIAL].get()));
+
+    m_componentRefs[System::COLLISION].reset(new std::vector<Component *>());
+    m_collisionSystemRef = Depot<CollisionSystem>::add(new CollisionSystem(*m_componentRefs[System::COLLISION].get()));
 }
 
 GameObject * Scene::createGameObject() {
@@ -40,8 +43,8 @@ void Scene::update(float dt) {
     /* Update systems */
     m_gameLogicSystemRef->update(dt);
     m_renderSystemRef->update(dt);
-    m_spatialSystemRef->update(dt);
     m_collisionSystemRef->update(dt);
+    m_spatialSystemRef->update(dt); // needs to happen after collision
 
     doKillQueue();
 }
@@ -69,8 +72,10 @@ void Scene::doInitQueue() {
 }
 
 void Scene::doKillQueue() {
+    // kill game objects
     for (auto killIt(m_gameObjectKillQueue.begin()); killIt != m_gameObjectKillQueue.end(); ++killIt) {
         bool found(false);
+        // look in active game objects
         for (auto refIt(m_gameObjectRefs.begin()); refIt != m_gameObjectRefs.end(); ++refIt) {
             if (*refIt == *killIt) {
                 m_gameObjectRefs.erase(refIt);
@@ -78,6 +83,7 @@ void Scene::doKillQueue() {
                 break;
             }
         }
+        // look in game object initialization queue
         if (!found) {
             for (auto initIt(m_gameObjectInitQueue.begin()); initIt != m_gameObjectInitQueue.end(); ++initIt) {
                 if (initIt->get() == *killIt) {
@@ -90,6 +96,7 @@ void Scene::doKillQueue() {
     }
     m_gameObjectKillQueue.clear();
 
+    // kill components
     for (auto sysIt(m_componentKillQueue.begin()); sysIt != m_componentKillQueue.end(); ++sysIt) {
         System::Type sys(sysIt->first);
         std::vector<Component *> & killComps(sysIt->second);
@@ -101,6 +108,7 @@ void Scene::doKillQueue() {
         for (auto killIt(killComps.begin()); killIt != killComps.end(); ++killIt) {
             std::vector<Component *> & compRefs(*m_componentRefs[sys]);
             bool found(false);
+            // look in active components
             for (auto refIt(compRefs.begin()); refIt != compRefs.end(); ++refIt) {
                 if (*refIt == *killIt) {
                     compRefs.erase(refIt);
@@ -108,6 +116,7 @@ void Scene::doKillQueue() {
                     break;
                 }
             }
+            // look in component initialization queue
             if (!found) {
                 for (auto initIt(m_componentInitQueue[sys].begin()); initIt != m_componentInitQueue[sys].end(); ++initIt) {
                     if (initIt->get() == *killIt) {

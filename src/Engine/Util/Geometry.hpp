@@ -104,3 +104,53 @@ struct Capsule {
     }
 
 };
+
+// An intersection represents the intersection point of an object and a ray.
+struct Intersect {    
+
+    bool is; // if there was an intersection
+    float dist; // the distance from the ray origin to the intersection point
+    glm::vec3 loc; // the intersection point on the surface of the object
+    glm::vec3 norm; // the normal of the surface of the object at the point of intersection
+    bool face; // true if the ray hit the outside surface, false if inside surface
+
+    Intersect::Intersect() :
+        is(false),
+        dist(std::numeric_limits<float>::infinity()),
+        loc(),
+        norm(),
+        face(true)
+    {}
+
+    Intersect::Intersect(
+        bool is,
+        float dist,
+        const glm::vec3 & loc,
+        const glm::vec3 & norm,
+        bool face
+    ) :
+        is(is),
+        dist(dist),
+        loc(loc),
+        norm(norm),
+        face(face)
+    {}
+
+};
+
+
+
+// Returns whether or not there is a collision
+// If delta is not null, it is set to the delta the first object should move
+// from the second object so that there is no longer a collision
+bool collide(const AABox & box1, const AABox & box2, glm::vec3 * delta);
+bool collide(const AABox & box1, const Sphere & sphere2, glm::vec3 * delta);
+bool collide(const AABox & box1, const Capsule & cap2, glm::vec3 * delta);
+bool collide(const Sphere & sphere1, const Sphere & sphere2, glm::vec3 * delta);
+bool collide(const Sphere & sphere1, const Capsule & cap2, glm::vec3 * delta);
+bool collide(const Capsule & cap1, const Capsule & cap2, glm::vec3 * delta);
+
+// Calculates the intersection between the ray and the object
+Intersect intersect(const Ray & ray, const AABox & box);
+Intersect intersect(const Ray & ray, const Sphere & sphere);
+Intersect intersect(const Ray & ray, const Capsule & cap);

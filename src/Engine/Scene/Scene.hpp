@@ -24,9 +24,12 @@ class Scene {
         /* Game Objects */
         GameObject * createGameObject();
     
-        /* Components */
+        // Creates a component of the given type and adds it to the scene
         template <typename T, typename... Args>
         T * createComponent(Args &&... args);
+
+        // Adds a pre-created component to the scene
+        void addComponent(std::unique_ptr<Component> component);
 
         /* Main update function */
         void update(float);
@@ -37,6 +40,7 @@ class Scene {
         GameLogicSystem & gameLogicSystem() { return *m_gameLogicSystemRef; }
         RenderSystem & renderSystem() { return *m_renderSystemRef; }
         SpatialSystem & spatialSystem() { return *m_spatialSystemRef; }
+        CollisionSystem & collisionSystem() { return *m_collisionSystemRef; }
 
     private:
 
@@ -50,6 +54,7 @@ class Scene {
         GameLogicSystem * m_gameLogicSystemRef;
         RenderSystem * m_renderSystemRef;
         SpatialSystem * m_spatialSystemRef;
+        CollisionSystem * m_collisionSystemRef;
 
         /* Lists of all game objects */
         std::vector<GameObject *> m_gameObjectRefs;
@@ -70,10 +75,10 @@ class Scene {
 
 
 
-template <typename T, typename... Args>
-T * Scene::createComponent(Args &&... args) {
-    T * c(new T(args...));
-    m_componentInitQueue[T::SystemClass::type].emplace_back(c);
+template <typename CompT, typename... Args>
+CompT * Scene::createComponent(Args &&... args) {
+    CompT * c(new CompT(args...));
+    m_componentInitQueue[CompT::SystemClass::type].emplace_back(c);
     return c;
 }
 

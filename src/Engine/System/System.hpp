@@ -19,7 +19,8 @@ class System {
     enum Type {
         GAMELOGIC,
         RENDER,
-        SPATIAL
+        SPATIAL,
+        COLLISION
     };
 
     public:
@@ -35,7 +36,7 @@ class System {
     protected:
 
         /* Reference to components of this system */
-        const std::vector<Component *> & components;
+        const std::vector<Component *> & m_components;
 
 };
 

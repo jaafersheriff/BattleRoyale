@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
         glm::mat3() // rotation
     ));
     bunny.addComponent(*scene.createComponent<DiffuseRenderComponent>(
-        scene.renderSystem().shaders.find("diffuse")->second->pid,
+        scene.renderSystem().m_shaders.find("diffuse")->second->pid,
         *engine.loader.getMesh("bunny.obj"),
         ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
     //bunny->addComponent(scene->createComponent<Scene::COLLISION, >())

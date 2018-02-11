@@ -26,13 +26,13 @@ class RenderSystem : public System {
          *   On success, add to shader map and return true */
         template<typename T, typename... Args>
         bool addShader(std::string name, std::string vertex, std::string fragment, Args&&... args) {
-            auto it = shaders.find(name);
-            if (it != shaders.end()) {
+            auto it = m_shaders.find(name);
+            if (it != m_shaders.end()) {
                 return true;
             }
             T* shader = new T(vertex, fragment, args...);
             if (shader->init()) {
-                shaders.insert(std::map<std::string, Shader *>::value_type(name, shader));
+                m_shaders.insert(std::map<std::string, Shader *>::value_type(name, shader));
                 return true;
             }
             else {
@@ -49,7 +49,7 @@ class RenderSystem : public System {
         /* Map of shader name to Shader objects 
          * Rendering components only need to contain a reference to the 
          * Shader name string -- the render system will handle the rest */
-        std::map<std::string, Shader *> shaders;
+        std::map<std::string, Shader *> m_shaders;
 
 };
 
