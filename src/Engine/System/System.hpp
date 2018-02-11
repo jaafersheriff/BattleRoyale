@@ -16,15 +16,6 @@ class System {
 
     public:
 
-    enum Type {
-        GAMELOGIC,
-        RENDER,
-        SPATIAL,
-        COLLISION
-    };
-
-    public:
-
         System(const std::vector<Component *> & components);
 
         /* virtual destructor necessary for polymorphic destruction */

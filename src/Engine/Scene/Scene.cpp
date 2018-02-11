@@ -19,22 +19,15 @@ Scene::Scene() :
     m_componentKillQueue()
 {
     /* Instantiate systems */
-    m_componentRefs[System::GAMELOGIC].reset(new std::vector<Component *>());
-    m_gameLogicSystemRef = Depot<GameLogicSystem>::add(new GameLogicSystem(*m_componentRefs[System::GAMELOGIC].get()));
-
-    m_componentRefs[System::RENDER].reset(new std::vector<Component *>());
-    m_renderSystemRef = Depot<RenderSystem>::add(new RenderSystem(*m_componentRefs[System::RENDER].get()));
-    
-    m_componentRefs[System::SPATIAL].reset(new std::vector<Component *>());
-    m_spatialSystemRef = Depot<SpatialSystem>::add(new SpatialSystem(*m_componentRefs[System::SPATIAL].get()));
-
-    m_componentRefs[System::COLLISION].reset(new std::vector<Component *>());
-    m_collisionSystemRef = Depot<CollisionSystem>::add(new CollisionSystem(*m_componentRefs[System::COLLISION].get()));
+    m_gameLogicSystemRef = Depot<GameLogicSystem>::add(new GameLogicSystem(sysComponentRefs<GameLogicSystem>()));
+    m_renderSystemRef = Depot<RenderSystem>::add(new RenderSystem(sysComponentRefs<RenderSystem>()));
+    m_spatialSystemRef = Depot<SpatialSystem>::add(new SpatialSystem(sysComponentRefs<SpatialSystem>()));
+    m_spatialSystemRef = Depot<CollisionSystem>::add(new CollisionSystem(sysComponentRefs<CollisionSystem>()));
 }
 
-GameObject * Scene::createGameObject() {
+GameObject & Scene::createGameObject() {
     m_gameObjectInitQueue.emplace_back(new GameObject());
-    return m_gameObjectInitQueue.back().get();
+    return *m_gameObjectInitQueue.back().get();
 }
 
 void Scene::update(float dt) {
@@ -49,6 +42,8 @@ void Scene::update(float dt) {
     doKillQueue();
 }
 
+#include <iostream>
+
 void Scene::doInitQueue() {
     for (auto & o : m_gameObjectInitQueue) {
         m_gameObjectRefs.push_back(Depot<GameObject>::add(o.release()));
@@ -56,18 +51,15 @@ void Scene::doInitQueue() {
     m_gameObjectInitQueue.clear();
 
     for (auto & p : m_componentInitQueue) {
-        System::Type sys(p.first);
-        std::vector<std::unique_ptr<Component>> & comps(p.second);
+        std::vector<std::unique_ptr<Component>> & initComps(p.second);
+        auto & compRefs(m_componentRefs.at(p.first));
 
-        auto & compRefs(m_componentRefs[sys]);
-        if (!compRefs) compRefs.reset(new std::vector<Component *>());
-
-        for (auto & comp : comps) {
+        for (auto & comp : initComps) {
             compRefs->push_back(Depot<Component>::add(comp.release()));
             compRefs->back()->init();
         }
         
-        comps.clear();
+        initComps.clear();
     }
 }
 
@@ -98,15 +90,11 @@ void Scene::doKillQueue() {
 
     // kill components
     for (auto sysIt(m_componentKillQueue.begin()); sysIt != m_componentKillQueue.end(); ++sysIt) {
-        System::Type sys(sysIt->first);
-        std::vector<Component *> & killComps(sysIt->second);
-
-        if (!m_componentRefs[sys].get()) {
-            continue;
-        }
+        std::type_index sysIndex(sysIt->first);
+        auto & killComps(sysIt->second);
 
         for (auto killIt(killComps.begin()); killIt != killComps.end(); ++killIt) {
-            std::vector<Component *> & compRefs(*m_componentRefs[sys]);
+            auto & compRefs(*m_componentRefs.at(sysIndex));
             bool found(false);
             // look in active components
             for (auto refIt(compRefs.begin()); refIt != compRefs.end(); ++refIt) {
@@ -117,10 +105,11 @@ void Scene::doKillQueue() {
                 }
             }
             // look in component initialization queue
-            if (!found) {
-                for (auto initIt(m_componentInitQueue[sys].begin()); initIt != m_componentInitQueue[sys].end(); ++initIt) {
+            if (!found && m_componentInitQueue.count(sysIndex)) {
+                auto & initRefs(m_componentInitQueue.at(sysIndex));
+                for (auto initIt(initRefs.begin()); initIt != initRefs.end(); ++initIt) {
                     if (initIt->get() == *killIt) {
-                        m_componentInitQueue[sys].erase(initIt);
+                        initRefs.erase(initIt);
                         break;
                     }
                 }

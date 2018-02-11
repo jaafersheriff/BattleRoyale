@@ -9,6 +9,8 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
+#include <typeinfo>
+#include <typeindex>
 
 #include "System/Systems.hpp"
 #include "GameObject/GameObject.hpp"
@@ -22,16 +24,17 @@ class Scene {
         Scene();
 
         /* Game Objects */
-        GameObject * createGameObject();
+        GameObject & createGameObject();
     
         // Creates a component of the given type and adds it to the scene
-        template <typename T, typename... Args>
-        T * createComponent(Args &&... args);
+        template <typename CompT, typename... Args>
+        CompT & createComponent(Args &&... args);
 
-        // Adds a pre-created component to the scene
-        void addComponent(std::unique_ptr<Component> component);
+        // the scene takes ownership of the component
+        template <typename CompT>
+        CompT & addComponent(std::unique_ptr<CompT> component);
 
-        /* Main update function */
+        /* Main udate function */
         void update(float);
 
         /* Destroy everything */
@@ -48,6 +51,15 @@ class Scene {
         void doInitQueue();
         void doKillQueue();
 
+        template <typename SysType>
+        std::vector<Component *> & sysComponentRefs() {
+            std::type_index sysIndex(typeid(SysType));
+            if (!m_componentRefs[sysIndex]) {
+                m_componentRefs[sysIndex].reset(new std::vector<Component *>());
+            }
+            return *m_componentRefs.at(sysIndex);
+        }
+
     private:
 
         /* Systems */
@@ -60,12 +72,12 @@ class Scene {
         std::vector<GameObject *> m_gameObjectRefs;
  
         /* List of all components by system */
-        std::unordered_map<System::Type, std::unique_ptr<std::vector<Component *>>> m_componentRefs;
+        std::unordered_map<std::type_index, std::unique_ptr<std::vector<Component *>>> m_componentRefs;
 
         std::vector<std::unique_ptr<GameObject>> m_gameObjectInitQueue;
         std::vector<GameObject *> m_gameObjectKillQueue;
-        std::unordered_map<System::Type, std::vector<std::unique_ptr<Component>>> m_componentInitQueue;
-        std::unordered_map<System::Type, std::vector<Component *>> m_componentKillQueue;
+        std::unordered_map<std::type_index, std::vector<std::unique_ptr<Component>>> m_componentInitQueue;
+        std::unordered_map<std::type_index, std::vector<Component *>> m_componentKillQueue;
 
 };
 
@@ -76,10 +88,15 @@ class Scene {
 
 
 template <typename CompT, typename... Args>
-CompT * Scene::createComponent(Args &&... args) {
-    CompT * c(new CompT(args...));
-    m_componentInitQueue[CompT::SystemClass::type].emplace_back(c);
-    return c;
+CompT & Scene::createComponent(Args &&... args) {
+    return addComponent(std::unique_ptr<CompT>(new CompT(std::forward<Args>(args)...)));
+}
+
+template <typename CompT>
+CompT & Scene::addComponent(std::unique_ptr<CompT> component) {
+    CompT & comp(*component);
+    m_componentInitQueue[std::type_index(typeid(CompT::SystemClass))].emplace_back(std::move(component));
+    return comp;
 }
 
 

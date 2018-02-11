@@ -14,10 +14,6 @@ class RenderSystem : public System {
 
     public:
 
-    constexpr static Type type = RENDER;
-
-    public:
-
         RenderSystem(std::vector<Component *> & components);
 
         /* If the shader already exists, return it
