@@ -42,8 +42,6 @@ void Scene::update(float dt) {
     doKillQueue();
 }
 
-#include <iostream>
-
 void Scene::doInitQueue() {
     for (auto & o : m_gameObjectInitQueue) {
         m_gameObjectRefs.push_back(Depot<GameObject>::add(o.release()));
