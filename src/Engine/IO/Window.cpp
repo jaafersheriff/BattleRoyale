@@ -1,9 +1,13 @@
 #include "Window.hpp"
 
+#include "ThirdParty/imgui/imgui.h"
+#include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
+
 #include <iostream> /* cout, cerr */
 
 int Window::width = DEFAULT_WIDTH;
 int Window::height = DEFAULT_HEIGHT;
+bool Window::imGuiEnabled = false;
 
 void Window::errorCallback(int error, const char *desc) {
     std::cerr << "Error " << error << ": " << desc << std::endl;
@@ -13,11 +17,30 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
-    Keyboard::setKeyStatus(key, action);
+
+    /* ImGui callback if it is active */
+    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
+        ImGui_ImplGlfwGL3_KeyCallback(window, key, scancode, action, mode);
+    }
+    else {
+        Keyboard::setKeyStatus(key, action);
+    }
 }
 
 void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
-    Mouse::setButtonStatus(button, action);
+    /* ImGui callback if it is active */
+    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
+        ImGui_ImplGlfwGL3_MouseButtonCallback(window, button, action, mods);
+    }
+    else {
+        Mouse::setButtonStatus(button, action);
+    }
+}
+
+void Window::characterCallback(GLFWwindow *window, unsigned int c) {
+    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
+        ImGui_ImplGlfwGL3_CharCallback(window, c);
+    }
 }
 
 int Window::init(std::string name) {
@@ -45,9 +68,13 @@ int Window::init(std::string name) {
     }
     glfwMakeContextCurrent(window);
 
+    /* Init ImGui */
+    ImGui_ImplGlfwGL3_Init(this->window, false);
+
     /* Set callbacks */
     glfwSetKeyCallback(window, keyCallback);
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
+    glfwSetCharCallback(window, characterCallback);
 
     /* Init GLEW */
     glewExperimental = GL_FALSE;
@@ -88,6 +115,12 @@ void Window::update() {
     glfwGetCursorPos(window, &x, &y);
     Mouse::update(x, y);
 
+    /* Update ImGui */
+    if (Keyboard::isKeyPressed(GLFW_KEY_GRAVE_ACCENT)) {
+        toggleImGui();
+    }
+    ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
+    
     glfwSwapBuffers(window);
     glfwPollEvents();
 }

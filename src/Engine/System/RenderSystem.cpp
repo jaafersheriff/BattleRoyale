@@ -1,4 +1,6 @@
 #include "RenderSystem.hpp"
+#include "IO/Window.hpp"
+#include "ThirdParty/imgui/imgui.h"
 
 RenderSystem::RenderSystem(std::vector<Component *> & components) :
     System(components)
@@ -25,5 +27,10 @@ void RenderSystem::update(float dt) {
         //////////////////////////////////////////////////////////////
         shader.second->render(shader.first, components);
         shader.second->unbind();
+    }
+
+    /* ImGui */
+    if (Window::isImGuiEnabled()) {
+        ImGui::Render();
     }
 }

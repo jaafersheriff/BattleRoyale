@@ -45,15 +45,23 @@ class Window {
         static int getWidth() { return width; }
         static int getHeight() { return height; };
         static float getAspectRatio() { return width / (float)height; }
+
+        /* ImGui */
+        static void toggleImGui() { imGuiEnabled = !imGuiEnabled; }
+        static bool isImGuiEnabled() { return imGuiEnabled; }
     private:
         /* Window size */
         static int width;
         static int height;
+    
+        /* ImGui */
+        static bool imGuiEnabled;
 
         /* Callback functions */
         static void errorCallback(int, const char *);
         static void keyCallback(GLFWwindow *, int, int, int, int);
         static void mouseButtonCallback(GLFWwindow *, int, int, int);
+        static void characterCallback(GLFWwindow *, unsigned int);
 };
 
 #endif
