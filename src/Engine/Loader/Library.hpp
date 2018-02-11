@@ -6,6 +6,7 @@
 #include "Model/Texture.hpp"
 
 #include <unordered_map>
+#include <string>
 
 class Library {
     public:
