@@ -8,6 +8,12 @@
 
 class Mesh {
     public:
+        struct MeshBuffers {
+            std::vector<float> vertBuf;
+            std::vector<float> norBuf;
+            std::vector<float> texBuf;
+            std::vector<unsigned int> eleBuf;
+        };
         /* Constructor */
         Mesh() :
             vaoId(0),
@@ -16,13 +22,6 @@ class Mesh {
             texBufId(0),
             eleBufId(0)
         {}
-
-        /* Data buffers */
-        std::vector<float> vertBuf;
-        std::vector<float> norBuf;
-        std::vector<float> texBuf;
-        std::vector<unsigned int> eleBuf;
-
         /* VAO ID */
         unsigned int vaoId;
 
@@ -31,6 +30,14 @@ class Mesh {
         unsigned int norBufId;
         unsigned int texBufId;
         unsigned int eleBufId;
+
+        /* VBO Info */
+        int vertBufSize;
+        int norBufSize;
+        int texBufSize;
+        int eleBufSize;
+
+
 };
 
 #endif
