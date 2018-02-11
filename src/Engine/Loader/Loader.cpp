@@ -81,18 +81,13 @@ uint8_t* Loader::loadTextureData(const std::string & fileName, const bool flip, 
 
 
 Texture* Loader::getTexture(const std::string & name, GLenum mode, bool flip) {
-    if (mode != GL_REPEAT || mode != GL_MIRRORED_REPEAT || mode != GL_CLAMP_TO_EDGE || mode != GL_CLAMP_TO_BORDER) {
-        std::cerr << "Invalid wrap mode for texture " << name << std::endl;
-        return nullptr;
-    }
-
     Texture *texture = library.getTexture(name);
     if (texture) {
         return texture;
     }
 
     texture = new Texture;
-    uint8_t *data = loadTextureData(name, flip, &texture->width, &texture->height, &texture->components);
+    uint8_t *data = loadTextureData(RESOURCE_DIR + name, flip, &texture->width, &texture->height, &texture->components);
     if(data) {
         this->loadTexture(texture, data, mode);
         if (texture->textureId) {
