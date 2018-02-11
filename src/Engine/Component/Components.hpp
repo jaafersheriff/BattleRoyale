@@ -8,3 +8,5 @@
 #include "RenderComponents/DiffuseRenderComponent.hpp"
 
 #include "SpatialComponents/SpatialComponent.hpp"
+
+#include "PathfindingComponents/PathfindingComponent.hpp"

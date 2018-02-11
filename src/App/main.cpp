@@ -103,6 +103,7 @@ int main(int argc, char **argv) {
         scene.renderSystem().shaders.find("diffuse")->second->pid,
         *engine.loader.getMesh("bunny.obj"),
         ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
+    bunny.addComponent(scene.createComponent<PathfindingComponent>(cc, 1.f));
                             
 
     /* Main loop */

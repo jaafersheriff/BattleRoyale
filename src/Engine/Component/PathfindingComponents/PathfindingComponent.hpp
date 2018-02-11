@@ -8,13 +8,13 @@
 
 class PathfindingSystem;
 
-class Pathfinding : public Component {
+class PathfindingComponent : public Component {
 	
 	public:
 
 		using SystemClass = PathfindingSystem;
 
-		Pathfinding(CameraComponent & cc, float ms) :
+		PathfindingComponent(CameraComponent & cc, float ms) :
 			target(&cc),
 			moveSpeed(ms)
 		{}

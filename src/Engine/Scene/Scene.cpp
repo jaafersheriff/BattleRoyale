@@ -10,6 +10,7 @@ Scene::Scene() :
     m_gameLogicSystemRef(nullptr),
     m_renderSystemRef(nullptr),
     m_spatialSystemRef(nullptr),
+    m_pathfindingSystemRef(nullptr),
     m_gameObjectRefs(),
     m_componentRefs(),
     m_gameObjectInitQueue(),
@@ -21,6 +22,7 @@ Scene::Scene() :
     m_gameLogicSystemRef = Depot<GameLogicSystem>::add(new GameLogicSystem(sysComponentRefs<GameLogicSystem>()));
     m_renderSystemRef = Depot<RenderSystem>::add(new RenderSystem(sysComponentRefs<RenderSystem>()));    
     m_spatialSystemRef = Depot<SpatialSystem>::add(new SpatialSystem(sysComponentRefs<SpatialSystem>()));
+    m_pathfindingSystemRef = Depot<PathfindingSystem>::add(new PathfindingSystem(sysComponentRefs<PathfindingSystem>()));
 }
 
 GameObject & Scene::createGameObject() {
@@ -33,6 +35,7 @@ void Scene::update(float dt) {
 
     /* Update systems */
     m_gameLogicSystemRef->update(dt);
+    m_pathfindingSystemRef->update(dt);
     m_renderSystemRef->update(dt);
     m_spatialSystemRef->update(dt);
 

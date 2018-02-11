@@ -43,6 +43,7 @@ class Scene {
         GameLogicSystem & gameLogicSystem() { return *m_gameLogicSystemRef; }
         RenderSystem & renderSystem() { return *m_renderSystemRef; }
         SpatialSystem & spatialSystem() { return *m_spatialSystemRef; }
+        PathfindingSystem & pathfindingSystem() { return *m_pathfindingSystemRef; }
 
     private:
 
@@ -65,6 +66,7 @@ class Scene {
         GameLogicSystem * m_gameLogicSystemRef;
         RenderSystem * m_renderSystemRef;
         SpatialSystem * m_spatialSystemRef;
+        PathfindingSystem * m_pathfindingSystemRef;
 
         /* Lists of all game objects */
         std::vector<GameObject *> m_gameObjectRefs;
