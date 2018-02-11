@@ -116,7 +116,8 @@ void Window::update() {
     Mouse::update(x, y);
 
     /* Update ImGui */
-    if (Keyboard::isKeyPressed(GLFW_KEY_GRAVE_ACCENT)) {
+    if (Keyboard::isKeyPressed(GLFW_KEY_GRAVE_ACCENT) && 
+       (Keyboard::isKeyPressed(GLFW_KEY_LEFT_SHIFT) || Keyboard::isKeyPressed(GLFW_KEY_RIGHT_SHIFT))) {
         toggleImGui();
     }
     ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
