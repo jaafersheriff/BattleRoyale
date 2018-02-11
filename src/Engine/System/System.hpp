@@ -16,14 +16,6 @@ class System {
 
     public:
 
-    enum Type {
-        GAMELOGIC,
-        RENDER,
-        SPATIAL
-    };
-
-    public:
-
         System(const std::vector<Component *> & components);
 
         /* Generic update function */
