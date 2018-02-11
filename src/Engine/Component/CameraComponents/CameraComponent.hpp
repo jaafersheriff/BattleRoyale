@@ -17,9 +17,8 @@ class CameraComponent : public Component {
 
     public:
         /* Constructor */
-        CameraComponent(float fov, float aspect, float near, float far) :
+        CameraComponent(float fov, float near, float far) :
             fov(fov),
-            aspect(aspect),
             near(near),
             far(far) {
         }
@@ -38,7 +37,7 @@ class CameraComponent : public Component {
         double phi, theta;
     private:
         /* Projection */
-        float fov, aspect, near, far;
+        float fov, near, far;
         glm::mat4 projection;
 
         /* View */

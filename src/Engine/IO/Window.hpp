@@ -18,11 +18,7 @@
 
 class Window {
     public:
-        /* Default window size */
-        int width = DEFAULT_WIDTH;
-        int height = DEFAULT_HEIGHT;
-
-        /* Reference to GLFW window, mouse, keyboard */
+       /* Reference to GLFW window, mouse, keyboard */
         GLFWwindow *window;
 
         /* Init */
@@ -42,7 +38,18 @@ class Window {
 
         /* Shut down */
         void shutDown();
+
+        /* Set window size */
+        static void setWidth(const int w) { width = w; }
+        static void setHeight(const int h) { height = h; }
+        static int getWidth() { return width; }
+        static int getHeight() { return height; };
+        static float getAspectRatio() { return width / (float)height; }
     private:
+        /* Window size */
+        static int width;
+        static int height;
+
         /* Callback functions */
         static void errorCallback(int, const char *);
         static void keyCallback(GLFWwindow *, int, int, int, int);
