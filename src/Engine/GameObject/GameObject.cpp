@@ -8,7 +8,7 @@ GameObject::GameObject() :
 {}
 
 GameObject::~GameObject() {
-    // TODO 
+
 }
 
 /* Initialize all components */
