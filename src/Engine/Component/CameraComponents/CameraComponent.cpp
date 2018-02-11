@@ -8,6 +8,7 @@
 
 void CameraComponent::init() {
     this->projection = glm::perspective(fov, Window::getAspectRatio(), near, far);
+    this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
     phi = theta = 0.0;
     update(0.f);
 }
@@ -26,9 +27,9 @@ void CameraComponent::update(float dt) {
     lookAt = gameObject->getSpatial()->position() + glm::normalize(sphere);
 
     /* Update view matrix */
-    // TODO : only update these if necessary
-    //    P : if fov or aspect ratio has changed
-    //    V : if camera has moved
-    this->projection = glm::perspective(fov, Window::getAspectRatio(), near, far);
-    this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
+    if (isDirty) {
+        this->projection = glm::perspective(fov, Window::getAspectRatio(), near, far);
+        this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
+        isDirty = false;
+    }
 }

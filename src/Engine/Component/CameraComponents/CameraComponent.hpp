@@ -28,6 +28,7 @@ class CameraComponent : public Component {
         void update(float dt);
 
         /* Member functions */
+        void setDirty() { isDirty = true; }
         const glm::mat4 & getView() const { return view; }
         const glm::mat4 & getProj() const { return projection; }
 
@@ -36,6 +37,9 @@ class CameraComponent : public Component {
         glm::vec3 lookAt;
         double phi, theta;
     private:
+        /* Denotes if camera has been moved */
+        bool isDirty = false;
+
         /* Projection */
         float fov, near, far;
         glm::mat4 projection;
