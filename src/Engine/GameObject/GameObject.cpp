@@ -7,6 +7,10 @@ GameObject::GameObject() :
     spatialComponent(nullptr)
 {}
 
+GameObject::~GameObject() {
+    // TODO 
+}
+
 /* Initialize all components */
 void GameObject::init() {
     for (Component *c : components) {
