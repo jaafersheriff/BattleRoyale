@@ -6,6 +6,8 @@
 
 #include <vector>   /* vector */
 
+#include "glm/glm.hpp"
+
 class Mesh {
     public:
         /* Constructor */

@@ -93,18 +93,18 @@ int main(int argc, char **argv) {
     }
 
     /* Create bunny */
+    Mesh * bunnyMesh(engine.loader.getMesh("bunny.obj"));
     GameObject & bunny(scene.createGameObject());
     bunny.addComponent(scene.createComponent<SpatialComponent>(
         glm::vec3(0.0f, 0.0f, 0.0f), // position
         glm::vec3(1.0f, 1.0f, 1.0f), // scale
         glm::mat3() // rotation
     ));
+    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
     bunny.addComponent(scene.createComponent<DiffuseRenderComponent>(
-        scene.renderSystem().shaders.find("diffuse")->second->pid,
-        *engine.loader.getMesh("bunny.obj"),
-        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
-    //bunny->addComponent(scene->createComponent<Scene::COLLISION, >())
-                            
+        scene.renderSystem().m_shaders.find("diffuse")->second->pid,
+        *bunnyMesh,
+        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));                            
 
     /* Main loop */
     engine.run();

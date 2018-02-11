@@ -34,40 +34,6 @@ struct Collision {
 
 
 
-std::vector<BounderComponent *> f_bounders;
-std::unordered_map<GameObject *, std::vector<BounderComponent *>> f_entityBounders;
-
-
-
-float detMaxRadius(int n, const glm::vec3 * locs, const glm::vec3 & center) {
-    float maxR2(0.0f);
-    for (int i(0); i < n; ++i) {
-        float r2(glm::length2(locs[i] - center));
-        if (r2 > maxR2) maxR2 = r2;
-    }
-    return std::sqrt(maxR2);
-}
-
-// returns min radius, absolute y upper, and absolute y lower
-std::tuple<float, float, float> detCapsuleSpecs(int n, const glm::vec3 * locs, const glm::vec3 & center) {
-    float maxR2(0.0f);
-    for (int i(0); i < n; ++i) {
-        float r2(glm::length2(glm::vec2(locs[i] - center)));
-        if (r2 > maxR2) maxR2 = r2;
-    }
-    float r(std::sqrt(maxR2));
-
-    float maxQy(-Util::infinity), minQy(Util::infinity);
-    for (int i(0); i < n; ++i) {
-        float a(std::sqrt(maxR2 - glm::length2(glm::vec2(locs[i].x, locs[i].z) - glm::vec2(center.x, center.z))));
-        float qy(locs[i].y - glm::sign(locs[i].y - center.y) * a);
-        if (qy > maxQy) maxQy = qy;
-        if (qy < minQy) minQy = qy;
-    }
-
-    return { r, maxQy, minQy };
-}
-
 bool collide(BounderComponent & b1, BounderComponent & b2, std::unordered_map<BounderComponent *, glm::vec3> * collisions) {
     glm::vec3 delta;
     if (!b1.collide(b2, &delta)) {

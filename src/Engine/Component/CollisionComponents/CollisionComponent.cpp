@@ -1,6 +1,9 @@
 #include "CollisionComponent.hpp"
 
+#include <tuple>
+
 #include "glm/gtx/component_wise.hpp"
+#include "glm/gtx/norm.hpp"
 
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
@@ -149,47 +152,96 @@ Intersect CapsuleBounderComponent::intersect(const Ray & ray) const {
 
 
 
-std::unique_ptr<BounderComponent> createBounderFromMesh(const Mesh & mesh) {
-    return std::move(createBounderFromMesh(mesh, true, true, true));
+namespace {
+
+std::pair<glm::vec3, glm::vec3> detMeshSpan(int nVerts, const glm::vec3 * positions) {    
+    glm::vec3 min(Util::infinity), max(-Util::infinity);
+    for (int i(0); i < nVerts; ++i) {
+        min = glm::min(min, positions[i]);
+        max = glm::max(max, positions[i]);
+    }
+    return { min, max };
 }
 
-std::unique_ptr<BounderComponent> createBounderFromMesh(const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule) {
-    fspan3 span(entity.mesh().detSpan());
-    AABox box(span);
-    float boxV(box.volume());
+float detMaxRadius(int n, const glm::vec3 * positions, const glm::vec3 & center) {
+    float maxR2(0.0f);
+    for (int i(0); i < n; ++i) {
+        float r2(glm::length2(positions[i] - center));
+        if (r2 > maxR2) maxR2 = r2;
+    }
+    return std::sqrt(maxR2);
+}
 
-    glm::vec3 center((span.max - span.min) * 0.5f + span.min);
-    float radius(detMaxRadius(entity.mesh().nVerts, entity.mesh().getLocations(), center));
-    Sphere sphere(center, radius);
-    float sphereV(sphere.volume());
+// returns min radius, absolute y upper, and absolute y lower
+std::tuple<float, float, float> detCapsuleSpecs(int n, const glm::vec3 * positions, const glm::vec3 & center) {
+    float maxR2(0.0f);
+    for (int i(0); i < n; ++i) {
+        float r2(glm::length2(glm::vec2(positions[i] - center)));
+        if (r2 > maxR2) maxR2 = r2;
+    }
+    float r(std::sqrt(maxR2));
 
-    glm::vec3 capsuleSpecs(detCapsuleSpecs(entity.mesh().nVerts, entity.mesh().getLocations(), center));
-    float capsuleHeight(capsuleSpecs.y - capsuleSpecs.z);
-    glm::vec3 capsuleCenter(center.x, center.y, capsuleSpecs.z + capsuleHeight * 0.5f);
-    Capsule capsule(capsuleCenter, capsuleSpecs.x, capsuleHeight);
-    float capsuleV(capsule.volume());
+    float maxQy(-Util::infinity), minQy(Util::infinity);
+    for (int i(0); i < n; ++i) {
+        float a(std::sqrt(maxR2 - glm::length2(glm::vec2(positions[i].x, positions[i].z) - glm::vec2(center.x, center.z))));
+        float qy(positions[i].y - glm::sign(positions[i].y - center.y) * a);
+        if (qy > maxQy) maxQy = qy;
+        if (qy < minQy) minQy = qy;
+    }
 
-    BounderComponent * bounder;
-    if (boxV <= sphereV) {
-        if (boxV <= capsuleV) {
-            bounder = qcu::Depot<BounderComponent>::add(new AABounderComponent(entity, weight, box));
+    return { r, maxQy, minQy };
+}
+
+}
+
+std::unique_ptr<BounderComponent> createBounderFromMesh(int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule) {
+    if (!allowAAB && !allowSphere && !allowCapsule) {
+        allowAAB = allowSphere = allowCapsule = true;
+    }
+
+    AABox box; Sphere sphere; Capsule capsule;
+    float boxV, sphereV, capsuleV;
+
+    int nVerts(int(mesh.vertBuf.size()) / 3);
+    const glm::vec3 * positions(reinterpret_cast<const glm::vec3 *>(mesh.vertBuf.data()));
+    auto span(detMeshSpan(nVerts, positions));
+    glm::vec3 & spanMin(span.first), & spanMax(span.second);
+    glm::vec3 center((spanMax - spanMin) * 0.5f + spanMin);
+
+    if (allowAAB) {
+        box = AABox(spanMin, spanMax);
+        boxV = box.volume();
+    }
+
+    if (allowSphere) {
+        float radius(detMaxRadius(nVerts, positions, center));
+        sphere = Sphere(center, radius);
+        sphereV = sphere.volume();
+    }
+
+    if (allowCapsule) {
+        float minRad, yUpper, yLower;
+        std::tie(minRad, yUpper, yLower) = detCapsuleSpecs(nVerts, positions, center);
+        float capsuleHeight(yUpper - yLower);
+        glm::vec3 capsuleCenter(center.x, center.y, yLower + capsuleHeight * 0.5f);
+        capsule = Capsule(capsuleCenter, minRad, capsuleHeight);
+        capsuleV = capsule.volume();
+    }
+
+    if (allowAAB && boxV <= sphereV) {
+        if (allowCapsule && capsuleV <= boxV) {
+            return std::unique_ptr<BounderComponent>(new CapsuleBounderComponent(weight, capsule));
         }
         else {
-            bounder = qcu::Depot<BounderComponent>::add(new CapsuleBounderComponent(entity, weight, capsule));
+            return std::unique_ptr<BounderComponent>(new AABBounderComponent(weight, box));
         }
     }
     else {
-        if (sphereV <= capsuleV) {
-            bounder = qcu::Depot<BounderComponent>::add(new SphereBounderComponent(entity, weight, sphere));
+        if (allowCapsule && capsuleV <= sphereV) {
+            return std::unique_ptr<BounderComponent>(new CapsuleBounderComponent(weight, capsule));
         }
         else {
-            bounder = qcu::Depot<BounderComponent>::add(new CapsuleBounderComponent(entity, weight, capsule));
+            return std::unique_ptr<BounderComponent>(new SphereBounderComponent(weight, sphere));
         }
     }
-
-    f_bounders.push_back(bounder);
-    f_entityBounderComponents[&entity].push_back(bounder);
-    f_potentials.insert(bounder);
-    BounderComponentRenderer::get().add(*bounder);
-    bounder->update();
 }

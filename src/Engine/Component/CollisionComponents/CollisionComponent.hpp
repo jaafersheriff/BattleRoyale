@@ -128,4 +128,4 @@ class CapsuleBounderComponent : public BounderComponent {
 // chooses the bounder with the smallest volume from the vertex data of the given mesh
 // optionally enable/disable certain types of bounders. If all are false you are
 // dumb and it acts as if all were true
-std::unique_ptr<BounderComponent> createBounderFromMesh(const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule);
+std::unique_ptr<BounderComponent> createBounderFromMesh(int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule);

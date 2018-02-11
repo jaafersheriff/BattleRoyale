@@ -7,14 +7,11 @@
 
 
 struct Ray;
+struct Intersect;
 
 
 
 class CollisionSystem : public System {
-
-    public:
-
-    constexpr static Type type = COLLISION;
 
     static constexpr float k_collisionOffsetFactor = 0.01f;
 

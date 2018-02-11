@@ -6,6 +6,8 @@
 #include <string>
 #include <iostream>
 
+#include "Model/Mesh.hpp"
+
 struct Util {
     
     static constexpr double PI = 3.14159265359;
@@ -29,7 +31,7 @@ struct Util {
     }
 
     static inline bool isZero(const glm::vec3 & v) {
-        isZero(v.x) && isZero(v.y) && isZero(v.z);
+        return isZero(v.x) && isZero(v.y) && isZero(v.z);
     }
 
     // for adding up a large number of floats

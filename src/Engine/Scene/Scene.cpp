@@ -22,7 +22,7 @@ Scene::Scene() :
     m_gameLogicSystemRef = Depot<GameLogicSystem>::add(new GameLogicSystem(sysComponentRefs<GameLogicSystem>()));
     m_renderSystemRef = Depot<RenderSystem>::add(new RenderSystem(sysComponentRefs<RenderSystem>()));
     m_spatialSystemRef = Depot<SpatialSystem>::add(new SpatialSystem(sysComponentRefs<SpatialSystem>()));
-    m_spatialSystemRef = Depot<CollisionSystem>::add(new CollisionSystem(sysComponentRefs<CollisionSystem>()));
+    m_collisionSystemRef = Depot<CollisionSystem>::add(new CollisionSystem(sysComponentRefs<CollisionSystem>()));
 }
 
 GameObject & Scene::createGameObject() {
@@ -35,9 +35,9 @@ void Scene::update(float dt) {
 
     /* Update systems */
     m_gameLogicSystemRef->update(dt);
-    m_renderSystemRef->update(dt);
     m_collisionSystemRef->update(dt);
     m_spatialSystemRef->update(dt); // needs to happen after collision
+    m_renderSystemRef->update(dt); // I imagine rendering should always be last
 
     doKillQueue();
 }
