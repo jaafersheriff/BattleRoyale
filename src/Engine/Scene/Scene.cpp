@@ -28,6 +28,18 @@ GameObject & Scene::createGameObject() {
     return *m_gameObjectInitQueue.back().get();
 }
 
+template <typename CompT>
+CompT & Scene::addComponent(std::unique_ptr<CompT> component) {
+    CompT & comp(*component);
+    m_componentInitQueue[std::type_index(typeid(CompT::SystemClass))].emplace_back(std::move(component));
+    return comp;
+}
+
+template <typename CompT, typename... Args>
+CompT & Scene::createComponent(Args &&... args) {
+    return addComponent(std::unique_ptr<CompT>(new CompT(std::forward<Args>(args)...)));
+}
+
 void Scene::update(float dt) {
     doInitQueue();
 
