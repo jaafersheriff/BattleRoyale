@@ -32,6 +32,7 @@ class Mesh {
         unsigned int eleBufId;
 
         /* VBO Info */
+        MeshBuffers buffers;
         int vertBufSize;
         int norBufSize;
         int texBufSize;

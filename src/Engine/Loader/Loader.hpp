@@ -30,7 +30,7 @@ class Loader {
         uint8_t* loadTextureData(const std::string &, const bool, int*, int*, int*);
 
         /* GL Loaders */
-        void loadMesh(Mesh &, Mesh::MeshBuffers &);
+        void loadMesh(Mesh &);
         void loadTexture(Texture *, uint8_t *, GLenum);
 
         /* Private members */

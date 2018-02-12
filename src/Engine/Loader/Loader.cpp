@@ -30,38 +30,37 @@ Mesh* Loader::getMesh(const std::string & name) {
  
     /* Create a new empty mesh */
     mesh = new Mesh;
-    Mesh::MeshBuffers buffers;
 
     int vertCount = 0;
     /* For every shape in the loaded file */
     for (int i = 0; i < shapes.size(); i++) {
         /* Concatenate the shape's vertices, normals, and textures to the mesh */
-        buffers.vertBuf.insert(buffers.vertBuf.end(), shapes[i].mesh.positions.begin(), shapes[i].mesh.positions.end());
-        buffers.norBuf.insert(buffers.norBuf.end(), shapes[i].mesh.normals.begin(), shapes[i].mesh.normals.end());
-        buffers.texBuf.insert(buffers.texBuf.end(), shapes[i].mesh.texcoords.begin(), shapes[i].mesh.texcoords.end());
+        mesh->buffers.vertBuf.insert(mesh->buffers.vertBuf.end(), shapes[i].mesh.positions.begin(), shapes[i].mesh.positions.end());
+        mesh->buffers.norBuf.insert(mesh->buffers.norBuf.end(), shapes[i].mesh.normals.begin(), shapes[i].mesh.normals.end());
+        mesh->buffers.texBuf.insert(mesh->buffers.texBuf.end(), shapes[i].mesh.texcoords.begin(), shapes[i].mesh.texcoords.end());
 
         /* Concatenate the shape's indices to the new mesh
          * Indices need to be incremented as we concatenate shapes */
         for (unsigned int i : shapes[i].mesh.indices) {
-            buffers.eleBuf.push_back(i + vertCount);
+            mesh->buffers.eleBuf.push_back(i + vertCount);
         }
         vertCount += int(shapes[i].mesh.positions.size()) / 3;
     }
 
     /* Provide VBO info */
-    mesh->vertBufSize = buffers.vertBuf.size();
-    mesh->norBufSize = buffers.norBuf.size();
-    mesh->texBufSize = buffers.texBuf.size();
-    mesh->eleBufSize = buffers.eleBuf.size();
+    mesh->vertBufSize = mesh->buffers.vertBuf.size();
+    mesh->norBufSize  = mesh->buffers.norBuf.size();
+    mesh->texBufSize  = mesh->buffers.texBuf.size();
+    mesh->eleBufSize  = mesh->buffers.eleBuf.size();
 
     /* Resize the mesh to be centered around origin and have vertex values [0, 1.0] */
-    resize(buffers);
+    resize(mesh->buffers);
 
     /* Add new mesh to library */
     library.addMesh(name, *mesh);
     
     /* Load mesh to GPU */
-    this->loadMesh(*mesh, buffers);
+    this->loadMesh(*mesh);
 
     if (verbose) {
         std::cout << "Loaded mesh (" << vertCount << " vertices): " << name << std::endl;
@@ -199,7 +198,7 @@ void Loader::loadTexture(Texture *texture, uint8_t *data, GLenum mode) {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Loader::loadMesh(Mesh & mesh, Mesh::MeshBuffers & buffers) {
+void Loader::loadMesh(Mesh & mesh) {
     /* Initialize VAO */
     glGenVertexArrays(1, &mesh.vaoId);
     glBindVertexArray(mesh.vaoId);
@@ -207,27 +206,27 @@ void Loader::loadMesh(Mesh & mesh, Mesh::MeshBuffers & buffers) {
     /* Copy vertex array */
     glGenBuffers(1, &mesh.vertBufId);
     glBindBuffer(GL_ARRAY_BUFFER, mesh.vertBufId);
-    glBufferData(GL_ARRAY_BUFFER, buffers.vertBuf.size() * sizeof(float), &buffers.vertBuf[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh.buffers.vertBuf.size() * sizeof(float), &mesh.buffers.vertBuf[0], GL_STATIC_DRAW);
 
     /* Copy element array if it exists */
-    if (!buffers.eleBuf.empty()) {
+    if (!mesh.buffers.eleBuf.empty()) {
         glGenBuffers(1, &mesh.eleBufId);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.eleBufId);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffers.eleBuf.size() * sizeof(unsigned int), &buffers.eleBuf[0], GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.buffers.eleBuf.size() * sizeof(unsigned int), &mesh.buffers.eleBuf[0], GL_STATIC_DRAW);
     }
 
     /* Copy normal array if it exists */
-    if (!buffers.norBuf.empty()) {
+    if (!mesh.buffers.norBuf.empty()) {
         glGenBuffers(1, &mesh.norBufId);
         glBindBuffer(GL_ARRAY_BUFFER, mesh.norBufId);
-        glBufferData(GL_ARRAY_BUFFER, buffers.norBuf.size() * sizeof(float), &buffers.norBuf[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, mesh.buffers.norBuf.size() * sizeof(float), &mesh.buffers.norBuf[0], GL_STATIC_DRAW);
     }
 
     /* Copy texture array if it exists */
-    if (!buffers.texBuf.empty()) {
+    if (!mesh.buffers.texBuf.empty()) {
         glGenBuffers(1, &mesh.texBufId);
         glBindBuffer(GL_ARRAY_BUFFER, mesh.texBufId);
-        glBufferData(GL_ARRAY_BUFFER, buffers.texBuf.size() * sizeof(float), &buffers.texBuf[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, mesh.buffers.texBuf.size() * sizeof(float), &mesh.buffers.texBuf[0], GL_STATIC_DRAW);
     }
 
     /* Unbind  */
