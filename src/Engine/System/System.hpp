@@ -19,7 +19,8 @@ class System {
     enum Type {
         GAMELOGIC,
         RENDER,
-        SPATIAL
+        SPATIAL,
+		SOUND
     };
 
     public:
