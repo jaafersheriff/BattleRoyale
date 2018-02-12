@@ -28,7 +28,8 @@ class BounderComponent : public Component {
     protected:
 
     int m_weight;
-    bool m_isCollision; // was there a collision this tick
+    bool m_wasCollision; // was there a collision this tick
+    bool m_wasAdjustment; // was the object moved due to a collision this tick
 
     public:
 
@@ -40,14 +41,15 @@ class BounderComponent : public Component {
 
     virtual ~BounderComponent() override = default;
 
-    virtual void update() = 0;
+    virtual void update(float dt) = 0;
 
     virtual bool collide(const BounderComponent & o, glm::vec3 * delta) const = 0;
 
     virtual Intersect intersect(const Ray & ray) const = 0;
 
     int weight() const { return m_weight; }
-    bool isCollision() const { return m_isCollision; }
+    bool wasCollision() const { return m_wasCollision; }
+    bool wasAdjustment() const { return m_wasAdjustment; }
 
 };
 
@@ -64,7 +66,7 @@ class AABBounderComponent : public BounderComponent {
 
     AABBounderComponent(int weight, const AABox & box);
 
-    virtual void update() override;
+    virtual void update(float dt) override;
 
     virtual bool collide(const BounderComponent & o, glm::vec3 * delta) const override;
 
@@ -88,7 +90,7 @@ class SphereBounderComponent : public BounderComponent {
 
     SphereBounderComponent(int weight, const Sphere & sphere);
 
-    virtual void update() override;
+    virtual void update(float dt) override;
 
     virtual bool collide(const BounderComponent & o, glm::vec3 * delta) const override;
 
@@ -112,7 +114,7 @@ class CapsuleBounderComponent : public BounderComponent {
 
     CapsuleBounderComponent(int weight, const Capsule & capsule);
 
-    virtual void update() override;
+    virtual void update(float dt) override;
 
     virtual bool collide(const BounderComponent & o, glm::vec3 * delta) const override;
 
