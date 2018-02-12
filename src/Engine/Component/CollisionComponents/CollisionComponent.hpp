@@ -41,7 +41,7 @@ class BounderComponent : public Component {
 
     virtual ~BounderComponent() override = default;
 
-    virtual void update(float dt) = 0;
+    virtual void update(float dt);
 
     virtual bool collide(const BounderComponent & o, glm::vec3 * delta) const = 0;
 
