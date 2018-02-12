@@ -2,6 +2,8 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "Util/Util.hpp"
+
 
 
 SpatialComponent::SpatialComponent() :
@@ -82,7 +84,7 @@ const glm::mat3 & SpatialComponent::normalMatrix() const {
 }
 
 void SpatialComponent::detModelMatrix() const {
-    m_modelMatrix = glm::translate(glm::mat4(m_rotation) * glm::scale(glm::mat4(), m_scale), m_position);
+    m_modelMatrix = Util::compositeTransform(m_scale, m_rotation, m_position);
     m_modelMatrixValid = true;
 }
 

@@ -35,7 +35,8 @@ class GameObject {
 
         int numComponents() const { return int(components.size()); }
 
-        SpatialComponent * getSpatial() const { return spatialComponent; }
+        SpatialComponent * getSpatial() { return spatialComponent; }
+        const SpatialComponent * getSpatial() const { return spatialComponent; }
 
     private:
 

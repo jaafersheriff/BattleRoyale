@@ -16,7 +16,9 @@ class Component {
         virtual void init();
         virtual void update(float);
 
-        GameObject* getGameObject() { return gameObject; }
+        GameObject * getGameObject() { return gameObject; }
+        const GameObject * getGameObject() const { return gameObject; }
+
         void setGameObject(GameObject *go) { this->gameObject = go; }
 
         /* Receive a message sent by another component */

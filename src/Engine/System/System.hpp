@@ -24,6 +24,8 @@ class System {
         /* Generic update function */
         virtual void update(float dt);
 
+        const std::vector<Component *> & components() const { return m_components; }
+
     protected:
 
         /* Reference to components of this system */

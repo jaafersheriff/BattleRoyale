@@ -1,4 +1,7 @@
 #include "RenderSystem.hpp"
+
+#include <iostream>
+
 #include "IO/Window.hpp"
 #include "ThirdParty/imgui/imgui.h"
 
@@ -10,6 +13,21 @@ RenderSystem::RenderSystem(std::vector<Component *> & components) :
     glCullFace(GL_BACK);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+bool RenderSystem::addShader(const std::string & name, std::unique_ptr<Shader> shader) {
+    auto it(m_shaders.find(name));
+    if (it != m_shaders.end()) {
+        return true;
+    }
+    if (shader->init()) {
+        m_shaders[name] = std::move(shader);
+        return true;
+    }
+    else {
+        std::cerr << "Failed to initialize shader [" << name << "]" << std::endl;
+        return false;
+    }
 }
 
 void RenderSystem::update(float dt) {

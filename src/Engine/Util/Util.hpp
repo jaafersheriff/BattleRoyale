@@ -6,6 +6,8 @@
 #include <string>
 #include <iostream>
 
+#include "glm/gtc/matrix_transform.hpp"
+
 #include "Model/Mesh.hpp"
 
 struct Util {
@@ -43,6 +45,17 @@ struct Util {
         if (n == 1) return vals[0];
         if (n == 2) return vals[0] + vals[1];
         return pairwiseSum(n / 2, vals) + pairwiseSum((n + 1) / 2, vals + n / 2);
+    }
+    
+    // the order glm does matrix comp seems super backwards to me so i made these helper functions
+    static glm::mat4 compositeTransform(const glm::fvec3 & scale, const glm::fmat3 & rotation, const glm::fvec3 & translation) {
+        return compositeTransform(scale, glm::mat4(rotation), translation);
+    }
+    static glm::mat4 compositeTransform(const glm::fvec3 & scale, const glm::fmat4 & rotation, const glm::fvec3 & translation) {
+        return glm::scale(glm::translate(glm::mat4(), translation) * rotation, scale);
+    }
+    static glm::mat4 compositeTransform(const glm::fvec3 & scale, const glm::fvec3 & translation) {
+        return glm::scale(glm::translate(glm::mat4(), translation), scale);
     }
 
 };

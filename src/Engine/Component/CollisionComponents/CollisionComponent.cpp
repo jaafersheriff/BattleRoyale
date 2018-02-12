@@ -177,17 +177,26 @@ float detMaxRadius(int n, const glm::vec3 * positions, const glm::vec3 & center)
 std::tuple<float, float, float> detCapsuleSpecs(int n, const glm::vec3 * positions, const glm::vec3 & center) {
     float maxR2(0.0f);
     for (int i(0); i < n; ++i) {
-        float r2(glm::length2(glm::vec2(positions[i] - center)));
+        float r2(glm::length2(glm::vec2(positions[i].x - center.x, positions[i].z - center.z)));
         if (r2 > maxR2) maxR2 = r2;
     }
     float r(std::sqrt(maxR2));
 
     float maxQy(-Util::infinity), minQy(Util::infinity);
     for (int i(0); i < n; ++i) {
-        float a(std::sqrt(maxR2 - glm::length2(glm::vec2(positions[i].x, positions[i].z) - glm::vec2(center.x, center.z))));
-        float qy(positions[i].y - glm::sign(positions[i].y - center.y) * a);
-        if (qy > maxQy) maxQy = qy;
-        if (qy < minQy) minQy = qy;
+        float a(std::sqrt(maxR2 - glm::length2(glm::vec2(positions[i].x - center.x, positions[i].z - center.z))));
+        if (positions[i].y >= center.y) {
+            float qy(positions[i].y - a);
+            if (qy > maxQy) maxQy = qy;
+        }
+        else {
+            float qy(positions[i].y + a);
+            if (qy < minQy) minQy = qy;
+        }
+    }
+
+    if (maxQy < minQy) {
+        maxQy = minQy = (maxQy + minQy) * 0.5f;
     }
 
     return { r, maxQy, minQy };
@@ -201,7 +210,7 @@ std::unique_ptr<BounderComponent> createBounderFromMesh(int weight, const Mesh &
     }
 
     AABox box; Sphere sphere; Capsule capsule;
-    float boxV, sphereV, capsuleV;
+    float boxV(Util::infinity), sphereV(Util::infinity), capsuleV(Util::infinity);
 
     int nVerts(int(mesh.buffers.vertBuf.size()) / 3);
     const glm::vec3 * positions(reinterpret_cast<const glm::vec3 *>(mesh.buffers.vertBuf.data()));
@@ -229,20 +238,15 @@ std::unique_ptr<BounderComponent> createBounderFromMesh(int weight, const Mesh &
         capsuleV = capsule.volume();
     }
 
-    if (allowAAB && boxV <= sphereV) {
-        if (allowCapsule && capsuleV <= boxV) {
-            return std::unique_ptr<BounderComponent>(new CapsuleBounderComponent(weight, capsule));
-        }
-        else {
-            return std::unique_ptr<BounderComponent>(new AABBounderComponent(weight, box));
-        }
+    if (allowAAB && boxV <= sphereV && boxV <= capsuleV) {
+        return std::unique_ptr<BounderComponent>(new AABBounderComponent(weight, box));
     }
-    else {
-        if (allowCapsule && capsuleV <= sphereV) {
-            return std::unique_ptr<BounderComponent>(new CapsuleBounderComponent(weight, capsule));
-        }
-        else {
-            return std::unique_ptr<BounderComponent>(new SphereBounderComponent(weight, sphere));
-        }
+    else if (allowSphere && sphereV <= boxV && sphereV <= capsuleV) {
+        return std::unique_ptr<BounderComponent>(new SphereBounderComponent(weight, sphere));
     }
+    else if (allowCapsule && capsuleV <= boxV && capsuleV <= sphereV) {
+        return std::unique_ptr<BounderComponent>(new CapsuleBounderComponent(weight, capsule));
+    }
+
+    return nullptr;
 }
