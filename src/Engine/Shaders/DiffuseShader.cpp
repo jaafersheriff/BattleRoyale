@@ -91,7 +91,7 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drc->mesh->eleBufId);
 
         /* DRAW */
-        glDrawElements(GL_TRIANGLES, (int)drc->mesh->eleBuf.size(), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, (int)drc->mesh->eleBufSize, GL_UNSIGNED_INT, nullptr);
 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));
