@@ -189,7 +189,7 @@ std::tuple<float, float, float> detCapsuleSpecs(int n, const glm::vec3 * positio
             float qy(positions[i].y - a);
             if (qy > maxQy) maxQy = qy;
         }
-        else {
+        if (positions[i].y <= center.y) {
             float qy(positions[i].y + a);
             if (qy < minQy) minQy = qy;
         }

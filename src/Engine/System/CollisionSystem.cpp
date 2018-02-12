@@ -70,6 +70,25 @@ bool collide(BounderComponent & b1, BounderComponent & b2, std::unordered_map<Bo
     return true;
 }
 
+// combines two adjustment deltas such that the maximum of each component is preserved
+glm::vec3 compositeDeltas(const glm::vec3 & d1, const glm::vec3 & d2) {
+    glm::vec3 d;
+
+    if      (d1.x > 0 && d2.x > 0) d.x = glm::max(d1.x, d2.x);
+    else if (d1.x < 0 && d2.x < 0) d.x = glm::min(d1.x, d2.x);
+    else                           d.x = d1.x + d2.x;
+
+    if      (d1.y > 0 && d2.y > 0) d.y = glm::max(d1.y, d2.y);
+    else if (d1.y < 0 && d2.y < 0) d.y = glm::min(d1.y, d2.y);
+    else                           d.y = d1.y + d2.y;
+
+    if      (d1.z > 0 && d2.z > 0) d.z = glm::max(d1.z, d2.z);
+    else if (d1.z < 0 && d2.z < 0) d.z = glm::min(d1.z, d2.z);
+    else                           d.z = d1.z + d2.z;
+    
+    return d;
+}
+
 // compares pairs of weight and delta by weight for std::sort
 bool compWeightDelta(const std::pair<int, glm::vec3> & d1, const std::pair<int, glm::vec3> & d2) {
     return d1.first < d2.first;
@@ -105,19 +124,19 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
     int weight(weightDeltas[weightI].first);
     glm::vec3 weightDelta;
     for (; i < weightDeltas.size() && weightDeltas[i].first == weight; ++i) {
-        weightDelta += weightDeltas[i].second;
+        weightDelta = compositeDeltas(weightDelta, weightDeltas[i].second);
     }
-    net += weightDelta;
+    net = compositeDeltas(net, weightDelta);
     weightI = i;
     while (weightI < weightDeltas.size()) {
         weight = weightDeltas[weightI].first;
         weightDelta = glm::vec3();
         for (; i < weightDeltas.size() && weightDeltas[i].first == weight; ++i) {
             const glm::vec3 & delta(weightDeltas[i].second);
-            weightDelta += delta;
+            weightDelta = compositeDeltas(weightDelta, delta);
             net = hemiClamp(net, glm::normalize(delta));
         }
-        net += weightDelta;
+        net = compositeDeltas(net, weightDelta);
         weightI = i;
     }
 
