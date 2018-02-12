@@ -17,8 +17,9 @@ class SpatialComponent : public Component {
     private:
 
     glm::vec3 m_position;
-    glm::mat3 m_rotation;
     glm::vec3 m_scale;
+    glm::mat3 m_rotation;
+    
 
     mutable glm::mat4 m_modelMatrix;
     mutable glm::mat3 m_normalMatrix;
