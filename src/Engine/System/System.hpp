@@ -18,13 +18,18 @@ class System {
 
         System(const std::vector<Component *> & components);
 
+        /* virtual destructor necessary for polymorphic destruction */
+        virtual ~System() = default;
+
         /* Generic update function */
         virtual void update(float dt);
+
+        const std::vector<Component *> & components() const { return m_components; }
 
     protected:
 
         /* Reference to components of this system */
-        const std::vector<Component *> & components;
+        const std::vector<Component *> & m_components;
 
 };
 

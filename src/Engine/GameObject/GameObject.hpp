@@ -24,18 +24,18 @@ class GameObject {
         T * getComponent();
 
         template <typename T>
-        std::vector<T *> getComponents();
-
-        template <typename T>
         int componentCount() const;
 
         void addComponent(Component &);
 
         void sendMessage(Message &);
 
+        const std::vector<Component *> & getComponents() const { return components; }
+
         int numComponents() const { return int(components.size()); }
 
-        SpatialComponent * getSpatial() const { return spatialComponent; }
+        SpatialComponent * getSpatial() { return spatialComponent; }
+        const SpatialComponent * getSpatial() const { return spatialComponent; }
 
     private:
 
@@ -58,17 +58,6 @@ T * GameObject::getComponent() {
         }
     }
     return nullptr;
-}
-
-template <typename T>
-std::vector<T *> GameObject::getComponents() {
-    std::vector<T *> comps;
-    for (auto c : components) {
-        if (dynamic_cast<T *>(c)) {
-            comps.push_back(static_cast<T *>(c));
-        }
-    }
-    return comps;
 }
 
 template <typename T>
