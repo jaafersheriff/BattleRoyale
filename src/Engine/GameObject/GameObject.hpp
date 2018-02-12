@@ -16,6 +16,7 @@ class GameObject {
     public:
 
         GameObject();
+        ~GameObject();
 
         void init();
 
