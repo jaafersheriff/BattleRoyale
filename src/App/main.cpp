@@ -7,6 +7,7 @@ extern "C" {
 #endif
 
 #include "EngineApp/EngineApp.hpp"
+#include "Shaders/BounderShader.hpp"
 
 #include <string>
 #include <iostream>
@@ -71,7 +72,7 @@ int main(int argc, char **argv) {
 
     /* Create camera and camera controller components */
     GameObject & camera(scene.createGameObject());
-    CameraComponent & cc(scene.createComponent<CameraComponent>(45.f, 1280.f / 960.f, 0.01f, 250.f));
+    CameraComponent & cc(scene.createComponent<CameraComponent>(45.f, 0.01f, 250.f));
     camera.addComponent(cc);
     camera.addComponent(scene.createComponent<CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT));
     camera.addComponent(scene.createComponent<SpatialComponent>());
@@ -81,30 +82,45 @@ int main(int argc, char **argv) {
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
     if (!scene.renderSystem().addShader<DiffuseShader>(
-            "diffuse",                                    /* Shader name */
-            engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex GLSL file */
-            engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment GLSL file*/
+            "diffuse",                                    /* Shader name              */
+            engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex shader file       */
+            engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment shader file     */
             cc,                                           /* Shader-specific uniforms */
-            lightPos                                     /*                          */
+            lightPos                                      /*                          */
         )) {
         std::cerr << "Failed to add diffuse shader" << std::endl;
         std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
     }
 
+    // Create collider shader
+    // alternate method using unique_ptr and new
+    if (!scene.renderSystem().addShader("bounder", std::unique_ptr<BounderShader>(new BounderShader(
+            engine.RESOURCE_DIR + "bounder_vert.glsl",
+            engine.RESOURCE_DIR + "bounder_frag.glsl",
+            scene.collisionSystem(),
+            cc
+        )))) {
+        std::cerr << "Failed to add collider shader" << std::endl;
+        std::cin.get(); //don't immediately close the console
+        return EXIT_FAILURE;
+    }
+
     /* Create bunny */
+    Mesh * bunnyMesh(engine.loader.getMesh("bunny.obj"));
     GameObject & bunny(scene.createGameObject());
     bunny.addComponent(scene.createComponent<SpatialComponent>(
         glm::vec3(0.0f, 0.0f, 0.0f), // position
         glm::vec3(1.0f, 1.0f, 1.0f), // scale
         glm::mat3() // rotation
     ));
+    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
     bunny.addComponent(scene.createComponent<DiffuseRenderComponent>(
-        scene.renderSystem().shaders.find("diffuse")->second->pid,
-        *engine.loader.getMesh("bunny.obj"),
-        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
+        scene.renderSystem().m_shaders.find("diffuse")->second->pid,
+        *bunnyMesh,
+        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));  
+
     bunny.addComponent(scene.createComponent<PathfindingComponent>(cc, 1.f));
-                            
 
     /* Main loop */
     engine.run();

@@ -1,8 +1,16 @@
 #include "DiffuseShader.hpp"
+
+#include "glm/gtc/matrix_transform.hpp"
+
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
-#include "glm/gtc/matrix_transform.hpp"
+
+DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam, const glm::vec3 & light) :
+    Shader(vertFile, fragFile),
+    camera(&cam),
+    lightPos(&light)
+{}
 
 bool DiffuseShader::init() {
     if (!Shader::init()) {
@@ -91,7 +99,7 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drc->mesh->eleBufId);
 
         /* DRAW */
-        glDrawElements(GL_TRIANGLES, (int)drc->mesh->eleBuf.size(), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, (int)drc->mesh->eleBufSize, GL_UNSIGNED_INT, nullptr);
 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));

@@ -4,9 +4,11 @@
 
 #include "Util/Util.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "IO/Window.hpp"
 
 void CameraComponent::init() {
-    this->projection = glm::perspective(fov, aspect, near, far);
+    this->projection = glm::perspective(fov, Window::getAspectRatio(), near, far);
+    this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
     phi = theta = 0.0;
     update(0.f);
 }
@@ -25,6 +27,9 @@ void CameraComponent::update(float dt) {
     lookAt = gameObject->getSpatial()->position() + glm::normalize(sphere);
 
     /* Update view matrix */
-    this->projection = glm::perspective(fov, aspect, near, far);
-    this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
+    if (isDirty) {
+        this->projection = glm::perspective(fov, Window::getAspectRatio(), near, far);
+        this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
+        isDirty = false;
+    }
 }

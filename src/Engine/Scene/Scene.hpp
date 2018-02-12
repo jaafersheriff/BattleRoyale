@@ -26,7 +26,7 @@ class Scene {
         /* Game Objects */
         GameObject & createGameObject();
     
-        /* Components */
+        // Creates a component of the given type and adds it to the scene
         template <typename CompT, typename... Args>
         CompT & createComponent(Args &&... args);
 
@@ -44,6 +44,7 @@ class Scene {
         RenderSystem & renderSystem() { return *m_renderSystemRef; }
         SpatialSystem & spatialSystem() { return *m_spatialSystemRef; }
         PathfindingSystem & pathfindingSystem() { return *m_pathfindingSystemRef; }
+        CollisionSystem & collisionSystem() { return *m_collisionSystemRef; }
 
     private:
 
@@ -67,6 +68,7 @@ class Scene {
         RenderSystem * m_renderSystemRef;
         SpatialSystem * m_spatialSystemRef;
         PathfindingSystem * m_pathfindingSystemRef;
+        CollisionSystem * m_collisionSystemRef;
 
         /* Lists of all game objects */
         std::vector<GameObject *> m_gameObjectRefs;

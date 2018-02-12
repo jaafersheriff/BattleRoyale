@@ -23,20 +23,18 @@ class Loader {
         Texture *getTexture(const std::string &, GLenum, const bool);
 
     private:
-        /* Resize a mesh so all the vertices are [0, 1] */
-        void resize(Mesh &);
+        /* Resize mesh vertex buffers so all the vertices are [0, 1] */
+        void resize(Mesh::MeshBuffers &);
 
         /* Return pointer to loaded stb_image data */
         uint8_t* loadTextureData(const std::string &, const bool, int*, int*, int*);
 
-        /* Load data to GPU */
+        /* GL Loaders */
         void loadMesh(Mesh &);
         void loadTexture(Texture *, uint8_t *, GLenum);
 
-        /* Library containing loaded data */
-        Library library;
-
         /* Private members */
+        Library library;
         std::string RESOURCE_DIR;
         bool verbose;
 };
