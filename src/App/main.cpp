@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
 
     /* Create camera and camera controller components */
     GameObject & camera(scene.createGameObject());
-    CameraComponent & cc(scene.createComponent<CameraComponent>(45.f, 1280.f / 960.f, 0.01f, 250.f));
+    CameraComponent & cc(scene.createComponent<CameraComponent>(45.f, 0.01f, 250.f));
     camera.addComponent(cc);
     camera.addComponent(scene.createComponent<CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT));
     camera.addComponent(scene.createComponent<SpatialComponent>());
