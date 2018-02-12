@@ -48,10 +48,10 @@ Mesh* Loader::getMesh(const std::string & name) {
     }
 
     /* Provide VBO info */
-    mesh->vertBufSize = mesh->buffers.vertBuf.size();
-    mesh->norBufSize  = mesh->buffers.norBuf.size();
-    mesh->texBufSize  = mesh->buffers.texBuf.size();
-    mesh->eleBufSize  = mesh->buffers.eleBuf.size();
+    mesh->vertBufSize = int(mesh->buffers.vertBuf.size());
+    mesh->norBufSize  = int(mesh->buffers.norBuf.size());
+    mesh->texBufSize  = int(mesh->buffers.texBuf.size());
+    mesh->eleBufSize  = int(mesh->buffers.eleBuf.size());
 
     /* Resize the mesh to be centered around origin and have vertex values [0, 1.0] */
     resize(mesh->buffers);

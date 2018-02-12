@@ -203,8 +203,8 @@ std::unique_ptr<BounderComponent> createBounderFromMesh(int weight, const Mesh &
     AABox box; Sphere sphere; Capsule capsule;
     float boxV, sphereV, capsuleV;
 
-    int nVerts(int(mesh.vertBuf.size()) / 3);
-    const glm::vec3 * positions(reinterpret_cast<const glm::vec3 *>(mesh.vertBuf.data()));
+    int nVerts(int(mesh.buffers.vertBuf.size()) / 3);
+    const glm::vec3 * positions(reinterpret_cast<const glm::vec3 *>(mesh.buffers.vertBuf.data()));
     auto span(detMeshSpan(nVerts, positions));
     glm::vec3 & spanMin(span.first), & spanMax(span.second);
     glm::vec3 center((spanMax - spanMin) * 0.5f + spanMin);
