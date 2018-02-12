@@ -54,7 +54,7 @@ Mesh* Loader::getMesh(const std::string & name) {
     mesh->eleBufSize  = int(mesh->buffers.eleBuf.size());
 
     /* Resize the mesh to be centered around origin and have vertex values [0, 1.0] */
-    resize(mesh->buffers);
+    //resize(mesh->buffers);
 
     /* Add new mesh to library */
     library.addMesh(name, *mesh);
