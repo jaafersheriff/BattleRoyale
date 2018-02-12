@@ -3,11 +3,11 @@
 
 
 System::System(const std::vector<Component *> & components) :
-    components(components)
+    m_components(components)
 {}
 
 void System::update(float dt) {
-    for (auto & c : components) {
+    for (auto & c : m_components) {
         c->update(dt);
     }
 }

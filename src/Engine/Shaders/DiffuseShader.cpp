@@ -1,8 +1,16 @@
 #include "DiffuseShader.hpp"
+
+#include "glm/gtc/matrix_transform.hpp"
+
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
-#include "glm/gtc/matrix_transform.hpp"
+
+DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam, const glm::vec3 & light) :
+    Shader(vertFile, fragFile),
+    camera(&cam),
+    lightPos(&light)
+{}
 
 bool DiffuseShader::init() {
     if (!Shader::init()) {

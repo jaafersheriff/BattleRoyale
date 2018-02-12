@@ -8,3 +8,4 @@
 #include "RenderComponents/DiffuseRenderComponent.hpp"
 
 #include "SpatialComponents/SpatialComponent.hpp"
+#include "CollisionComponents/CollisionComponent.hpp"

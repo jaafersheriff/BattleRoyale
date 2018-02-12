@@ -26,7 +26,7 @@ class Scene {
         /* Game Objects */
         GameObject & createGameObject();
     
-        /* Components */
+        // Creates a component of the given type and adds it to the scene
         template <typename CompT, typename... Args>
         CompT & createComponent(Args &&... args);
 
@@ -43,6 +43,7 @@ class Scene {
         GameLogicSystem & gameLogicSystem() { return *m_gameLogicSystemRef; }
         RenderSystem & renderSystem() { return *m_renderSystemRef; }
         SpatialSystem & spatialSystem() { return *m_spatialSystemRef; }
+        CollisionSystem & collisionSystem() { return *m_collisionSystemRef; }
 
     private:
 
@@ -65,6 +66,7 @@ class Scene {
         GameLogicSystem * m_gameLogicSystemRef;
         RenderSystem * m_renderSystemRef;
         SpatialSystem * m_spatialSystemRef;
+        CollisionSystem * m_collisionSystemRef;
 
         /* Lists of all game objects */
         std::vector<GameObject *> m_gameObjectRefs;
