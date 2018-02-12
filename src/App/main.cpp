@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
     ));
     bunny.addComponent(scene.createComponent<DiffuseRenderComponent>(
         scene.renderSystem().shaders.find("diffuse")->second->pid,
-        *engine.loader.getMesh("bunny.obj"),
+        *Loader::getMesh("bunny.obj"),
         ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
                             
 
