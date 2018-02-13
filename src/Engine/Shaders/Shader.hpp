@@ -18,7 +18,11 @@ class Shader {
     public:
         /* Empty constructor
          * Only used to set GLSL shader names */
-        Shader(const std::string & v = "", const std::string & f = "") : vShaderName(v), fShaderName(f) { }
+        Shader(const std::string & v = "", const std::string & f = "") : 
+            vShaderName(v), 
+            fShaderName(f),
+            m_isEnabled(false)
+        {}
 
         /* Compile GLSL shaders 
          * Derived shaders can add uniforms/attributes here */  
@@ -48,7 +52,9 @@ class Shader {
         GLint getUniform(const std::string &);
 
         GLuint pid = 0;
-        bool isActive = false;
+
+        bool m_isEnabled;
+        bool isEnabled() const { return m_isEnabled; }
     protected:
         /* GLSL shader names */
         const std::string vShaderName;
