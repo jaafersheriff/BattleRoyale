@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
     scene.createComponent<ImGuiComponent>(
         "Stats",
         [&]() {
-            ImGui::Text("FPS: %f", engine.fps);
+            ImGui::Text("FPS: %d", engine.fps);
             ImGui::Text("dt: %f", engine.timeStep);
         }
     );
