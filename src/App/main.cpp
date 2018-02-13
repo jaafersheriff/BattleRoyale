@@ -118,7 +118,8 @@ int main(int argc, char **argv) {
     bunny.addComponent(scene.createComponent<DiffuseRenderComponent>(
         scene.renderSystem().getShader<DiffuseShader>()->pid,
         *bunnyMesh,
-        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));                            
+        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
+    bunny.getSpatial()->setRotation(glm::rotate(glm::mat4(), 45.0f, glm::fvec3(1.0f)));
 
     /* Main loop */
     engine.run();
