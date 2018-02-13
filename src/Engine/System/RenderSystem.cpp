@@ -15,33 +15,6 @@ RenderSystem::RenderSystem(std::vector<Component *> & components) :
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-bool RenderSystem::addShader(const std::string & name, std::unique_ptr<Shader> shader) {
-    auto it(m_shaders.find(name));
-    if (it != m_shaders.end()) {
-        return true;
-    }
-    if (shader->init()) {
-        m_shaders[name] = std::move(shader);
-        return true;
-    }
-    else {
-        std::cerr << "Failed to initialize shader [" << name << "]" << std::endl;
-        return false;
-    }
-}
-
-Shader * RenderSystem::getShader(const std::string & name) {
-    if (!m_shaders.count(name)) {
-        return nullptr;
-    }
-
-    return m_shaders.at(name).get();
-}
-
-const Shader * RenderSystem::getShader(const std::string & name) const {
-    return getShader(name);
-}
-
 void RenderSystem::update(float dt) {
     /* Reset rendering display */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -55,7 +28,7 @@ void RenderSystem::update(float dt) {
         // to this shader -- right now we are passing the entire    //
         // list and expecting each shader to filter through         //
         //////////////////////////////////////////////////////////////
-        shader.second->render(shader.first, m_components);
+        shader.second->render(m_components);
         shader.second->unbind();
     }
 

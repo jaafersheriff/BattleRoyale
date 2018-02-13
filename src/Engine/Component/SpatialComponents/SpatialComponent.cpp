@@ -63,12 +63,14 @@ void SpatialComponent::scale(const glm::vec3 & factor) {
 
 void SpatialComponent::setRotation(const glm::mat3 & rot) {
     m_rotation = rot;
+    m_modelMatrixValid = false;
     m_normalMatrixValid = false;
     m_transformed = true;
 }
 
 void SpatialComponent::rotate(const glm::mat3 & mat) {
     m_rotation = mat * m_rotation;
+    m_modelMatrixValid = false;
     m_normalMatrixValid = false;
     m_transformed = true;
 }

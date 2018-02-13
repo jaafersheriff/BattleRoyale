@@ -81,8 +81,7 @@ int main(int argc, char **argv) {
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
-    if (!scene.renderSystem().addShader<DiffuseShader>(
-            "diffuse",                                    /* Shader name              */
+    if (!scene.renderSystem().createShader<DiffuseShader>(
             engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex shader file       */
             engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment shader file     */
             cc,                                           /* Shader-specific uniforms */
@@ -93,9 +92,9 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    // Create collider shader
+    // Create collider
     // alternate method using unique_ptr and new
-    if (!scene.renderSystem().addShader("bounder", std::unique_ptr<BounderShader>(new BounderShader(
+    if (!scene.renderSystem().addShader(std::unique_ptr<BounderShader>(new BounderShader(
             engine.RESOURCE_DIR + "bounder_vert.glsl",
             engine.RESOURCE_DIR + "bounder_frag.glsl",
             scene.collisionSystem(),
@@ -105,7 +104,7 @@ int main(int argc, char **argv) {
         std::cin.get(); //don't immediately close the console
         return EXIT_FAILURE;
     }
-    static_cast<BounderShader *>(scene.renderSystem().getShader("bounder"))->enable();
+    scene.renderSystem().getShader<BounderShader>()->enable();
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
@@ -117,10 +116,10 @@ int main(int argc, char **argv) {
     ));
     bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
     bunny.addComponent(scene.createComponent<DiffuseRenderComponent>(
-        scene.renderSystem().m_shaders.find("diffuse")->second->pid,
-        *Loader::getMesh("bunny.obj"),
+        scene.renderSystem().getShader<DiffuseShader>()->pid,
+        *bunnyMesh,
         ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
-                            
+    bunny.getSpatial()->setRotation(glm::rotate(glm::mat4(), 45.0f, glm::fvec3(1.0f)));
 
     /* Main loop */
     engine.run();

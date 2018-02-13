@@ -73,7 +73,7 @@ bool BounderShader::init() {
     return true;
 }
 
-void BounderShader::render(const std::string & name, const std::vector<Component *> & components_) {
+void BounderShader::render(const std::vector<Component *> & components_) {
     if (!m_isEnabled) {
         return;
     }
