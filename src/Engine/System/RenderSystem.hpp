@@ -52,10 +52,13 @@ class RenderSystem : public System {
         }
     }
 
-    /* Iterate through shaders map
-        * Bind individual shaders 
-        * Call shaders' render function with the appropriate render component list */
-    void update(float);
+        Shader * getShader(const std::string & name);
+        const Shader * getShader(const std::string & name) const;
+
+        /* Iterate through shaders map
+         * Bind individual shaders 
+         * Call shaders' render function with the appropriate render component list */
+        void update(float);
     
     /* Map of shader name to Shader objects 
         * Rendering components only need to contain a reference to the 

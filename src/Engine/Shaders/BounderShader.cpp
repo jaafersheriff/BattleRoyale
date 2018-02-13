@@ -43,6 +43,7 @@ BounderShader::BounderShader(const std::string & vertFile, const std::string & f
     Shader(vertFile, fragFile),
     m_collisionSystem(&collisionSys),
     m_camera(&cam),
+    m_isEnabled(false),
     
     m_aabVBO(0), m_aabIBO(0), m_aabVAO(0),
     m_sphereVBO(0), m_sphereIBO(0), m_sphereVAO(0),
@@ -73,6 +74,10 @@ bool BounderShader::init() {
 }
 
 void BounderShader::render(const std::vector<Component *> & components_) {
+    if (!m_isEnabled) {
+        return;
+    }
+
     loadMat4(getUniform("u_viewMat"), m_camera->getView());
     loadMat4(getUniform("u_projMat"), m_camera->getProj());
 
@@ -113,6 +118,14 @@ void BounderShader::render(const std::vector<Component *> & components_) {
     }
 
     glBindVertexArray(0);
+}
+
+void BounderShader::enable() {
+    m_isEnabled = true;
+}
+
+void BounderShader::disable() {
+    m_isEnabled = false;
 }
 
 bool BounderShader::initAABMesh() {
