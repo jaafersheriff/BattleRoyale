@@ -140,8 +140,18 @@ int main(int argc, char **argv) {
             glm::vec3 position = bunny.getSpatial()->position();
             ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f);
             bunny.getSpatial()->setPosition(position);
-    });
+        }
+    );
     bunny.addComponent(bIc);
+
+    /* Game stats pane */
+    ImGuiComponent & wIc = scene.createComponent<ImGuiComponent>(
+        "Stats",
+        [&]() {
+            ImGui::Text("FPS: %f", engine.fps);
+            ImGui::Text("dt: %f", engine.timeStep);
+        }
+    );
 
     /* Main loop */
     engine.run();
