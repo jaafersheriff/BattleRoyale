@@ -74,7 +74,15 @@ void GameObject::addComponent(CompT & component) {
 
 template <typename CompT>
 const std::vector<Component *> & GameObject::getComponents() const {
-    return m_components[std::type_index(typeid(CompT::SystemClass))];
+    static const std::vector<Component *> s_emptyList;
+
+    std::type_index sysI(typeid(CompT::SystemClass));
+
+    if (m_components.count(sysI)) {
+        return m_components.at(sysI);
+    }
+
+    return s_emptyList;
 }
 
 template <typename CompT>

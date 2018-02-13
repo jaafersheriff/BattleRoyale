@@ -12,6 +12,7 @@
 // forward declaration
 class CollisionSystem;
 class BounderComponent;
+class BounderShader;
 class Mesh;
 
 
@@ -20,6 +21,7 @@ class Mesh;
 class BounderComponent : public Component {
 
     friend CollisionSystem;
+    friend BounderShader;
 
     public:
 
@@ -28,8 +30,8 @@ class BounderComponent : public Component {
     protected:
 
     int m_weight;
-    bool m_wasCollision; // was there a collision this tick
-    bool m_wasAdjustment; // was the object moved due to a collision this tick
+    bool m_collisionFlag; // was there a collision this tick
+    bool m_adjustmentFlag; // was the object moved due to a collision this tick
 
     public:
 
@@ -41,15 +43,13 @@ class BounderComponent : public Component {
 
     virtual ~BounderComponent() override = default;
 
-    virtual void update(float dt);
+    virtual void update(float dt) = 0;
 
     virtual bool collide(const BounderComponent & o, glm::vec3 * delta) const = 0;
 
     virtual Intersect intersect(const Ray & ray) const = 0;
 
     int weight() const { return m_weight; }
-    bool wasCollision() const { return m_wasCollision; }
-    bool wasAdjustment() const { return m_wasAdjustment; }
 
 };
 
