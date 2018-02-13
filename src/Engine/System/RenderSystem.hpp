@@ -31,6 +31,9 @@ class RenderSystem : public System {
          *   On success, add to shader map and return true */
         bool addShader(const std::string & name, std::unique_ptr<Shader> shader);
 
+        Shader * getShader(const std::string & name);
+        const Shader * getShader(const std::string & name) const;
+
         /* Iterate through shaders map
          * Bind individual shaders 
          * Call shaders' render function with the appropriate render component list */

@@ -105,6 +105,7 @@ int main(int argc, char **argv) {
         std::cin.get(); //don't immediately close the console
         return EXIT_FAILURE;
     }
+    static_cast<BounderShader *>(scene.renderSystem().getShader("bounder"))->enable();
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
