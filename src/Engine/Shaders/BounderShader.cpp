@@ -5,9 +5,9 @@
 #include "Component/CollisionComponents/CollisionComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
-
 #include "ThirdParty/imgui/imgui.h"
 #include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
+
 namespace {
 
 glm::mat4 detAABBMat(const AABBounderComponent & bounder) {
@@ -77,6 +77,7 @@ void BounderShader::render(const std::string & name, const std::vector<Component
     ImGui::Begin("BoundingShader");
     ImGui::Selectable("Render", &isActive);
     ImGui::End();
+
     if (!isActive) {
         return;
     }

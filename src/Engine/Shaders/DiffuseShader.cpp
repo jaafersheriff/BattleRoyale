@@ -5,6 +5,8 @@
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
+#include "ThirdParty/imgui/imgui.h"
+#include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
 
 DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam, const glm::vec3 & light) :
     Shader(vertFile, fragFile),
@@ -38,10 +40,18 @@ bool DiffuseShader::init() {
 }
 
 void DiffuseShader::render(const std::string & name, const std::vector<Component *> & components) {
-
+    ImGui::Begin("Diffuse Shader");
+    ImGui::Selectable("Render", &isActive);
+    ImGui::Selectable("Wireframe", &showWireFrame);
+    ImGui::End();
     if (!isActive) {
         return;
     }
+
+    if (showWireFrame) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+
     /* Bind uniforms */
     loadMat4(getUniform("P"), camera->getProj());
     loadMat4(getUniform("V"), camera->getView());
@@ -123,5 +133,9 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
             glActiveTexture(GL_TEXTURE0 + drc->modelTexture.texture->textureId);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
+ 
+    if (showWireFrame) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
+   }
 }
