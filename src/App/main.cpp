@@ -6,11 +6,13 @@ extern "C" {
 }
 #endif
 
-#include "EngineApp/EngineApp.hpp"
-#include "Shaders/BounderShader.hpp"
-
 #include <string>
 #include <iostream>
+
+#include "glm/gtx/transform.hpp"
+
+#include "EngineApp/EngineApp.hpp"
+#include "LevelBuilder/FileReader.hpp"
 
 void printUsage() {
     std::cout << "Valid arguments: " << std::endl;
@@ -104,7 +106,11 @@ int main(int argc, char **argv) {
         std::cin.get(); //don't immediately close the console
         return EXIT_FAILURE;
     }
-    scene.renderSystem().getShader<BounderShader>()->enable();
+
+    /*Parse and load json level*/
+    FileReader fileReader;
+    const char *levelPath = "../resources/GameLevel_02.json";
+    fileReader.loadLevel(*levelPath, scene);
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
@@ -114,11 +120,39 @@ int main(int argc, char **argv) {
         glm::vec3(1.0f, 1.0f, 1.0f), // scale
         glm::mat3() // rotation
     ));
-    bunny.addComponent(scene.addComponent(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
-    bunny.addComponent(scene.createComponent<DiffuseRenderComponent>(
+    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
+    DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
         scene.renderSystem().getShader<DiffuseShader>()->pid,
         *bunnyMesh,
-        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
+        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
+    bunny.addComponent(bunnyDiffuse);
+    /* Bunny ImGui panes */
+    ImGuiComponent & ic = scene.createComponent<ImGuiComponent>();
+    ic.addPane("Bunny", [&](float dt) {
+        /* Material properties */
+        ImGui::SliderFloat("Ambient", &bunnyDiffuse.modelTexture.material.ambient, 0.f, 1.f);
+        ImGui::SliderFloat("Red", &bunnyDiffuse.modelTexture.material.diffuse.r, 0.f, 1.f);
+        ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
+        ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
+        /* Spatial properties */
+        glm::vec3 scale = bunny.getSpatial()->scale();
+        ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f);
+        bunny.getSpatial()->setScale(scale); 
+        glm::vec3 position = bunny.getSpatial()->position();
+        ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f);
+        bunny.getSpatial()->setPosition(position);
+        static glm::vec3 axis;
+        ImGui::SliderFloat3("Rotation Axis", glm::value_ptr(axis), 0.0f, 1.0f);
+        static float angle(0.0f);
+        ImGui::SliderFloat("Rotation Angle", &angle, -glm::pi<float>(), glm::pi<float>());
+        if (angle != 0.0f && axis != glm::vec3()) {
+            bunny.getSpatial()->setRotation(glm::rotate(angle, glm::normalize(axis)));
+        }
+        else {
+            bunny.getSpatial()->setRotation(glm::mat3());
+        }
+    });
+    bunny.addComponent(ic);
 
     /* Main loop */
     engine.run();

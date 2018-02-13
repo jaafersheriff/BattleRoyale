@@ -15,6 +15,8 @@ class DiffuseShader : public Shader {
 
         const CameraComponent * camera;
         const glm::vec3 * lightPos;
+
+        bool showWireFrame = false;
 };
 
 #endif 

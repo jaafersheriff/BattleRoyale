@@ -1,0 +1,175 @@
+{
+"object0":{
+    "objName": "Assets/Models/FoodCourt_Floor.obj",
+    "objTexture": "Assets/Models/textures/floor_tiles.png",
+    "position": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "scale": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object1":{
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "position": [
+        7.0,
+        1.0,
+        -7.0
+    ],
+    "scale": [
+        0.36041179299354555,
+        0.36041179299354555,
+        0.36041179299354555
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        5.960464477539063e-8,
+        -0.9999999403953552
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.9999999403953552,
+        5.960464477539063e-8
+    ]
+},
+"object2":{
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "position": [
+        0.8281700015068054,
+        1.6100000143051148,
+        -0.5812900066375732
+    ],
+    "scale": [
+        0.7770761847496033,
+        0.777076244354248,
+        0.777076244354248
+    ],
+    "rotMat3_0": [
+        0.5000001192092896,
+        -0.5000000596046448,
+        0.7071067690849304
+    ],
+    "rotMat3_1": [
+        0.7071067690849304,
+        0.7071068286895752,
+        -2.9802322387695315e-8
+    ],
+    "rotMat3_2": [
+        -0.5000000596046448,
+        0.4999999403953552,
+        0.7071068286895752
+    ]
+},
+"object3":{
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "position": [
+        7.0,
+        1.0,
+        7.0
+    ],
+    "scale": [
+        0.36041000485420229,
+        0.36041000485420229,
+        0.36041000485420229
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.9999999403953552,
+        0.0
+    ],
+    "rotMat3_1": [
+        -0.9999999403953552,
+        5.960464477539063e-8,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object4":{
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "position": [
+        -7.0,
+        1.0,
+        7.0
+    ],
+    "scale": [
+        0.36041000485420229,
+        0.36041000485420229,
+        0.36041000485420229
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        -0.9999999403953552,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.9999999403953552,
+        5.960464477539063e-8,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object5":{
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "position": [
+        -7.0,
+        1.0,
+        -7.0
+    ],
+    "scale": [
+        0.36041000485420229,
+        0.36041000485420229,
+        0.36041000485420229
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        5.960464477539063e-8,
+        0.9999999403953552
+    ],
+    "rotMat3_2": [
+        0.0,
+        -0.9999999403953552,
+        5.960464477539063e-8
+    ]
+}}

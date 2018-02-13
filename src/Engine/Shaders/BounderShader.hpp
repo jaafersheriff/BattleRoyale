@@ -14,7 +14,6 @@ class BounderShader : public Shader {
 
     const CollisionSystem * m_collisionSystem;
     const CameraComponent * m_camera;
-    bool m_isEnabled;
 
     unsigned int m_aabVBO, m_aabIBO, m_aabVAO;
     unsigned int m_sphereVBO, m_sphereIBO, m_sphereVAO;
@@ -28,11 +27,6 @@ class BounderShader : public Shader {
 
     bool init() override;
     void render(const std::vector<Component *> &) override;
-
-    void enable();
-    void disable();
-
-    bool isEnabled() const { return m_isEnabled; }
 
     private:
 
