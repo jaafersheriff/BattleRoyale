@@ -7,7 +7,6 @@ extern "C" {
 #endif
 
 #include "EngineApp/EngineApp.hpp"
-#include "Shaders/BounderShader.hpp"
 
 #include <string>
 #include <iostream>
@@ -115,11 +114,15 @@ int main(int argc, char **argv) {
         glm::mat3() // rotation
     ));
     bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
+    ModelTexture bunnyTex(0.f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f));
     bunny.addComponent(scene.createComponent<DiffuseRenderComponent>(
         scene.renderSystem().m_shaders.find("diffuse")->second->pid,
         *Loader::getMesh("bunny.obj"),
-        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
-                            
+        bunnyTex));
+    ImGuiComponent ic = scene.createComponent<ImGuiComponent>();
+    ic.addPane("Bunny", [&](float dt) {
+        // TODO
+    });
 
     /* Main loop */
     engine.run();

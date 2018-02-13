@@ -6,6 +6,7 @@
 
 #include "Shaders/Shader.hpp"
 #include "Shaders/DiffuseShader.hpp"
+#include "Shaders/BounderShader.hpp"
 
 #include <unordered_map>
 #include <string>
