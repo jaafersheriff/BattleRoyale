@@ -4,6 +4,9 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
+// Debug
+#include "GameObject/GameObject.hpp"
+
 bool DiffuseShader::init() {
     if (!Shader::init()) {
         return false;
@@ -34,6 +37,14 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
     loadMat4(getUniform("P"), camera->getProj());
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
+
+    // Debug
+    unsigned renderCount;
+    renderCount = 0;
+
+    /* Get data about the camera */
+    // glm::vec3 pos = camera->getGameObject()->getSpatial()->position();
+    // printf("Camera location: [%f, %f, %f]\n", pos[0], pos[1], pos[2]);
 
     for (auto cp : components) {
         // TODO : component list should be passed in as diffuserendercomponent
@@ -92,6 +103,8 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
 
         /* DRAW */
         glDrawElements(GL_TRIANGLES, (int)drc->mesh->eleBuf.size(), GL_UNSIGNED_INT, nullptr);
+        // Debug
+        renderCount = renderCount + 1;
 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));
@@ -112,4 +125,7 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
             glBindTexture(GL_TEXTURE_2D, 0);
         }
     }
+
+    // Debug
+    // printf("Rendered %u DiffuseRenderComponents\n", renderCount);
 }

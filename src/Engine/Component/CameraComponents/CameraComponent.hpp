@@ -33,9 +33,28 @@ class CameraComponent : public Component {
         const glm::mat4 & getProj() const { return projection; }
 
         /* Member vars */
+        /* w = forwards-backwards of camera */
+        /* v = up-down of camera */
+        /* u = left-right of camera */
         glm::vec3 u, v, w;
+        /* Where the camera is looking at in world space */
         glm::vec3 lookAt;
+        /* Describes the rotation of the camera */
         double phi, theta;
+
+        /* Data about the view frustum */
+        float
+            farPlaneWidth, farPlaneHeight,
+            nearPlaneWidth, nearPlaneHeight;
+        /* Planes can be described by a point in space and a normal */
+        glm::vec3
+            farPlanePoint, farPlaneNormal,
+            nearPlanePoint, nearPlaneNormal,
+            topPlanePoint, topPlaneNormal,
+            bottomPlanePoint, bottomPlaneNormal,
+            leftPlanePoint, leftPlaneNormal,
+            rightPlanePoint, rightPlaneNormal;
+            
     private:
         /* Projection */
         float fov, aspect, near, far;
