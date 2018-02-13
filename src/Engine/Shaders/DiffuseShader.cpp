@@ -135,8 +135,9 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
  
+    }
+
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-   }
 }
