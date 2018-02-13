@@ -15,20 +15,26 @@ class GameLogicSystem;
 
 class ImGuiComponent : public Component {
 
+    friend Scene;
+
     public:
 
     using SystemClass = GameLogicSystem;
 
+    protected: // only scene can create component
+
+        ImGuiComponent() = default;
+
     public:
-        ImGuiComponent()
-        {}
 
         void addPane(std::string, std::function<void(float)>);
 
         void update(float);
 
     private:
+
         std::map<std::string, std::vector<std::function<void(float)>>> panes;
+
 };
 
 #endif

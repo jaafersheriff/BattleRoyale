@@ -11,17 +11,22 @@ class GameLogicSystem;
 
 class CameraComponent : public Component {
 
+    friend Scene;
+
     public:
 
     using SystemClass = GameLogicSystem;
 
-    public:
+    protected: // only scene can create component
+
         /* Constructor */
         CameraComponent(float fov, float near, float far) :
             fov(fov),
             near(near),
             far(far) {
         }
+
+    public:
         
         /* Derived functions */
         void init();

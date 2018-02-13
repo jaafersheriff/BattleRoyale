@@ -20,6 +20,7 @@ class Mesh;
 // Represents a bounding surface around an entity
 class BounderComponent : public Component {
 
+    friend Scene;
     friend CollisionSystem;
     friend BounderShader;
 
@@ -33,9 +34,7 @@ class BounderComponent : public Component {
     bool m_collisionFlag; // was there a collision this tick
     bool m_adjustmentFlag; // was the object moved due to a collision this tick
 
-    public:
-
-    protected:
+    protected: // only scene can create component
 
     BounderComponent(int weight);
 

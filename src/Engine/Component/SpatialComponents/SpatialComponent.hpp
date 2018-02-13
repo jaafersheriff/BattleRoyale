@@ -10,6 +10,8 @@ class SpatialSystem;
 
 class SpatialComponent : public Component {
 
+    friend Scene;
+
     public:
 
     using SystemClass = SpatialSystem;
@@ -26,10 +28,12 @@ class SpatialComponent : public Component {
     mutable bool m_modelMatrixValid;
     mutable bool m_normalMatrixValid;
 
-    public:
+    protected: // only scene can create component
 
     SpatialComponent();
     SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & rotation);
+
+    public:
 
     virtual void update(float dt) override;
 

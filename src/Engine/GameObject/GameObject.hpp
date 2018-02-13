@@ -11,14 +11,24 @@
 
 #include "Message.hpp"
 
+class Scene;
 class Component;
 class SpatialComponent;
 
 class GameObject {
 
-    public:
+    friend Scene;
+
+    private: // only scene can create game object
 
     GameObject();
+    
+    // TODO: potentially add move support
+    GameObject(const GameObject & other) = delete; // doesn't make sense to copy a GameObject
+    GameObject & operator=(const GameObject & other) = delete;
+
+    public:
+
     ~GameObject();
 
     void init();
