@@ -37,7 +37,7 @@ bool DiffuseShader::init() {
     return true;
 }
 
-void DiffuseShader::render(const std::string & name, const std::vector<Component *> & components) {
+void DiffuseShader::render(const std::vector<Component *> & components) {
     /* Bind uniforms */
     loadMat4(getUniform("P"), camera->getProj());
     loadMat4(getUniform("V"), camera->getView());

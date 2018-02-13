@@ -82,7 +82,6 @@ int main(int argc, char **argv) {
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
     if (!scene.renderSystem().addShader<DiffuseShader>(
-            "diffuse",                                    /* Shader name              */
             engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex shader file       */
             engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment shader file     */
             cc,                                           /* Shader-specific uniforms */
@@ -95,7 +94,7 @@ int main(int argc, char **argv) {
 
     // Create collider shader
     // alternate method using unique_ptr and new
-    if (!scene.renderSystem().addShader("bounder", std::unique_ptr<BounderShader>(new BounderShader(
+    if (!scene.renderSystem().addShader(std::unique_ptr<BounderShader>(new BounderShader(
             engine.RESOURCE_DIR + "bounder_vert.glsl",
             engine.RESOURCE_DIR + "bounder_frag.glsl",
             scene.collisionSystem(),

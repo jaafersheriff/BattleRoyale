@@ -72,7 +72,7 @@ bool BounderShader::init() {
     return true;
 }
 
-void BounderShader::render(const std::string & name, const std::vector<Component *> & components_) {
+void BounderShader::render(const std::vector<Component *> & components_) {
     loadMat4(getUniform("u_viewMat"), m_camera->getView());
     loadMat4(getUniform("u_projMat"), m_camera->getProj());
 
