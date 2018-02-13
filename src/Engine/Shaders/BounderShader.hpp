@@ -28,9 +28,6 @@ class BounderShader : public Shader {
     bool init() override;
     void render(const std::string &, const std::vector<Component *> &) override;
 
-    void enable();
-    void disable();
-
     private:
 
     bool initAABMesh();

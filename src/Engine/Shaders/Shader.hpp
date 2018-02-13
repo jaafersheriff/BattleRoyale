@@ -9,11 +9,11 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include "Component/Component.hpp"
-
 #include <map>
 #include <string>
+#include <vector>
 
+class Component;
 class Shader {
     public:
         /* Empty constructor
