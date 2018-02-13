@@ -114,15 +114,22 @@ int main(int argc, char **argv) {
         glm::mat3() // rotation
     ));
     bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
-    ModelTexture bunnyTex(0.f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f));
-    bunny.addComponent(scene.createComponent<DiffuseRenderComponent>(
+    DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
         scene.renderSystem().m_shaders.find("diffuse")->second->pid,
         *Loader::getMesh("bunny.obj"),
-        bunnyTex));
-    ImGuiComponent ic = scene.createComponent<ImGuiComponent>();
+        ModelTexture(0.f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
+    bunny.addComponent(bunnyDiffuse);
+    ImGuiComponent & ic = scene.createComponent<ImGuiComponent>();
     ic.addPane("Bunny", [&](float dt) {
-        // TODO
+        ImGui::SliderFloat("Ambient", &bunnyDiffuse.modelTexture.material.ambient, 0.f, 1.f);
+        ImGui::SliderFloat("Red", &bunnyDiffuse.modelTexture.material.diffuse.r, 0.f, 1.f);
+        ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
+        ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
+        glm::vec3 scale = bunny.getSpatial()->scale();
+        ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f);
+        bunny.getSpatial()->setScale(scale);
     });
+    bunny.addComponent(ic);
 
     /* Main loop */
     engine.run();

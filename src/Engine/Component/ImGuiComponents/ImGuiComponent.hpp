@@ -7,6 +7,7 @@
 #include "ThirdParty/imgui/imgui.h"
 #include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
 
+#include <string>
 #include <map>
 #include <functional>
 
@@ -22,9 +23,7 @@ class ImGuiComponent : public Component {
         ImGuiComponent()
         {}
 
-        void addPane(std::string name, std::function<void(float)> fn) {
-            panes[name].push_back(fn);
-        }
+        void addPane(std::string, std::function<void(float)>);
 
         void update(float);
 
