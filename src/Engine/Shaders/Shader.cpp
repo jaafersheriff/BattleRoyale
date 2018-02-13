@@ -39,6 +39,7 @@ bool Shader::init() {
     }
 
     GLSL::checkError(GET_FILE_LINE);
+    isActive = true;
     return true;
 }
 void Shader::bind() {

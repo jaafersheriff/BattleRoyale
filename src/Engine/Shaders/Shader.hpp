@@ -48,6 +48,7 @@ class Shader {
         GLint getUniform(const std::string &);
 
         GLuint pid = 0;
+        bool isActive = false;
     protected:
         /* GLSL shader names */
         const std::string vShaderName;
