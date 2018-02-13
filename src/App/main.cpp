@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 #include "EngineApp/EngineApp.hpp"
-#include "Shaders/BounderShader.hpp"
+#include "LevelBuilder/FileReader.hpp"
 
 #include <string>
 #include <iostream>
@@ -81,8 +81,7 @@ int main(int argc, char **argv) {
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
-    if (!scene.renderSystem().addShader<DiffuseShader>(
-            "diffuse",                                    /* Shader name              */
+    if (!scene.renderSystem().createShader<DiffuseShader>(
             engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex shader file       */
             engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment shader file     */
             cc,                                           /* Shader-specific uniforms */
@@ -93,9 +92,9 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    // Create collider shader
+    // Create collider
     // alternate method using unique_ptr and new
-    if (!scene.renderSystem().addShader("bounder", std::unique_ptr<BounderShader>(new BounderShader(
+    if (!scene.renderSystem().addShader(std::unique_ptr<BounderShader>(new BounderShader(
             engine.RESOURCE_DIR + "bounder_vert.glsl",
             engine.RESOURCE_DIR + "bounder_frag.glsl",
             scene.collisionSystem(),
@@ -105,7 +104,11 @@ int main(int argc, char **argv) {
         std::cin.get(); //don't immediately close the console
         return EXIT_FAILURE;
     }
-    static_cast<BounderShader *>(scene.renderSystem().getShader("bounder"))->enable();
+
+    /*Parse and load json level*/
+    FileReader fileReader;
+    const char *levelPath = "../resources/GameLevel_02.json";
+    fileReader.loadLevel(*levelPath, scene);
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
@@ -116,11 +119,29 @@ int main(int argc, char **argv) {
         glm::mat3() // rotation
     ));
     bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
-    bunny.addComponent(scene.createComponent<DiffuseRenderComponent>(
-        scene.renderSystem().m_shaders.find("diffuse")->second->pid,
-        *Loader::getMesh("bunny.obj"),
-        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
-                            
+    DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
+        scene.renderSystem().getShader<DiffuseShader>()->pid,
+        *bunnyMesh,
+        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
+    bunny.addComponent(bunnyDiffuse);
+    /* Bunny ImGui panes */
+    ImGuiComponent & ic = scene.createComponent<ImGuiComponent>();
+    ic.addPane("Bunny", [&](float dt) {
+        /* Material properties */
+        ImGui::SliderFloat("Ambient", &bunnyDiffuse.modelTexture.material.ambient, 0.f, 1.f);
+        ImGui::SliderFloat("Red", &bunnyDiffuse.modelTexture.material.diffuse.r, 0.f, 1.f);
+        ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
+        ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
+        /* Spatial properties */
+        glm::vec3 scale = bunny.getSpatial()->scale();
+        ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f);
+        bunny.getSpatial()->setScale(scale); 
+        glm::vec3 position = bunny.getSpatial()->position();
+        ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f);
+        bunny.getSpatial()->setPosition(position);
+ 
+    });
+    bunny.addComponent(ic);
 
     /* Main loop */
     engine.run();

@@ -40,7 +40,7 @@ void EngineApp::run() {
         }
 
         /* Update display, mouse, and keyboard */
-        windowHandler.update();
+        windowHandler.update(float(timeStep));
 
         /* Update all game objects and components */
         m_scene->update(float(timeStep));

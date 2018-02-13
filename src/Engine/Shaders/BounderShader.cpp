@@ -5,7 +5,8 @@
 #include "Component/CollisionComponents/CollisionComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
-
+#include "ThirdParty/imgui/imgui.h"
+#include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
 
 namespace {
 
@@ -43,7 +44,6 @@ BounderShader::BounderShader(const std::string & vertFile, const std::string & f
     Shader(vertFile, fragFile),
     m_collisionSystem(&collisionSys),
     m_camera(&cam),
-    m_isEnabled(false),
     
     m_aabVBO(0), m_aabIBO(0), m_aabVAO(0),
     m_sphereVBO(0), m_sphereIBO(0), m_sphereVAO(0),
@@ -73,7 +73,11 @@ bool BounderShader::init() {
     return true;
 }
 
-void BounderShader::render(const std::string & name, const std::vector<Component *> & components_) {
+void BounderShader::render(const std::vector<Component *> & components_) {
+    ImGui::Begin("BoundingShader");
+    ImGui::Selectable("Render", &m_isEnabled);
+    ImGui::End();
+
     if (!m_isEnabled) {
         return;
     }
@@ -118,14 +122,6 @@ void BounderShader::render(const std::string & name, const std::vector<Component
     }
 
     glBindVertexArray(0);
-}
-
-void BounderShader::enable() {
-    m_isEnabled = true;
-}
-
-void BounderShader::disable() {
-    m_isEnabled = false;
 }
 
 bool BounderShader::initAABMesh() {
