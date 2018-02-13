@@ -35,7 +35,9 @@ class GameObject {
 
     // get first component of a specific type
     template <typename CompT> CompT * getComponent();
-    template <typename CompT> const CompT * getComponent() const { return getComponent<CompT>(); }
+    template <typename CompT> const CompT * getComponent() const {
+        return const_cast<GameObject*>(this)->getComponent<CompT>();
+    }
 
     // get the spatial component
     SpatialComponent * getSpatial() { return m_spatialComponent; }

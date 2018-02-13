@@ -30,7 +30,9 @@ class RenderSystem : public System {
 
     // get shader of the specified type
     template <typename ShaderT> ShaderT * getShader();
-    template <typename ShaderT> const Shader * getShader() const { return getShader<ShaderT>(); }
+    template <typename ShaderT> const Shader * getShader() const {
+        return const_cast<RenderSystem *>(this)->getShader<ShaderT>();
+    }
 
     /* Iterate through shaders map
         * Bind individual shaders 

@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    // Create collider shader
+    // Create collider
     // alternate method using unique_ptr and new
     if (!scene.renderSystem().addShader(std::unique_ptr<BounderShader>(new BounderShader(
             engine.RESOURCE_DIR + "bounder_vert.glsl",
