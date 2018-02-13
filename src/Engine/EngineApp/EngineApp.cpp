@@ -18,7 +18,7 @@ int EngineApp::init() {
     }
 
     m_scene.reset(new Scene());
-    loader.init(verbose, RESOURCE_DIR);
+    Loader::init(verbose, RESOURCE_DIR);
 
     lastFrameTime = runTime = windowHandler.getTime();
    
