@@ -91,6 +91,14 @@ int main(int argc, char **argv) {
         std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
     }
+    /* Diffuse Shader ImGui Pane */
+    scene.createComponent<ImGuiComponent>(
+        "Diffuse Shader",
+        [&]() {
+            ImGui::Selectable("Active", &scene.renderSystem().getShader<DiffuseShader>()->m_isEnabled);
+            ImGui::Selectable("Wireframe", &scene.renderSystem().getShader<DiffuseShader>()->showWireFrame);
+        }
+    );
 
     // Create collider
     // alternate method using unique_ptr and new
@@ -104,6 +112,14 @@ int main(int argc, char **argv) {
         std::cin.get(); //don't immediately close the console
         return EXIT_FAILURE;
     }
+    /* Collider ImGui pane */
+    scene.createComponent<ImGuiComponent>(
+        "Bounder Shader",
+        [&]() {
+            ImGui::Selectable("Active", &scene.renderSystem().getShader<BounderShader>()->m_isEnabled);
+        }
+    );
+
 
     /*Parse and load json level*/
     FileReader fileReader;
@@ -145,7 +161,7 @@ int main(int argc, char **argv) {
     bunny.addComponent(bIc);
 
     /* Game stats pane */
-    ImGuiComponent & wIc = scene.createComponent<ImGuiComponent>(
+    scene.createComponent<ImGuiComponent>(
         "Stats",
         [&]() {
             ImGui::Text("FPS: %f", engine.fps);
