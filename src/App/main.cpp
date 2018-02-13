@@ -91,6 +91,14 @@ int main(int argc, char **argv) {
         std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
     }
+    /* Diffuse Shader ImGui Pane */
+    scene.createComponent<ImGuiComponent>(
+        "Diffuse Shader",
+        [&]() {
+            ImGui::Selectable("Active", &scene.renderSystem().getShader<DiffuseShader>()->m_isEnabled);
+            ImGui::Selectable("Wireframe", &scene.renderSystem().getShader<DiffuseShader>()->showWireFrame);
+        }
+    );
 
     // Create collider
     // alternate method using unique_ptr and new
@@ -104,6 +112,14 @@ int main(int argc, char **argv) {
         std::cin.get(); //don't immediately close the console
         return EXIT_FAILURE;
     }
+    /* Collider ImGui pane */
+    scene.createComponent<ImGuiComponent>(
+        "Bounder Shader",
+        [&]() {
+            ImGui::Selectable("Active", &scene.renderSystem().getShader<BounderShader>()->m_isEnabled);
+        }
+    );
+
 
     /*Parse and load json level*/
     FileReader fileReader;
@@ -125,23 +141,33 @@ int main(int argc, char **argv) {
         ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
     bunny.addComponent(bunnyDiffuse);
     /* Bunny ImGui panes */
-    ImGuiComponent & ic = scene.createComponent<ImGuiComponent>();
-    ic.addPane("Bunny", [&](float dt) {
-        /* Material properties */
-        ImGui::SliderFloat("Ambient", &bunnyDiffuse.modelTexture.material.ambient, 0.f, 1.f);
-        ImGui::SliderFloat("Red", &bunnyDiffuse.modelTexture.material.diffuse.r, 0.f, 1.f);
-        ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
-        ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
-        /* Spatial properties */
-        glm::vec3 scale = bunny.getSpatial()->scale();
-        ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f);
-        bunny.getSpatial()->setScale(scale); 
-        glm::vec3 position = bunny.getSpatial()->position();
-        ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f);
-        bunny.getSpatial()->setPosition(position);
- 
-    });
-    bunny.addComponent(ic);
+    ImGuiComponent & bIc = scene.createComponent<ImGuiComponent>(
+        "Bunny", 
+        [&]() {
+            /* Material properties */
+            ImGui::SliderFloat("Ambient", &bunnyDiffuse.modelTexture.material.ambient, 0.f, 1.f);
+            ImGui::SliderFloat("Red", &bunnyDiffuse.modelTexture.material.diffuse.r, 0.f, 1.f);
+            ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
+            ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
+            /* Spatial properties */
+            glm::vec3 scale = bunny.getSpatial()->scale();
+            ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f);
+            bunny.getSpatial()->setScale(scale); 
+            glm::vec3 position = bunny.getSpatial()->position();
+            ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f);
+            bunny.getSpatial()->setPosition(position);
+        }
+    );
+    bunny.addComponent(bIc);
+
+    /* Game stats pane */
+    scene.createComponent<ImGuiComponent>(
+        "Stats",
+        [&]() {
+            ImGui::Text("FPS: %d", engine.fps);
+            ImGui::Text("dt: %f", engine.timeStep);
+        }
+    );
 
     /* Main loop */
     engine.run();
