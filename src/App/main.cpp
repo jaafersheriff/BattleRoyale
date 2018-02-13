@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
-    if (!scene.renderSystem().addShader<DiffuseShader>(
+    if (!scene.renderSystem().createShader<DiffuseShader>(
             engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex shader file       */
             engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment shader file     */
             cc,                                           /* Shader-specific uniforms */
@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
         std::cin.get(); //don't immediately close the console
         return EXIT_FAILURE;
     }
-    static_cast<BounderShader *>(scene.renderSystem().getShader("bounder"))->enable();
+    scene.renderSystem().getShader<BounderShader>()->enable();
 
     /* Create bunny */
     Mesh * bunnyMesh(engine.loader.getMesh("bunny.obj"));
@@ -116,7 +116,7 @@ int main(int argc, char **argv) {
     ));
     bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
     bunny.addComponent(scene.createComponent<DiffuseRenderComponent>(
-        scene.renderSystem().m_shaders.find("diffuse")->second->pid,
+        scene.renderSystem().getShader<DiffuseShader>()->pid,
         *bunnyMesh,
         ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));                            
 

@@ -22,47 +22,22 @@ class RenderSystem : public System {
 
     RenderSystem(std::vector<Component *> & components);
 
-    /* If the shader already exists, return it
-        * Otherwise, initialize shader object
-        *   Compile GLSL shaders
-        *   On success, add to shader map and return true */
-    template<typename ShaderT, typename... Args>
-    bool addShader(const std::string & name, Args &&... args) {
-        return addShader(name, std::unique_ptr<T>(new ShaderT(std::forward<Args>(args)...)));
-    }
-        
-    /* If the shader already exists, return it
-        * Otherwise, initialize shader object
-        *   Compile GLSL shaders
-        *   On success, add to shader map and return true */
-    template <typename ShaderT>
-    bool addShader(std::unique_ptr<ShaderT> shader) {
-        std::type_index typeI(typeid(ShaderT));
-        auto it(m_shaders.find(typeI));
-        if (it != m_shaders.end()) {
-            return true;
-        }
-        if (shader->init()) {
-            m_shaders[typeI] = std::move(shader);
-            return true;
-        }
-        else {
-            std::cerr << "Failed to initialize shader" << std::endl;
-            return false;
-        }
-    }
+    // creates a new shader and initializes it
+    template<typename ShaderT, typename... Args> bool createShader(Args &&... args);
 
-        Shader * getShader(const std::string & name);
-        const Shader * getShader(const std::string & name) const;
+    // takes possession of shader and initializes it
+    template <typename ShaderT> bool addShader(std::unique_ptr<ShaderT> shader);
 
-        /* Iterate through shaders map
-         * Bind individual shaders 
-         * Call shaders' render function with the appropriate render component list */
-        void update(float);
+    // get shader of the specified type
+    template <typename ShaderT> ShaderT * getShader();
+    template <typename ShaderT> const Shader * getShader() const { return getShader<ShaderT>(); }
+
+    /* Iterate through shaders map
+        * Bind individual shaders 
+        * Call shaders' render function with the appropriate render component list */
+    void update(float);
     
-    /* Map of shader name to Shader objects 
-        * Rendering components only need to contain a reference to the 
-        * Shader name string -- the render system will handle the rest */
+    // Map of shader type to Shader objects
     std::unordered_map<std::type_index, std::unique_ptr<Shader>> m_shaders;
 
 };
@@ -70,6 +45,37 @@ class RenderSystem : public System {
 
 
 // TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
+
+template<typename ShaderT, typename... Args>
+bool RenderSystem::createShader(Args &&... args) {
+    return addShader(std::unique_ptr<ShaderT>(new ShaderT(std::forward<Args>(args)...)));
+}
+
+template <typename ShaderT>
+bool RenderSystem::addShader(std::unique_ptr<ShaderT> shader) {
+    std::type_index typeI(typeid(ShaderT));
+    auto it(m_shaders.find(typeI));
+    if (it != m_shaders.end()) {
+        return true;
+    }
+    if (shader->init()) {
+        m_shaders[typeI] = std::move(shader);
+        return true;
+    }
+    else {
+        std::cerr << "Failed to initialize shader" << std::endl;
+        return false;
+    }
+}
+
+template <typename ShaderT>
+ShaderT * RenderSystem::getShader() {
+    std::type_index typeI(typeid(ShaderT));
+    if (!m_shaders.count(typeI)) {
+        return nullptr;
+    }
+    return static_cast<ShaderT *>(m_shaders.at(typeI).get());
+}
 
 
 

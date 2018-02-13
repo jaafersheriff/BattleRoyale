@@ -15,19 +15,6 @@ RenderSystem::RenderSystem(std::vector<Component *> & components) :
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-
-Shader * RenderSystem::getShader(const std::string & name) {
-    if (!m_shaders.count(name)) {
-        return nullptr;
-    }
-
-    return m_shaders.at(name).get();
-}
-
-const Shader * RenderSystem::getShader(const std::string & name) const {
-    return getShader(name);
-}
-
 void RenderSystem::update(float dt) {
     /* Reset rendering display */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
