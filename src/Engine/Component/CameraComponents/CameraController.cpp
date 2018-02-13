@@ -45,6 +45,7 @@ void CameraController::update(float dt) {
         modified = true;
     }
 
+    // TODO: Update frustum data only when you move the camera
     /* If the camera has been modified, then update the view frustum */ 
     /* if (modified) {
         printf("Camera has been modified\n");

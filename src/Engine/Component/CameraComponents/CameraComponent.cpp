@@ -41,6 +41,7 @@ void CameraComponent::update(float dt) {
         glm::cos(phi)*glm::cos((Util::PI / 2.f) - theta));
     lookAt = goPos + glm::normalize(sphere);
 
+    // TODO: Update frustum data only when the camera is moved
     /* Update view frustum data */
 
     /* w = forwards-backwards of camera */

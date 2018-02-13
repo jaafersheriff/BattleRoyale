@@ -46,12 +46,27 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
     // glm::vec3 pos = camera->getGameObject()->getSpatial()->position();
     // printf("Camera location: [%f, %f, %f]\n", pos[0], pos[1], pos[2]);
 
+    /* Temporary variables to hold sphere bounding data */
+    glm::vec3 center, scale;
+    float radius;
+
     for (auto cp : components) {
         // TODO : component list should be passed in as diffuserendercomponent
         DiffuseRenderComponent *drc;
         if (!(drc = dynamic_cast<DiffuseRenderComponent *>(cp)) || drc->pid != this->pid) {
             continue;
         }
+
+        /* Determine if component should be rendered */
+        /* Get the center and radius of the component */
+        center = drc->getGameObject()->getSpatial()->position();
+        scale = drc->getGameObject()->getSpatial()->scale();
+        /* Radius = max of scale */
+        radius = glm::max(scale[0], glm::max(scale[1], scale[2]));
+
+        // Debug
+        printf("Center: [%f, %f, %f]; Radius: %f\n",
+            center[0], center[1], center[2], radius);
 
         /* Model matrix */
         loadMat4(getUniform("M"), drc->getGameObject()->getSpatial()->modelMatrix());
@@ -128,4 +143,23 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
 
     // Debug
     // printf("Rendered %u DiffuseRenderComponents\n", renderCount);
+}
+
+bool DiffuseShader::sphereInFrustum(glm::vec3 center, float radius,
+    CameraComponent *cc) {
+    /* Temporary variables for QOL */
+    float centerDist;
+    glm::vec3 hypotenuse;
+
+    /* Test if the sphere is completely in the negative side of
+        the far frustum plane */
+    hypotenuse = center - cc->farPlanePoint;
+    centerDist = glm::length(hypotenuse) *
+        glm::dot(hypotenuse, cc->farPlaneNormal) /
+        glm::length(hypotenuse) / 
+        glm::length(cc->farPlaneNormal);
+    if (centerDist < 0 && -centerDist > radius)
+        return false;
+    
+    return true;
 }
