@@ -21,12 +21,6 @@ void CameraComponent::init() {
     nearPlaneHeight = 2 * glm::tan(fovRadians / 2) * near;
     nearPlaneWidth = nearPlaneHeight * aspect;
 
-    printf("far plane: [%f x %f], near plane: [%f, %f]\n",
-        farPlaneWidth, farPlaneHeight,
-        nearPlaneWidth, nearPlaneHeight);
-
-    // printf("glm::tan(fovRadians) = %f\n", glm::tan(fovRadians));
-
     update(0.f);
 }
 
@@ -36,7 +30,6 @@ void CameraComponent::update(float dt) {
     goPos = gameObject->getSpatial()->position();
 
     /* Update basis vectors */
-    // w = glm::normalize(lookAt - gameObject->getSpatial()->position());
     w = glm::normalize(lookAt - goPos);
     u = glm::normalize(glm::cross(w, glm::vec3(0, 1, 0)));
     v = glm::normalize(glm::cross(u, w));
@@ -46,7 +39,6 @@ void CameraComponent::update(float dt) {
         glm::cos(phi)*glm::cos(theta),
         glm::sin(phi),
         glm::cos(phi)*glm::cos((Util::PI / 2.f) - theta));
-    // lookAt = gameObject->getSpatial()->position() + glm::normalize(sphere);
     lookAt = goPos + glm::normalize(sphere);
 
     /* Update view frustum data */
@@ -58,21 +50,25 @@ void CameraComponent::update(float dt) {
     nearPlanePoint = goPos + w * near;
     nearPlaneNormal = w;
 
-    /* Temporary vectors for QOL */
-
     /* v = up-down of camera */
     /* u = left-right of camera */
-    topPlanePoint = goPos + w * near + v * nearPlaneHeight / 2.f;
-    topPlaneNormal = glm::normalize(glm::cross(topPlanePoint - goPos, u));
+    topPlanePoint = nearPlanePoint + v * nearPlaneHeight / 2.f;
+    topPlaneNormal = glm::normalize(glm::cross(topPlanePoint -
+        goPos, u));
 
-    // Debug
-    printf("Top plane normal: [%f, %f, %f]\n",
-        topPlaneNormal[0],
-        topPlaneNormal[1],
-        topPlaneNormal[2]);
+    bottomPlanePoint = nearPlanePoint - v * nearPlaneHeight / 2.f;
+    bottomPlaneNormal = glm::normalize(glm::cross(bottomPlanePoint -
+        goPos, u));
+
+    leftPlanePoint = nearPlanePoint - u * nearPlaneWidth / 2.f;
+    leftPlaneNormal = glm::normalize(glm::cross(leftPlanePoint -
+        goPos, v));
+
+    rightPlanePoint = nearPlanePoint + u * nearPlaneWidth / 2.f;
+    rightPlaneNormal = glm::normalize(glm::cross(rightPlanePoint -
+        goPos, v));
 
     /* Update view matrix */
     this->projection = glm::perspective(fov, aspect, near, far);
-    // this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
     this->view = glm::lookAt(goPos, lookAt, glm::vec3(0, 1, 0));
 }
