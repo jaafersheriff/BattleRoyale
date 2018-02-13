@@ -58,16 +58,20 @@ void CameraComponent::update(float dt) {
         goPos, u));
 
     bottomPlanePoint = nearPlanePoint - v * nearPlaneHeight / 2.f;
-    bottomPlaneNormal = glm::normalize(glm::cross(bottomPlanePoint -
-        goPos, u));
+    /* bottomPlaneNormal = glm::normalize(glm::cross(bottomPlanePoint -
+        goPos, u)); */
+    bottomPlaneNormal = glm::normalize(glm::cross(u,
+        bottomPlanePoint - goPos));
 
     leftPlanePoint = nearPlanePoint - u * nearPlaneWidth / 2.f;
     leftPlaneNormal = glm::normalize(glm::cross(leftPlanePoint -
         goPos, v));
 
     rightPlanePoint = nearPlanePoint + u * nearPlaneWidth / 2.f;
-    rightPlaneNormal = glm::normalize(glm::cross(rightPlanePoint -
-        goPos, v));
+    /* rightPlaneNormal = glm::normalize(glm::cross(rightPlanePoint -
+        goPos, v)); */
+    rightPlaneNormal = glm::normalize(glm::cross(v,
+        rightPlanePoint - goPos));
 
     /* Update view matrix */
     this->projection = glm::perspective(fov, aspect, near, far);
