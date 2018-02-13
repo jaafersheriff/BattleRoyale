@@ -8,6 +8,7 @@ extern "C" {
 
 #include "EngineApp/EngineApp.hpp"
 #include "Shaders/BounderShader.hpp"
+#include "LevelBuilder/FileReader.hpp"
 
 #include <string>
 #include <iostream>
@@ -105,6 +106,11 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     scene.renderSystem().getShader<BounderShader>()->enable();
+
+    /*Parse and load json level*/
+    FileReader fileReader;
+    const char *levelPath = "../resources/GameLevel_02.json";
+    fileReader.loadLevel(*levelPath, scene);
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
