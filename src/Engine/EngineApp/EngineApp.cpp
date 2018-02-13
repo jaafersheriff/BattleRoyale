@@ -8,7 +8,7 @@ EngineApp::EngineApp() {
     RESOURCE_DIR = "../resources/";
     APP_NAME = "";
     verbose = false;
-    nFrames = 0;
+    nFrames = fps = 0;
     timeStep = lastFrameTime = runTime = 0.0;
 }
 
@@ -34,7 +34,7 @@ void EngineApp::run() {
         lastFrameTime = runTime;
         nFrames++;
         if (runTime - lastFpsTime >= 1.0) {
-            fps = (double)nFrames;
+            fps = nFrames;
             nFrames = 0;
             lastFpsTime = runTime;
         }
