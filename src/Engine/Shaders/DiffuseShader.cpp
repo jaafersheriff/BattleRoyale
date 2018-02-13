@@ -65,8 +65,12 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
         radius = glm::max(scale[0], glm::max(scale[1], scale[2]));
 
         // Debug
-        printf("Center: [%f, %f, %f]; Radius: %f\n",
-            center[0], center[1], center[2], radius);
+        /* printf("Center: [%f, %f, %f]; Radius: %f\n",
+            center[0], center[1], center[2], radius); */
+
+        if (!sphereInFrustum(center, radius, camera)) {
+            continue;
+        }
 
         /* Model matrix */
         loadMat4(getUniform("M"), drc->getGameObject()->getSpatial()->modelMatrix());
@@ -142,11 +146,13 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
     }
 
     // Debug
-    // printf("Rendered %u DiffuseRenderComponents\n", renderCount);
+    printf("Rendered %u DiffuseRenderComponents\n", renderCount);
 }
 
 bool DiffuseShader::sphereInFrustum(glm::vec3 center, float radius,
-    CameraComponent *cc) {
+    const CameraComponent *cc) {
+    // TODO : Create loop to make this less lines of code
+    
     /* Temporary variables for QOL */
     float centerDist;
     glm::vec3 hypotenuse;
@@ -158,6 +164,16 @@ bool DiffuseShader::sphereInFrustum(glm::vec3 center, float radius,
         glm::dot(hypotenuse, cc->farPlaneNormal) /
         glm::length(hypotenuse) / 
         glm::length(cc->farPlaneNormal);
+    if (centerDist < 0 && -centerDist > radius)
+        return false;
+
+    /* Test if the sphere is completely in the negative side of
+        the near frustum plane */
+    hypotenuse = center - cc->nearPlanePoint;
+    centerDist = glm::length(hypotenuse) *
+        glm::dot(hypotenuse, cc->nearPlaneNormal) /
+        glm::length(hypotenuse) /
+        glm::length(cc->nearPlaneNormal);
     if (centerDist < 0 && -centerDist > radius)
         return false;
     
