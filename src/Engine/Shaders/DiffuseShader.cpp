@@ -42,10 +42,6 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
     unsigned renderCount;
     renderCount = 0;
 
-    /* Get data about the camera */
-    // glm::vec3 pos = camera->getGameObject()->getSpatial()->position();
-    // printf("Camera location: [%f, %f, %f]\n", pos[0], pos[1], pos[2]);
-
     /* Temporary variables to hold sphere bounding data */
     glm::vec3 center, scale;
     float radius;
@@ -64,11 +60,7 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
         /* Radius = max of scale */
         radius = glm::max(scale[0], glm::max(scale[1], scale[2]));
 
-        // Debug
-        /* printf("Center: [%f, %f, %f]; Radius: %f\n",
-            center[0], center[1], center[2], radius); */
-
-        if (!sphereInFrustum(center, radius, camera)) {
+        if (!camera->sphereInFrustum(center, radius)) {
             continue;
         }
 
@@ -145,78 +137,5 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
         }
     }
 
-    // Debug
-    // printf("Rendered %u DiffuseRenderComponents\n", renderCount);
-}
-
-bool DiffuseShader::sphereInFrustum(glm::vec3 center, float radius,
-    const CameraComponent *cc) {
-    // TODO : Create loop or function to make this less lines of code
-    // https://www.khanacademy.org/math/linear-algebra/vectors-and-spaces/dot-cross-products/v/point-distance-to-plane
-
-    /* Temporary variables for QOL */
-    float centerDist;
-    glm::vec3 hypotenuse;
-
-    /* Test if the sphere is completely in the negative side of
-        the far frustum plane */
-    hypotenuse = center - cc->farPlanePoint;
-    centerDist = glm::length(hypotenuse) *
-        glm::dot(hypotenuse, cc->farPlaneNormal) /
-        glm::length(hypotenuse) / 
-        glm::length(cc->farPlaneNormal);
-    if (centerDist < 0 && -centerDist > radius)
-        return false;
-
-    /* Test if the sphere is completely in the negative side of
-        the near frustum plane */
-    hypotenuse = center - cc->nearPlanePoint;
-    centerDist = glm::length(hypotenuse) *
-        glm::dot(hypotenuse, cc->nearPlaneNormal) /
-        glm::length(hypotenuse) /
-        glm::length(cc->nearPlaneNormal);
-    if (centerDist < 0 && -centerDist > radius)
-        return false;
-    
-    /* Test if the sphere is completely in the negative side of
-        the top frustum plane */
-    hypotenuse = center - cc->topPlanePoint;
-    centerDist = glm::length(hypotenuse) *
-        glm::dot(hypotenuse, cc->topPlaneNormal) /
-        glm::length(hypotenuse) /
-        glm::length(cc->topPlaneNormal);
-    if (centerDist < 0 && -centerDist > radius)
-        return false;
-    
-    /* Test if the sphere is completely in the negative side of
-        the bottom frustum plane */
-    hypotenuse = center - cc->bottomPlanePoint;
-    centerDist = glm::length(hypotenuse) *
-        glm::dot(hypotenuse, cc->bottomPlaneNormal) /
-        glm::length(hypotenuse) /
-        glm::length(cc->bottomPlaneNormal);
-    if (centerDist < 0 && -centerDist > radius)
-        return false;
-
-    /* Test if the sphere is completely in the negative side of
-        the left frustum plane */
-    hypotenuse = center - cc->leftPlanePoint;
-    centerDist = glm::length(hypotenuse) *
-        glm::dot(hypotenuse, cc->leftPlaneNormal) /
-        glm::length(hypotenuse) /
-        glm::length(cc->leftPlaneNormal);
-    if (centerDist < 0 && -centerDist > radius)
-        return false;
-
-    /* Test if the sphere is completely in the negative side of
-        the right frustum plane */
-    hypotenuse = center - cc->rightPlanePoint;
-    centerDist = glm::length(hypotenuse) *
-        glm::dot(hypotenuse, cc->rightPlaneNormal) /
-        glm::length(hypotenuse) /
-        glm::length(cc->rightPlaneNormal);
-    if (centerDist < 0 && -centerDist > radius)
-        return false;
-
-    return true;
+    printf("Rendered %d DiffuseRenderComponents\n", renderCount);
 }

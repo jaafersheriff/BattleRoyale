@@ -5,9 +5,6 @@
 #include "Util/Util.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
-// Debug
-#include <stdio.h>
-
 void CameraComponent::init() {
     this->projection = glm::perspective(fov, aspect, near, far);
     phi = theta = 0.0;
@@ -58,8 +55,6 @@ void CameraComponent::update(float dt) {
         goPos, u));
 
     bottomPlanePoint = nearPlanePoint - v * nearPlaneHeight / 2.f;
-    /* bottomPlaneNormal = glm::normalize(glm::cross(bottomPlanePoint -
-        goPos, u)); */
     bottomPlaneNormal = glm::normalize(glm::cross(u,
         bottomPlanePoint - goPos));
 
@@ -68,12 +63,81 @@ void CameraComponent::update(float dt) {
         goPos, v));
 
     rightPlanePoint = nearPlanePoint + u * nearPlaneWidth / 2.f;
-    /* rightPlaneNormal = glm::normalize(glm::cross(rightPlanePoint -
-        goPos, v)); */
     rightPlaneNormal = glm::normalize(glm::cross(v,
         rightPlanePoint - goPos));
 
     /* Update view matrix */
     this->projection = glm::perspective(fov, aspect, near, far);
     this->view = glm::lookAt(goPos, lookAt, glm::vec3(0, 1, 0));
+}
+
+const bool CameraComponent::sphereInFrustum(glm::vec3 center, float radius) const {
+    // TODO : Create loop or function to make this less lines of code
+    // https://www.khanacademy.org/math/linear-algebra/vectors-and-spaces/dot-cross-products/v/point-distance-to-plane
+
+    /* Temporary variables for QOL */
+    float centerDist;
+    glm::vec3 hypotenuse;
+
+    /* Test if the sphere is completely in the negative side of
+        the far frustum plane */
+    hypotenuse = center - farPlanePoint;
+    centerDist = glm::length(hypotenuse) *
+        glm::dot(hypotenuse, farPlaneNormal) /
+        glm::length(hypotenuse) / 
+        glm::length(farPlaneNormal);
+    if (centerDist < 0 && -centerDist > radius)
+        return false;
+
+    /* Test if the sphere is completely in the negative side of
+        the near frustum plane */
+    hypotenuse = center - nearPlanePoint;
+    centerDist = glm::length(hypotenuse) *
+        glm::dot(hypotenuse, nearPlaneNormal) /
+        glm::length(hypotenuse) /
+        glm::length(nearPlaneNormal);
+    if (centerDist < 0 && -centerDist > radius)
+        return false;
+    
+    /* Test if the sphere is completely in the negative side of
+        the top frustum plane */
+    hypotenuse = center - topPlanePoint;
+    centerDist = glm::length(hypotenuse) *
+        glm::dot(hypotenuse, topPlaneNormal) /
+        glm::length(hypotenuse) /
+        glm::length(topPlaneNormal);
+    if (centerDist < 0 && -centerDist > radius)
+        return false;
+    
+    /* Test if the sphere is completely in the negative side of
+        the bottom frustum plane */
+    hypotenuse = center - bottomPlanePoint;
+    centerDist = glm::length(hypotenuse) *
+        glm::dot(hypotenuse, bottomPlaneNormal) /
+        glm::length(hypotenuse) /
+        glm::length(bottomPlaneNormal);
+    if (centerDist < 0 && -centerDist > radius)
+        return false;
+
+    /* Test if the sphere is completely in the negative side of
+        the left frustum plane */
+    hypotenuse = center - leftPlanePoint;
+    centerDist = glm::length(hypotenuse) *
+        glm::dot(hypotenuse, leftPlaneNormal) /
+        glm::length(hypotenuse) /
+        glm::length(leftPlaneNormal);
+    if (centerDist < 0 && -centerDist > radius)
+        return false;
+
+    /* Test if the sphere is completely in the negative side of
+        the right frustum plane */
+    hypotenuse = center - rightPlanePoint;
+    centerDist = glm::length(hypotenuse) *
+        glm::dot(hypotenuse, rightPlaneNormal) /
+        glm::length(hypotenuse) /
+        glm::length(rightPlaneNormal);
+    if (centerDist < 0 && -centerDist > radius)
+        return false;
+
+    return true;
 }

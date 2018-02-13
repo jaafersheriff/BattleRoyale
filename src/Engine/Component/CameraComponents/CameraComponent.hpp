@@ -32,6 +32,8 @@ class CameraComponent : public Component {
         const glm::mat4 & getView() const { return view; }
         const glm::mat4 & getProj() const { return projection; }
 
+        const bool sphereInFrustum(glm::vec3 center, float radius) const;
+
         /* Member vars */
         /* w = forwards-backwards of camera */
         /* v = up-down of camera */
@@ -54,7 +56,7 @@ class CameraComponent : public Component {
             bottomPlanePoint, bottomPlaneNormal,
             leftPlanePoint, leftPlaneNormal,
             rightPlanePoint, rightPlaneNormal;
-            
+
     private:
         /* Projection */
         float fov, aspect, near, far;

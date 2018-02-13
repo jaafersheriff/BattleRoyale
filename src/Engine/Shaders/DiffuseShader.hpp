@@ -16,7 +16,6 @@ class DiffuseShader : public Shader {
 
         bool init();
         void render(const std::string &, const std::vector<Component *> &);
-        bool sphereInFrustum(glm::vec3 center, float radius, const CameraComponent *);
 
         const CameraComponent * camera;
         const glm::vec3 * lightPos;
