@@ -39,7 +39,7 @@ Shader * RenderSystem::getShader(const std::string & name) {
 }
 
 const Shader * RenderSystem::getShader(const std::string & name) const {
-    return getShader(name);
+    return const_cast<RenderSystem *>(this)->getShader(name);
 }
 
 void RenderSystem::update(float dt) {
