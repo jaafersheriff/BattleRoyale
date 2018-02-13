@@ -107,7 +107,6 @@ int main(int argc, char **argv) {
     scene.renderSystem().getShader<BounderShader>()->enable();
 
     /* Create bunny */
-    Mesh * bunnyMesh(engine.loader.getMesh("bunny.obj"));
     GameObject & bunny(scene.createGameObject());
     bunny.addComponent(scene.createComponent<SpatialComponent>(
         glm::vec3(0.0f, 0.0f, 0.0f), // position
@@ -117,7 +116,7 @@ int main(int argc, char **argv) {
     bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
     bunny.addComponent(scene.createComponent<DiffuseRenderComponent>(
         scene.renderSystem().getShader<DiffuseShader>()->pid,
-        *bunnyMesh,
+        *Loader::getMesh("bunny.obj"),
         ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));                            
 
     /* Main loop */

@@ -18,8 +18,6 @@ class EngineApp {
         void run();
         void terminate();
 
-        Loader loader;              /* Used to load in files and GPU memory */
-
         std::string RESOURCE_DIR;   /* Static resource directory */
         std::string APP_NAME;       /* Name of application */
         double timeStep;            /* Delta time */
