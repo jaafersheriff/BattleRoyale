@@ -39,7 +39,7 @@ bool DiffuseShader::init() {
     return true;
 }
 
-void DiffuseShader::render(const std::string & name, const std::vector<Component *> & components) {
+void DiffuseShader::render(const std::vector<Component *> & components) {
     ImGui::Begin("Diffuse Shader");
     ImGui::Selectable("Render", &m_isEnabled);
     ImGui::Selectable("Wireframe", &showWireFrame);

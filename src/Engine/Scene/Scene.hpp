@@ -27,12 +27,10 @@ class Scene {
         GameObject & createGameObject();
     
         // Creates a component of the given type and adds it to the scene
-        template <typename CompT, typename... Args>
-        CompT & createComponent(Args &&... args);
+        template <typename CompT, typename... Args> CompT & createComponent(Args &&... args);
 
         // the scene takes ownership of the component
-        template <typename CompT>
-        CompT & addComponent(std::unique_ptr<CompT> component);
+        template <typename CompT> CompT & addComponent(std::unique_ptr<CompT> component);
 
         /* Main udate function */
         void update(float);

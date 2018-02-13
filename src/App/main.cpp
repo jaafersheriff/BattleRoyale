@@ -7,6 +7,7 @@ extern "C" {
 #endif
 
 #include "EngineApp/EngineApp.hpp"
+#include "LevelBuilder/FileReader.hpp"
 
 #include <string>
 #include <iostream>
@@ -80,8 +81,7 @@ int main(int argc, char **argv) {
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
-    if (!scene.renderSystem().addShader<DiffuseShader>(
-            "diffuse",                                    /* Shader name              */
+    if (!scene.renderSystem().createShader<DiffuseShader>(
             engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex shader file       */
             engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment shader file     */
             cc,                                           /* Shader-specific uniforms */
@@ -92,9 +92,9 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    // Create collider shader
+    // Create collider
     // alternate method using unique_ptr and new
-    if (!scene.renderSystem().addShader("bounder", std::unique_ptr<BounderShader>(new BounderShader(
+    if (!scene.renderSystem().addShader(std::unique_ptr<BounderShader>(new BounderShader(
             engine.RESOURCE_DIR + "bounder_vert.glsl",
             engine.RESOURCE_DIR + "bounder_frag.glsl",
             scene.collisionSystem(),
@@ -105,31 +105,41 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    /* Create bunny */
-    Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
-    GameObject & bunny(scene.createGameObject());
-    bunny.addComponent(scene.createComponent<SpatialComponent>(
-        glm::vec3(0.0f, 0.0f, 0.0f), // position
-        glm::vec3(1.0f, 1.0f, 1.0f), // scale
-        glm::mat3() // rotation
-    ));
-    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
-    DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
-        scene.renderSystem().m_shaders.find("diffuse")->second->pid,
-        *Loader::getMesh("bunny.obj"),
-        ModelTexture(0.f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
-    bunny.addComponent(bunnyDiffuse);
-    ImGuiComponent & ic = scene.createComponent<ImGuiComponent>();
-    ic.addPane("Bunny", [&](float dt) {
-        ImGui::SliderFloat("Ambient", &bunnyDiffuse.modelTexture.material.ambient, 0.f, 1.f);
-        ImGui::SliderFloat("Red", &bunnyDiffuse.modelTexture.material.diffuse.r, 0.f, 1.f);
-        ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
-        ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
-        glm::vec3 scale = bunny.getSpatial()->scale();
-        ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f);
-        bunny.getSpatial()->setScale(scale);
-    });
-    bunny.addComponent(ic);
+    /*Parse and load json level*/
+    FileReader fileReader;
+    const char *levelPath = "../resources/GameLevel_02.json";
+    fileReader.loadLevel(*levelPath, scene);
+
+//    /* Create bunny */
+//    Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
+//    GameObject & bunny(scene.createGameObject());
+//    bunny.addComponent(scene.createComponent<SpatialComponent>(
+//        glm::vec3(0.0f, 0.0f, 0.0f), // position
+//        glm::vec3(1.0f, 1.0f, 1.0f), // scale
+//        glm::mat3() // rotation
+//    ));
+//    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
+//    bunny.addComponent(scene.createComponent<DiffuseRenderComponent>(
+//        scene.renderSystem().getShader<DiffuseShader>()->pid,
+//        *bunnyMesh,
+//        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
+//    bunny.getSpatial()->setRotation(glm::rotate(glm::mat4(), 45.0f, glm::fvec3(1.0f)));
+//    DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
+//        scene.renderSystem().m_shaders.find("diffuse")->second->pid,
+//        *Loader::getMesh("bunny.obj"),
+//        ModelTexture(0.f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
+//    bunny.addComponent(bunnyDiffuse);
+//    ImGuiComponent & ic = scene.createComponent<ImGuiComponent>();
+//    ic.addPane("Bunny", [&](float dt) {
+//        ImGui::SliderFloat("Ambient", &bunnyDiffuse.modelTexture.material.ambient, 0.f, 1.f);
+//        ImGui::SliderFloat("Red", &bunnyDiffuse.modelTexture.material.diffuse.r, 0.f, 1.f);
+//        ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
+//        ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
+//        glm::vec3 scale = bunny.getSpatial()->scale();
+//        ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f);
+//        bunny.getSpatial()->setScale(scale);
+//    });
+//    bunny.addComponent(ic);
 
     /* Main loop */
     engine.run();

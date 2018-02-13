@@ -11,7 +11,7 @@ class DiffuseShader : public Shader {
         DiffuseShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam, const glm::vec3 & light);
 
         bool init();
-        void render(const std::string &, const std::vector<Component *> &);
+        void render(const std::vector<Component *> &);
 
         const CameraComponent * camera;
         const glm::vec3 * lightPos;
