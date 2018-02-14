@@ -40,10 +40,6 @@ bool DiffuseShader::init() {
 }
 
 void DiffuseShader::render(const std::vector<Component *> & components) {
-    if (!m_isEnabled) {
-        return;
-    }
-
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
