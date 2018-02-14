@@ -15,15 +15,20 @@ class GameLogicSystem;
 
 class ImGuiComponent : public Component {
 
+    friend Scene;
+
     public:
 
     using SystemClass = GameLogicSystem;
 
-    public:
+    protected:
+
         ImGuiComponent(std::string name, std::function<void()> fun) :
             name(name),
             panes(fun)
         {}
+
+    public:
 
         void update(float);
 

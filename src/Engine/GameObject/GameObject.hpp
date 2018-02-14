@@ -11,14 +11,24 @@
 
 #include "Message.hpp"
 
+class Scene;
 class Component;
 class SpatialComponent;
 
 class GameObject {
 
-    public:
+    friend Scene;
+
+    private: // only scene can create game object
 
     GameObject();
+    
+    // TODO: potentially add move support
+    GameObject(const GameObject & other) = delete; // doesn't make sense to copy a GameObject
+    GameObject & operator=(const GameObject & other) = delete;
+
+    public:
+
     ~GameObject();
 
     void init();
@@ -44,7 +54,7 @@ class GameObject {
     const SpatialComponent * getSpatial() const { return m_spatialComponent; }
 
     // how many total components the game object has
-    int numComponents() const { return int(m_components.size()); }
+    int numComponents() const { return int(m_allComponents.size()); }
 
     // how many of a certain type of component the game object has
     template <typename CompT> int numComponents() const;
@@ -66,20 +76,28 @@ class GameObject {
 template <typename CompT>
 void GameObject::addComponent(CompT & component) {
     component.setGameObject(this);
-    m_components[std::type_index(typeid(CompT::SystemClass))].push_back(&component);
-    if (std::is_same_v<CompT, SpatialComponent>) {
+    m_components[std::type_index(typeid(typename CompT::SystemClass))].push_back(&component);
+    if (std::is_same<CompT, SpatialComponent>::value) {
         m_spatialComponent = dynamic_cast<SpatialComponent *>(&component);
     }
 }
 
 template <typename CompT>
 const std::vector<Component *> & GameObject::getComponents() const {
-    return m_components[std::type_index(typeid(CompT::SystemClass))];
+    static const std::vector<Component *> s_emptyList;
+
+    std::type_index sysI(typeid(CompT::SystemClass));
+
+    if (m_components.count(sysI)) {
+        return m_components.at(sysI);
+    }
+
+    return s_emptyList;
 }
 
 template <typename CompT>
 CompT * GameObject::getComponent() {
-    std::type_index sysI(typeid(CompT::SystemClass));
+    std::type_index sysI(typeid(typename CompT::SystemClass));
 
     if (m_components[sysI].size()) {
         return static_cast<CompT *>(m_components[sysI].front());
@@ -90,7 +108,13 @@ CompT * GameObject::getComponent() {
 
 template <typename CompT>
 int GameObject::numComponents() const {
-    return int(m_components[std::type_index(typeid(CompT::SystemClass))].size());
+    std::type_index sysI(typeid(typename CompT::SystemClass));
+
+    if (m_components.count(sysI)) {
+        return m_components.at(sysI).size();
+    }
+
+    return 0;
 }
 
 

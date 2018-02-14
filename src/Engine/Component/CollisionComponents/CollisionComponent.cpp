@@ -11,15 +11,9 @@
 
 BounderComponent::BounderComponent(int weight) :
     m_weight(weight),
-    m_wasCollision(false),
-    m_wasAdjustment(false)
+    m_collisionFlag(false),
+    m_adjustmentFlag(false)
 {}
-
-void BounderComponent::update(float dt) {
-    m_wasAdjustment = false;
-    m_wasAdjustment = false;
-}
-
 
 
 AABBounderComponent::AABBounderComponent(int weight, const AABox & box) :
@@ -29,8 +23,6 @@ AABBounderComponent::AABBounderComponent(int weight, const AABox & box) :
 {}
 
 void AABBounderComponent::update(float dt) {
-    BounderComponent::update(dt);
-
     if (!gameObject->getSpatial()) {
         return;
     }
@@ -90,8 +82,6 @@ SphereBounderComponent::SphereBounderComponent(int weight, const Sphere & sphere
 {}
 
 void SphereBounderComponent::update(float dt) {
-    BounderComponent::update(dt);
-
     if (!gameObject->getSpatial()) {
         return;
     }
@@ -128,8 +118,6 @@ CapsuleBounderComponent::CapsuleBounderComponent(int weight, const Capsule & cap
 {}
 
 void CapsuleBounderComponent::update(float dt) {
-    BounderComponent::update(dt);
-
     if (!gameObject->getSpatial()) {
         return;
     }

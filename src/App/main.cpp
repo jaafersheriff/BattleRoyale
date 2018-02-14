@@ -6,11 +6,13 @@ extern "C" {
 }
 #endif
 
-#include "EngineApp/EngineApp.hpp"
-#include "LevelBuilder/FileReader.hpp"
-
 #include <string>
 #include <iostream>
+
+#include "glm/gtx/transform.hpp"
+
+#include "EngineApp/EngineApp.hpp"
+#include "LevelBuilder/FileReader.hpp"
 
 void printUsage() {
     std::cout << "Valid arguments: " << std::endl;
@@ -156,6 +158,15 @@ int main(int argc, char **argv) {
             glm::vec3 position = bunny.getSpatial()->position();
             ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f);
             bunny.getSpatial()->setPosition(position);
+            static glm::vec3 axis; static float angle(0.0f);
+            ImGui::SliderFloat3("Rotation Axis", glm::value_ptr(axis), 0.0f, 1.0f);
+            ImGui::SliderFloat("Rotation Angle", &angle, -glm::pi<float>(), glm::pi<float>());
+            if (angle != 0.0f && axis != glm::vec3()) {
+                bunny.getSpatial()->setRotation(glm::rotate(angle, glm::normalize(axis)));
+            }
+            else {
+                bunny.getSpatial()->setRotation(glm::mat3());
+            }
         }
     );
     bunny.addComponent(bIc);
