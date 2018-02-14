@@ -328,11 +328,11 @@ Intersect intersect(const Ray & ray, const AABox & box) {
 
     // exterior collision
     if (tMinor >= 0.0f) {
-        return Intersect(tMinor, ray.loc + tMinor * ray.dir, axisMinor, true);
+        return Intersect(true, tMinor, ray.loc + tMinor * ray.dir, axisMinor, true);
     }
     // interior collision
     else {
-        return Intersect(tMajor, ray.loc + tMajor * ray.dir, axisMajor, false);
+        return Intersect(true, tMajor, ray.loc + tMajor * ray.dir, axisMajor, false);
     }
 }
 
@@ -357,7 +357,7 @@ Intersect intersect(const Ray & ray, const Sphere & sphere) {
     float h(face ? std::sqrt(rad2 - d2) : -std::sqrt(rad2 - d2));
     glm::vec3 I(P - h * ray.dir);
 
-    return Intersect(p - h, ray.loc + I, (I - C) / sphere.radius, face);
+    return Intersect(true, p - h, ray.loc + I, (I - C) / sphere.radius, face);
 }
 
 Intersect intersect(const Ray & ray, const Capsule & cap) {

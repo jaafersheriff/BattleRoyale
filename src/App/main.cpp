@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
         glm::vec3(1.0f, 1.0f, 1.0f), // scale
         glm::mat3() // rotation
     ));
-    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
+    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(1, *bunnyMesh, true, true, true)));
     DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
         scene.renderSystem().getShader<DiffuseShader>()->pid,
         *bunnyMesh,
