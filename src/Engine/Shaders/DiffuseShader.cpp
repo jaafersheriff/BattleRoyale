@@ -38,10 +38,6 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
 
-    // Debug
-    unsigned renderCount;
-    renderCount = 0;
-
     /* Temporary variables to hold sphere bounding data */
     glm::vec3 center, scale;
     float radius;
@@ -114,8 +110,6 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
 
         /* DRAW */
         glDrawElements(GL_TRIANGLES, (int)drc->mesh->eleBuf.size(), GL_UNSIGNED_INT, nullptr);
-        // Debug
-        renderCount = renderCount + 1;
 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));
@@ -136,6 +130,4 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
             glBindTexture(GL_TEXTURE_2D, 0);
         }
     }
-
-    printf("Rendered %d DiffuseRenderComponents\n", renderCount);
 }

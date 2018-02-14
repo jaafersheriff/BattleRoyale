@@ -4,52 +4,33 @@
 #include "IO/Keyboard.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
-// Debug
-#include <stdio.h>
-
 void CameraController::init() {
 
 }
 
 void CameraController::update(float dt) {
-    /* Checks if the camera direction or location has been modified */
-    bool modified;
-
     if (Mouse::isDown(GLFW_MOUSE_BUTTON_1)) {
         lookAround(dt);
-        modified = true;
     }
 
     if (Keyboard::isKeyPressed(front)) {
         moveFront(dt);
-        modified = true;
     }
     if (Keyboard::isKeyPressed(back)) {
         moveBack(dt);
-        modified = true;
     }
     if (Keyboard::isKeyPressed(left)) {
         moveLeft(dt);
-        modified = true;
     }
     if (Keyboard::isKeyPressed(right)) {
         moveRight(dt);
-        modified = true;
     }
     if (Keyboard::isKeyPressed(up)) {
         moveUp(dt);
-        modified = true;
     }
     if (Keyboard::isKeyPressed(down)) {
         moveDown(dt);
-        modified = true;
     }
-
-    // TODO: Update frustum data only when you move the camera
-    /* If the camera has been modified, then update the view frustum */ 
-    /* if (modified) {
-        printf("Camera has been modified\n");
-    } */
 }
 void CameraController::lookAround(float dt) {
     camera->theta += Mouse::dx * lookSpeed * dt;

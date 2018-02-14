@@ -8,7 +8,6 @@
 #include "Library.hpp"
 
 #include <cstdint>
-#include <iostream>
 
 class Mesh;
 class Texture;
