@@ -4,8 +4,6 @@
 
 #include "Util/Depot.hpp"
 
-
-
 Scene::Scene() :
     m_gameLogicSystemRef(nullptr),
     m_renderSystemRef(nullptr),

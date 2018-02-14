@@ -14,6 +14,9 @@ DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & f
     lightPos(&light)
 {}
 
+// Debug
+#include "GameObject/GameObject.hpp"
+
 bool DiffuseShader::init() {
     if (!Shader::init()) {
         return false;
@@ -53,10 +56,25 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
 
+    /* Temporary variables to hold sphere bounding data */
+    glm::vec3 center, scale;
+    float radius;
+
     for (auto cp : components) {
         // TODO : component list should be passed in as diffuserendercomponent
         DiffuseRenderComponent *drc;
         if (!(drc = dynamic_cast<DiffuseRenderComponent *>(cp)) || drc->pid != this->pid) {
+            continue;
+        }
+
+        /* Determine if component should be rendered */
+        /* Get the center and radius of the component */
+        center = drc->getGameObject()->getSpatial()->position();
+        scale = drc->getGameObject()->getSpatial()->scale();
+        /* Radius = max of scale */
+        radius = glm::max(scale[0], glm::max(scale[1], scale[2]));
+
+        if (!camera->sphereInFrustum(center, radius)) {
             continue;
         }
 
