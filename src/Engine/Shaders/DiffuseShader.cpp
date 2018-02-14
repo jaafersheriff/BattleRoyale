@@ -5,9 +5,6 @@
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
-#include "ThirdParty/imgui/imgui.h"
-#include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
-
 DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam, const glm::vec3 & light) :
     Shader(vertFile, fragFile),
     camera(&cam),
@@ -43,10 +40,6 @@ bool DiffuseShader::init() {
 }
 
 void DiffuseShader::render(const std::vector<Component *> & components) {
-    if (!m_isEnabled) {
-        return;
-    }
-
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }

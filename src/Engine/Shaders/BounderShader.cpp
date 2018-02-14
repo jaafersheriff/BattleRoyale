@@ -5,9 +5,6 @@
 #include "Component/CollisionComponents/CollisionComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
-#include "ThirdParty/imgui/imgui.h"
-#include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
-
 namespace {
 
 glm::mat4 detAABBMat(const AABBounderComponent & bounder) {
@@ -74,10 +71,6 @@ bool BounderShader::init() {
 }
 
 void BounderShader::render(const std::vector<Component *> & components_) {
-    if (!m_isEnabled) {
-        return;
-    }
-
     loadMat4(getUniform("u_viewMat"), m_camera->getView());
     loadMat4(getUniform("u_projMat"), m_camera->getProj());
 

@@ -22,6 +22,10 @@ void RenderSystem::update(float dt) {
 
     /* Loop through active shaders */
     for (auto &shader : m_shaders) {
+        if (!shader.second->isEnabled()) {
+            continue;
+        }
+
         shader.second->bind();
         ///////////////////////////  TODO  ///////////////////////////
         // pass a list of render components that are specific       //
