@@ -15,10 +15,10 @@ void CameraComponent::init() {
     fovRadians = glm::radians(fov);
 
     farPlaneHeight = 2 * glm::tan(fovRadians / 2) * far;
-    farPlaneWidth = farPlaneHeight * aspect;
+    farPlaneWidth = farPlaneHeight * Window::getAspectRatio();
 
     nearPlaneHeight = 2 * glm::tan(fovRadians / 2) * near;
-    nearPlaneWidth = nearPlaneHeight * aspect;
+    nearPlaneWidth = nearPlaneHeight * Window::getAspectRatio();
 
     update(0.f);
 }
