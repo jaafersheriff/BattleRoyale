@@ -6,7 +6,9 @@
 
 class GameLogicSystem : public System {
 
-    public:
+    friend Scene;
+
+    private: // only scene can create system
 
     GameLogicSystem(std::vector<Component *> & components);
 

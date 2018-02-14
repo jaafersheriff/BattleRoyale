@@ -18,10 +18,9 @@ class EngineApp {
         void run();
         void terminate();
 
-        Loader loader;              /* Used to load in files and GPU memory */
-
         std::string RESOURCE_DIR;   /* Static resource directory */
         std::string APP_NAME;       /* Name of application */
+        int fps;                    /* Frames per second */
         double timeStep;            /* Delta time */
         bool verbose;               /* Log things or not */
 
@@ -31,7 +30,6 @@ class EngineApp {
 
         std::unique_ptr<Scene> m_scene;
 
-        double fps;                 /* Frames per second */
         double lastFpsTime;         /* Time at which last FPS was calculated */
         int nFrames;                /* Number of frames in current second */
         double lastFrameTime;       /* Time at which last frame was rendered */

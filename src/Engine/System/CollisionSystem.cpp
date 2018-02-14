@@ -154,30 +154,36 @@ CollisionSystem::CollisionSystem(const std::vector<Component *> & comps) :
 {}
 
 void CollisionSystem::update(float dt) {
+    static std::unordered_set<BounderComponent *> s_potentials;
     static std::unordered_map<BounderComponent *, std::vector<std::pair<int, glm::vec3>>> s_collisions;
     static std::unordered_set<BounderComponent *> s_checked;
     static std::unordered_map<GameObject *, glm::vec3> s_gameObjectDeltas;
 
-    // update bounders so they fit their world objects
+    // find all bounders whose objects have changed spatially, update them so
+    // they fit their world objects, and add them to potentials to be checked
+    // for collision
     for (auto & comp_ : m_components) {
-        BounderComponent & comp(*static_cast<BounderComponent *>(comp_));
-        comp.update(dt);
+        BounderComponent & bounder(*static_cast<BounderComponent *>(comp_));
+        bounder.m_collisionFlag = false;
+        bounder.m_adjustmentFlag = false;
+        bounder.update(dt);
+        SpatialComponent * spat(bounder.getGameObject()->getSpatial());
+        if (spat && spat->transformedFlag()) {
+            s_potentials.insert(&bounder);
+            spat->clearTransformedFlag();
+        }
     }
 
     // gather all collisions
-    for (auto & bounder_ : m_components) {
-        BounderComponent & bounder(*static_cast<BounderComponent *>(bounder_));
-        SpatialComponent * spat(bounder.getGameObject()->getSpatial());
-        if (!spat || !spat->transformed()) {
-            continue;
-        }
-        s_checked.insert(&bounder);
+    for (BounderComponent * bounder : s_potentials) {
+        SpatialComponent & spat(*bounder->getGameObject()->getSpatial());
+        s_checked.insert(bounder);
         for (auto & other_ : m_components) {
             BounderComponent & other(*static_cast<BounderComponent *>(other_));
-            if (s_checked.count(&other) || other.getGameObject() == bounder.getGameObject()) {
+            if (s_checked.count(&other) || other.getGameObject() == bounder->getGameObject()) {
                 continue;
             }
-            collide(bounder, other, &s_collisions);
+            collide(*bounder, other, &s_collisions);
         }
     }
     
@@ -185,8 +191,7 @@ void CollisionSystem::update(float dt) {
     for (auto & pair : s_collisions) {
         BounderComponent & bounder(*pair.first);
         auto & weightDeltas(pair.second);
-        bounder.m_wasCollision = true;
-        // TODO: somehow add bounder to potentials
+        bounder.m_collisionFlag = true;
         // there was an adjustment
         if (weightDeltas.size()) {
             glm::vec3 & gameObjectDelta(s_gameObjectDeltas[bounder.getGameObject()]);
@@ -199,19 +204,18 @@ void CollisionSystem::update(float dt) {
         GameObject * gameObject(pair.first);
         SpatialComponent & spat(*gameObject->getSpatial());
         const glm::vec3 & delta(pair.second);
-            // set position rather than move because they are conceptually different
-            // this will come into play if we do time step interpolation
+        // set position rather than move because they are conceptually different
+        // this will come into play if we do time step interpolation
         spat.setPosition(spat.position() + delta + glm::normalize(delta) * k_collisionOffsetFactor);
-        for (Component * comp : gameObject->getComponents()) {
-            if (dynamic_cast<BounderComponent *>(comp)) {
-                BounderComponent * bounder(static_cast<BounderComponent *>(comp));
-                bounder->update(dt);
-                bounder->m_wasCollision = true;
-                bounder->m_wasAdjustment = true;
-            }
+        for (Component * comp : gameObject->getComponents<BounderComponent>()) {
+            BounderComponent * bounder(static_cast<BounderComponent *>(comp));
+            bounder->update(dt);
+            bounder->m_collisionFlag = true;
+            bounder->m_adjustmentFlag = true;
         }
     }
-
+    
+    s_potentials.clear();
     s_checked.clear();
     s_collisions.clear();
     s_gameObjectDeltas.clear();

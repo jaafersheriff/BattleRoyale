@@ -28,7 +28,7 @@ class Window {
         void setTitle(const char *);
 
         /* Update */
-        void update();
+        void update(float);
 
         /* Return if window should close */
         int shouldClose();
@@ -56,6 +56,7 @@ class Window {
     
         /* ImGui */
         static bool imGuiEnabled;
+        static float imGuiTimer;
 
         /* Callback functions */
         static void errorCallback(int, const char *);

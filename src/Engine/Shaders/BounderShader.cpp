@@ -5,7 +5,8 @@
 #include "Component/CollisionComponents/CollisionComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
-
+#include "ThirdParty/imgui/imgui.h"
+#include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
 
 namespace {
 
@@ -72,14 +73,18 @@ bool BounderShader::init() {
     return true;
 }
 
-void BounderShader::render(const std::string & name, const std::vector<Component *> & components_) {
+void BounderShader::render(const std::vector<Component *> & components_) {
+    if (!m_isEnabled) {
+        return;
+    }
+
     loadMat4(getUniform("u_viewMat"), m_camera->getView());
     loadMat4(getUniform("u_projMat"), m_camera->getProj());
 
     for (auto & comp_ : m_collisionSystem->components()) {
         const BounderComponent & comp(*static_cast<const BounderComponent *>(comp_));
 
-        loadVec3(getUniform("u_color"), comp.wasCollision() ? comp.wasAdjustment() ? glm::vec3(1.0f, 0.0f, 0.0f) : glm::vec3(1.0f, 1.0f, 0.0f) : glm::vec3(0.0f, 1.0f, 0.0f));
+        loadVec3(getUniform("u_color"), comp.m_collisionFlag ? comp.m_adjustmentFlag ? glm::vec3(1.0f, 0.0f, 0.0f) : glm::vec3(1.0f, 1.0f, 0.0f) : glm::vec3(0.0f, 1.0f, 0.0f));
 
         if (dynamic_cast<const AABBounderComponent *>(&comp)) {
             const AABBounderComponent & aabbBounder(static_cast<const AABBounderComponent &>(comp));

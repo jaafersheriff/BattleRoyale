@@ -13,3 +13,5 @@
 
 #include "PathfindingComponents/PathfindingComponent.hpp"
 
+
+#include "ImGuiComponents/ImGuiComponent.hpp"

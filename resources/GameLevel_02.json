@@ -1,0 +1,349 @@
+{
+"object0":{
+    "objName": "Assets/Models/FF_Counter.obj",
+    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "position": [
+        -13.980000495910645,
+        0.10000002384185791,
+        -17.5
+    ],
+    "scale": [
+        0.3580089211463928,
+        0.3580089211463928,
+        0.3580089211463928
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object1":{
+    "objName": "Assets/Models/FoodCourt_Floor.obj",
+    "objTexture": "Assets/Models/textures/floor_tiles.png",
+    "position": [
+        -0.6000000238418579,
+        0.0,
+        0.0
+    ],
+    "scale": [
+        2.0,
+        2.0,
+        2.5
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object2":{
+    "objName": "Assets/Models/FF_Counter.obj",
+    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "position": [
+        0.0,
+        0.10000000149011612,
+        -17.5
+    ],
+    "scale": [
+        0.35801011323928835,
+        0.3580099940299988,
+        0.35801011323928835
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object3":{
+    "objName": "Assets/Models/FF_Counter.obj",
+    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "position": [
+        15.35999870300293,
+        0.10000002384185791,
+        -17.5
+    ],
+    "scale": [
+        0.35801011323928835,
+        0.3580099940299988,
+        0.35801011323928835
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object4":{
+    "objName": "Assets/Models/FF_Counter.obj",
+    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "position": [
+        -16.100000381469728,
+        0.10000002384185791,
+        18.5
+    ],
+    "scale": [
+        0.35801011323928835,
+        0.3580099940299988,
+        0.35801011323928835
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object5":{
+    "objName": "Assets/Models/FF_Counter.obj",
+    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "position": [
+        -2.119999885559082,
+        0.10000000149011612,
+        18.5
+    ],
+    "scale": [
+        0.35801011323928835,
+        0.3580099940299988,
+        0.35801011323928835
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object6":{
+    "objName": "Assets/Models/FF_Counter.obj",
+    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "position": [
+        13.239998817443848,
+        0.10000002384185791,
+        18.5
+    ],
+    "scale": [
+        0.35801011323928835,
+        0.3580099940299988,
+        0.35801011323928835
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object7":{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/basic_table_tex.png",
+    "position": [
+        -22.369998931884767,
+        0.11000007390975952,
+        -4.5
+    ],
+    "scale": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object8":{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/basic_table_tex.png",
+    "position": [
+        -22.369998931884767,
+        0.11000007390975952,
+        -19.39999771118164
+    ],
+    "scale": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object9":{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/basic_table_tex.png",
+    "position": [
+        4.499999046325684,
+        0.11000007390975952,
+        -4.5
+    ],
+    "scale": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object10":{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/basic_table_tex.png",
+    "position": [
+        4.499999046325684,
+        0.11000007390975952,
+        -19.39999771118164
+    ],
+    "scale": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object11":{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/basic_table_tex.png",
+    "position": [
+        -8.0,
+        0.10999999940395355,
+        -12.199999809265137
+    ],
+    "scale": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+}}
