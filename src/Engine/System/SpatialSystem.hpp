@@ -8,4 +8,6 @@ class SpatialSystem : public System {
 
     SpatialSystem(const std::vector<Component *> & comps);
 
+    virtual void update(float dt) override;
+
 };

@@ -1,4 +1,4 @@
-#pragma once
+#pragma onceEngineApp.hpp"
 #ifndef _FILE_READER_HPP_
 #define _FILE_READER_HPP_
 #include <fstream>
