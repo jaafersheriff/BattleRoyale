@@ -74,10 +74,6 @@ bool BounderShader::init() {
 }
 
 void BounderShader::render(const std::vector<Component *> & components_) {
-    ImGui::Begin("BoundingShader");
-    ImGui::Selectable("Render", &m_isEnabled);
-    ImGui::End();
-
     if (!m_isEnabled) {
         return;
     }

@@ -93,6 +93,14 @@ int main(int argc, char **argv) {
         std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
     }
+    /* Diffuse Shader ImGui Pane */
+    scene.createComponent<ImGuiComponent>(
+        "Diffuse Shader",
+        [&]() {
+            ImGui::Selectable("Active", &scene.renderSystem().getShader<DiffuseShader>()->m_isEnabled);
+            ImGui::Selectable("Wireframe", &scene.renderSystem().getShader<DiffuseShader>()->showWireFrame);
+        }
+    );
 
     // Create collider
     // alternate method using unique_ptr and new
@@ -106,6 +114,14 @@ int main(int argc, char **argv) {
         std::cin.get(); //don't immediately close the console
         return EXIT_FAILURE;
     }
+    /* Collider ImGui pane */
+    scene.createComponent<ImGuiComponent>(
+        "Bounder Shader",
+        [&]() {
+            ImGui::Selectable("Active", &scene.renderSystem().getShader<BounderShader>()->m_isEnabled);
+        }
+    );
+
 
     /*Parse and load json level*/
     FileReader fileReader;
@@ -127,32 +143,42 @@ int main(int argc, char **argv) {
         ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
     bunny.addComponent(bunnyDiffuse);
     /* Bunny ImGui panes */
-    ImGuiComponent & ic = scene.createComponent<ImGuiComponent>();
-    ic.addPane("Bunny", [&](float dt) {
-        /* Material properties */
-        ImGui::SliderFloat("Ambient", &bunnyDiffuse.modelTexture.material.ambient, 0.f, 1.f);
-        ImGui::SliderFloat("Red", &bunnyDiffuse.modelTexture.material.diffuse.r, 0.f, 1.f);
-        ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
-        ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
-        /* Spatial properties */
-        glm::vec3 scale = bunny.getSpatial()->scale();
-        ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f);
-        bunny.getSpatial()->setScale(scale); 
-        glm::vec3 position = bunny.getSpatial()->position();
-        ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f);
-        bunny.getSpatial()->setPosition(position);
-        static glm::vec3 axis;
-        ImGui::SliderFloat3("Rotation Axis", glm::value_ptr(axis), 0.0f, 1.0f);
-        static float angle(0.0f);
-        ImGui::SliderFloat("Rotation Angle", &angle, -glm::pi<float>(), glm::pi<float>());
-        if (angle != 0.0f && axis != glm::vec3()) {
-            bunny.getSpatial()->setRotation(glm::rotate(angle, glm::normalize(axis)));
+    ImGuiComponent & bIc = scene.createComponent<ImGuiComponent>(
+        "Bunny", 
+        [&]() {
+            /* Material properties */
+            ImGui::SliderFloat("Ambient", &bunnyDiffuse.modelTexture.material.ambient, 0.f, 1.f);
+            ImGui::SliderFloat("Red", &bunnyDiffuse.modelTexture.material.diffuse.r, 0.f, 1.f);
+            ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
+            ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
+            /* Spatial properties */
+            glm::vec3 scale = bunny.getSpatial()->scale();
+            ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f);
+            bunny.getSpatial()->setScale(scale); 
+            glm::vec3 position = bunny.getSpatial()->position();
+            ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f);
+            bunny.getSpatial()->setPosition(position);
+            static glm::vec3 axis; static float angle(0.0f);
+            ImGui::SliderFloat3("Rotation Axis", glm::value_ptr(axis), 0.0f, 1.0f);
+            ImGui::SliderFloat("Rotation Angle", &angle, -glm::pi<float>(), glm::pi<float>());
+            if (angle != 0.0f && axis != glm::vec3()) {
+                bunny.getSpatial()->setRotation(glm::rotate(angle, glm::normalize(axis)));
+            }
+            else {
+                bunny.getSpatial()->setRotation(glm::mat3());
+            }
         }
-        else {
-            bunny.getSpatial()->setRotation(glm::mat3());
+    );
+    bunny.addComponent(bIc);
+
+    /* Game stats pane */
+    scene.createComponent<ImGuiComponent>(
+        "Stats",
+        [&]() {
+            ImGui::Text("FPS: %d", engine.fps);
+            ImGui::Text("dt: %f", engine.timeStep);
         }
-    });
-    bunny.addComponent(ic);
+    );
 
     /* Main loop */
     engine.run();

@@ -21,20 +21,20 @@ class ImGuiComponent : public Component {
 
     using SystemClass = GameLogicSystem;
 
-    protected: // only scene can create component
+    protected:
 
-        ImGuiComponent() = default;
+        ImGuiComponent(std::string name, std::function<void()> fun) :
+            name(name),
+            panes(fun)
+        {}
 
     public:
-
-        void addPane(std::string, std::function<void(float)>);
 
         void update(float);
 
     private:
-
-        std::map<std::string, std::vector<std::function<void(float)>>> panes;
-
+        std::string name;
+        std::function<void()> panes;
 };
 
 #endif

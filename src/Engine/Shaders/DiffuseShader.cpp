@@ -40,11 +40,6 @@ bool DiffuseShader::init() {
 }
 
 void DiffuseShader::render(const std::vector<Component *> & components) {
-    ImGui::Begin("Diffuse Shader");
-    ImGui::Selectable("Render", &m_isEnabled);
-    ImGui::Selectable("Wireframe", &showWireFrame);
-    ImGui::End();
-
     if (!m_isEnabled) {
         return;
     }
