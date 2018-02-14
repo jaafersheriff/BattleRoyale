@@ -8,13 +8,16 @@
 #include <iostream>
 #include <vector>
 
+bool Loader::verbose = false;
+std::string Loader::RESOURCE_DIR = "../resources/";
+
 void Loader::init(bool verbose, const std::string & res) {
-    this->verbose = verbose;
-    this->RESOURCE_DIR = res;
+    verbose = verbose;
+    RESOURCE_DIR = res;
 }
 
 Mesh* Loader::getMesh(const std::string & name) {
-    Mesh* mesh = library.getMesh(name);
+    Mesh* mesh = Library::getMesh(name);
     if (mesh) {
         return mesh;
     }
@@ -33,7 +36,7 @@ Mesh* Loader::getMesh(const std::string & name) {
 
     int vertCount = 0;
     /* For every shape in the loaded file */
-    for (int i = 0; i < shapes.size(); i++) {
+    for (unsigned int i = 0; i < shapes.size(); i++) {
         /* Concatenate the shape's vertices, normals, and textures to the mesh */
         mesh->buffers.vertBuf.insert(mesh->buffers.vertBuf.end(), shapes[i].mesh.positions.begin(), shapes[i].mesh.positions.end());
         mesh->buffers.norBuf.insert(mesh->buffers.norBuf.end(), shapes[i].mesh.normals.begin(), shapes[i].mesh.normals.end());
@@ -48,19 +51,19 @@ Mesh* Loader::getMesh(const std::string & name) {
     }
 
     /* Provide VBO info */
-    mesh->vertBufSize = mesh->buffers.vertBuf.size();
-    mesh->norBufSize  = mesh->buffers.norBuf.size();
-    mesh->texBufSize  = mesh->buffers.texBuf.size();
-    mesh->eleBufSize  = mesh->buffers.eleBuf.size();
+    mesh->vertBufSize = int(mesh->buffers.vertBuf.size());
+    mesh->norBufSize  = int(mesh->buffers.norBuf.size());
+    mesh->texBufSize  = int(mesh->buffers.texBuf.size());
+    mesh->eleBufSize  = int(mesh->buffers.eleBuf.size());
 
-    /* Resize the mesh to be centered around origin and have vertex values [0, 1.0] */
-    resize(mesh->buffers);
+    /* Resize the mesh to be centered around origin and have vertex values [-1.0, 1.0] */
+    //resize(mesh->buffers);
 
     /* Add new mesh to library */
-    library.addMesh(name, *mesh);
+    Library::addMesh(name, *mesh);
     
     /* Load mesh to GPU */
-    this->loadMesh(*mesh);
+    loadMesh(*mesh);
 
     if (verbose) {
         std::cout << "Loaded mesh (" << vertCount << " vertices): " << name << std::endl;
@@ -88,7 +91,7 @@ uint8_t* Loader::loadTextureData(const std::string & fileName, const bool flip, 
 
 
 Texture* Loader::getTexture(const std::string & name, GLenum mode, bool flip) {
-    Texture *texture = library.getTexture(name);
+    Texture *texture = Library::getTexture(name);
     if (texture) {
         return texture;
     }
@@ -96,9 +99,9 @@ Texture* Loader::getTexture(const std::string & name, GLenum mode, bool flip) {
     texture = new Texture;
     uint8_t *data = loadTextureData(RESOURCE_DIR + name, flip, &texture->width, &texture->height, &texture->components);
     if(data) {
-        this->loadTexture(texture, data, mode);
+        loadTexture(texture, data, mode);
         if (texture->textureId) {
-            library.addTexture(name, texture);
+            Library::addTexture(name, texture);
         }
         stbi_image_free(data);
     }
