@@ -4,8 +4,6 @@
 #ifndef _SCENE_HPP_
 #define _SCENE_HPP_
 
-
-
 #include <unordered_map>
 #include <vector>
 #include <memory>
@@ -79,16 +77,7 @@ class Scene {
 
 };
 
-
-
 // TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
-
-
-
-template <typename CompT, typename... Args>
-CompT & Scene::createComponent(Args &&... args) {
-    return addComponent(std::unique_ptr<CompT>(new CompT(std::forward<Args>(args)...)));
-}
 
 template <typename CompT>
 CompT & Scene::addComponent(std::unique_ptr<CompT> component) {
@@ -97,6 +86,9 @@ CompT & Scene::addComponent(std::unique_ptr<CompT> component) {
     return comp;
 }
 
-
+template <typename CompT, typename... Args>
+CompT & Scene::createComponent(Args &&... args) {
+    return addComponent(std::unique_ptr<CompT>(new CompT(std::forward<Args>(args)...)));
+}
 
 #endif
