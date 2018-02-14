@@ -4,12 +4,12 @@
 
 class SpatialSystem : public System {
 
-    public:
+    friend Scene;
 
-    constexpr static Type type = SPATIAL;
-
-    public:
+    private: // only scene can create system
 
     SpatialSystem(const std::vector<Component *> & comps);
+
+    virtual void update(float dt) override;
 
 };

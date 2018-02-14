@@ -6,11 +6,9 @@
 
 class GameLogicSystem : public System {
 
-    public:
+    friend Scene;
 
-    constexpr static Type type = GAMELOGIC;
-
-    public:
+    private: // only scene can create system
 
     GameLogicSystem(std::vector<Component *> & components);
 

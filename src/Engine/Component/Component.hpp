@@ -5,18 +5,35 @@
 #include "GameObject/GameObject.hpp"
 #include "GameObject/Message.hpp"
 
+class Scene;
+
 class Component {
+
+    friend Scene;
+
+    protected: // only scene can create components
+
+        Component() : gameObject(nullptr) {};
+
+        // TODO: potentially add move support
+        Component(const Component & other) = default;
+        Component & operator=(const Component & other) = default;
+
     public:
 
-        Component();
-        virtual void init();
-        virtual void update(float);
+        /* virtual destructor necessary for polymorphic destruction */
+        virtual ~Component() = default;
 
-        GameObject* getGameObject() { return gameObject; }
+        virtual void init() {};
+        virtual void update(float) {};
+
+        GameObject * getGameObject() { return gameObject; }
+        const GameObject * getGameObject() const { return gameObject; }
+
         void setGameObject(GameObject *go) { this->gameObject = go; }
 
         /* Receive a message sent by another component */
-        virtual void receiveMessage(Message &);
+        //virtual void receiveMessage(Message &);
 
     protected:
         /* Parent game object */

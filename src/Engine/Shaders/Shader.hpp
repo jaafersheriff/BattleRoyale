@@ -9,16 +9,20 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include "Component/Component.hpp"
-
 #include <map>
 #include <string>
+#include <vector>
 
+class Component;
 class Shader {
     public:
         /* Empty constructor
          * Only used to set GLSL shader names */
-        Shader(const std::string & v = "", const std::string & f = "") : vShaderName(v), fShaderName(f) { }
+        Shader(const std::string & v = "", const std::string & f = "") : 
+            vShaderName(v), 
+            fShaderName(f),
+            m_isEnabled(false)
+        {}
 
         /* Compile GLSL shaders 
          * Derived shaders can add uniforms/attributes here */  
@@ -32,7 +36,7 @@ class Shader {
         void unloadTexture(int);
 
         /* Render functions */
-        virtual void render(const std::string &, const std::vector<Component *> & components) = 0;
+        virtual void render(const std::vector<Component *> & components) = 0;
 
         /* Parent load functions */
         void loadBool(const int, const bool) const;
@@ -48,10 +52,15 @@ class Shader {
         GLint getUniform(const std::string &);
 
         GLuint pid = 0;
+
+        bool isEnabled() const { return m_isEnabled; }
+        void toggleEnabled() { m_isEnabled = !m_isEnabled; } 
     protected:
         /* GLSL shader names */
         const std::string vShaderName;
         const std::string fShaderName;
+
+        bool m_isEnabled;
 
         /* Shared GLSL utility functions */
         void addAttribute(const std::string &);

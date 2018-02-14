@@ -1,8 +1,20 @@
 #include "DiffuseShader.hpp"
-#include "Component/RenderComponents/DiffuseRenderComponent.hpp"
-#include "Component/SpatialComponents/SpatialComponent.hpp"
 
 #include "glm/gtc/matrix_transform.hpp"
+
+#include "Component/RenderComponents/DiffuseRenderComponent.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Component/CollisionComponents/CollisionComponent.hpp"
+#include "System/CollisionSystem.hpp"
+
+DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam, const glm::vec3 & light) :
+    Shader(vertFile, fragFile),
+    camera(&cam),
+    lightPos(&light)
+{}
+
+// Debug
+#include "GameObject/GameObject.hpp"
 
 bool DiffuseShader::init() {
     if (!Shader::init()) {
@@ -29,7 +41,11 @@ bool DiffuseShader::init() {
     return true;
 }
 
-void DiffuseShader::render(const std::string & name, const std::vector<Component *> & components) {
+void DiffuseShader::render(const std::vector<Component *> & components) {
+    if (showWireFrame) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+
     /* Bind uniforms */
     loadMat4(getUniform("P"), camera->getProj());
     loadMat4(getUniform("V"), camera->getView());
@@ -40,6 +56,24 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
         DiffuseRenderComponent *drc;
         if (!(drc = dynamic_cast<DiffuseRenderComponent *>(cp)) || drc->pid != this->pid) {
             continue;
+        }
+
+        /* Determine if component should be culled */
+        /* Only doing frustum culling if object has bounder(s) */
+        /* Get the center and radius of the component */
+        const std::vector<Component *> & bounders(drc->getGameObject()->getComponentsBySystem<CollisionSystem>());
+        if (bounders.size()) {
+            bool inFrustum(false);
+            for (Component * bounder_ : bounders) {
+                BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
+                if (camera->sphereInFrustum(bounder->enclosingSphere())) {
+                    inFrustum = true;
+                    break;
+                }
+            }
+            if (!inFrustum) {
+                continue;
+            }
         }
 
         /* Model matrix */
@@ -91,7 +125,7 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drc->mesh->eleBufId);
 
         /* DRAW */
-        glDrawElements(GL_TRIANGLES, (int)drc->mesh->eleBuf.size(), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, (int)drc->mesh->eleBufSize, GL_UNSIGNED_INT, nullptr);
 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));
@@ -111,5 +145,10 @@ void DiffuseShader::render(const std::string & name, const std::vector<Component
             glActiveTexture(GL_TEXTURE0 + drc->modelTexture.texture->textureId);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
+ 
+    }
+
+    if (showWireFrame) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 }

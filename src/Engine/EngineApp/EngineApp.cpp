@@ -8,7 +8,7 @@ EngineApp::EngineApp() {
     RESOURCE_DIR = "../resources/";
     APP_NAME = "";
     verbose = false;
-    nFrames = 0;
+    nFrames = fps = 0;
     timeStep = lastFrameTime = runTime = 0.0;
 }
 
@@ -18,7 +18,7 @@ int EngineApp::init() {
     }
 
     m_scene.reset(new Scene());
-    loader.init(verbose, RESOURCE_DIR);
+    Loader::init(verbose, RESOURCE_DIR);
 
     lastFrameTime = runTime = windowHandler.getTime();
    
@@ -27,8 +27,6 @@ int EngineApp::init() {
 
 void EngineApp::run() {
 
-    // TODO : call all active component init functions
-
     while (!windowHandler.shouldClose()) {
         /* Update time and FPS */
         runTime = windowHandler.getTime();
@@ -36,13 +34,13 @@ void EngineApp::run() {
         lastFrameTime = runTime;
         nFrames++;
         if (runTime - lastFpsTime >= 1.0) {
-            fps = (double)nFrames;
+            fps = nFrames;
             nFrames = 0;
             lastFpsTime = runTime;
         }
 
         /* Update display, mouse, and keyboard */
-        windowHandler.update();
+        windowHandler.update(float(timeStep));
 
         /* Update all game objects and components */
         m_scene->update(float(timeStep));

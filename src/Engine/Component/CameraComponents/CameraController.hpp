@@ -10,11 +10,14 @@ class GameLogicSystem;
 
 class CameraController : public Component {
 
+    friend Scene;
+
     public:
 
     using SystemClass = GameLogicSystem;
 
-    public:
+    protected: // only scene can create component
+
         CameraController(CameraComponent & cc, float ls, float ms, int f, int b, int l, int r, int u, int d) :
             camera(&cc),
             lookSpeed(ls),
@@ -27,6 +30,8 @@ class CameraController : public Component {
             down(d)
         {}
 
+    public:
+
         void init();
 
         void update(float dt);
@@ -38,10 +43,13 @@ class CameraController : public Component {
         void moveRight(float dt);
         void moveUp(float dt);
         void moveDown(float dt);
+
     private:
+
         CameraComponent * camera;
         float lookSpeed, moveSpeed;
         int front, back, left, right, up, down;
+
 };
 
 #endif

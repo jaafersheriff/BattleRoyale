@@ -5,40 +5,39 @@
 #ifndef _LOADER_HPP_
 #define _LOADER_HPP_
 
-#include "Library.hpp"
-
+#define GLEW_STATIC
+#include <GL/glew.h>
 #include <cstdint>
 
-class Mesh;
+#include "Model/Mesh.hpp"
+#include "Library.hpp"
+
 class Texture;
 class Loader {
     public:
-        void init(bool, const std::string &);
+        static void init(bool, const std::string &);
 
         /* Retrieve Mesh pointer from an .obj file*/
-        Mesh *getMesh(const std::string &);
+        static Mesh* getMesh(const std::string &);
 
         /* Retrieve GL Texture ID */
-        Texture *getTexture(const std::string &);
-        Texture *getTexture(const std::string &, GLenum, const bool);
+        static Texture *getTexture(const std::string &);
+        static Texture *getTexture(const std::string &, GLenum, const bool);
 
     private:
-        /* Resize a mesh so all the vertices are [0, 1] */
-        void resize(Mesh &);
+        /* Resize mesh vertex buffers so all the vertices are [0, 1] */
+        static void resize(Mesh::MeshBuffers &);
 
         /* Return pointer to loaded stb_image data */
-        uint8_t* loadTextureData(const std::string &, const bool, int*, int*, int*);
+        static uint8_t* loadTextureData(const std::string &, const bool, int*, int*, int*);
 
-        /* Load data to GPU */
-        void loadMesh(Mesh &);
-        void loadTexture(Texture *, uint8_t *, GLenum);
-
-        /* Library containing loaded data */
-        Library library;
+        /* GL Loaders */
+        static void loadMesh(Mesh &);
+        static void loadTexture(Texture *, uint8_t *, GLenum);
 
         /* Private members */
-        std::string RESOURCE_DIR;
-        bool verbose;
+        static std::string RESOURCE_DIR;
+        static bool verbose;
 };
 
 #endif
