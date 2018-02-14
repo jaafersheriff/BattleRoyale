@@ -5,9 +5,6 @@
 #include "Component/CollisionComponents/CollisionComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
-#include "ThirdParty/imgui/imgui.h"
-#include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
-
 namespace {
 
 glm::mat4 detAABBMat(const AABBounderComponent & bounder) {
