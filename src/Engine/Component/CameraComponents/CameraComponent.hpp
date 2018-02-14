@@ -3,9 +3,10 @@
 #ifndef _CAMERA_COMPONENT_HPP_
 #define _CAMERA_COMPONENT_HPP_
 
-#include "Component/Component.hpp"
-
 #include "glm/glm.hpp"
+
+#include "Component/Component.hpp"
+#include "Util/Geometry.hpp"
 
 class GameLogicSystem;
 
@@ -37,7 +38,7 @@ class CameraComponent : public Component {
         const glm::mat4 & getView() const { return view; }
         const glm::mat4 & getProj() const { return projection; }
 
-        const bool sphereInFrustum(glm::vec3 center, float radius) const;
+        const bool sphereInFrustum(const Sphere & sphere) const;
 
         /* Member vars */
         /* w = forwards-backwards of camera */

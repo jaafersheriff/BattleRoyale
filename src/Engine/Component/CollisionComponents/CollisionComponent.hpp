@@ -48,6 +48,8 @@ class BounderComponent : public Component {
 
     virtual Intersect intersect(const Ray & ray) const = 0;
 
+    virtual Sphere enclosingSphere() const = 0;
+
     int weight() const { return m_weight; }
 
 };
@@ -70,6 +72,8 @@ class AABBounderComponent : public BounderComponent {
     virtual bool collide(const BounderComponent & o, glm::vec3 * delta) const override;
 
     virtual Intersect intersect(const Ray & ray) const override;
+
+    virtual Sphere enclosingSphere() const override;
 
     const AABox & box() const { return m_box; }
     const AABox & transBox() const { return m_transBox; }
@@ -95,6 +99,8 @@ class SphereBounderComponent : public BounderComponent {
 
     virtual Intersect intersect(const Ray & ray) const override;
 
+    virtual Sphere enclosingSphere() const override;
+
     const Sphere & sphere() const { return m_sphere; }
     const Sphere & transSphere() const { return m_transSphere; }
 
@@ -118,6 +124,8 @@ class CapsuleBounderComponent : public BounderComponent {
     virtual bool collide(const BounderComponent & o, glm::vec3 * delta) const override;
 
     virtual Intersect intersect(const Ray & ray) const override;
+
+    virtual Sphere enclosingSphere() const override;
 
     const Capsule & capsule() const { return m_capsule; }
     const Capsule & transCapsule() const { return m_transCapsule; }
