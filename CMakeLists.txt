@@ -76,6 +76,30 @@ endif()
 include_directories(${GLFW_DIR}/include)
 target_link_libraries(${CMAKE_PROJECT_NAME} glfw ${GLFW_LIBRARIES})
 
+# FMOD
+set(FMOD_DIR "$ENV{FMOD_DIR}")
+if(NOT FMOD_DIR)
+  message(STATUS "FMOD_DIR not set. No audio.")
+else()
+  message(STATUS "FMOD_DIR: ${FMOD_DIR}")
+endif()
+if(WIN32)
+  #with prebuilt binaries
+  link_directories(${FMOD_DIR}/api/studio/lib)
+endif()
+#Get the FMOD environment variable.
+include_directories(${FMOD_DIR}/api/studio/inc)
+if(WIN32)
+  if(MINGW)
+    message(STATUS "MINGW. Hopefully this doesn't explode right >_<.")
+    target_link_libraries(${CMAKE_PROJECT_NAME} ${FMOD_DIR}/api/studio/lib/fmodstudio.dll)
+  else()
+    target_link_libraries(${CMAKE_PROJECT_NAME} ${FMOD_DIR}/api/studio/lib/fmodstudio_vc.lib)
+  endif()
+else()
+  target_link_libraries(${CMAKE_PROJECT_NAME} ${FMOD_DIR}/api/studio/lib/fmodstudio.a)
+endif()
+
 # OS specific options and libraries
 if(WIN32)
   # c++0x is enabled by default.
