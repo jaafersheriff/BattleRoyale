@@ -1,5 +1,10 @@
 #include "RenderSystem.hpp"
 
+#include <iostream>
+
+#include "IO/Window.hpp"
+#include "ThirdParty/imgui/imgui.h"
+
 RenderSystem::RenderSystem(std::vector<Component *> & components) :
     System(components)
 {
@@ -16,14 +21,19 @@ void RenderSystem::update(float dt) {
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
 
     /* Loop through active shaders */
-    for (auto &shader : shaders) {
+    for (auto &shader : m_shaders) {
         shader.second->bind();
         ///////////////////////////  TODO  ///////////////////////////
         // pass a list of render components that are specific       //
         // to this shader -- right now we are passing the entire    //
         // list and expecting each shader to filter through         //
         //////////////////////////////////////////////////////////////
-        shader.second->render(shader.first, components);
+        shader.second->render(m_components);
         shader.second->unbind();
+    }
+
+    /* ImGui */
+    if (Window::isImGuiEnabled()) {
+        ImGui::Render();
     }
 }

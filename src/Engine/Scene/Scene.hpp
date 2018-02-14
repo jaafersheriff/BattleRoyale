@@ -24,13 +24,11 @@ class Scene {
         /* Game Objects */
         GameObject & createGameObject();
     
-        /* Components */
-        template <typename CompT, typename... Args>
-        CompT & createComponent(Args &&... args);
+        // Creates a component of the given type and adds it to the scene
+        template <typename CompT, typename... Args> CompT & createComponent(Args &&... args);
 
         // the scene takes ownership of the component
-        template <typename CompT>
-        CompT & addComponent(std::unique_ptr<CompT> component);
+        template <typename CompT> CompT & addComponent(std::unique_ptr<CompT> component);
 
         /* Main udate function */
         void update(float);
@@ -41,6 +39,7 @@ class Scene {
         GameLogicSystem & gameLogicSystem() { return *m_gameLogicSystemRef; }
         RenderSystem & renderSystem() { return *m_renderSystemRef; }
         SpatialSystem & spatialSystem() { return *m_spatialSystemRef; }
+        CollisionSystem & collisionSystem() { return *m_collisionSystemRef; }
 
     private:
 
@@ -63,6 +62,7 @@ class Scene {
         GameLogicSystem * m_gameLogicSystemRef;
         RenderSystem * m_renderSystemRef;
         SpatialSystem * m_spatialSystemRef;
+        CollisionSystem * m_collisionSystemRef;
 
         /* Lists of all game objects */
         std::vector<GameObject *> m_gameObjectRefs;

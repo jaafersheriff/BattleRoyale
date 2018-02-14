@@ -4,9 +4,11 @@
 
 #include "Util/Util.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "IO/Window.hpp"
 
 void CameraComponent::init() {
-    this->projection = glm::perspective(fov, aspect, near, far);
+    this->projection = glm::perspective(fov, Window::getAspectRatio(), near, far);
+    this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
     phi = theta = 0.0;
     
     float fovRadians;
@@ -38,9 +40,6 @@ void CameraComponent::update(float dt) {
         glm::cos(phi)*glm::cos((Util::PI / 2.f) - theta));
     lookAt = goPos + glm::normalize(sphere);
 
-    // TODO: Update frustum data only when the camera is moved
-    /* Update view frustum data */
-
     /* w = forwards-backwards of camera */
     farPlanePoint = goPos + w * far;
     farPlaneNormal = -w;
@@ -66,6 +65,7 @@ void CameraComponent::update(float dt) {
     rightPlaneNormal = glm::normalize(glm::cross(v,
         rightPlanePoint - goPos));
 
+    /* Update view matrix */
     if (isDirty) {
         this->projection = glm::perspective(fov, Window::getAspectRatio(), near, far);
         this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
