@@ -49,9 +49,9 @@ void Scene::update(float dt) {
 
     /* Update systems */
     m_gameLogicSystem->update(dt);
+    m_spatialSystem->update(dt); // needs to happen before collision
     m_collisionSystem->update(dt);
-    m_spatialSystem->update(dt); // needs to happen after collision
-    m_renderSystem->update(dt); // I imagine rendering should always be last
+    m_renderSystem->update(dt); // rendering should be last
 
     doKillQueue();
 }

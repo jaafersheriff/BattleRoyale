@@ -4,8 +4,6 @@
 #ifndef _SCENE_HPP_
 #define _SCENE_HPP_
 
-
-
 #include <unordered_map>
 #include <vector>
 #include <memory>
@@ -16,17 +14,26 @@
 #include "GameObject/GameObject.hpp"
 #include "Component/Components.hpp"
 
+class EngineApp;
 
 class Scene {
 
+    friend EngineApp;
+
     private:
 
-    struct CompInitE { std::type_index sysI, compI; std::unique_ptr<Component> comp; };
-    struct CompKillE { std::type_index sysI, compI; Component * comp; };
+        struct CompInitE { std::type_index sysI, compI; std::unique_ptr<Component> comp; };
+        struct CompKillE { std::type_index sysI, compI; Component * comp; };
+
+    private:
+
+        Scene(); // only engine can create scene
+
+        // TODO: potentially add move support
+        Scene(const Scene & other) = delete; // doesn't make sense to copy scene
+        Scene & operator=(const Scene & other) = delete;
 
     public:
-
-        Scene();
 
         /* Game Objects */
         GameObject & createGameObject();
@@ -85,8 +92,6 @@ class Scene {
 
 };
 
-
-
 // TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
 
 
@@ -101,7 +106,7 @@ CompT & Scene::addComponent(std::unique_ptr<CompT> component) {
     CompT & comp(*component);
     m_componentInitQueue.emplace_back(CompInitE{
         std::type_index(typeid(typename CompT::SystemClass)),
-        std::type_index(typeid(typename CompT)),
+        std::type_index(typeid(CompT)),
         std::move(component)
     });
     return comp;
@@ -109,12 +114,12 @@ CompT & Scene::addComponent(std::unique_ptr<CompT> component) {
 
 template <typename SysT>
 const std::vector<Component *> & Scene::getComponentsBySystem() const {
-    return *m_compRefsBySysT[std::type_index(typeid(typename SysT))];
+    return *m_compRefsBySysT[std::type_index(typeid(SysT))];
 }
 
 template <typename CompT>
 const std::vector<Component *> & Scene::getComponentsByType() const {
-    return m_compRefsByCompT[std::type_index(typeid(typename CompT))];
+    return m_compRefsByCompT[std::type_index(typeid(CompT))];
 }
 
 

@@ -4,7 +4,9 @@
 
 class SpatialSystem : public System {
 
-    public:
+    friend Scene;
+
+    private: // only scene can create system
 
     SpatialSystem(const std::vector<Component *> & comps);
 

@@ -15,13 +15,17 @@
 #include "Shaders/DiffuseShader.hpp"
 #include "Shaders/BounderShader.hpp"
 
-
+#include <iostream>
 
 class RenderSystem : public System {
 
-    public:
+    friend Scene;
+
+    private: // only scene can create system
 
     RenderSystem(std::vector<Component *> & components);
+
+    public:
 
     // creates a new shader and initializes it
     template<typename ShaderT, typename... Args> bool createShader(Args &&... args);

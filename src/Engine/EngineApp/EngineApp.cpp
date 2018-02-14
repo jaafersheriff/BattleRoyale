@@ -4,7 +4,7 @@
 #include <iostream>
 
 EngineApp::EngineApp() {
-    srand(unsigned int(time(0)));
+    srand(time(0));
     RESOURCE_DIR = "../resources/";
     APP_NAME = "";
     verbose = false;
@@ -34,7 +34,7 @@ void EngineApp::run() {
         lastFrameTime = runTime;
         nFrames++;
         if (runTime - lastFpsTime >= 1.0) {
-            fps = (double)nFrames;
+            fps = nFrames;
             nFrames = 0;
             lastFpsTime = runTime;
         }

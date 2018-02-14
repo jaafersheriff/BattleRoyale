@@ -280,16 +280,13 @@ bool collide(const Capsule & cap1, const Capsule & cap2, glm::vec3 * delta) {
 }
 
 Intersect intersect(const Ray & ray, const AABox & box) {
-
     glm::vec3 invDir(1.0f / ray.dir);
-
     glm::vec3 tsLow((box.min - ray.loc) * invDir);
     glm::vec3 tsHigh((box.max - ray.loc) * invDir);
     glm::vec3 tsMin(tsLow), tsMax(tsHigh);
     glm::bvec3 isLowHighsMin(false), isLowHighsMax(true);
     float tMinor, tMajor;
-    int axisMinor, axisMajor;
-    bool isLowHighMin, isLowHighMax;
+    glm::vec3 axisMinor, axisMajor;
 
     if (tsHigh.x < tsLow.x) { tsMin.x = tsHigh.x; isLowHighsMin.x = true; }
     if (tsHigh.y < tsLow.y) { tsMin.y = tsHigh.y; isLowHighsMin.y = true; }
@@ -298,54 +295,30 @@ Intersect intersect(const Ray & ray, const AABox & box) {
     if (tsLow.y > tsHigh.y) { tsMax.y = tsLow.y; isLowHighsMax.y = false; }
     if (tsLow.z > tsHigh.z) { tsMax.z = tsLow.z; isLowHighsMax.z = false; }
 
-    if (tsMin.x > tsMin.y) {
-        if (tsMin.x > tsMin.z) {
-            tMinor = tsMin.x;
-            axisMinor = 0;
-            isLowHighMin = isLowHighsMin.x;
-        }
-        else {
-            tMinor = tsMin.z;
-            axisMinor = 2;
-            isLowHighMin = isLowHighsMin.z;
-        }
+    if (tsMin.x > tsMin.y && tsMin.x > tsMin.z) {
+        tMinor = tsMin.x;
+        axisMinor.x = isLowHighsMin.x ? 1.0f : -1.0f;
+    }
+    else if (tsMin.y > tsMin.z) {
+        tMinor = tsMin.y;
+        axisMinor.y = isLowHighsMin.y ? 1.0f : -1.0f;
     }
     else {
-        if (tsMin.y > tsMin.z) {
-            tMinor = tsMin.y;
-            axisMinor = 1;
-            isLowHighMin = isLowHighsMin.y;
-        }
-        else {
-            tMinor = tsMin.z;
-            axisMinor = 2;
-            isLowHighMin = isLowHighsMin.z;
-        }
+        tMinor = tsMin.z;
+        axisMinor.z = isLowHighsMin.z ? 1.0f : -1.0f;
     }
 
-    if (tsMax.x < tsMax.y) {
-        if (tsMax.x < tsMax.z) {
-            tMajor = tsMax.x;
-            axisMajor = 0;
-            isLowHighMax = isLowHighsMax.x;
-        }
-        else {
-            tMajor = tsMax.z;
-            axisMajor = 2;
-            isLowHighMax = isLowHighsMax.z;
-        }
+    if (tsMax.x < tsMax.y && tsMax.x < tsMax.z) {
+        tMajor = tsMax.x;
+        axisMajor.x = isLowHighsMax.x ? 1.0f : -1.0f;
+    }
+    else if (tsMax.y < tsMax.z) {
+        tMajor = tsMax.y;
+        axisMajor.y = isLowHighsMax.y ? 1.0f : -1.0f;
     }
     else {
-        if (tsMax.y < tsMax.z) {
-            tMajor = tsMax.y;
-            axisMajor = 1;
-            isLowHighMax = isLowHighsMax.y;
-        }
-        else {
-            tMajor = tsMax.z;
-            axisMajor = 2;
-            isLowHighMax = isLowHighsMax.z;
-        }
+        tMajor = tsMax.z;
+        axisMajor.z = isLowHighsMax.z ? 1.0f : -1.0f;
     }
 
      // extra negation so that a NaN case returns no intersection
@@ -355,17 +328,11 @@ Intersect intersect(const Ray & ray, const AABox & box) {
 
     // exterior collision
     if (tMinor >= 0.0f) {
-        glm::vec3 loc(ray.loc + tMinor * ray.dir);
-        glm::vec3 norm(Util::axisVec(axisMinor, isLowHighMin));
-
-        return Intersect(true, tMinor, loc, norm, true);
+        return Intersect(tMinor, ray.loc + tMinor * ray.dir, axisMinor, true);
     }
     // interior collision
     else {
-        glm::vec3 loc(ray.loc + tMajor * ray.dir);
-        glm::vec3 norm(Util::axisVec(axisMajor, isLowHighMax));
-
-        return Intersect(true, tMajor, loc, norm, false);
+        return Intersect(tMajor, ray.loc + tMajor * ray.dir, axisMajor, false);
     }
 }
 
@@ -390,7 +357,7 @@ Intersect intersect(const Ray & ray, const Sphere & sphere) {
     float h(face ? std::sqrt(rad2 - d2) : -std::sqrt(rad2 - d2));
     glm::vec3 I(P - h * ray.dir);
 
-    return Intersect(true, p - h, ray.loc + I, (I - C) / sphere.radius, face);
+    return Intersect(p - h, ray.loc + I, (I - C) / sphere.radius, face);
 }
 
 Intersect intersect(const Ray & ray, const Capsule & cap) {
