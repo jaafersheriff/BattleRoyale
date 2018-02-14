@@ -114,7 +114,7 @@ struct Intersect {
     glm::vec3 norm; // the normal of the surface of the object at the point of intersection
     bool face; // true if the ray hit the outside surface, false if inside surface
 
-    Intersect::Intersect() :
+    Intersect() :
         is(false),
         dist(std::numeric_limits<float>::infinity()),
         loc(),
@@ -122,7 +122,7 @@ struct Intersect {
         face(true)
     {}
 
-    Intersect::Intersect(
+    Intersect(
         bool is,
         float dist,
         const glm::vec3 & loc,

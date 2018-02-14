@@ -114,13 +114,27 @@ int main(int argc, char **argv) {
         glm::vec3(1.0f, 1.0f, 1.0f), // scale
         glm::mat3() // rotation
     ));
-    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
+    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(1, *bunnyMesh, true, true, true)));
     bunny.addComponent(scene.createComponent<DiffuseRenderComponent>(
         scene.renderSystem().m_shaders.find("diffuse")->second->pid,
         *bunnyMesh,
         ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));  
 
     bunny.addComponent(scene.createComponent<PathfindingComponent>(cc, 1.f));
+
+    Mesh * cubeMesh(engine.loader.getMesh("cube.obj"));
+    GameObject & cube(scene.createGameObject());
+    cube.addComponent(scene.createComponent<SpatialComponent>(
+        glm::vec3(3.f, 0.f, -3.f),
+        glm::vec3(1.f, 1.f, 1.f),
+        glm::mat3()
+    ));
+    cube.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(INT_MAX, *cubeMesh, true, true, true)));
+    cube.addComponent(scene.createComponent<DiffuseRenderComponent>(
+        scene.renderSystem().m_shaders.find("diffuse")->second->pid,
+        *cubeMesh,
+        ModelTexture(.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
+
 
     /* Main loop */
     engine.run();
