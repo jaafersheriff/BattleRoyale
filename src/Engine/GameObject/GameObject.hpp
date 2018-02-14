@@ -54,7 +54,7 @@ class GameObject {
     const SpatialComponent * getSpatial() const { return m_spatialComponent; }
 
     // how many total components the game object has
-    int numComponents() const { return int(m_components.size()); }
+    int numComponents() const { return int(m_allComponents.size()); }
 
     // how many of a certain type of component the game object has
     template <typename CompT> int numComponents() const;
@@ -97,7 +97,7 @@ const std::vector<Component *> & GameObject::getComponents() const {
 
 template <typename CompT>
 CompT * GameObject::getComponent() {
-    std::type_index sysI(typeid(CompT::SystemClass));
+    std::type_index sysI(typeid(typename CompT::SystemClass));
 
     if (m_components[sysI].size()) {
         return static_cast<CompT *>(m_components[sysI].front());
@@ -108,7 +108,13 @@ CompT * GameObject::getComponent() {
 
 template <typename CompT>
 int GameObject::numComponents() const {
-    return int(m_components[std::type_index(typeid(CompT::SystemClass))].size());
+    std::type_index sysI(typeid(typename CompT::SystemClass));
+
+    if (m_components.count(sysI)) {
+        return m_components.at(sysI).size();
+    }
+
+    return 0;
 }
 
 
