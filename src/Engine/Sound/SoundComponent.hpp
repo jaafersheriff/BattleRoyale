@@ -3,8 +3,7 @@
 #define _SOUNDCOMPONENT_HPP_
 
 #include "glm/glm.hpp"
-#include "ThirdParty\fmod\api\lowlevel\inc\fmod.h"
-#include "System\SoundSystem.h"
+#include "System\SoundSystem.hpp"
 #include "Component\Component.hpp"
 
 class SoundSystem;
