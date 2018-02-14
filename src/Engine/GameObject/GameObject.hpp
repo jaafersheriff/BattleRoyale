@@ -76,8 +76,8 @@ class GameObject {
 template <typename CompT>
 void GameObject::addComponent(CompT & component) {
     component.setGameObject(this);
-    m_components[std::type_index(typeid(CompT::SystemClass))].push_back(&component);
-    if (std::is_same_v<CompT, SpatialComponent>) {
+    m_components[std::type_index(typeid(typename CompT::SystemClass))].push_back(&component);
+    if (std::is_same<CompT, SpatialComponent>::value) {
         m_spatialComponent = dynamic_cast<SpatialComponent *>(&component);
     }
 }

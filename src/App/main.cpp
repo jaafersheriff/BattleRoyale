@@ -173,7 +173,7 @@ int main(int argc, char **argv) {
 
     bunny.addComponent(scene.createComponent<PathfindingComponent>(cc, 1.f));
 
-    Mesh * cubeMesh(engine.loader.getMesh("cube.obj"));
+    Mesh * cubeMesh(Loader::getMesh("cube.obj"));
     GameObject & cube(scene.createGameObject());
     cube.addComponent(scene.createComponent<SpatialComponent>(
         glm::vec3(3.f, 0.f, -3.f),
@@ -182,7 +182,7 @@ int main(int argc, char **argv) {
     ));
     cube.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(INT_MAX, *cubeMesh, true, true, true)));
     cube.addComponent(scene.createComponent<DiffuseRenderComponent>(
-        scene.renderSystem().m_shaders.find("diffuse")->second->pid,
+        scene.renderSystem().getShader<DiffuseShader>()->pid,
         *cubeMesh,
         ModelTexture(.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
 

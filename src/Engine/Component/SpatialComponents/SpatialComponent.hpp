@@ -21,7 +21,7 @@ class SpatialComponent : public Component {
     glm::vec3 m_position;
     glm::vec3 m_scale;
     glm::mat3 m_rotation;
-    bool m_transformed; // has the object been spatially modified this tick
+    bool m_transformedFlag; // has the object been spatially modified this tick
 
     mutable glm::mat4 m_modelMatrix;
     mutable glm::mat3 m_normalMatrix;
