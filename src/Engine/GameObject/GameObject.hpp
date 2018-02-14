@@ -66,20 +66,20 @@ class GameObject {
 template <typename CompT>
 void GameObject::addComponent(CompT & component) {
     component.setGameObject(this);
-    m_components[std::type_index(typeid(CompT::SystemClass))].push_back(&component);
-    if (std::is_same_v<CompT, SpatialComponent>) {
+    m_components[std::type_index(typeid(typename CompT::SystemClass))].push_back(&component);
+    if (std::is_same<CompT, SpatialComponent>::value) {
         m_spatialComponent = dynamic_cast<SpatialComponent *>(&component);
     }
 }
 
 template <typename CompT>
 const std::vector<Component *> & GameObject::getComponents() const {
-    return m_components[std::type_index(typeid(CompT::SystemClass))];
+    return m_components[std::type_index(typeid(typename CompT::SystemClass))];
 }
 
 template <typename CompT>
 CompT * GameObject::getComponent() {
-    std::type_index sysI(typeid(CompT::SystemClass));
+    std::type_index sysI(typeid(typename CompT::SystemClass));
 
     if (m_components[sysI].size()) {
         return static_cast<CompT *>(m_components[sysI].front());
@@ -90,7 +90,13 @@ CompT * GameObject::getComponent() {
 
 template <typename CompT>
 int GameObject::numComponents() const {
-    return int(m_components[std::type_index(typeid(CompT::SystemClass))].size());
+    std::type_index sysI(typeid(typename CompT::SystemClass));
+
+    if (m_components.count(sysI)) {
+        return m_components.at(sysI).size();
+    }
+
+    return 0;
 }
 
 

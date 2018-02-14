@@ -93,7 +93,7 @@ CompT & Scene::createComponent(Args &&... args) {
 template <typename CompT>
 CompT & Scene::addComponent(std::unique_ptr<CompT> component) {
     CompT & comp(*component);
-    m_componentInitQueue[std::type_index(typeid(CompT::SystemClass))].emplace_back(std::move(component));
+    m_componentInitQueue[std::type_index(typeid(typename CompT::SystemClass))].emplace_back(std::move(component));
     return comp;
 }
 
