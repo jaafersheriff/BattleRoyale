@@ -1,5 +1,4 @@
 .git/
-.gitignore
 .vscode/
 .vs/
 build/
@@ -16,3 +15,4 @@ Win32/
 *.vcxproj
 *.filters
 *.user
+*.ini

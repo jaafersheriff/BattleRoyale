@@ -16,12 +16,21 @@
 #include "GameObject/GameObject.hpp"
 #include "Component/Components.hpp"
 
+class EngineApp;
 
 class Scene {
 
-    public:
+    friend EngineApp;
 
-        Scene();
+    private:
+
+        Scene(); // only engine can create scene
+
+        // TODO: potentially add move support
+        Scene(const Scene & other) = delete; // doesn't make sense to copy scene
+        Scene & operator=(const Scene & other) = delete;
+
+    public:
 
         /* Game Objects */
         GameObject & createGameObject();
