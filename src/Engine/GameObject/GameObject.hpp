@@ -40,29 +40,31 @@ class GameObject {
 
     // get all components;
     const std::vector<Component *> & getComponents() const { return m_allComponents; }
+    // get all components belonging to a system
+    template <typename SysT> const std::vector<Component *> & getComponentsBySystem() const;
     // get all components of a specific type
-    template <typename CompT> const std::vector<Component *> & getComponents() const;
+    template <typename CompT> const std::vector<Component *> & getComponentsByType() const;
 
+    // get first component belonging to a system
+    template <typename SysT> Component * getComponentBySystem();
+    template <typename SysT> const Component * getComponentBySystem() const {
+        return const_cast<GameObject*>(this)->getComponentBySystem<SysT>();
+    }
     // get first component of a specific type
-    template <typename CompT> CompT * getComponent();
-    template <typename CompT> const CompT * getComponent() const {
-        return const_cast<GameObject*>(this)->getComponent<CompT>();
+    template <typename CompT> CompT * getComponentByType();
+    template <typename CompT> const CompT * getComponentByType() const {
+        return const_cast<GameObject*>(this)->getComponentByType<CompT>();
     }
 
     // get the spatial component
     SpatialComponent * getSpatial() { return m_spatialComponent; }
     const SpatialComponent * getSpatial() const { return m_spatialComponent; }
 
-    // how many total components the game object has
-    int numComponents() const { return int(m_allComponents.size()); }
-
-    // how many of a certain type of component the game object has
-    template <typename CompT> int numComponents() const;
-
     private:
 
     std::vector<Component *> m_allComponents;
-    std::unordered_map<std::type_index, std::vector<Component *>> m_components;
+    std::unordered_map<std::type_index, std::vector<Component *>> m_compsBySysT;
+    std::unordered_map<std::type_index, std::vector<Component *>> m_compsByCompT;
     SpatialComponent * m_spatialComponent;
 
 };
@@ -75,46 +77,53 @@ class GameObject {
 
 template <typename CompT>
 void GameObject::addComponent(CompT & component) {
-    component.setGameObject(this);
-    m_components[std::type_index(typeid(typename CompT::SystemClass))].push_back(&component);
+    m_allComponents.push_back(&component);
+    m_compsBySysT[std::type_index(typeid(typename CompT::SystemClass))].push_back(&component);
+    m_compsByCompT[std::type_index(typeid(CompT))].push_back(&component);
     if (std::is_same<CompT, SpatialComponent>::value) {
         m_spatialComponent = dynamic_cast<SpatialComponent *>(&component);
     }
+    component.setGameObject(this);
 }
 
-template <typename CompT>
-const std::vector<Component *> & GameObject::getComponents() const {
+template <typename SysT>
+const std::vector<Component *> & GameObject::getComponentsBySystem() const {
     static const std::vector<Component *> s_emptyList;
 
-    std::type_index sysI(typeid(CompT::SystemClass));
-
-    if (m_components.count(sysI)) {
-        return m_components.at(sysI);
+    auto it(m_compsBySysT.find(std::type_index(typeid(SysT))));
+    if (it != m_compsBySysT.end()) {
+        return it->second;
     }
-
     return s_emptyList;
 }
 
 template <typename CompT>
-CompT * GameObject::getComponent() {
-    std::type_index sysI(typeid(typename CompT::SystemClass));
+const std::vector<Component *> & GameObject::getComponentsByType() const {
+    static const std::vector<Component *> s_emptyList;
 
-    if (m_components[sysI].size()) {
-        return static_cast<CompT *>(m_components[sysI].front());
+    auto it(m_compsByCompT.find(std::type_index(typeid(CompT))));
+    if (it != m_compsByCompT.end()) {
+        return it->second;
     }
+    return s_emptyList;
+}
 
+template <typename SysT>
+Component * GameObject::getComponentBySystem() {
+    auto it(m_compsBySysT.find(std::type_index(typeid(SysT))));
+    if (it != m_compsBySysT.end() && it->second.size()) {
+        return it->second.front();
+    }
     return nullptr;
 }
 
 template <typename CompT>
-int GameObject::numComponents() const {
-    std::type_index sysI(typeid(typename CompT::SystemClass));
-
-    if (m_components.count(sysI)) {
-        return m_components.at(sysI).size();
+CompT * GameObject::getComponentByType() {
+    auto it(m_compsByCompT.find(std::type_index(typeid(CompT))));
+    if (it != m_compsByCompT.end() && it->second.size()) {
+        return static_cast<CompT *>(it->second.front());
     }
-
-    return 0;
+    return nullptr;
 }
 
 
