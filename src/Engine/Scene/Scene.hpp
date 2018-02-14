@@ -4,8 +4,6 @@
 #ifndef _SCENE_HPP_
 #define _SCENE_HPP_
 
-
-
 #include <unordered_map>
 #include <vector>
 #include <memory>
@@ -16,12 +14,21 @@
 #include "GameObject/GameObject.hpp"
 #include "Component/Components.hpp"
 
+class EngineApp;
 
 class Scene {
 
-    public:
+    friend EngineApp;
 
-        Scene();
+    private:
+
+        Scene(); // only engine can create scene
+
+        // TODO: potentially add move support
+        Scene(const Scene & other) = delete; // doesn't make sense to copy scene
+        Scene & operator=(const Scene & other) = delete;
+
+    public:
 
         /* Game Objects */
         GameObject & createGameObject();
@@ -79,16 +86,7 @@ class Scene {
 
 };
 
-
-
 // TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
-
-
-
-template <typename CompT, typename... Args>
-CompT & Scene::createComponent(Args &&... args) {
-    return addComponent(std::unique_ptr<CompT>(new CompT(std::forward<Args>(args)...)));
-}
 
 template <typename CompT>
 CompT & Scene::addComponent(std::unique_ptr<CompT> component) {
@@ -97,6 +95,9 @@ CompT & Scene::addComponent(std::unique_ptr<CompT> component) {
     return comp;
 }
 
-
+template <typename CompT, typename... Args>
+CompT & Scene::createComponent(Args &&... args) {
+    return addComponent(std::unique_ptr<CompT>(new CompT(std::forward<Args>(args)...)));
+}
 
 #endif

@@ -20,7 +20,7 @@ class EngineApp {
 
         std::string RESOURCE_DIR;   /* Static resource directory */
         std::string APP_NAME;       /* Name of application */
-        double fps;                 /* Frames per second */
+        int fps;                    /* Frames per second */
         double timeStep;            /* Delta time */
         bool verbose;               /* Log things or not */
 
