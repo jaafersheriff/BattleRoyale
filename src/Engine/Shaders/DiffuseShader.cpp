@@ -2,9 +2,6 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "ThirdParty/imgui/imgui.h"
-#include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
-
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/CollisionComponent.hpp"
@@ -45,10 +42,6 @@ bool DiffuseShader::init() {
 }
 
 void DiffuseShader::render(const std::vector<Component *> & components) {
-    if (!m_isEnabled) {
-        return;
-    }
-
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }

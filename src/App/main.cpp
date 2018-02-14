@@ -97,9 +97,13 @@ int main(int argc, char **argv) {
     scene.createComponent<ImGuiComponent>(
         "Diffuse Shader",
         [&]() {
-            ImGui::Selectable("Active", &scene.renderSystem().getShader<DiffuseShader>()->m_isEnabled);
-            ImGui::Selectable("Wireframe", &scene.renderSystem().getShader<DiffuseShader>()->showWireFrame);
-        }
+            if (ImGui::Button("Active")) {
+                scene.renderSystem().getShader<DiffuseShader>()->toggleEnabled();
+            }
+            if (ImGui::Button("Wireframe")) {
+                scene.renderSystem().getShader<DiffuseShader>()->toggleWireFrame();
+            }
+       }
     );
 
     // Create collider
@@ -118,7 +122,9 @@ int main(int argc, char **argv) {
     scene.createComponent<ImGuiComponent>(
         "Bounder Shader",
         [&]() {
-            ImGui::Selectable("Active", &scene.renderSystem().getShader<BounderShader>()->m_isEnabled);
+            if (ImGui::Button("Active")) {
+                scene.renderSystem().getShader<BounderShader>()->toggleEnabled();
+            }
         }
     );
 
