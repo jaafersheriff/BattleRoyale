@@ -28,7 +28,6 @@ class Scene {
     private:
 
         Scene(); // only engine can create scene
-
         // TODO: potentially add move support
         Scene(const Scene & other) = delete; // doesn't make sense to copy scene
         Scene & operator=(const Scene & other) = delete;
@@ -94,8 +93,6 @@ class Scene {
 
 // TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
 
-
-
 template <typename CompT, typename... Args>
 CompT & Scene::createComponent(Args &&... args) {
     return addComponent(std::unique_ptr<CompT>(new CompT(std::forward<Args>(args)...)));
@@ -133,7 +130,5 @@ const std::vector<Component *> & Scene::getComponentsByType() const {
     }
     return s_emptyList;
 }
-
-
 
 #endif

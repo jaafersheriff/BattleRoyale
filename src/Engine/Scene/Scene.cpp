@@ -2,8 +2,6 @@
 
 #include <algorithm>
 
-
-
 Scene::Scene() :
     m_gameLogicSystem(),
     m_renderSystem(),

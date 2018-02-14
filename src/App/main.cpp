@@ -158,6 +158,7 @@ int main(int argc, char **argv) {
                 bunny.getSpatial()->setScale(scale);
             }
             glm::vec3 position = bunny.getSpatial()->position();
+
             if (ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f)) {
                 bunny.getSpatial()->setPosition(position);
             }

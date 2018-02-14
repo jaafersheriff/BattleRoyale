@@ -58,6 +58,10 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
 
+    /* Temporary variables to hold sphere bounding data */
+    glm::vec3 center, scale;
+    float radius;
+
     for (auto cp : components) {
         // TODO : component list should be passed in as diffuserendercomponent
         DiffuseRenderComponent *drc;
