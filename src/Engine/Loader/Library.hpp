@@ -5,8 +5,8 @@
 #include "Model/Mesh.hpp"
 #include "Model/Texture.hpp"
 
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 
 class Library {
     public:
