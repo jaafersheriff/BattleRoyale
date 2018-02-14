@@ -207,7 +207,7 @@ void CollisionSystem::update(float dt) {
         // set position rather than move because they are conceptually different
         // this will come into play if we do time step interpolation
         spat.setPosition(spat.position() + delta + glm::normalize(delta) * k_collisionOffsetFactor);
-        for (Component * comp : gameObject->getComponents<BounderComponent>()) {
+        for (Component * comp : gameObject->getComponentsBySystem<CollisionSystem>()) {
             BounderComponent * bounder(static_cast<BounderComponent *>(comp));
             bounder->update(dt);
             bounder->m_collisionFlag = true;

@@ -92,7 +92,7 @@ const std::vector<Component *> & GameObject::getComponentsBySystem() const {
 
     auto it(m_compsBySysT.find(std::type_index(typeid(SysT))));
     if (it != m_compsBySysT.end()) {
-        return *it;
+        return it->second;
     }
     return s_emptyList;
 }
@@ -103,7 +103,7 @@ const std::vector<Component *> & GameObject::getComponentsByType() const {
 
     auto it(m_compsByCompT.find(std::type_index(typeid(CompT))));
     if (it != m_compsByCompT.end()) {
-        return *it;
+        return it->second;
     }
     return s_emptyList;
 }
@@ -111,8 +111,8 @@ const std::vector<Component *> & GameObject::getComponentsByType() const {
 template <typename SysT>
 Component * GameObject::getComponentBySystem() {
     auto it(m_compsBySysT.find(std::type_index(typeid(SysT))));
-    if (it != m_compsBySysT.end() && it->size()) {
-        return it->front();
+    if (it != m_compsBySysT.end() && it->second.size()) {
+        return it->second.front();
     }
     return nullptr;
 }
@@ -120,8 +120,8 @@ Component * GameObject::getComponentBySystem() {
 template <typename CompT>
 CompT * GameObject::getComponentByType() {
     auto it(m_compsByCompT.find(std::type_index(typeid(CompT))));
-    if (it != m_compsBySysT.end() && it->size()) {
-        return static_cast<CompT *>(it->front());
+    if (it != m_compsByCompT.end() && it->second.size()) {
+        return static_cast<CompT *>(it->second.front());
     }
     return nullptr;
 }

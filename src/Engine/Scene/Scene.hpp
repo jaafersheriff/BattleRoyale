@@ -114,12 +114,24 @@ CompT & Scene::addComponent(std::unique_ptr<CompT> component) {
 
 template <typename SysT>
 const std::vector<Component *> & Scene::getComponentsBySystem() const {
-    return *m_compRefsBySysT[std::type_index(typeid(SysT))];
+    static std::vector<Component *> s_emptyList;
+    
+    auto it(m_compRefsBySysT.find(std::type_index(typeid(SysT))));
+    if (it != m_compRefsBySysT.end() && it->second) {
+        return *it->second;
+    }
+    return s_emptyList;
 }
 
 template <typename CompT>
 const std::vector<Component *> & Scene::getComponentsByType() const {
-    return m_compRefsByCompT[std::type_index(typeid(CompT))];
+    static std::vector<Component *> s_emptyList;
+    
+    auto it(m_compRefsByCompT.find(std::type_index(typeid(CompT))));
+    if (it != m_compRefsByCompT.end()) {
+        return it->second;
+    }
+    return s_emptyList;
 }
 
 

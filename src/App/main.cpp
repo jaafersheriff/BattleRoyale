@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
         glm::vec3(1.0f, 1.0f, 1.0f), // scale
         glm::mat3() // rotation
     ));
-    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(0, *bunnyMesh, true, true, true)));
+    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(1, *bunnyMesh, true, true, true)));
     DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
         scene.renderSystem().getShader<DiffuseShader>()->pid,
         *bunnyMesh,
@@ -152,20 +152,26 @@ int main(int argc, char **argv) {
             ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
             ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
             /* Spatial properties */
+            // dont want to be setting spat props unnecessarily
             glm::vec3 scale = bunny.getSpatial()->scale();
-            ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f);
-            bunny.getSpatial()->setScale(scale); 
-            glm::vec3 position = bunny.getSpatial()->position();
-            ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f);
-            bunny.getSpatial()->setPosition(position);
-            static glm::vec3 axis; static float angle(0.0f);
-            ImGui::SliderFloat3("Rotation Axis", glm::value_ptr(axis), 0.0f, 1.0f);
-            ImGui::SliderFloat("Rotation Angle", &angle, -glm::pi<float>(), glm::pi<float>());
-            if (angle != 0.0f && axis != glm::vec3()) {
-                bunny.getSpatial()->setRotation(glm::rotate(angle, glm::normalize(axis)));
+            if (ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f)) {
+                bunny.getSpatial()->setScale(scale);
             }
-            else {
-                bunny.getSpatial()->setRotation(glm::mat3());
+            glm::vec3 position = bunny.getSpatial()->position();
+            if (ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f)) {
+                bunny.getSpatial()->setPosition(position);
+            }
+            static glm::vec3 axis; static float angle(0.0f);
+            if (
+                ImGui::SliderFloat3("Rotation Axis", glm::value_ptr(axis), 0.0f, 1.0f) ||
+                ImGui::SliderFloat("Rotation Angle", &angle, -glm::pi<float>(), glm::pi<float>()))
+            {
+                if (angle != 0.0f && axis != glm::vec3()) {
+                    bunny.getSpatial()->setRotation(glm::rotate(angle, glm::normalize(axis)));
+                }
+                else {
+                    bunny.getSpatial()->setRotation(glm::mat3());
+                }
             }
         }
     );

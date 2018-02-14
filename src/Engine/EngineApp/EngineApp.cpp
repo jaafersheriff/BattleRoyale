@@ -4,7 +4,7 @@
 #include <iostream>
 
 EngineApp::EngineApp() {
-    srand(time(0));
+    srand(int(time(0)));
     RESOURCE_DIR = "../resources/";
     APP_NAME = "";
     verbose = false;
