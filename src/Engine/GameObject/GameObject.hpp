@@ -54,7 +54,7 @@ class GameObject {
     const SpatialComponent * getSpatial() const { return m_spatialComponent; }
 
     // how many total components the game object has
-    int numComponents() const { return int(m_components.size()); }
+    int numComponents() const { return int(m_allComponents.size()); }
 
     // how many of a certain type of component the game object has
     template <typename CompT> int numComponents() const;
