@@ -15,7 +15,7 @@
 #include "Shaders/DiffuseShader.hpp"
 #include "Shaders/BounderShader.hpp"
 
-
+#include <iostream>
 
 class RenderSystem : public System {
 
