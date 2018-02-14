@@ -51,7 +51,7 @@ class Scene {
         const std::vector<GameObject *> & getGameObjects() const { return m_gameObjectRefs; }
 
         template <typename SysT> const std::vector<Component *> & getComponentsBySystem() const;
-        template <typename CompT> const std::vector<Component *> & getComponentsByComponent() const;
+        template <typename CompT> const std::vector<Component *> & getComponentsByType() const;
 
     private:
 
@@ -113,7 +113,7 @@ const std::vector<Component *> & Scene::getComponentsBySystem() const {
 }
 
 template <typename CompT>
-const std::vector<Component *> & Scene::getComponentsByComponent() const {
+const std::vector<Component *> & Scene::getComponentsByType() const {
     return m_compRefsByCompT[std::type_index(typeid(typename CompT))];
 }
 

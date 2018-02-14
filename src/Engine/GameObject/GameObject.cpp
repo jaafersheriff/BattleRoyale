@@ -5,7 +5,8 @@
 
 GameObject::GameObject() :
     m_allComponents(),
-    m_components(),
+    m_compsBySysT(),
+    m_compsByCompT(),
     m_spatialComponent(nullptr)
 {}
 
