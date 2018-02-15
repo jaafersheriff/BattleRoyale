@@ -1,21 +1,21 @@
 {
 "object0":{
-    "objName": "Assets/Models/FF_Counter.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
     "position": [
-        -13.980000495910645,
-        0.10000002384185791,
-        -17.5
+        -20.100000381469728,
+        0.30000001192092898,
+        6.900000095367432
     ],
     "scale": [
-        0.3580089211463928,
-        0.3580089211463928,
-        0.3580089211463928
+        0.6869286298751831,
+        0.6869286298751831,
+        0.6869286298751831
     ],
     "rotMat3_0": [
-        5.960464477539063e-8,
+        1.0,
         0.0,
-        -0.9999999403953552
+        0.0
     ],
     "rotMat3_1": [
         0.0,
@@ -23,14 +23,217 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9999999403953552,
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object1":{
+    "objName": "Assets/Models/FoodSign.obj",
+    "objTexture": "Assets/Models/FoodSign_Tex.png",
+    "position": [
+        8.241499900817871,
+        8.279199600219727,
+        -26.114999771118165
+    ],
+    "scale": [
+        0.6149808168411255,
+        0.6149808168411255,
+        0.7579429149627686
+    ],
+    "rotMat3_0": [
+        1.862645149230957e-8,
+        0.0,
+        1.0
+    ],
+    "rotMat3_1": [
+        0.45508357882499697,
+        0.8904487490653992,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.8904486894607544,
+        0.45508357882499697,
+        1.862645149230957e-8
+    ]
+},
+"object2":{
+    "objName": "Assets/Models/Cup.obj",
+    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "position": [
+        4.420000076293945,
+        6.010000228881836,
+        -17.43899917602539
+    ],
+    "scale": [
+        0.42806464433670046,
+        0.4280645251274109,
+        0.42806464433670046
+    ],
+    "rotMat3_0": [
+        0.2623291611671448,
+        0.0,
+        0.9649783968925476
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9649783968925476,
+        0.0,
+        0.2623291611671448
+    ]
+},
+"object3":{
+    "objName": "Assets/Models/Tray.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "position": [
+        3.3210999965667726,
+        5.820000171661377,
+        -17.829999923706056
+    ],
+    "scale": [
+        0.32327914237976076,
+        0.2536212205886841,
+        0.3300766348838806
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
         0.0,
         5.960464477539063e-8
     ]
 },
-"object1":{
+"object4":{
+    "objName": "Assets/Models/Counter.obj",
+    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "position": [
+        0.2999989986419678,
+        -0.3600001335144043,
+        -17.899999618530275
+    ],
+    "scale": [
+        0.7893266081809998,
+        0.7893261909484863,
+        0.7893264889717102
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object5":{
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "position": [
+        2.690000057220459,
+        5.940000057220459,
+        -17.6200008392334
+    ],
+    "scale": [
+        0.22152887284755708,
+        0.22152887284755708,
+        0.22152887284755708
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object6":{
+    "objName": "Assets/Models/Door.obj",
+    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "position": [
+        -16.97391700744629,
+        0.44999998807907107,
+        -29.6299991607666
+    ],
+    "scale": [
+        0.5602515935897827,
+        0.5602515935897827,
+        0.5602515935897827
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object7":{
+    "objName": "Assets/Models/CashRegister.obj",
+    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "position": [
+        -4.260000228881836,
+        5.632500171661377,
+        -17.71500015258789
+    ],
+    "scale": [
+        0.458357036113739,
+        0.4583568871021271,
+        0.4583568871021271
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object8":{
     "objName": "Assets/Models/FoodCourt_Floor.obj",
-    "objTexture": "Assets/Models/textures/floor_tiles.png",
+    "objTexture": "Assets/Models/floor_tiles.png",
     "position": [
         -0.6000000238418579,
         0.0,
@@ -57,221 +260,18 @@
         1.0
     ]
 },
-"object2":{
-    "objName": "Assets/Models/FF_Counter.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
-    "position": [
-        0.0,
-        0.10000000149011612,
-        -17.5
-    ],
-    "scale": [
-        0.35801011323928835,
-        0.3580099940299988,
-        0.35801011323928835
-    ],
-    "rotMat3_0": [
-        5.960464477539063e-8,
-        0.0,
-        -0.9999999403953552
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        0.9999999403953552,
-        0.0,
-        5.960464477539063e-8
-    ]
-},
-"object3":{
-    "objName": "Assets/Models/FF_Counter.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
-    "position": [
-        15.35999870300293,
-        0.10000002384185791,
-        -17.5
-    ],
-    "scale": [
-        0.35801011323928835,
-        0.3580099940299988,
-        0.35801011323928835
-    ],
-    "rotMat3_0": [
-        5.960464477539063e-8,
-        0.0,
-        -0.9999999403953552
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        0.9999999403953552,
-        0.0,
-        5.960464477539063e-8
-    ]
-},
-"object4":{
-    "objName": "Assets/Models/FF_Counter.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
-    "position": [
-        -16.100000381469728,
-        0.10000002384185791,
-        18.5
-    ],
-    "scale": [
-        0.35801011323928835,
-        0.3580099940299988,
-        0.35801011323928835
-    ],
-    "rotMat3_0": [
-        5.960464477539063e-8,
-        0.0,
-        0.9999999403953552
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        -0.9999999403953552,
-        0.0,
-        5.960464477539063e-8
-    ]
-},
-"object5":{
-    "objName": "Assets/Models/FF_Counter.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
-    "position": [
-        -2.119999885559082,
-        0.10000000149011612,
-        18.5
-    ],
-    "scale": [
-        0.35801011323928835,
-        0.3580099940299988,
-        0.35801011323928835
-    ],
-    "rotMat3_0": [
-        5.960464477539063e-8,
-        0.0,
-        0.9999999403953552
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        -0.9999999403953552,
-        0.0,
-        5.960464477539063e-8
-    ]
-},
-"object6":{
-    "objName": "Assets/Models/FF_Counter.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
-    "position": [
-        13.239998817443848,
-        0.10000002384185791,
-        18.5
-    ],
-    "scale": [
-        0.35801011323928835,
-        0.3580099940299988,
-        0.35801011323928835
-    ],
-    "rotMat3_0": [
-        5.960464477539063e-8,
-        0.0,
-        0.9999999403953552
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        -0.9999999403953552,
-        0.0,
-        5.960464477539063e-8
-    ]
-},
-"object7":{
-    "objName": "Assets/Models/table.obj",
-    "objTexture": "Assets/Models/basic_table_tex.png",
-    "position": [
-        -22.369998931884767,
-        0.11000007390975952,
-        -4.5
-    ],
-    "scale": [
-        1.0,
-        1.0,
-        1.0
-    ],
-    "rotMat3_0": [
-        1.0,
-        0.0,
-        0.0
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        0.0,
-        0.0,
-        1.0
-    ]
-},
-"object8":{
-    "objName": "Assets/Models/table.obj",
-    "objTexture": "Assets/Models/basic_table_tex.png",
-    "position": [
-        -22.369998931884767,
-        0.11000007390975952,
-        -19.39999771118164
-    ],
-    "scale": [
-        1.0,
-        1.0,
-        1.0
-    ],
-    "rotMat3_0": [
-        1.0,
-        0.0,
-        0.0
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        0.0,
-        0.0,
-        1.0
-    ]
-},
 "object9":{
     "objName": "Assets/Models/table.obj",
-    "objTexture": "Assets/Models/basic_table_tex.png",
+    "objTexture": "Assets/Models/FFCounter_Tex.png",
     "position": [
-        4.499999046325684,
-        0.11000007390975952,
-        -4.5
+        10.0,
+        0.17000000178813935,
+        -3.9100000858306886
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.6958661079406738,
+        0.6958661675453186,
+        0.6958661675453186
     ],
     "rotMat3_0": [
         1.0,
@@ -290,16 +290,16 @@
     ]
 },
 "object10":{
-    "objName": "Assets/Models/table.obj",
-    "objTexture": "Assets/Models/basic_table_tex.png",
+    "objName": "Assets/Models/Pillar.obj",
+    "objTexture": "Assets/Models/CashRegister_Tex.png",
     "position": [
-        4.499999046325684,
-        0.11000007390975952,
-        -19.39999771118164
+        -22.459999084472658,
+        -3.5999999046325685,
+        -12.850000381469727
     ],
     "scale": [
         1.0,
-        1.0,
+        1.1893903017044068,
         1.0
     ],
     "rotMat3_0": [
@@ -319,16 +319,16 @@
     ]
 },
 "object11":{
-    "objName": "Assets/Models/table.obj",
-    "objTexture": "Assets/Models/basic_table_tex.png",
+    "objName": "Assets/Models/Pillar.obj",
+    "objTexture": "Assets/Models/CashRegister_Tex.png",
     "position": [
-        -8.0,
-        0.10999999940395355,
-        -12.199999809265137
+        -22.459999084472658,
+        -3.5999999046325685,
+        19.899999618530275
     ],
     "scale": [
         1.0,
-        1.0,
+        1.1893903017044068,
         1.0
     ],
     "rotMat3_0": [
@@ -345,5 +345,556 @@
         0.0,
         0.0,
         1.0
+    ]
+},
+"object12":{
+    "objName": "Assets/Models/Pillar.obj",
+    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "position": [
+        21.0,
+        -3.5999999046325685,
+        -12.850000381469727
+    ],
+    "scale": [
+        1.0,
+        1.1893903017044068,
+        1.0
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object13":{
+    "objName": "Assets/Models/Pillar.obj",
+    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "position": [
+        21.0,
+        -3.5999999046325685,
+        19.899999618530275
+    ],
+    "scale": [
+        1.0,
+        1.1893903017044068,
+        1.0
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object14":{
+    "objName": "Assets/Models/Wall.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "position": [
+        25.0,
+        0.3477799892425537,
+        -0.4000000059604645
+    ],
+    "scale": [
+        1.0,
+        1.0,
+        3.885206460952759
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object15":{
+    "objName": "Assets/Models/Wall.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "position": [
+        -26.0,
+        0.3477799892425537,
+        -0.4000000059604645
+    ],
+    "scale": [
+        1.0,
+        1.0,
+        3.885206460952759
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object16":{
+    "objName": "Assets/Models/Wall.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "position": [
+        1.2999999523162842,
+        0.3477799892425537,
+        31.0
+    ],
+    "scale": [
+        1.0,
+        1.0,
+        3.885209798812866
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object17":{
+    "objName": "Assets/Models/Wall.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "position": [
+        1.2999999523162842,
+        0.3477799892425537,
+        -31.299999237060548
+    ],
+    "scale": [
+        1.0000004768371583,
+        1.0,
+        3.885211706161499
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object18":{
+    "objName": "Assets/Models/Wall.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "position": [
+        -10.199999809265137,
+        0.3477799892425537,
+        -22.84000015258789
+    ],
+    "scale": [
+        1.0000004768371583,
+        1.0,
+        0.85594242811203
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object19":{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "position": [
+        10.0,
+        0.17000000178813935,
+        15.699999809265137
+    ],
+    "scale": [
+        0.6958699822425842,
+        0.6958699822425842,
+        0.6958699822425842
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object20":{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "position": [
+        -11.699999809265137,
+        0.17000000178813935,
+        -3.9100000858306886
+    ],
+    "scale": [
+        0.6958699822425842,
+        0.6958699822425842,
+        0.6958699822425842
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object21":{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "position": [
+        -11.700000762939454,
+        0.17000000178813935,
+        15.699999809265137
+    ],
+    "scale": [
+        0.6958699822425842,
+        0.6958699822425842,
+        0.6958699822425842
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object22":{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "position": [
+        19.100000381469728,
+        0.30000001192092898,
+        6.900000095367432
+    ],
+    "scale": [
+        0.6869300007820129,
+        0.6869300007820129,
+        0.6869300007820129
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object23":{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "position": [
+        0.0,
+        0.30000001192092898,
+        6.900000095367432
+    ],
+    "scale": [
+        0.6869300007820129,
+        0.6869300007820129,
+        0.6869300007820129
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object24":{
+    "objName": "Assets/Models/Cup.obj",
+    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "position": [
+        11.800000190734864,
+        4.619999885559082,
+        -3.4000000953674318
+    ],
+    "scale": [
+        0.4280601143836975,
+        0.42805999517440798,
+        0.4280601143836975
+    ],
+    "rotMat3_0": [
+        0.2623291611671448,
+        0.0,
+        0.9649783968925476
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9649783968925476,
+        0.0,
+        0.2623291611671448
+    ]
+},
+"object25":{
+    "objName": "Assets/Models/Tray.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "position": [
+        10.70110034942627,
+        4.429999828338623,
+        -3.7910003662109377
+    ],
+    "scale": [
+        0.32328012585639956,
+        0.2536199986934662,
+        0.3300801217556
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object26":{
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "position": [
+        10.069999694824219,
+        4.549999713897705,
+        -3.5810012817382814
+    ],
+    "scale": [
+        0.2215299904346466,
+        0.2215299904346466,
+        0.2215299904346466
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object27":{
+    "objName": "Assets/Models/Cup.obj",
+    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "position": [
+        -9.9399995803833,
+        4.630000114440918,
+        15.920000076293946
+    ],
+    "scale": [
+        0.4280601143836975,
+        0.42805999517440798,
+        0.4280601143836975
+    ],
+    "rotMat3_0": [
+        0.2623291611671448,
+        0.0,
+        0.9649783968925476
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9649783968925476,
+        0.0,
+        0.2623291611671448
+    ]
+},
+"object28":{
+    "objName": "Assets/Models/Tray.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "position": [
+        -11.038899421691895,
+        4.440000057220459,
+        15.528999328613282
+    ],
+    "scale": [
+        0.32328012585639956,
+        0.2536199986934662,
+        0.3300801217556
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object29":{
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "position": [
+        -11.670000076293946,
+        4.559999942779541,
+        15.738998413085938
+    ],
+    "scale": [
+        0.2215299904346466,
+        0.2215299904346466,
+        0.2215299904346466
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ]
+},
+"object30":{
+    "objName": "Assets/Models/FoodSign.obj",
+    "objTexture": "Assets/Models/FoodSign_Tex.png",
+    "position": [
+        -3.618499994277954,
+        8.279199600219727,
+        -26.114999771118165
+    ],
+    "scale": [
+        0.614979088306427,
+        0.6149789690971375,
+        0.7579408288002014
+    ],
+    "rotMat3_0": [
+        1.862645149230957e-8,
+        0.0,
+        1.0
+    ],
+    "rotMat3_1": [
+        0.45508357882499697,
+        0.8904487490653992,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.8904486894607544,
+        0.45508357882499697,
+        1.862645149230957e-8
     ]
 }}
