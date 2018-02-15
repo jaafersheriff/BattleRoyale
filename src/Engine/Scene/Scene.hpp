@@ -49,11 +49,11 @@ class Scene {
         /* Destroy everything */
         void shutDown();
 
-        GameLogicSystem & gameLogicSystem() { return *m_gameLogicSystemRef; }
-        RenderSystem & renderSystem() { return *m_renderSystemRef; }
-        SpatialSystem & spatialSystem() { return *m_spatialSystemRef; }
-        PathfindingSystem & pathfindingSystem() { return *m_pathfindingSystemRef; }
-        CollisionSystem & collisionSystem() { return *m_collisionSystemRef; }
+        GameLogicSystem & gameLogicSystem() { return *m_gameLogicSystem; }
+        RenderSystem & renderSystem() { return *m_renderSystem; }
+        SpatialSystem & spatialSystem() { return *m_spatialSystem; }
+        PathfindingSystem & pathfindingSystem() { return *m_pathfindingSystem; }
+        CollisionSystem & collisionSystem() { return *m_collisionSystem; }
 
         const std::vector<GameObject *> & getGameObjects() const { return m_gameObjectRefs; }
 

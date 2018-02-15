@@ -7,7 +7,7 @@ Scene::Scene() :
     m_renderSystem(),
     m_spatialSystem(),
     m_collisionSystem(),
-    m_pathfindingSystemRef(),
+    m_pathfindingSystem(),
     m_gameObjectsStore(),
     m_gameObjectRefs(),
     m_componentsStore(),
@@ -38,7 +38,7 @@ Scene::Scene() :
     m_collisionSystem.reset(new CollisionSystem(*m_compRefsBySysT[sysI]));
     
     sysI = typeid(PathfindingSystem);
-    m_compRefsBySys[sysI].reset(new std::vector<Component *>());
+    m_compRefsBySysT[sysI].reset(new std::vector<Component *>());
     m_pathfindingSystem.reset(new PathfindingSystem(*m_compRefsBySysT[sysI]));
 }
 
@@ -51,11 +51,11 @@ void Scene::update(float dt) {
     doInitQueue();
 
     /* Update systems */
-    m_gameLogicSystemRef->update(dt);
-    m_pathfindingSystemRef->update(dt);
-    m_spatialSystemRef->update(dt); // needs to happen before collision
-    m_collisionSystemRef->update(dt);
-    m_renderSystemRef->update(dt); // rendering should be last
+    m_gameLogicSystem->update(dt);
+    m_pathfindingSystem->update(dt);
+    m_spatialSystem->update(dt); // needs to happen before collision
+    m_collisionSystem->update(dt);
+    m_renderSystem->update(dt); // rendering should be last
 
     doKillQueue();
 }
