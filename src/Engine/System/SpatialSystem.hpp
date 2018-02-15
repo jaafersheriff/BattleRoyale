@@ -10,7 +10,7 @@
 
 
 // Singleton
-class SpatialSystem : public System{
+class SpatialSystem : public System {
 
     friend Scene;
 
@@ -30,8 +30,6 @@ class SpatialSystem : public System{
     SpatialSystem() = default;
 
     public:
-
-    ~SpatialSystem() {}
 
     virtual void init() override {}
 

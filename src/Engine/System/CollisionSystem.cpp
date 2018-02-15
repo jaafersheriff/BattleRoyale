@@ -9,6 +9,7 @@
 
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/CollisionComponent.hpp"
+#include "Scene/Scene.hpp"
 
 
 
@@ -149,35 +150,43 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
 
 
 
+void CollisionSystem::init() {
+    auto spatTransformCallback(
+        [&](const Message & msg_) {
+            const SpatialTransformTag & msg(static_cast<const SpatialTransformTag &>(msg_));
+            for (auto & bounder : msg.spatial.getGameObject()->getComponentsBySystem(SystemID::collision)) {
+                m_potentials.insert(static_cast<BounderComponent *>(bounder));
+            }
+        }
+    );
+    Scene::get().addReceiver<SpatialPositionSetMessage>(spatTransformCallback);
+    Scene::get().addReceiver<SpatialMovedMessage>(spatTransformCallback);
+    Scene::get().addReceiver<SpatialScaleSetMessage>(spatTransformCallback);
+    Scene::get().addReceiver<SpatialScaledMessage>(spatTransformCallback);
+    Scene::get().addReceiver<SpatialRotationSetMessage>(spatTransformCallback);
+    Scene::get().addReceiver<SpatialRotatedMessage>(spatTransformCallback);
+}
+
 void CollisionSystem::update(float dt) {
-    static std::unordered_set<BounderComponent *> s_potentials;
     static std::unordered_map<BounderComponent *, std::vector<std::pair<int, glm::vec3>>> s_collisions;
     static std::unordered_set<BounderComponent *> s_checked;
     static std::unordered_map<GameObject *, glm::vec3> s_gameObjectDeltas;
 
-    // find all bounders whose objects have changed spatially, update them so
-    // they fit their world objects, and add them to potentials to be checked
-    // for collision
-    for (auto & bounder : m_bounderComponents) {
-        bounder->m_collisionFlag = false;
-        bounder->m_adjustmentFlag = false;
-        bounder->update(dt);
-        SpatialComponent * spat(bounder->getGameObject()->getSpatial());
-        if (spat && spat->transformedFlag()) {
-            s_potentials.insert(bounder.get());
-            spat->clearTransformedFlag();
-        }
-    }
+    m_collided.clear();
+    m_adjusted.clear();
 
     // gather all collisions
-    for (BounderComponent * bounder : s_potentials) {
+    for (BounderComponent * bounder : m_potentials) {
+        bounder->update(dt);
         SpatialComponent & spat(*bounder->getGameObject()->getSpatial());
         s_checked.insert(bounder);
         for (auto & other : m_bounderComponents) {
             if (s_checked.count(other.get()) || other->getGameObject() == bounder->getGameObject()) {
                 continue;
             }
-            collide(*bounder, *other, &s_collisions);
+            if (collide(*bounder, *other, &s_collisions)) {
+                Scene::get().sendMessage<CollisionMessage>(*bounder, *other);
+            }
         }
     }
     
@@ -185,7 +194,7 @@ void CollisionSystem::update(float dt) {
     for (auto & pair : s_collisions) {
         BounderComponent & bounder(*pair.first);
         auto & weightDeltas(pair.second);
-        bounder.m_collisionFlag = true;
+        m_collided.insert(&bounder);
         // there was an adjustment
         if (weightDeltas.size()) {
             glm::vec3 & gameObjectDelta(s_gameObjectDeltas[bounder.getGameObject()]);
@@ -204,12 +213,12 @@ void CollisionSystem::update(float dt) {
         for (Component * comp : gameObject->getComponentsBySystem(SystemID::collision)) {
             BounderComponent * bounder(static_cast<BounderComponent *>(comp));
             bounder->update(dt);
-            bounder->m_collisionFlag = true;
-            bounder->m_adjustmentFlag = true;
+            m_adjusted.insert(bounder);
+            Scene::get().sendMessage<CollisionAdjustMessage>(*gameObject);
         }
     }
     
-    s_potentials.clear();
+    m_potentials.clear();
     s_checked.clear();
     s_collisions.clear();
     s_gameObjectDeltas.clear();
@@ -228,8 +237,10 @@ Intersect CollisionSystem::pick(const Ray & ray) const {
 
 void CollisionSystem::add(std::unique_ptr<Component> component) {
     m_componentRefs.push_back(component.get());
-    if (dynamic_cast<BounderComponent *>(component.get()))
+    if (dynamic_cast<BounderComponent *>(component.get())) {
         m_bounderComponents.emplace_back(static_cast<BounderComponent *>(component.release()));
+        m_bounderComponents.back()->update(0.0f);
+    }
 }
 
 void CollisionSystem::remove(Component * component) {

@@ -42,9 +42,10 @@ void CameraComponent::update(float dt) {
     goPos = gameObject->getSpatial()->position();
 
     /* update matrices */
-    if (gameObject->getSpatial()->transformedFlag()) {
-        detView();
-    }
+    // TODO: this is a workaround until inter-component communication.
+    // View matrix only needs to be recalculated when spatial component is
+    // transformed.
+    detView();
 
     /* Update view frustum data */
 

@@ -9,22 +9,25 @@
 class PathfindingSystem;
 
 class PathfindingComponent : public Component {
-	
-	public:
 
-		using SystemClass = PathfindingSystem;
+    friend Scene;
+    
+    public:
 
-		PathfindingComponent(CameraComponent & cc, float ms) :
-			player(&cc),
-			moveSpeed(ms)
-		{
-		}
+    using SystemClass = PathfindingSystem;
 
+    PathfindingComponent(CameraComponent & cc, float ms);
 
-		void init();
-		void update(float);
+    public:
 
-	private:
-		CameraComponent *player;
-		float moveSpeed;
+    virtual SystemID systemID() const override { return SystemID::pathfinding; };
+
+    virtual void init() override;
+
+    virtual void update(float) override;
+
+    private:
+
+    CameraComponent * player;
+    float moveSpeed;
 };

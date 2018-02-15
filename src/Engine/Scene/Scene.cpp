@@ -19,11 +19,17 @@ void Scene::update(float dt) {
     doInitQueue();
 
     /* Update systems */
+    relayMessages();
     GameLogicSystem::get().update(dt);
+    relayMessages();
     PathfindingSystem::get().update(dt);
+    relayMessages();
     SpatialSystem::get().update(dt); // needs to happen before collision
+    relayMessages();
     CollisionSystem::get().update(dt);
+    relayMessages();
     RenderSystem::get().update(dt); // rendering should be last
+    relayMessages();
 
     doKillQueue();
 }
@@ -38,10 +44,11 @@ void Scene::doInitQueue() {
     for (auto & comp : m_componentInitQueue) {
         comp->init();
         switch (comp->systemID()) {
-            case SystemID::gameLogic: GameLogicSystem::get().add(std::move(comp)); break;
-            case SystemID::  spatial:   SpatialSystem::get().add(std::move(comp)); break;
-            case SystemID::collision: CollisionSystem::get().add(std::move(comp)); break;
-            case SystemID::   render:    RenderSystem::get().add(std::move(comp)); break;
+            case SystemID::  gameLogic:   GameLogicSystem::get().add(std::move(comp)); break;
+            case SystemID::pathfinding: PathfindingSystem::get().add(std::move(comp)); break;
+            case SystemID::    spatial:     SpatialSystem::get().add(std::move(comp)); break;
+            case SystemID::  collision:   CollisionSystem::get().add(std::move(comp)); break;
+            case SystemID::     render:      RenderSystem::get().add(std::move(comp)); break;
         }
     }
     m_componentInitQueue.clear();
@@ -76,10 +83,11 @@ void Scene::doKillQueue() {
     for (auto & comp : m_componentKillQueue) {
         // look in active components
         switch (comp->systemID()) {
-            case SystemID::gameLogic: GameLogicSystem::get().remove(comp); continue;
-            case SystemID::  spatial:   SpatialSystem::get().remove(comp); continue;
-            case SystemID::collision: CollisionSystem::get().remove(comp); continue;
-            case SystemID::   render:    RenderSystem::get().remove(comp); continue;
+            case SystemID::  gameLogic:   GameLogicSystem::get().remove(comp); continue;
+            case SystemID::pathfinding: PathfindingSystem::get().remove(comp); continue;
+            case SystemID::    spatial:     SpatialSystem::get().remove(comp); continue;
+            case SystemID::  collision:   CollisionSystem::get().remove(comp); continue;
+            case SystemID::     render:      RenderSystem::get().remove(comp); continue;
         }
         // look in initialization queue
         for (auto initIt(m_componentInitQueue.begin()); initIt != m_componentInitQueue.end(); ++initIt) {
@@ -90,4 +98,16 @@ void Scene::doKillQueue() {
         }
     }
     m_componentKillQueue.clear();
+}
+
+void Scene::relayMessages() {
+    for (auto & message : m_messages) {
+        auto receivers(m_receivers.find(message.first));
+        if (receivers != m_receivers.end()) {
+            for (auto & receiver : receivers->second) {
+                receiver(*message.second);
+            }
+        }
+    }
+    m_messages.clear();
 }

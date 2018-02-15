@@ -22,13 +22,10 @@ class BounderComponent : public Component {
 
     friend Scene;
     friend CollisionSystem;
-    friend BounderShader;
 
     protected:
 
     int m_weight;
-    bool m_collisionFlag; // was there a collision this tick
-    bool m_adjustmentFlag; // was the object moved due to a collision this tick
 
     protected: // only scene can create component
 

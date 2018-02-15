@@ -9,12 +9,12 @@
 #include <type_traits>
 #include <typeindex>
 
-#include "Message.hpp"
 #include "System/System.hpp"
 
 class Scene;
 class Component;
 class SpatialComponent;
+struct Message;
 
 class GameObject {
 

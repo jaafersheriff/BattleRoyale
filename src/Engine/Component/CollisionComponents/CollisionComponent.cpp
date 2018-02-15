@@ -10,9 +10,7 @@
 
 
 BounderComponent::BounderComponent(int weight) :
-    m_weight(weight),
-    m_collisionFlag(false),
-    m_adjustmentFlag(false)
+    m_weight(weight)
 {}
 
 

@@ -18,6 +18,7 @@ class GameObject;
 
 enum class SystemID {
     gameLogic,
+    pathfinding,
     spatial,
     collision,
     render

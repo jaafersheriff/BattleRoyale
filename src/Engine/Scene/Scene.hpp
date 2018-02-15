@@ -52,7 +52,7 @@ class Scene {
 
     template<typename MsgT, typename... Args> void sendMessage(Args &&... args);
 
-    template <typename MsgT> void addReceiver(Receiver & receiver);
+    template <typename MsgT> void addReceiver(const std::function<void (const Message &)> & receiver);
 
     const std::vector<GameObject *> & getGameObjects() const { return m_gameObjectRefs; }
 
@@ -61,6 +61,8 @@ class Scene {
     /* Instantiate/Kill queues */
     void doInitQueue();
     void doKillQueue();
+
+    void relayMessages();
 
   private:
 
@@ -74,7 +76,7 @@ class Scene {
     std::vector<Component *> m_componentKillQueue;
 
     std::vector<std::pair<std::type_index, std::unique_ptr<Message>>> m_messages;
-    std::unordered_map<std::type_index, std::vector<Receiver *>> m_receivers;
+    std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> m_receivers;
 
 };
 
@@ -98,12 +100,12 @@ CompT & Scene::addComponent(std::unique_ptr<CompT> component) {
 
 template<typename MsgT, typename... Args>
 void Scene::sendMessage(Args &&... args) {
-    m_messages.emplace_back(typeid(MsgT), new MsgT(std::forward<Args>(args...)));
+    m_messages.emplace_back(typeid(MsgT), new MsgT(std::forward<Args>(args)...));
 }
 
 template <typename MsgT>
-void Scene::addReceiver(Receiver & receiver) {
-    m_receivers[type_index(typeid(MsgT))].push_back(&receiver);
+void Scene::addReceiver(const std::function<void (const Message &)> & receiver) {
+    m_receivers[std::type_index(typeid(MsgT))].emplace_back(receiver);
 }
 
 

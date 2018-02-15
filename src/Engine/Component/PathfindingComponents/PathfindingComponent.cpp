@@ -2,6 +2,11 @@
 #include "System/PathfindingSystem.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
+PathfindingComponent::PathfindingComponent(CameraComponent & cc, float ms) :
+	player(&cc),
+	moveSpeed(ms)
+{}
+
 void PathfindingComponent::init() {}
 
 void PathfindingComponent::update(float dt) {
