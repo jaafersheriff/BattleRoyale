@@ -8,24 +8,45 @@
 #include <string>
 #include <type_traits>
 #include <typeindex>
+#include <iostream>
 
 #include "System.hpp"
+#include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 
 #include "Shaders/Shader.hpp"
 #include "Shaders/DiffuseShader.hpp"
 #include "Shaders/BounderShader.hpp"
 
-#include <iostream>
-
+// Singleton
 class RenderSystem : public System {
 
     friend Scene;
 
-    private: // only scene can create system
+    public:
 
-    RenderSystem(std::vector<Component *> & components);
+    static constexpr SystemID ID = SystemID::render;
 
     public:
+
+    static RenderSystem & get() {
+        static RenderSystem s_renderSystem;
+        return s_renderSystem;
+    }
+
+    private:
+
+    RenderSystem() = default;
+
+    public:
+
+    virtual void init() override;
+
+    /* Iterate through shaders map
+        * Bind individual shaders 
+        * Call shaders' render function with the appropriate render component list */
+    virtual void update(float dt) override;
+    
+    virtual void add(std::unique_ptr<Component> component) override;
 
     // creates a new shader and initializes it
     template<typename ShaderT, typename... Args> bool createShader(Args &&... args);
@@ -38,13 +59,10 @@ class RenderSystem : public System {
     template <typename ShaderT> const Shader * getShader() const {
         return const_cast<RenderSystem *>(this)->getShader<ShaderT>();
     }
-
-    /* Iterate through shaders map
-        * Bind individual shaders 
-        * Call shaders' render function with the appropriate render component list */
-    void update(float);
     
-    // Map of shader type to Shader objects
+    private:
+
+    std::vector<std::unique_ptr<DiffuseRenderComponent>> m_diffuseComponents;
     std::unordered_map<std::type_index, std::unique_ptr<Shader>> m_shaders;
 
 };

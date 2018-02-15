@@ -11,6 +11,7 @@ class SpatialSystem;
 class SpatialComponent : public Component {
 
     friend Scene;
+    friend SpatialSystem;
 
     public:
 
@@ -34,6 +35,8 @@ class SpatialComponent : public Component {
     SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & rotation);
 
     public:
+
+    virtual SystemID systemID() const override { return SystemID::spatial; };
 
     virtual void update(float dt) override;
 

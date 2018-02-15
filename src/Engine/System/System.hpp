@@ -3,37 +3,50 @@
 #ifndef _SYSTEM_HPP_
 #define _SYSTEM_HPP_
 
+
+
 #include <vector>
 #include <memory>
 
-#include "Component/Component.hpp"
+
 
 class Scene;
+class Component;
 
+
+
+enum class SystemID {
+    gameLogic,
+    spatial,
+    collision,
+    render
+};
+
+
+
+// Singleton
 class System {
 
-    protected: // only scene can create system
-
-        System(const std::vector<Component *> & components);
-
-        // TODO: potentially add move support
-        System(const System & other) = delete; // doesn't make sense to copy system
-        System & operator=(const System & other) = delete;
-
-    public:
-
-        /* virtual destructor necessary for polymorphic destruction */
-        virtual ~System() = default;
-
-        /* Generic update function */
-        virtual void update(float dt);
-
-        const std::vector<Component *> & components() const { return m_components; }
+    friend Scene;
 
     protected:
 
-        /* Reference to components of this system */
-        const std::vector<Component *> & m_components;
+    System() = default;
+
+    System(const System & other) = delete;
+    System & operator=(const System & other) = delete;
+
+    public:
+
+    virtual ~System() = default;
+
+    virtual void init() = 0;
+
+    virtual void update(float dt) = 0;
+
+    void add(std::unique_ptr<Component> component);
+
+    void remove(Component * component);
 
 };
 

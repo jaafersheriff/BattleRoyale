@@ -9,7 +9,7 @@ class Scene;
 
 class Component {
 
-    friend Scene;
+        friend Scene;
 
     protected: // only scene can create components
 
@@ -24,7 +24,10 @@ class Component {
         /* virtual destructor necessary for polymorphic destruction */
         virtual ~Component() = default;
 
+        virtual SystemID systemID() const = 0;
+
         virtual void init() {};
+        
         virtual void update(float) {};
 
         GameObject * getGameObject() { return gameObject; }

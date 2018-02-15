@@ -17,10 +17,6 @@ class ImGuiComponent : public Component {
 
     friend Scene;
 
-    public:
-
-    using SystemClass = GameLogicSystem;
-
     protected:
 
         ImGuiComponent(std::string name, std::function<void()> fun) :
@@ -29,6 +25,8 @@ class ImGuiComponent : public Component {
         {}
 
     public:
+
+        virtual SystemID systemID() const override { return SystemID::gameLogic; };
 
         void update(float);
 

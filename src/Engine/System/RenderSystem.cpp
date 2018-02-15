@@ -5,9 +5,7 @@
 #include "IO/Window.hpp"
 #include "ThirdParty/imgui/imgui.h"
 
-RenderSystem::RenderSystem(std::vector<Component *> & components) :
-    System(components)
-{
+void RenderSystem::init() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -40,4 +38,9 @@ void RenderSystem::update(float dt) {
     if (Window::isImGuiEnabled()) {
         ImGui::Render();
     }
+}
+
+void RenderSystem::add(std::unique_ptr<Component> component) {
+    if (dynamic_cast<DiffuseRenderComponent *>(component.get()))
+        m_diffuseComponents.emplace_back(static_cast<DiffuseRenderComponent *>(component.release()));
 }

@@ -149,10 +149,6 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
 
 
 
-CollisionSystem::CollisionSystem(const std::vector<Component *> & comps) :
-    System(comps)
-{}
-
 void CollisionSystem::update(float dt) {
     static std::unordered_set<BounderComponent *> s_potentials;
     static std::unordered_map<BounderComponent *, std::vector<std::pair<int, glm::vec3>>> s_collisions;
@@ -162,14 +158,13 @@ void CollisionSystem::update(float dt) {
     // find all bounders whose objects have changed spatially, update them so
     // they fit their world objects, and add them to potentials to be checked
     // for collision
-    for (auto & comp_ : m_components) {
-        BounderComponent & bounder(*static_cast<BounderComponent *>(comp_));
-        bounder.m_collisionFlag = false;
-        bounder.m_adjustmentFlag = false;
-        bounder.update(dt);
-        SpatialComponent * spat(bounder.getGameObject()->getSpatial());
+    for (auto & bounder : m_bounderComponents) {
+        bounder->m_collisionFlag = false;
+        bounder->m_adjustmentFlag = false;
+        bounder->update(dt);
+        SpatialComponent * spat(bounder->getGameObject()->getSpatial());
         if (spat && spat->transformedFlag()) {
-            s_potentials.insert(&bounder);
+            s_potentials.insert(bounder.get());
             spat->clearTransformedFlag();
         }
     }
@@ -178,12 +173,11 @@ void CollisionSystem::update(float dt) {
     for (BounderComponent * bounder : s_potentials) {
         SpatialComponent & spat(*bounder->getGameObject()->getSpatial());
         s_checked.insert(bounder);
-        for (auto & other_ : m_components) {
-            BounderComponent & other(*static_cast<BounderComponent *>(other_));
-            if (s_checked.count(&other) || other.getGameObject() == bounder->getGameObject()) {
+        for (auto & other : m_bounderComponents) {
+            if (s_checked.count(other.get()) || other->getGameObject() == bounder->getGameObject()) {
                 continue;
             }
-            collide(*bounder, other, &s_collisions);
+            collide(*bounder, *other, &s_collisions);
         }
     }
     
@@ -221,11 +215,15 @@ void CollisionSystem::update(float dt) {
     s_gameObjectDeltas.clear();
 }
 
+void CollisionSystem::add(std::unique_ptr<Component> component) {
+    if (dynamic_cast<BounderComponent *>(component.get()))
+        m_bounderComponents.emplace_back(static_cast<BounderComponent *>(component.release()));
+}
+
 Intersect CollisionSystem::pick(const Ray & ray) const {
     Intersect inter;
-    for (const auto & bounder_ : m_components) {
-        const BounderComponent & bounder(*static_cast<const BounderComponent *>(bounder_));
-        Intersect potential(bounder.intersect(ray));
+    for (const auto & bounder : m_bounderComponents) {
+        Intersect potential(bounder->intersect(ray));
         if (potential.dist < inter.dist) {
             inter = potential;
         }

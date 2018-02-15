@@ -2,39 +2,11 @@
 
 #include <algorithm>
 
-Scene::Scene() :
-    m_gameLogicSystem(),
-    m_renderSystem(),
-    m_spatialSystem(),
-    m_collisionSystem(),
-    m_gameObjectsStore(),
-    m_gameObjectRefs(),
-    m_componentsStore(),
-    m_compRefsBySysT(),
-    m_compRefsByCompT(),
-    m_gameObjectInitQueue(),
-    m_gameObjectKillQueue(),
-    m_componentInitQueue(),
-    m_componentKillQueue()
-{
-    /* Instantiate systems */
-    std::type_index sysI(typeid(void));
-
-    sysI = typeid(GameLogicSystem);
-    m_compRefsBySysT[sysI].reset(new std::vector<Component *>());
-    m_gameLogicSystem.reset(new GameLogicSystem(*m_compRefsBySysT[sysI]));
-
-    sysI = typeid(RenderSystem);
-    m_compRefsBySysT[sysI].reset(new std::vector<Component *>());
-    m_renderSystem.reset(new RenderSystem(*m_compRefsBySysT[sysI]));
-
-    sysI = typeid(SpatialSystem);
-    m_compRefsBySysT[sysI].reset(new std::vector<Component *>());
-    m_spatialSystem.reset(new SpatialSystem(*m_compRefsBySysT[sysI]));
-
-    sysI = typeid(CollisionSystem);
-    m_compRefsBySysT[sysI].reset(new std::vector<Component *>());
-    m_collisionSystem.reset(new CollisionSystem(*m_compRefsBySysT[sysI]));
+void Scene::init() {
+    GameLogicSystem::get().init();
+    SpatialSystem::get().init();
+    CollisionSystem::get().init();
+    RenderSystem::get().init();
 }
 
 GameObject & Scene::createGameObject() {
@@ -46,10 +18,10 @@ void Scene::update(float dt) {
     doInitQueue();
 
     /* Update systems */
-    m_gameLogicSystem->update(dt);
-    m_spatialSystem->update(dt); // needs to happen before collision
-    m_collisionSystem->update(dt);
-    m_renderSystem->update(dt); // rendering should be last
+    GameLogicSystem::get().update(dt);
+    SpatialSystem::get().update(dt); // needs to happen before collision
+    CollisionSystem::get().update(dt);
+    RenderSystem::get().update(dt); // rendering should be last
 
     doKillQueue();
 }
@@ -62,11 +34,19 @@ void Scene::doInitQueue() {
     m_gameObjectInitQueue.clear();
 
     for (CompInitE & e : m_componentInitQueue) {
-        m_componentsStore.emplace_back(e.comp.release());
-        Component * comp(m_componentsStore.back().get());
-        m_compRefsBySysT[e.sysI]->push_back(comp);
-        m_compRefsByCompT[e.compI].push_back(comp);
-        comp->init();
+        e.comp->init();
+        if (e.sysI == std::type_index(typeid(GameLogicSystem))) {
+            GameLogicSystem::get().add(std::move(e.comp));
+        }
+        else if (e.sysI == std::type_index(typeid(SpatialSystem))) {
+            SpatialSystem::get().add(std::move(e.comp));
+        }
+        else if (e.sysI == std::type_index(typeid(CollisionSystem))) {
+            CollisionSystem::get().add(std::move(e.comp));
+        }
+        else if (e.sysI == std::type_index(typeid(RenderSystem))) {
+            RenderSystem::get().add(std::move(e.comp));
+        }
     }
     m_componentInitQueue.clear();
 }
@@ -75,7 +55,19 @@ void Scene::doKillQueue() {
     // kill game objects
     for (auto killIt(m_gameObjectKillQueue.begin()); killIt != m_gameObjectKillQueue.end(); ++killIt) {
         bool found(false);
-        // look in active game objects
+        // look in active game objects        
+        if (killIt->sysI == std::type_index(typeid(GameLogicSystem))) {
+            GameLogicSystem::get().add(std::move(e.comp));
+        }
+        else if (e.sysI == std::type_index(typeid(SpatialSystem))) {
+            SpatialSystem::get().add(std::move(e.comp));
+        }
+        else if (e.sysI == std::type_index(typeid(CollisionSystem))) {
+            CollisionSystem::get().add(std::move(e.comp));
+        }
+        else if (e.sysI == std::type_index(typeid(RenderSystem))) {
+            RenderSystem::get().add(std::move(e.comp));
+        }
         for (int i(0); i < m_gameObjectRefs.size(); ++i) {
             if (m_gameObjectRefs[i] == *killIt) {
                 m_gameObjectRefs.erase(m_gameObjectRefs.begin() + i);

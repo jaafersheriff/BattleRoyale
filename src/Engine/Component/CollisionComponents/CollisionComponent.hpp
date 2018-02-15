@@ -24,10 +24,6 @@ class BounderComponent : public Component {
     friend CollisionSystem;
     friend BounderShader;
 
-    public:
-
-    using SystemClass = CollisionSystem;
-
     protected:
 
     int m_weight;
@@ -41,6 +37,8 @@ class BounderComponent : public Component {
     public:
 
     virtual ~BounderComponent() override = default;
+
+    virtual SystemID systemID() const override { return SystemID::collision; };
 
     virtual void update(float dt) = 0;
 

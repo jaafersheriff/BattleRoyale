@@ -2,12 +2,6 @@
 
 
 
-System::System(const std::vector<Component *> & components) :
-    m_components(components)
-{}
-
-void System::update(float dt) {
-    for (auto & c : m_components) {
-        c->update(dt);
-    }
+void System::add(std::unique_ptr<Component> component) {
+    m_initQueue.emplace_back(std::move(component));
 }

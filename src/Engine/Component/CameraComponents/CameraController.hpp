@@ -12,10 +12,6 @@ class CameraController : public Component {
 
     friend Scene;
 
-    public:
-
-    using SystemClass = GameLogicSystem;
-
     protected: // only scene can create component
 
         CameraController(CameraComponent & cc, float ls, float ms, int f, int b, int l, int r, int u, int d) :
@@ -31,6 +27,8 @@ class CameraController : public Component {
         {}
 
     public:
+
+        virtual SystemID systemID() const override { return SystemID::gameLogic; };
 
         void init();
 
