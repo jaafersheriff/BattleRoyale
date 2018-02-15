@@ -7,6 +7,7 @@ Scene::Scene() :
     m_renderSystem(),
     m_spatialSystem(),
     m_collisionSystem(),
+    m_pathfindingSystem(),
     m_gameObjectsStore(),
     m_gameObjectRefs(),
     m_componentsStore(),
@@ -35,6 +36,10 @@ Scene::Scene() :
     sysI = typeid(CollisionSystem);
     m_compRefsBySysT[sysI].reset(new std::vector<Component *>());
     m_collisionSystem.reset(new CollisionSystem(*m_compRefsBySysT[sysI]));
+    
+    sysI = typeid(PathfindingSystem);
+    m_compRefsBySysT[sysI].reset(new std::vector<Component *>());
+    m_pathfindingSystem.reset(new PathfindingSystem(*m_compRefsBySysT[sysI]));
 
 	sysI = typeid(SoundSystem);
 	m_compRefsBySysT[sysI].reset(new std::vector<Component *>());
@@ -51,6 +56,7 @@ void Scene::update(float dt) {
 
     /* Update systems */
     m_gameLogicSystem->update(dt);
+    m_pathfindingSystem->update(dt);
     m_spatialSystem->update(dt); // needs to happen before collision
     m_collisionSystem->update(dt);
 	m_soundSystem->update(dt);

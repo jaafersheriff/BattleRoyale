@@ -5,5 +5,6 @@
 #include "GameLogicSystem.hpp"
 #include "RenderSystem.hpp"
 #include "SpatialSystem.hpp"
+#include "PathfindingSystem.hpp"
 #include "CollisionSystem.hpp"
 #include "SoundSystem.hpp"

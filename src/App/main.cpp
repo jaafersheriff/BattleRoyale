@@ -78,7 +78,9 @@ int main(int argc, char **argv) {
     camera.addComponent(cc);
     camera.addComponent(scene.createComponent<CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT));
     camera.addComponent(scene.createComponent<SpatialComponent>());
-    camera.getSpatial()->setPosition(glm::vec3(-4.0f, 0.0f, 0.0f));
+    camera.getSpatial()->setPosition(glm::vec3(-4.0f, 6.0f, 0.0f));
+
+    camera.addComponent(scene.createComponent<SphereBounderComponent>(1, Sphere(glm::vec3(0, 0, 0), 4)));
 
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
@@ -183,6 +185,8 @@ int main(int argc, char **argv) {
         }
     );
     bunny.addComponent(bIc);
+
+    bunny.addComponent(scene.createComponent<PathfindingComponent>(cc, 1.f));
 
     /* Game stats pane */
     scene.createComponent<ImGuiComponent>(

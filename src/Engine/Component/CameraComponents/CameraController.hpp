@@ -43,6 +43,8 @@ class CameraController : public Component {
         void moveRight(float dt);
         void moveUp(float dt);
         void moveDown(float dt);
+        void strafeForward(float dt);
+        void strafeBackward(float dt);
 
     private:
 

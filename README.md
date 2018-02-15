@@ -1,2 +1,0 @@
-# Battle Royale with Cheese
-

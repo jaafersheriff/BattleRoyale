@@ -161,7 +161,7 @@ Intersect CapsuleBounderComponent::intersect(const Ray & ray) const {
 }
 
 Sphere CapsuleBounderComponent::enclosingSphere() const {
-    return Sphere(m_capsule.center, m_capsule.height * 0.5 + m_capsule.radius);
+    return Sphere(m_transCapsule.center, m_transCapsule.height * 0.5f + m_transCapsule.radius);
 }
 
 
@@ -246,7 +246,7 @@ std::unique_ptr<BounderComponent> createBounderFromMesh(int weight, const Mesh &
         float minRad, yUpper, yLower;
         std::tie(minRad, yUpper, yLower) = detCapsuleSpecs(nVerts, positions, center);
         float capsuleHeight(yUpper - yLower);
-        glm::vec3 capsuleCenter(center.x, center.y, yLower + capsuleHeight * 0.5f);
+        glm::vec3 capsuleCenter(center.x, yLower + capsuleHeight * 0.5f, center.z);
         capsule = Capsule(capsuleCenter, minRad, capsuleHeight);
         capsuleV = capsule.volume();
     }
