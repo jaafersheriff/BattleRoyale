@@ -47,7 +47,7 @@ void CameraController::moveFront(float dt) {
 }
 
 void CameraController::strafeForward(float dt) {
-    glm::vec3 view = camera->gameObject->getSpatial()->position() - camera->lookAt;
+    glm::vec3 view = camera->getGameObject()->getSpatial()->position() - camera->lookAt;
     glm::vec3 sideDir = glm::cross(view, glm::vec3(0, 1, 0));
     glm::vec3 forwardDir = glm::cross(sideDir, glm::vec3(0, 1, 0));
 
@@ -63,7 +63,7 @@ void CameraController::moveBack(float dt) {
 }
 
 void CameraController::strafeBackward(float dt) {
-    glm::vec3 view = camera->lookAt - camera->gameObject->getSpatial()->position();
+    glm::vec3 view = camera->lookAt - camera->getGameObject()->getSpatial()->position();
     glm::vec3 sideDir = glm::cross(view, glm::vec3(0, 1, 0));
     glm::vec3 backwardDir = glm::cross(sideDir, glm::vec3(0, 1, 0));
 

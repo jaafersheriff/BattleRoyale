@@ -123,7 +123,6 @@ struct Intersect {
     {}
 
     Intersect(
-        bool is,
         float dist,
         const glm::vec3 & loc,
         const glm::vec3 & norm,

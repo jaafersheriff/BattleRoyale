@@ -37,7 +37,7 @@ class Component {
 
 
 
-    //protected:
+    protected:
         /* Parent game object */
         GameObject* gameObject;
 };
