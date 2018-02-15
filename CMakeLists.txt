@@ -46,7 +46,7 @@ if(WIN32)
     target_link_libraries(${CMAKE_PROJECT_NAME} ${GLEW_DIR}/lib/Release/Win32/glew32s.lib)
   endif()
 else()
-  target_link_libraries(${CMAKE_PROJECT_NAME} ${GLEW_DIR}/2.1.0/lib/libGLEW.a)
+  target_link_libraries(${CMAKE_PROJECT_NAME} ${GLEW_DIR}/lib/libGLEW.a)
 endif()
 
 # GLM
