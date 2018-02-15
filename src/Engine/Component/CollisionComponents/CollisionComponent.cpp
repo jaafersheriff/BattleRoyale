@@ -161,7 +161,7 @@ Intersect CapsuleBounderComponent::intersect(const Ray & ray) const {
 }
 
 Sphere CapsuleBounderComponent::enclosingSphere() const {
-    return Sphere(m_capsule.center, m_capsule.height * 0.5 + m_capsule.radius);
+    return Sphere(m_transCapsule.center, m_transCapsule.height * 0.5f + m_transCapsule.radius);
 }
 
 
