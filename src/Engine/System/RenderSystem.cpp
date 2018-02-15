@@ -4,6 +4,9 @@
 
 #include "IO/Window.hpp"
 #include "ThirdParty/imgui/imgui.h"
+#include "Component/RenderComponents/DiffuseRenderComponent.hpp"
+
+
 
 void RenderSystem::init() {
     glEnable(GL_DEPTH_TEST);
@@ -30,7 +33,7 @@ void RenderSystem::update(float dt) {
         // to this shader -- right now we are passing the entire    //
         // list and expecting each shader to filter through         //
         //////////////////////////////////////////////////////////////
-        shader.second->render(m_components);
+        shader.second->render(m_componentRefs);
         shader.second->unbind();
     }
 
@@ -41,6 +44,25 @@ void RenderSystem::update(float dt) {
 }
 
 void RenderSystem::add(std::unique_ptr<Component> component) {
+    m_componentRefs.push_back(component.get());
     if (dynamic_cast<DiffuseRenderComponent *>(component.get()))
         m_diffuseComponents.emplace_back(static_cast<DiffuseRenderComponent *>(component.release()));
+}
+
+void RenderSystem::remove(Component * component) {
+    if (dynamic_cast<DiffuseRenderComponent *>(component)) {
+        for (auto it(m_diffuseComponents.begin()); it != m_diffuseComponents.end(); ++it) {
+            if (it->get() == component) {
+                m_diffuseComponents.erase(it);
+                break;
+            }
+        }
+    }
+    // remove from refs
+    for (auto it(m_componentRefs.begin()); it != m_componentRefs.end(); ++it) {
+        if (*it == component) {
+            m_componentRefs.erase(it);
+            break;
+        }
+    }
 }

@@ -31,11 +31,11 @@ class SpatialSystem : public System{
 
     public:
 
+    ~SpatialSystem() {}
+
     virtual void init() override {}
 
     virtual void update(float dt) override;
-
-    virtual void add(std::unique_ptr<Component> component) override;
     
     // sets the absolute position
     void setObjPosition(GameObject & go, const glm::vec3 & position);
@@ -54,6 +54,12 @@ class SpatialSystem : public System{
     
     // rotates current rotation by mat
     void rotateObj(GameObject & go, const glm::mat3 & mat);
+
+    private:
+
+    virtual void add(std::unique_ptr<Component> component) override;
+
+    virtual void remove(Component * component) override;
 
     private:
 

@@ -11,11 +11,13 @@
 #include <iostream>
 
 #include "System.hpp"
-#include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 
 #include "Shaders/Shader.hpp"
 #include "Shaders/DiffuseShader.hpp"
 #include "Shaders/BounderShader.hpp"
+#include "Component/RenderComponents/DiffuseRenderComponent.hpp"
+
+
 
 // Singleton
 class RenderSystem : public System {
@@ -45,8 +47,6 @@ class RenderSystem : public System {
         * Bind individual shaders 
         * Call shaders' render function with the appropriate render component list */
     virtual void update(float dt) override;
-    
-    virtual void add(std::unique_ptr<Component> component) override;
 
     // creates a new shader and initializes it
     template<typename ShaderT, typename... Args> bool createShader(Args &&... args);
@@ -59,6 +59,12 @@ class RenderSystem : public System {
     template <typename ShaderT> const Shader * getShader() const {
         return const_cast<RenderSystem *>(this)->getShader<ShaderT>();
     }
+
+    private:
+    
+    virtual void add(std::unique_ptr<Component> component) override;
+
+    virtual void remove(Component * component) override;
     
     private:
 

@@ -33,19 +33,13 @@ void Scene::doInitQueue() {
     }
     m_gameObjectInitQueue.clear();
 
-    for (CompInitE & e : m_componentInitQueue) {
-        e.comp->init();
-        if (e.sysI == std::type_index(typeid(GameLogicSystem))) {
-            GameLogicSystem::get().add(std::move(e.comp));
-        }
-        else if (e.sysI == std::type_index(typeid(SpatialSystem))) {
-            SpatialSystem::get().add(std::move(e.comp));
-        }
-        else if (e.sysI == std::type_index(typeid(CollisionSystem))) {
-            CollisionSystem::get().add(std::move(e.comp));
-        }
-        else if (e.sysI == std::type_index(typeid(RenderSystem))) {
-            RenderSystem::get().add(std::move(e.comp));
+    for (auto & comp : m_componentInitQueue) {
+        comp->init();
+        switch (comp->systemID()) {
+            case SystemID::gameLogic: GameLogicSystem::get().add(std::move(comp)); break;
+            case SystemID::  spatial:   SpatialSystem::get().add(std::move(comp)); break;
+            case SystemID::collision: CollisionSystem::get().add(std::move(comp)); break;
+            case SystemID::   render:    RenderSystem::get().add(std::move(comp)); break;
         }
     }
     m_componentInitQueue.clear();
@@ -55,19 +49,7 @@ void Scene::doKillQueue() {
     // kill game objects
     for (auto killIt(m_gameObjectKillQueue.begin()); killIt != m_gameObjectKillQueue.end(); ++killIt) {
         bool found(false);
-        // look in active game objects        
-        if (killIt->sysI == std::type_index(typeid(GameLogicSystem))) {
-            GameLogicSystem::get().add(std::move(e.comp));
-        }
-        else if (e.sysI == std::type_index(typeid(SpatialSystem))) {
-            SpatialSystem::get().add(std::move(e.comp));
-        }
-        else if (e.sysI == std::type_index(typeid(CollisionSystem))) {
-            CollisionSystem::get().add(std::move(e.comp));
-        }
-        else if (e.sysI == std::type_index(typeid(RenderSystem))) {
-            RenderSystem::get().add(std::move(e.comp));
-        }
+        // look in active game objects
         for (int i(0); i < m_gameObjectRefs.size(); ++i) {
             if (m_gameObjectRefs[i] == *killIt) {
                 m_gameObjectRefs.erase(m_gameObjectRefs.begin() + i);
@@ -89,47 +71,21 @@ void Scene::doKillQueue() {
     m_gameObjectKillQueue.clear();
     
     // kill components
-    // TODO: if killing components is happening a lot, consider caching indices
-    // of these three containers by component address for O(1) performance
-    for (auto & killE : m_componentKillQueue) {
-        // remove from store
-        for (auto it(m_componentsStore.begin()); it != m_componentsStore.end(); ++it) {
-            if ((*it).get() == killE.comp) {
-                m_componentsStore.erase(it);
-                break;
-            }
+    for (auto & comp : m_componentKillQueue) {
+        // look in active components
+        switch (comp->systemID()) {
+            case SystemID::gameLogic: GameLogicSystem::get().remove(comp); continue;
+            case SystemID::  spatial:   SpatialSystem::get().remove(comp); continue;
+            case SystemID::collision: CollisionSystem::get().remove(comp); continue;
+            case SystemID::   render:    RenderSystem::get().remove(comp); continue;
         }
-        // remove from system refs
-        auto & sysCompRefs(*m_compRefsBySysT[killE.sysI]);
-        for (auto it(sysCompRefs.begin()); it != sysCompRefs.end(); ++it) {
-            if (*it == killE.comp) {
-                sysCompRefs.erase(it);
-                break;
-            }
-        }
-        // remove from component type refs
-        auto & compRefs(m_compRefsByCompT[killE.compI]);
-        for (auto it(compRefs.begin()); it != compRefs.end(); ++it) {
-            if (*it == killE.comp) {
-                compRefs.erase(it);
+        // look in initialization queue
+        for (auto initIt(m_componentInitQueue.begin()); initIt != m_componentInitQueue.end(); ++initIt) {
+            if (initIt->get() == comp) {
+                m_componentInitQueue.erase(initIt);
                 break;
             }
         }
     }
-    m_componentKillQueue.clear();
-}
-
-void Scene::shutDown() {
-    // kill all game objects
-    m_gameObjectRefs.clear();
-    m_gameObjectsStore.clear();
-    m_gameObjectInitQueue.clear();
-    m_gameObjectKillQueue.clear();
-
-    // kill all components
-    m_componentsStore.clear();
-    m_compRefsBySysT.clear();
-    m_compRefsByCompT.clear();
-    m_componentInitQueue.clear();
     m_componentKillQueue.clear();
 }

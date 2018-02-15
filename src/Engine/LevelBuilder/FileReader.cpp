@@ -72,7 +72,7 @@ void FileReader::initGameObject(Scene & scene, std::string filePath, std::string
         ));
     
     gameObject.addComponent(scene.createComponent<DiffuseRenderComponent>(
-        scene.renderSystem().getShader<DiffuseShader>()->pid,
+        RenderSystem::get().getShader<DiffuseShader>()->pid,
         *Loader::getMesh(filePath),
         ModelTexture(Loader::getTexture(texturePath))));
 

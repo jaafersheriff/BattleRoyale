@@ -24,11 +24,7 @@ class EngineApp {
         double timeStep;            /* Delta time */
         bool verbose;               /* Log things or not */
 
-        Scene * scene() const { return m_scene.get(); }
-
     private:
-
-        std::unique_ptr<Scene> m_scene;
 
         double lastFpsTime;         /* Time at which last FPS was calculated */
         int nFrames;                /* Number of frames in current second */

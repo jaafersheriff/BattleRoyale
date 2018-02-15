@@ -2,8 +2,9 @@
 #ifndef _COMPONENT_HPP_
 #define _COMPONENT_HPP_
 
-#include "GameObject/GameObject.hpp"
 #include "GameObject/Message.hpp"
+#include "System/System.hpp"
+#include "GameObject/GameObject.hpp"
 
 class Scene;
 

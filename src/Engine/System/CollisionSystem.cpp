@@ -7,8 +7,8 @@
 #include "glm/gtx/component_wise.hpp"
 #include "glm/gtx/norm.hpp"
 
-#include "Component/CollisionComponents/CollisionComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Component/CollisionComponents/CollisionComponent.hpp"
 
 
 
@@ -201,7 +201,7 @@ void CollisionSystem::update(float dt) {
         // set position rather than move because they are conceptually different
         // this will come into play if we do time step interpolation
         spat.setPosition(spat.position() + delta + glm::normalize(delta) * k_collisionOffsetFactor);
-        for (Component * comp : gameObject->getComponentsBySystem<CollisionSystem>()) {
+        for (Component * comp : gameObject->getComponentsBySystem(SystemID::collision)) {
             BounderComponent * bounder(static_cast<BounderComponent *>(comp));
             bounder->update(dt);
             bounder->m_collisionFlag = true;
@@ -215,11 +215,6 @@ void CollisionSystem::update(float dt) {
     s_gameObjectDeltas.clear();
 }
 
-void CollisionSystem::add(std::unique_ptr<Component> component) {
-    if (dynamic_cast<BounderComponent *>(component.get()))
-        m_bounderComponents.emplace_back(static_cast<BounderComponent *>(component.release()));
-}
-
 Intersect CollisionSystem::pick(const Ray & ray) const {
     Intersect inter;
     for (const auto & bounder : m_bounderComponents) {
@@ -229,4 +224,28 @@ Intersect CollisionSystem::pick(const Ray & ray) const {
         }
     }
     return inter;
+}
+
+void CollisionSystem::add(std::unique_ptr<Component> component) {
+    m_componentRefs.push_back(component.get());
+    if (dynamic_cast<BounderComponent *>(component.get()))
+        m_bounderComponents.emplace_back(static_cast<BounderComponent *>(component.release()));
+}
+
+void CollisionSystem::remove(Component * component) {
+    if (dynamic_cast<BounderComponent *>(component)) {
+        for (auto it(m_bounderComponents.begin()); it != m_bounderComponents.end(); ++it) {
+            if (it->get() == component) {
+                m_bounderComponents.erase(it);
+                break;
+            }
+        }
+    }
+    // remove from refs
+    for (auto it(m_componentRefs.begin()); it != m_componentRefs.end(); ++it) {
+        if (*it == component) {
+            m_componentRefs.erase(it);
+            break;
+        }
+    }
 }

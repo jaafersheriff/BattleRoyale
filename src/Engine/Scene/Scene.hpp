@@ -18,14 +18,8 @@
 
 
 
-class EngineApp;
-
-
-
 // Singleton
 class Scene {
-
-    friend EngineApp;
 
   public:
 
@@ -46,9 +40,6 @@ class Scene {
 
     /* Main udate function */
     void update(float);
-
-    /* Destroy everything */
-    void shutDown();
 
     /* Game Objects */
     GameObject & createGameObject();

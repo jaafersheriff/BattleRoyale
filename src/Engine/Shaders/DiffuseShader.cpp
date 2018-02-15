@@ -13,9 +13,6 @@ DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & f
     lightPos(&light)
 {}
 
-// Debug
-#include "GameObject/GameObject.hpp"
-
 bool DiffuseShader::init() {
     if (!Shader::init()) {
         return false;
@@ -61,7 +58,7 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
         /* Determine if component should be culled */
         /* Only doing frustum culling if object has bounder(s) */
         /* Get the center and radius of the component */
-        const std::vector<Component *> & bounders(drc->getGameObject()->getComponentsBySystem<CollisionSystem>());
+        const std::vector<Component *> & bounders(drc->getGameObject()->getComponentsBySystem(SystemID::collision));
         if (bounders.size()) {
             bool inFrustum(false);
             for (Component * bounder_ : bounders) {

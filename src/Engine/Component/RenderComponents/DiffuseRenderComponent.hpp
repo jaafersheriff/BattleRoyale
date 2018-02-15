@@ -13,10 +13,6 @@ class DiffuseRenderComponent : public Component {
 
     friend Scene;
 
-    public:
-
-    using SystemClass = RenderSystem;
-
     protected: // only scene can create component
 
         DiffuseRenderComponent(int pid, Mesh & mesh, ModelTexture texture) :
@@ -24,6 +20,10 @@ class DiffuseRenderComponent : public Component {
             mesh(&mesh),
             modelTexture(texture)
         {}
+
+    public:
+
+    virtual SystemID systemID() const override { return SystemID::render; };
 
     public:
 

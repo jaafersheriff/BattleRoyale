@@ -12,7 +12,6 @@ class BounderShader : public Shader {
 
     private:    
 
-    const CollisionSystem * m_collisionSystem;
     const CameraComponent * m_camera;
 
     unsigned int m_aabVBO, m_aabIBO, m_aabVAO;
@@ -23,7 +22,7 @@ class BounderShader : public Shader {
 
     public:
 
-    BounderShader(const std::string & vertFile, const std::string & fragFile, const CollisionSystem & collisionSys, const CameraComponent & cam);
+    BounderShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam);
 
     bool init() override;
     void render(const std::vector<Component *> &) override;

@@ -12,6 +12,7 @@
 
 class Scene;
 class Component;
+class GameObject;
 
 
 
@@ -44,9 +45,17 @@ class System {
 
     virtual void update(float dt) = 0;
 
-    void add(std::unique_ptr<Component> component);
+    const std::vector<Component *> components() const { return m_componentRefs; }
 
-    void remove(Component * component);
+    private:
+
+    virtual void add(std::unique_ptr<Component> component) = 0;
+
+    virtual void remove(Component * component) = 0;
+
+    protected:
+
+    std::vector<Component *> m_componentRefs;
 
 };
 

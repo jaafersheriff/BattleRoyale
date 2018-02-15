@@ -9,6 +9,7 @@
 
 struct Ray;
 struct Intersect;
+class BounderShader;
 
 
 
@@ -16,6 +17,7 @@ struct Intersect;
 class CollisionSystem : public System {
 
     friend Scene;
+    friend BounderShader;
 
     public:
 
@@ -36,13 +38,19 @@ class CollisionSystem : public System {
 
     public:
 
+    ~CollisionSystem() = default;
+
     virtual void init() override {}
 
     virtual void update(float dt) override;
+
+    Intersect pick(const Ray & ray) const;
+
+    private:
     
     virtual void add(std::unique_ptr<Component> component) override;
 
-    Intersect pick(const Ray & ray) const;
+    virtual void remove(Component * component) override;
 
     private:
 

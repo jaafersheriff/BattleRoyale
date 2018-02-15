@@ -2,10 +2,14 @@
 #ifndef _GAME_LOGIC_SYSTEM_HPP_
 #define _GAME_LOGIC_SYSTEM_HPP_
 
+
+
 #include "System.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 #include "Component/CameraComponents/CameraController.hpp"
 #include "Component/ImGuiComponents/ImGuiComponent.hpp"
+
+
 
 // Singleton
 class GameLogicSystem : public System {
@@ -32,8 +36,12 @@ class GameLogicSystem : public System {
     virtual void init() override {};
 
     virtual void update(float dt) override;
+
+    private:
     
     virtual void add(std::unique_ptr<Component> component) override;
+
+    virtual void remove(Component * component) override;
 
     private:
 

@@ -37,9 +37,8 @@ glm::mat4 detCapsuleRodMat(const CapsuleBounderComponent & bounder) {
 
 
 
-BounderShader::BounderShader(const std::string & vertFile, const std::string & fragFile, const CollisionSystem & collisionSys, const CameraComponent & cam) :
+BounderShader::BounderShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam) :
     Shader(vertFile, fragFile),
-    m_collisionSystem(&collisionSys),
     m_camera(&cam),
     
     m_aabVBO(0), m_aabIBO(0), m_aabVAO(0),
@@ -74,27 +73,27 @@ void BounderShader::render(const std::vector<Component *> & components_) {
     loadMat4(getUniform("u_viewMat"), m_camera->getView());
     loadMat4(getUniform("u_projMat"), m_camera->getProj());
 
-    for (auto & comp_ : m_collisionSystem->components()) {
-        const BounderComponent & comp(*static_cast<const BounderComponent *>(comp_));
+    for (auto & comp : CollisionSystem::get().components()) {
+        const BounderComponent & bounder(static_cast<BounderComponent &>(*comp));
 
-        loadVec3(getUniform("u_color"), comp.m_collisionFlag ? comp.m_adjustmentFlag ? glm::vec3(1.0f, 0.0f, 0.0f) : glm::vec3(1.0f, 1.0f, 0.0f) : glm::vec3(0.0f, 1.0f, 0.0f));
+        loadVec3(getUniform("u_color"), bounder.m_collisionFlag ? bounder.m_adjustmentFlag ? glm::vec3(1.0f, 0.0f, 0.0f) : glm::vec3(1.0f, 1.0f, 0.0f) : glm::vec3(0.0f, 1.0f, 0.0f));
 
-        if (dynamic_cast<const AABBounderComponent *>(&comp)) {
-            const AABBounderComponent & aabbBounder(static_cast<const AABBounderComponent &>(comp));
+        if (dynamic_cast<const AABBounderComponent *>(&bounder)) {
+            const AABBounderComponent & aabbBounder(static_cast<const AABBounderComponent &>(bounder));
             loadMat4(getUniform("u_modelMat"), detAABBMat(aabbBounder));
 
             glBindVertexArray(m_aabVAO);
             glDrawElements(GL_LINES, m_nAABIndices, GL_UNSIGNED_INT, nullptr);
         }
-        else if (dynamic_cast<const SphereBounderComponent *>(&comp)) {
-            const SphereBounderComponent & sphereBounder(static_cast<const SphereBounderComponent &>(comp));
+        else if (dynamic_cast<const SphereBounderComponent *>(&bounder)) {
+            const SphereBounderComponent & sphereBounder(static_cast<const SphereBounderComponent &>(bounder));
             loadMat4(getUniform("u_modelMat"), detSphereMat(sphereBounder));
 
             glBindVertexArray(m_sphereVAO);
             glDrawElements(GL_LINES, m_nSphereIndices, GL_UNSIGNED_INT, nullptr);
         }
-        else if (dynamic_cast<const CapsuleBounderComponent *>(&comp)) {
-            const CapsuleBounderComponent & capsuleBounder(static_cast<const CapsuleBounderComponent &>(comp));
+        else if (dynamic_cast<const CapsuleBounderComponent *>(&bounder)) {
+            const CapsuleBounderComponent & capsuleBounder(static_cast<const CapsuleBounderComponent &>(bounder));
 
             auto capMats(detCapsuleCapMats(capsuleBounder));
             glm::mat4 & upperCapMat(capMats.first), & lowerCapMat(capMats.second);

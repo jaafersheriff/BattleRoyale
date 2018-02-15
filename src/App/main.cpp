@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
     }
 
     /* Scene reference for QOL */
-    Scene & scene(*engine.scene());
+    Scene & scene(Scene::get());
 
     /* Create camera and camera controller components */
     GameObject & camera(scene.createGameObject());
@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
-    if (!scene.renderSystem().createShader<DiffuseShader>(
+    if (!RenderSystem::get().createShader<DiffuseShader>(
             engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex shader file       */
             engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment shader file     */
             cc,                                           /* Shader-specific uniforms */
@@ -98,20 +98,19 @@ int main(int argc, char **argv) {
         "Diffuse Shader",
         [&]() {
             if (ImGui::Button("Active")) {
-                scene.renderSystem().getShader<DiffuseShader>()->toggleEnabled();
+                RenderSystem::get().getShader<DiffuseShader>()->toggleEnabled();
             }
             if (ImGui::Button("Wireframe")) {
-                scene.renderSystem().getShader<DiffuseShader>()->toggleWireFrame();
+                RenderSystem::get().getShader<DiffuseShader>()->toggleWireFrame();
             }
        }
     );
 
     // Create collider
     // alternate method using unique_ptr and new
-    if (!scene.renderSystem().addShader(std::unique_ptr<BounderShader>(new BounderShader(
+    if (!RenderSystem::get().addShader(std::unique_ptr<BounderShader>(new BounderShader(
             engine.RESOURCE_DIR + "bounder_vert.glsl",
             engine.RESOURCE_DIR + "bounder_frag.glsl",
-            scene.collisionSystem(),
             cc
         )))) {
         std::cerr << "Failed to add collider shader" << std::endl;
@@ -123,7 +122,7 @@ int main(int argc, char **argv) {
         "Bounder Shader",
         [&]() {
             if (ImGui::Button("Active")) {
-                scene.renderSystem().getShader<BounderShader>()->toggleEnabled();
+                RenderSystem::get().getShader<BounderShader>()->toggleEnabled();
             }
         }
     );
@@ -144,7 +143,7 @@ int main(int argc, char **argv) {
     ));
     bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(1, *bunnyMesh, true, true, true)));
     DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
-        scene.renderSystem().getShader<DiffuseShader>()->pid,
+        RenderSystem::get().getShader<DiffuseShader>()->pid,
         *bunnyMesh,
         ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
     bunny.addComponent(bunnyDiffuse);
@@ -195,8 +194,6 @@ int main(int argc, char **argv) {
 
     /* Main loop */
     engine.run();
-
-    scene.shutDown();
 
     return EXIT_SUCCESS;
 }

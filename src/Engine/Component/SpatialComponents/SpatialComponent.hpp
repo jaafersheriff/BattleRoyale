@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Component/Component.hpp"
 
 #include "glm/glm.hpp"
@@ -12,10 +14,6 @@ class SpatialComponent : public Component {
 
     friend Scene;
     friend SpatialSystem;
-
-    public:
-
-    using SystemClass = SpatialSystem;
 
     private:
 
