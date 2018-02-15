@@ -66,8 +66,7 @@ void CameraComponent::update(float dt) {
     rightPlanePoint = nearPlanePoint + u * nearPlaneWidth / 2.f;
     rightPlaneNormal = glm::normalize(glm::cross(v,
         rightPlanePoint - goPos));
-
-    if (isDirty) {
+    if (isDirty || gameObject->getSpatial()->transformedFlag()) {
         this->projection = glm::perspective(fov, Window::getAspectRatio(), near, far);
         this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
         isDirty = false;

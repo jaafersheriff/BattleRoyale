@@ -78,7 +78,10 @@ int main(int argc, char **argv) {
     camera.addComponent(cc);
     camera.addComponent(scene.createComponent<CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT));
     camera.addComponent(scene.createComponent<SpatialComponent>());
-    camera.getSpatial()->setPosition(glm::vec3(-4.0f, 0.0f, 0.0f));
+    camera.getSpatial()->setPosition(glm::vec3(-4.0f, 6.0f, 0.0f));
+
+    Mesh *cyliderMesh(Loader::getMesh("cylinder.obj"));
+    camera.addComponent(scene.createComponent<SphereBounderComponent>(1, Sphere(glm::vec3(0, 0, 0), 4)));
 
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
@@ -136,12 +139,19 @@ int main(int argc, char **argv) {
         glm::vec3(1.0f, 1.0f, 1.0f), // scale
         glm::mat3() // rotation
     ));
-    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(1, *bunnyMesh, true, true, true)));
+    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(2, *bunnyMesh, true, true, true)));
     DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
         scene.renderSystem().getShader<DiffuseShader>()->pid,
         *bunnyMesh,
         ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
     bunny.addComponent(bunnyDiffuse);
+
+    DiffuseRenderComponent & cylDiffuse = scene.createComponent<DiffuseRenderComponent>(
+        scene.renderSystem().getShader<DiffuseShader>()->pid,
+        *cyliderMesh,
+        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
+    camera.addComponent(cylDiffuse);
+
     /* Bunny ImGui panes */
     ImGuiComponent & bIc = scene.createComponent<ImGuiComponent>(
         "Bunny", 
