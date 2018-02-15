@@ -53,6 +53,7 @@ class Scene {
         RenderSystem & renderSystem() { return *m_renderSystem; }
         SpatialSystem & spatialSystem() { return *m_spatialSystem; }
         CollisionSystem & collisionSystem() { return *m_collisionSystem; }
+		SoundSystem & soundSystem() { return *m_soundSystem; }
 
         const std::vector<GameObject *> & getGameObjects() const { return m_gameObjectRefs; }
 
@@ -72,6 +73,7 @@ class Scene {
         std::unique_ptr<RenderSystem> m_renderSystem;
         std::unique_ptr<SpatialSystem> m_spatialSystem;
         std::unique_ptr<CollisionSystem> m_collisionSystem;
+		std::unique_ptr<SoundSystem> m_soundSystem;
 
         /* Lists of all game objects */
         std::vector<std::unique_ptr<GameObject>> m_gameObjectsStore;

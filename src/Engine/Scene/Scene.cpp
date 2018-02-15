@@ -35,6 +35,10 @@ Scene::Scene() :
     sysI = typeid(CollisionSystem);
     m_compRefsBySysT[sysI].reset(new std::vector<Component *>());
     m_collisionSystem.reset(new CollisionSystem(*m_compRefsBySysT[sysI]));
+
+	sysI = typeid(SoundSystem);
+	m_compRefsBySysT[sysI].reset(new std::vector<Component *>());
+	m_soundSystem.reset(new SoundSystem(*m_compRefsBySysT[sysI]));
 }
 
 GameObject & Scene::createGameObject() {
@@ -49,6 +53,7 @@ void Scene::update(float dt) {
     m_gameLogicSystem->update(dt);
     m_spatialSystem->update(dt); // needs to happen before collision
     m_collisionSystem->update(dt);
+	m_soundSystem->update(dt);
     m_renderSystem->update(dt); // rendering should be last
 
     doKillQueue();

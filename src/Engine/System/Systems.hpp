@@ -6,3 +6,4 @@
 #include "RenderSystem.hpp"
 #include "SpatialSystem.hpp"
 #include "CollisionSystem.hpp"
+#include "SoundSystem.hpp"
