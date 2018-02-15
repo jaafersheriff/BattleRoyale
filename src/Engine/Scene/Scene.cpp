@@ -4,6 +4,7 @@
 
 void Scene::init() {
     GameLogicSystem::get().init();
+    PathfindingSystem::get().init();
     SpatialSystem::get().init();
     CollisionSystem::get().init();
     RenderSystem::get().init();
@@ -19,6 +20,7 @@ void Scene::update(float dt) {
 
     /* Update systems */
     GameLogicSystem::get().update(dt);
+    PathfindingSystem::get().update(dt);
     SpatialSystem::get().update(dt); // needs to happen before collision
     CollisionSystem::get().update(dt);
     RenderSystem::get().update(dt); // rendering should be last

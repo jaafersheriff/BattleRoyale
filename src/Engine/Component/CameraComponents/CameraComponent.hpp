@@ -16,12 +16,7 @@ class CameraComponent : public Component {
 
     protected: // only scene can create component
 
-        /* Constructor */
-        CameraComponent(float fov, float near, float far) :
-            fov(fov),
-            near(near),
-            far(far) {
-        }
+        CameraComponent(float fov, float near, float far);
 
     public:
         
@@ -33,22 +28,41 @@ class CameraComponent : public Component {
 
         void update(float dt);
 
-        /* Member functions */
-        void setDirty() { isDirty = true; }
-        const glm::mat4 & getView() const { return view; }
-        const glm::mat4 & getProj() const { return projection; }
+        // sets the camera to look at p
+        void lookAt(const glm::vec3 & p);
+
+        // sets the camera to look in dir
+        void lookInDir(const glm::vec3 & dir);
+
+        // sets the camera angle
+        // +yaw is radians right, -yaw is radians left
+        // +pitch is radians up, -pitch is radians down
+        // if relative is true, these angles are applied as deltas to the
+        // current orientation. if relative is false, these angles are absolute
+        // from the +x axis as forward
+        void angle(float yaw, float pitch, bool relative);
 
         const bool sphereInFrustum(const Sphere & sphere) const;
 
-        /* Member vars */
-        /* w = forwards-backwards of camera */
-        /* v = up-down of camera */
-        /* u = left-right of camera */
-        glm::vec3 u, v, w;
-        /* Where the camera is looking at in world space */
-        glm::vec3 lookAt;
-        /* Describes the rotation of the camera */
-        double phi, theta;
+        const glm::vec3 & u() const { return m_u; }
+        const glm::vec3 & v() const { return m_v; }
+        const glm::vec3 & w() const { return m_w; }
+        float theta() const { return m_theta; }
+        float phi() const { return m_phi; }
+        float fov() const { return m_fov; }
+        float near() const { return m_near; }
+        float far() const { return m_far; }
+        
+        const glm::mat4 & getView() const;
+        const glm::mat4 & getProj() const;
+
+    private:
+
+        void detUVW();
+        void detView() const;
+        void detProj() const;
+
+    public:
 
         /* Data about the view frustum */
         float
@@ -64,15 +78,22 @@ class CameraComponent : public Component {
             rightPlanePoint, rightPlaneNormal;
 
     private:
-        /* Denotes if camera has been moved */
-        bool isDirty = false;
 
-        /* Projection */
-        float fov, near, far;
-        glm::mat4 projection;
+        /* u, v, and w define a set of orthonormal basis unit vectors */
+        /* u points right (+x) */
+        /* v points up (+y) */
+        /* w points back (+z) */
+        glm::vec3 m_u, m_v, m_w;
+        /* Describes the rotation of the camera */
+        float m_theta, m_phi;
+        /* field of view, near plane, and far plane */
+        float m_fov, m_near, m_far;
 
-        /* View */
-        glm::mat4 view;
+        // DONT USE THESE DIRECTLY, CALL GETVIEW OR GETPROJ
+        mutable glm::mat4 m_viewMat;
+        mutable glm::mat4 m_projMat;
+        mutable bool m_viewMatValid;
+        mutable bool m_projMatValid;
 };
 
 #endif
