@@ -80,7 +80,6 @@ int main(int argc, char **argv) {
     camera.addComponent(scene.createComponent<SpatialComponent>());
     camera.getSpatial()->setPosition(glm::vec3(-4.0f, 6.0f, 0.0f));
 
-    Mesh *cyliderMesh(Loader::getMesh("cylinder.obj"));
     camera.addComponent(scene.createComponent<SphereBounderComponent>(1, Sphere(glm::vec3(0, 0, 0), 4)));
 
     /* Create diffuse shader */
@@ -188,20 +187,6 @@ int main(int argc, char **argv) {
     bunny.addComponent(bIc);
 
     bunny.addComponent(scene.createComponent<PathfindingComponent>(cc, 1.f));
-
-    Mesh * cubeMesh(Loader::getMesh("cube.obj"));
-    GameObject & cube(scene.createGameObject());
-    cube.addComponent(scene.createComponent<SpatialComponent>(
-        glm::vec3(3.f, 0.f, -3.f),
-        glm::vec3(1.f, 1.f, 1.f),
-        glm::mat3()
-    ));
-    cube.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(INT_MAX, *cubeMesh, true, true, true)));
-    cube.addComponent(scene.createComponent<DiffuseRenderComponent>(
-        scene.renderSystem().getShader<DiffuseShader>()->pid,
-        *cubeMesh,
-        ModelTexture(.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f))));
-
 
     /* Game stats pane */
     scene.createComponent<ImGuiComponent>(
