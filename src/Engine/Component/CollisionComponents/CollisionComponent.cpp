@@ -246,7 +246,7 @@ std::unique_ptr<BounderComponent> createBounderFromMesh(int weight, const Mesh &
         float minRad, yUpper, yLower;
         std::tie(minRad, yUpper, yLower) = detCapsuleSpecs(nVerts, positions, center);
         float capsuleHeight(yUpper - yLower);
-        glm::vec3 capsuleCenter(center.x, center.y, yLower + capsuleHeight * 0.5f);
+        glm::vec3 capsuleCenter(center.x, yLower + capsuleHeight * 0.5f, center.z);
         capsule = Capsule(capsuleCenter, minRad, capsuleHeight);
         capsuleV = capsule.volume();
     }
