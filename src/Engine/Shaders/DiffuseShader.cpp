@@ -4,9 +4,8 @@
 
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
-
-#include "ThirdParty/imgui/imgui.h"
-#include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
+#include "Component/CollisionComponents/CollisionComponent.hpp"
+#include "System/CollisionSystem.hpp"
 
 DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam, const glm::vec3 & light) :
     Shader(vertFile, fragFile),
@@ -43,10 +42,6 @@ bool DiffuseShader::init() {
 }
 
 void DiffuseShader::render(const std::vector<Component *> & components) {
-    if (!m_isEnabled) {
-        return;
-    }
-
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
@@ -56,10 +51,6 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
 
-    /* Temporary variables to hold sphere bounding data */
-    glm::vec3 center, scale;
-    float radius;
-
     for (auto cp : components) {
         // TODO : component list should be passed in as diffuserendercomponent
         DiffuseRenderComponent *drc;
@@ -67,15 +58,22 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
             continue;
         }
 
-        /* Determine if component should be rendered */
+        /* Determine if component should be culled */
+        /* Only doing frustum culling if object has bounder(s) */
         /* Get the center and radius of the component */
-        center = drc->getGameObject()->getSpatial()->position();
-        scale = drc->getGameObject()->getSpatial()->scale();
-        /* Radius = max of scale */
-        radius = glm::max(scale[0], glm::max(scale[1], scale[2]));
-
-        if (!camera->sphereInFrustum(center, radius)) {
-            continue;
+        const std::vector<Component *> & bounders(drc->getGameObject()->getComponentsBySystem<CollisionSystem>());
+        if (bounders.size()) {
+            bool inFrustum(false);
+            for (Component * bounder_ : bounders) {
+                BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
+                if (camera->sphereInFrustum(bounder->enclosingSphere())) {
+                    inFrustum = true;
+                    break;
+                }
+            }
+            if (!inFrustum) {
+                continue;
+            }
         }
 
         /* Model matrix */

@@ -73,6 +73,12 @@ Intersect AABBounderComponent::intersect(const Ray & ray) const {
     return ::intersect(ray, m_transBox);
 }
 
+Sphere AABBounderComponent::enclosingSphere() const {
+    glm::fvec3 center(0.5f * (m_transBox.max + m_transBox.min));
+    float radius(glm::length(m_transBox.max - center));
+    return Sphere(center, radius);
+}
+
 
 
 SphereBounderComponent::SphereBounderComponent(int weight, const Sphere & sphere) :
@@ -107,6 +113,10 @@ bool SphereBounderComponent::collide(const BounderComponent & o, glm::vec3 * del
 
 Intersect SphereBounderComponent::intersect(const Ray & ray) const {
     return ::intersect(ray, m_transSphere);
+}
+
+Sphere SphereBounderComponent::enclosingSphere() const {
+    return m_transSphere;
 }
 
 
@@ -148,6 +158,10 @@ bool CapsuleBounderComponent::collide(const BounderComponent & o, glm::vec3 * de
 
 Intersect CapsuleBounderComponent::intersect(const Ray & ray) const {
     return ::intersect(ray, m_transCapsule);
+}
+
+Sphere CapsuleBounderComponent::enclosingSphere() const {
+    return Sphere(m_capsule.center, m_capsule.height * 0.5 + m_capsule.radius);
 }
 
 
@@ -232,7 +246,7 @@ std::unique_ptr<BounderComponent> createBounderFromMesh(int weight, const Mesh &
         float minRad, yUpper, yLower;
         std::tie(minRad, yUpper, yLower) = detCapsuleSpecs(nVerts, positions, center);
         float capsuleHeight(yUpper - yLower);
-        glm::vec3 capsuleCenter(center.x, center.y, yLower + capsuleHeight * 0.5f);
+        glm::vec3 capsuleCenter(center.x, yLower + capsuleHeight * 0.5f, center.z);
         capsule = Capsule(capsuleCenter, minRad, capsuleHeight);
         capsuleV = capsule.volume();
     }
