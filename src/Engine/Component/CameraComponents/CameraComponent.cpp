@@ -6,21 +6,34 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "IO/Window.hpp"
 
-void CameraComponent::init() {
-    this->projection = glm::perspective(fov, Window::getAspectRatio(), near, far);
-    this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
-    phi = theta = 0.0;
-    
-    float fovRadians;
-    fovRadians = glm::radians(fov);
 
-    farPlaneHeight = 2 * glm::tan(fovRadians / 2) * far;
+
+CameraComponent::CameraComponent(float fov, float near, float far) :
+    m_u(0.0f, 0.0f, 1.0f),
+    m_v(0.0f, 1.0f, 0.0f),
+    m_w(-1.0f, 0.0f, 0.0f),
+    m_theta(0.0f),
+    m_phi(glm::pi<float>() * 0.5f),
+    m_fov(fov),
+    m_near(near),
+    m_far(far),
+    m_viewMat(),
+    m_projMat(),
+    m_viewMatValid(false),
+    m_projMatValid(false)
+{}
+
+void CameraComponent::init() {    
+    float fovRadians;
+    fovRadians = glm::radians(m_fov);
+
+    farPlaneHeight = 2 * glm::tan(fovRadians / 2) * m_far;
     farPlaneWidth = farPlaneHeight * Window::getAspectRatio();
 
-    nearPlaneHeight = 2 * glm::tan(fovRadians / 2) * near;
+    nearPlaneHeight = 2 * glm::tan(fovRadians / 2) * m_near;
     nearPlaneWidth = nearPlaneHeight * Window::getAspectRatio();
 
-    update(0.f);
+    update(0.0f);
 }
 
 void CameraComponent::update(float dt) {
@@ -28,51 +41,65 @@ void CameraComponent::update(float dt) {
     glm::vec3 goPos;
     goPos = gameObject->getSpatial()->position();
 
-    /* Update basis vectors */
-    w = glm::normalize(lookAt - goPos);
-    u = glm::normalize(glm::cross(w, glm::vec3(0, 1, 0)));
-    v = glm::normalize(glm::cross(u, w));
-
-    /* Update look at */
-    glm::vec3 sphere(
-        glm::cos(phi)*glm::cos(theta),
-        glm::sin(phi),
-        glm::cos(phi)*glm::cos((Util::PI / 2.f) - theta));
-    lookAt = goPos + glm::normalize(sphere);
-
     /* update matrices */
-    if (isDirty || gameObject->getSpatial()->transformedFlag()) {
-        this->projection = glm::perspective(fov, Window::getAspectRatio(), near, far);
-        this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
-        isDirty = false;
+    if (gameObject->getSpatial()->transformedFlag()) {
+        detView();
     }
 
     /* Update view frustum data */
 
     /* w = forwards-backwards of camera */
-    farPlanePoint = goPos + w * far;
-    farPlaneNormal = -w;
+    farPlanePoint = goPos - m_w * m_far;
+    farPlaneNormal = m_w;
 
-    nearPlanePoint = goPos + w * near;
-    nearPlaneNormal = w;
+    nearPlanePoint = goPos - m_w * m_near;
+    nearPlaneNormal = -m_w;
 
     /* v = up-down of camera */
     /* u = left-right of camera */
-    topPlanePoint = nearPlanePoint + v * nearPlaneHeight / 2.f;
+    topPlanePoint = nearPlanePoint + m_v * nearPlaneHeight / 2.f;
     topPlaneNormal = glm::normalize(glm::cross(topPlanePoint -
-        goPos, u));
+        goPos, m_u));
 
-    bottomPlanePoint = nearPlanePoint - v * nearPlaneHeight / 2.f;
-    bottomPlaneNormal = glm::normalize(glm::cross(u,
+    bottomPlanePoint = nearPlanePoint - m_v * nearPlaneHeight / 2.f;
+    bottomPlaneNormal = glm::normalize(glm::cross(m_u,
         bottomPlanePoint - goPos));
 
-    leftPlanePoint = nearPlanePoint - u * nearPlaneWidth / 2.f;
+    leftPlanePoint = nearPlanePoint - m_u * nearPlaneWidth / 2.f;
     leftPlaneNormal = glm::normalize(glm::cross(leftPlanePoint -
-        goPos, v));
+        goPos, m_v));
 
-    rightPlanePoint = nearPlanePoint + u * nearPlaneWidth / 2.f;
-    rightPlaneNormal = glm::normalize(glm::cross(v,
+    rightPlanePoint = nearPlanePoint + m_u * nearPlaneWidth / 2.f;
+    rightPlaneNormal = glm::normalize(glm::cross(m_v,
         rightPlanePoint - goPos));
+}
+
+void CameraComponent::lookAt(const glm::vec3 & p) {
+    lookInDir(p - gameObject->getSpatial()->position());
+}
+
+void CameraComponent::lookInDir(const glm::vec3 & dir) {
+    glm::vec3 spherical(Util::cartesianToSpherical(glm::vec3(dir.x, -dir.z, dir.y)));
+    m_theta = spherical.y;
+    m_phi = spherical.z;
+    detUVW();
+}
+
+void CameraComponent::angle(float yaw, float pitch, bool relative) {
+    if (relative) {
+        m_theta -= yaw;
+        m_phi -= pitch;
+    }
+    else {
+        m_theta = -yaw;
+        m_phi = glm::pi<float>() * 0.5f - pitch;
+    }
+    if      (m_theta > glm::pi<float>()) m_theta -= glm::pi<float>() * 2.0f;
+    else if (m_theta < -glm::pi<float>()) m_theta += glm::pi<float>() * 2.0f;
+    if (m_phi < 0.0f) m_phi = 0.0f;
+    if (m_phi > glm::pi<float>()) m_phi = glm::pi<float>();
+
+    detUVW();
 }
 
 const bool CameraComponent::sphereInFrustum(const Sphere & sphere) const {
@@ -151,4 +178,32 @@ const bool CameraComponent::sphereInFrustum(const Sphere & sphere) const {
     return true;
 
     */
+}
+
+const glm::mat4 & CameraComponent::getView() const {
+    if (!m_viewMatValid) detView();
+    return m_viewMat;
+}
+
+const glm::mat4 & CameraComponent::getProj() const {
+    if (!m_projMatValid) detProj();
+    return m_projMat;
+}
+
+void CameraComponent::detUVW() {    
+    m_w = -Util::sphericalToCartesian(1.0f, m_theta, m_phi);
+    m_w = glm::vec3(m_w.x, m_w.z, -m_w.y); // one of the many reasons I like z to be up
+    m_v = Util::sphericalToCartesian(1.0f, m_theta, m_phi - glm::pi<float>() * 0.5f);
+    m_v = glm::vec3(m_v.x, m_v.z, -m_v.y);
+    m_u = glm::cross(m_v, m_w);
+}
+
+void CameraComponent::detView() const {
+    const glm::vec3 & pos(gameObject->getSpatial()->position());
+    m_viewMat = glm::lookAt(pos, pos - m_w, glm::vec3(0.0f, 1.0f, 0.0f));
+
+}
+
+void CameraComponent::detProj() const {
+    m_projMat = glm::perspective(m_fov, Window::getAspectRatio(), m_near, m_far);
 }

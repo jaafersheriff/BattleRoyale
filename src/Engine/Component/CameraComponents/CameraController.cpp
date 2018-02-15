@@ -35,63 +35,37 @@ void CameraController::update(float dt) {
     }
 }
 void CameraController::lookAround(float dt) {
-    camera->theta += Mouse::dx * lookSpeed * dt;
-    camera->phi -= Mouse::dy * lookSpeed * dt;
-    camera->setDirty();
+    camera->angle(float(Mouse::dx) * lookSpeed * dt, -float(Mouse::dy) * lookSpeed * dt, true);
 }
 
 void CameraController::moveFront(float dt) {
-    gameObject->getSpatial()->move(camera->w * moveSpeed * dt);
-    camera->lookAt += camera->w * moveSpeed * dt;
-    camera->setDirty();
+    gameObject->getSpatial()->move(-camera->w() * moveSpeed * dt);
 }
 
 void CameraController::strafeForward(float dt) {
-    glm::vec3 view = camera->getGameObject()->getSpatial()->position() - camera->lookAt;
-    glm::vec3 sideDir = glm::cross(view, glm::vec3(0, 1, 0));
-    glm::vec3 forwardDir = glm::cross(sideDir, glm::vec3(0, 1, 0));
-
-    gameObject->getSpatial()->move(forwardDir * moveSpeed * dt);
-    camera->lookAt += forwardDir * moveSpeed * dt;
-    camera->setDirty();
+    gameObject->getSpatial()->move(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), camera->u()) * moveSpeed * dt);
 }
 
 void CameraController::moveBack(float dt) {
-    gameObject->getSpatial()->move(-(camera->w * moveSpeed * dt));
-    camera->lookAt -= camera->w * moveSpeed * dt;
-    camera->setDirty();
+    gameObject->getSpatial()->move(camera->w() * moveSpeed * dt);
 }
 
-void CameraController::strafeBackward(float dt) {
-    glm::vec3 view = camera->lookAt - camera->getGameObject()->getSpatial()->position();
-    glm::vec3 sideDir = glm::cross(view, glm::vec3(0, 1, 0));
-    glm::vec3 backwardDir = glm::cross(sideDir, glm::vec3(0, 1, 0));
-
-    gameObject->getSpatial()->move(backwardDir * moveSpeed * dt);
-    camera->lookAt += backwardDir * moveSpeed * dt;
-    camera->setDirty();
+void CameraController::strafeBackward(float dt) {    
+    gameObject->getSpatial()->move(glm::cross(camera->u(), glm::vec3(0.0f, 1.0f, 0.0f)) * moveSpeed * dt);
 }
 
 void CameraController::moveRight(float dt) {
-    gameObject->getSpatial()->move(camera->u * moveSpeed * dt);
-    camera->lookAt += camera->u * moveSpeed * dt;
-    camera->setDirty();
+    gameObject->getSpatial()->move(camera->u() * moveSpeed * dt);
 }
 
 void CameraController::moveLeft(float dt) {
-    gameObject->getSpatial()->move(-(camera->u * moveSpeed * dt));
-    camera->lookAt -= camera->u * moveSpeed * dt;
-    camera->setDirty();
+    gameObject->getSpatial()->move(-camera->u() * moveSpeed * dt);
 }
 
 void CameraController::moveUp(float dt) {
-    gameObject->getSpatial()->move(camera->v * moveSpeed * dt);
-    camera->lookAt += camera->v * moveSpeed * dt;
-    camera->setDirty();
+    gameObject->getSpatial()->move(glm::vec3(0.0f, 1.0f, 0.0f) * moveSpeed * dt);
 }
 
 void CameraController::moveDown(float dt) {
-    gameObject->getSpatial()->move(-(camera->v * moveSpeed * dt));
-    camera->lookAt -= camera->v * moveSpeed * dt;
-    camera->setDirty();
+    gameObject->getSpatial()->move(glm::vec3(0.0f, -1.0f, 0.0f) * moveSpeed * dt);
 }
