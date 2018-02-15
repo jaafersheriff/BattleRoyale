@@ -52,6 +52,7 @@ class Scene {
         GameLogicSystem & gameLogicSystem() { return *m_gameLogicSystem; }
         RenderSystem & renderSystem() { return *m_renderSystem; }
         SpatialSystem & spatialSystem() { return *m_spatialSystem; }
+        PathfindingSystem & pathfindingSystem() { return *m_pathfindingSystem; }
         CollisionSystem & collisionSystem() { return *m_collisionSystem; }
 
         const std::vector<GameObject *> & getGameObjects() const { return m_gameObjectRefs; }
@@ -72,6 +73,7 @@ class Scene {
         std::unique_ptr<RenderSystem> m_renderSystem;
         std::unique_ptr<SpatialSystem> m_spatialSystem;
         std::unique_ptr<CollisionSystem> m_collisionSystem;
+        std::unique_ptr<PathfindingSystem> m_pathfindingSystem;
 
         /* Lists of all game objects */
         std::vector<std::unique_ptr<GameObject>> m_gameObjectsStore;

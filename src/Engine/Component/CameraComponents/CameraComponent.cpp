@@ -41,7 +41,7 @@ void CameraComponent::update(float dt) {
     lookAt = goPos + glm::normalize(sphere);
 
     /* update matrices */
-    if (isDirty) {
+    if (isDirty || gameObject->getSpatial()->transformedFlag()) {
         this->projection = glm::perspective(fov, Window::getAspectRatio(), near, far);
         this->view = glm::lookAt(gameObject->getSpatial()->position(), lookAt, glm::vec3(0, 1, 0));
         isDirty = false;

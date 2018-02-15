@@ -76,6 +76,6 @@ void FileReader::initGameObject(Scene & scene, std::string filePath, std::string
         *Loader::getMesh(filePath),
         ModelTexture(Loader::getTexture(texturePath), 0.4f, glm::vec3(0.f), glm::vec3(0.f))));
 
-    gameObject.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(10, *Loader::getMesh(filePath), true, true, true)));
+    gameObject.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(INT_MAX, *Loader::getMesh(filePath), true, true, true)));
         
 }
