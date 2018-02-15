@@ -38,6 +38,8 @@ class SpatialComponent : public Component {
 
     virtual void update(float dt) override;
 
+    public:
+
     // sets the absolute position
     void setPosition(const glm::vec3 & pos);
 
@@ -55,6 +57,8 @@ class SpatialComponent : public Component {
     
     // rotates current rotation by mat
     void rotate(const glm::mat3 & mat);
+
+    public:
 
     const glm::vec3 & position() const { return m_position; }
     const glm::vec3 & scale() const { return m_scale; }
