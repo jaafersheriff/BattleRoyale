@@ -28,7 +28,7 @@ void printUsage() {
     std::cout << "\t\tSet the application name" << std::endl;
 }
 
-int parseArgs(EngineApp *engine, int argc, char **argv) {
+int parseArgs(int argc, char **argv) {
     /* Process cmd line args */
     for (int i = 0; i < argc; i++) {
         /* Help */
@@ -38,7 +38,7 @@ int parseArgs(EngineApp *engine, int argc, char **argv) {
         }
         /* Verbose */
         if (!strcmp(argv[i], "-v")) {
-            engine->verbose = true;
+            EngineApp::get().verbose = true;
         }
         /* Set resource dir */
         if (!strcmp(argv[i], "-r")) {
@@ -46,7 +46,7 @@ int parseArgs(EngineApp *engine, int argc, char **argv) {
                 printUsage();
                 return 1;
             }
-            engine->RESOURCE_DIR = argv[i + 1];
+            EngineApp::get().RESOURCE_DIR = argv[i + 1];
         }
         /* Set application name */
         if (!strcmp(argv[i], "-n")) {
@@ -54,7 +54,7 @@ int parseArgs(EngineApp *engine, int argc, char **argv) {
                 printUsage();
                 return 1;
             }
-            engine->APP_NAME = argv[i + 1];
+            EngineApp::get().APP_NAME = argv[i + 1];
         }
     }
     return 0;
@@ -62,9 +62,9 @@ int parseArgs(EngineApp *engine, int argc, char **argv) {
 
 int main(int argc, char **argv) {
     /* Singular engine */
-    EngineApp engine;
+    EngineApp & engine(EngineApp::get());
 
-    if (parseArgs(&engine, argc, argv) || engine.init()) {
+    if (parseArgs(argc, argv) || engine.init()) {
         std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
     }

@@ -8,11 +8,23 @@
 
 #include <string>
 
+// Singleton
 class EngineApp {
 
     public:
 
+        static EngineApp & get() {
+            static EngineApp s_engineApp;
+            return s_engineApp;
+        }
+
+    private:
+
         EngineApp();
+        EngineApp(const EngineApp & other) = delete;
+        EngineApp & operator=(const EngineApp & other) = delete;
+
+    public:
 
         int init();
         void run();
