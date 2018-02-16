@@ -140,13 +140,19 @@ int main(int argc, char **argv) {
     /* Setup Player */
     float playerHeight(1.75f);
     float playerWidth(playerHeight / 4.0f);
+    glm::vec3 playerPos(0.0f, 200.0f, 0.0f);
     float playerFOV(camFOV);
     float playerLookSpeed(camLookSpeed);
     float playerMoveSpeed(camMoveSpeed);
+    float playerMaxSpeed(10.0f);
     GameObject & player(scene.createGameObject());
     SpatialComponent & playerSpatComp(scene.createComponent<SpatialComponent>());
     player.addComponent(playerSpatComp);
-    playerSpatComp.setPosition(glm::vec3(-4.0f, 6.0f, 0.0f));
+    playerSpatComp.setPosition(playerPos);
+    NewtonianComponent & playerNewtComp(scene.createComponent<NewtonianComponent>(playerSpatComp, playerMaxSpeed));
+    player.addComponent(playerNewtComp);
+    GravityComponent & playerGravComp(scene.createComponent<GravityComponent>(playerNewtComp));
+    player.addComponent(playerGravComp);
     Capsule playerCap(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth);
     CapsuleBounderComponent & playerBoundComp(scene.createComponent<CapsuleBounderComponent>(*player.getSpatial(), 1, playerCap));
     player.addComponent(playerBoundComp);
@@ -157,7 +163,7 @@ int main(int argc, char **argv) {
 
     RenderSystem::get().setCamera(&playerCamComp);
 
-    // press shift-tab to toggle free camera
+    // Toggle free camera (ctrl-tab)
     auto camSwitchCallback([&](const Message & msg_) {
         static bool free = false;
 
@@ -186,16 +192,29 @@ int main(int argc, char **argv) {
     });
     scene.addReceiver<KeyMessage>(nullptr, camSwitchCallback);
 
-    // Demo ray picking
+    // Demo ray picking (click)
     auto rayPickCallback([&](const Message & msg_) {
-        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
-        if (msg.key == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
+        const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
+        if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
             auto pair(CollisionSystem::get().pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir())));
             if (pair.first && pair.first->weight() < UINT_MAX) {
                 pair.first->getGameObject()->getSpatial()->scale(glm::vec3(1.1f));
             }
         }
     });
+    scene.addReceiver<MouseMessage>(nullptr, rayPickCallback);
+
+    // Swap gravity (ctrl-g)
+    auto gravSwapCallback([&](const Message & msg_) {
+        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
+        if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_CONTROL) {
+            auto pair(CollisionSystem::get().pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir())));
+            if (pair.first && pair.first->weight() < UINT_MAX) {
+                pair.first->getGameObject()->getSpatial()->scale(glm::vec3(1.1f));
+            }
+        }
+    });
+    scene.addReceiver<KeyMessage>(nullptr, gravSwapCallback);
 
     /* VSync ImGui Pane */
     scene.createComponent<ImGuiComponent>(
@@ -220,7 +239,7 @@ int main(int argc, char **argv) {
         glm::vec3(1.0f, 1.0f, 1.0f), // scale
         glm::mat3() // rotation
     ));
-    bunny.addComponent(Scene::get().addComponent<BounderComponent>(createBounderFromMesh(*bunny.getSpatial(), 1, *bunnyMesh, false, true, false)));
+    bunny.addComponent(Scene::get().addComponent<BounderComponent>(CollisionSystem::get().createBounderFromMesh(*bunny.getSpatial(), 1, *bunnyMesh, false, true, false)));
     DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
         RenderSystem::get().getShader<DiffuseShader>()->pid,
         *bunnyMesh,

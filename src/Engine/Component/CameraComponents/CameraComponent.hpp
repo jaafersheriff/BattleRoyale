@@ -27,7 +27,7 @@ class CameraComponent : public Component, public Orientable {
 
     friend Scene;
 
-    protected: // only scene can create component
+    protected: // only scene or friends can create component
 
         CameraComponent(SpatialComponent & spatial, float fov);
 

@@ -23,7 +23,7 @@ class BounderComponent : public Component {
     friend Scene;
     friend CollisionSystem;
 
-    protected: // only scene can create component
+    protected: // only scene or friends can create component
 
     BounderComponent(SpatialComponent & spatial, unsigned int weight);
 
@@ -53,10 +53,15 @@ class BounderComponent : public Component {
 
 
 class AABBounderComponent : public BounderComponent {
+    
+    friend Scene;
+    friend CollisionSystem;
 
-    public:
+    protected: // only scene or friends can create component
 
     AABBounderComponent(SpatialComponent & spatial, unsigned int weight, const AABox & box);
+
+    public:
 
     virtual void update(float dt) override;
 
@@ -79,10 +84,15 @@ class AABBounderComponent : public BounderComponent {
 
 
 class SphereBounderComponent : public BounderComponent {
+    
+    friend Scene;
+    friend CollisionSystem;
 
-    public:
+    protected: // only scene or friends can create component
 
     SphereBounderComponent(SpatialComponent & spatial, unsigned int weight, const Sphere & sphere);
+
+    public:
 
     virtual void update(float dt) override;
 
@@ -105,10 +115,15 @@ class SphereBounderComponent : public BounderComponent {
 
 
 class CapsuleBounderComponent : public BounderComponent {
+    
+    friend Scene;
+    friend CollisionSystem;
 
-    public:
+    protected: // only scene or friends can create component
 
     CapsuleBounderComponent(SpatialComponent & spatial, unsigned int weight, const Capsule & capsule);
+
+    public:
 
     virtual void update(float dt) override;
 
@@ -127,10 +142,3 @@ class CapsuleBounderComponent : public BounderComponent {
     Capsule m_transCapsule;
 
 };
-
-
-
-// chooses the bounder with the smallest volume from the vertex data of the given mesh
-// optionally enable/disable certain types of bounders. If all are false you are
-// dumb and it acts as if all were true
-std::unique_ptr<BounderComponent> createBounderFromMesh(SpatialComponent & spatial, unsigned int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule);

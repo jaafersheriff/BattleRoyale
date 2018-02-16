@@ -50,6 +50,11 @@ class CollisionSystem : public System {
 
     std::pair<BounderComponent *, Intersect> pick(const Ray & ray) const;
 
+    // chooses the bounder with the smallest volume from the vertex data of the given mesh
+    // optionally enable/disable certain types of bounders. If all are false you are
+    // dumb and it acts as if all were true
+    std::unique_ptr<BounderComponent> createBounderFromMesh(SpatialComponent & spatial, unsigned int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule) const;
+
     private:
     
     virtual void add(std::unique_ptr<Component> component) override;

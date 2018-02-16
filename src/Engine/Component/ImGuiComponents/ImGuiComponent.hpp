@@ -17,7 +17,7 @@ class ImGuiComponent : public Component {
 
     friend Scene;
 
-    protected: // only scene can create component
+    protected: // only scene or friends can create component
 
         ImGuiComponent(std::string name, std::function<void()> fun) :
             name(name),

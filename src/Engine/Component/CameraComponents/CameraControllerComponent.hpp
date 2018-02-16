@@ -17,7 +17,7 @@ class CameraControllerComponent : public Component {
 
     friend Scene;
 
-    protected: // only scene can create component
+    protected: // only scene or friends can create component
 
         CameraControllerComponent(CameraComponent & cc, float ls, float ms);
 

@@ -1,6 +1,7 @@
 #include "FileReader.hpp"
 
 #include "System/RenderSystem.hpp"
+#include "System/CollisionSystem.hpp"
 
 int FileReader::loadLevel(const char & filePath, Scene & scene) {
     rapidjson::Document document;
@@ -78,6 +79,6 @@ void FileReader::initGameObject(Scene & scene, std::string filePath, std::string
         *Loader::getMesh(filePath),
         ModelTexture(Loader::getTexture(texturePath), 0.4f, glm::vec3(0.f), glm::vec3(0.f))));
 
-    gameObject.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(*gameObject.getSpatial(), UINT_MAX, *Loader::getMesh(filePath), true, true, true)));
+    gameObject.addComponent(scene.addComponent<BounderComponent>(CollisionSystem::get().createBounderFromMesh(*gameObject.getSpatial(), UINT_MAX, *Loader::getMesh(filePath), true, true, true)));
         
 }

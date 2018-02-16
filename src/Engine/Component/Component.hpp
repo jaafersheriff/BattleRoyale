@@ -10,7 +10,7 @@ class Component {
 
         friend Scene;
 
-    protected: // only scene can create components
+    protected: // only scene or friends can create components
 
         Component() :
             m_gameObject(nullptr)

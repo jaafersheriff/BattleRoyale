@@ -16,7 +16,7 @@ class PlayerControllerComponent : public Component {
     friend Scene;
     friend GameLogicSystem;
 
-    protected: // only scene can create component
+    protected: // only scene or friends can create component
 
     PlayerControllerComponent(CameraComponent & camera, float lookSpeed, float moveSpeed);
 

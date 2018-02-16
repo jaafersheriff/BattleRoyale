@@ -6,6 +6,7 @@
 
 #include "System.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Component/SpatialComponents/PhysicsComponents.hpp"
 
 
 
@@ -35,6 +36,8 @@ class SpatialSystem : public System {
 
     virtual void update(float dt) override;
 
+    void setGravityDir(const glm::vec3 & dir);
+
     private:
 
     virtual void add(std::unique_ptr<Component> component) override;
@@ -44,5 +47,7 @@ class SpatialSystem : public System {
     private:
 
     std::vector<std::unique_ptr<SpatialComponent>> m_spatialComponents;
+    std::vector<std::unique_ptr<NewtonianComponent>> m_newtonianComponents;
+    std::vector<std::unique_ptr<AcceleratorComponent>> m_acceleratorComponents;
 
 };

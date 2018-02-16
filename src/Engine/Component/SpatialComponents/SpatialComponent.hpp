@@ -17,7 +17,7 @@ class SpatialComponent : public Component, public Orientable {
     friend Scene;
     friend SpatialSystem;
 
-    protected: // only scene can create component
+    protected: // only scene or friends can create component
 
     SpatialComponent();
     SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale);

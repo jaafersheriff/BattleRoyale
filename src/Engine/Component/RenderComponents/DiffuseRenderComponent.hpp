@@ -13,7 +13,7 @@ class DiffuseRenderComponent : public Component {
 
     friend Scene;
 
-    protected: // only scene can create component
+    protected: // only scene or friends can create component
 
         DiffuseRenderComponent(int pid, Mesh & mesh, ModelTexture texture) :
             pid(pid),
