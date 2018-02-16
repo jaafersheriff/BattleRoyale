@@ -10,19 +10,19 @@ Particle::Particle(int type, int i, int total, glm::vec3 origin) :
 {
 }
 
-void Particle::update(double tData) {
+void Particle::update(float tData) {
  
     updateMovement(tData);
 }
 
-void Particle::updateMovement(double tData) {
+void Particle::updateMovement(float tData) {
     if (type == 0) {
         position = sphereExplode(tData);
     }
 }
 
-glm::vec3 Particle::sphereMove(double tData) {
-    double phi = glm::golden_ratio<float>();
+glm::vec3 Particle::sphereMove(float tData) {
+    float phi = glm::golden_ratio<float>();
 
     float z = 1 - (2 * float(i) / float(total - 1));
     float radius = sqrt(1 - z * z);
@@ -32,8 +32,8 @@ glm::vec3 Particle::sphereMove(double tData) {
     return origin + float(default_speed * tData) * glm::vec3(radius * cos(theta), radius * sin(theta), z);
 }
 
-glm::vec3 Particle::sphereExplode(double tData) {
-    double phi = glm::golden_ratio<float>();
+glm::vec3 Particle::sphereExplode(float tData) {
+    float phi = glm::golden_ratio<float>();
 
     float z = 1 - (2 * float(i) / float(total - 1));
     float radius = sqrt(1 - z * z);

@@ -9,6 +9,8 @@
 
 #include "System.hpp"
 #include "Component/SoundComponents/SoundComponent.hpp"
+#include <string>
+#include <vector>
 
 #if HAVE_FMOD_LIBRARY 
 #include "fmod.hpp"

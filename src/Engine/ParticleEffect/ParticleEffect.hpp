@@ -19,19 +19,19 @@ class ParticleEffect {
         /* Attributes*/
         int type;
         int total;
-        double duration;
+        float duration;
         glm::vec3 origin;
-        double life;
+        float life;
 
         std::vector<Particle> particles;
         float tData;
 
         /* Constructors */
-        ParticleEffect(int type, int n, double duration, glm::vec3 origin);
+        ParticleEffect(int type, int n, float duration, glm::vec3 origin);
 
-        std::vector<Particle> ParticleEffect::generateParticles();
+        std::vector<Particle> generateParticles();
 
-        void ParticleEffect::update(float dt);
+        void update(float dt);
 };
 
 #endif // !_PARTICLEEFFECT_HPP_

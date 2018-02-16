@@ -1,6 +1,6 @@
 #include "ParticleEffect.hpp"
 
-ParticleEffect::ParticleEffect(int type, int total, double duration, glm::vec3 origin) :
+ParticleEffect::ParticleEffect(int type, int total, float duration, glm::vec3 origin) :
     type(type),
     total(total),
     duration(duration),

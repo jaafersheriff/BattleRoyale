@@ -15,10 +15,10 @@ class Particle {
         /* Constructors */
         Particle(int type, int i, int total, glm::vec3 origin);
 
-        void Particle::update(double tData);
-        void Particle::updateMovement(double tData);
-        glm::vec3 Particle::sphereMove(double tData);
-        glm::vec3 Particle::sphereExplode(double tData);
+        void update(float tData);
+        void updateMovement(float tData);
+        glm::vec3 sphereMove(float tData);
+        glm::vec3 sphereExplode(float tData);
 };
 
 #endif // !_PARTICLE_HPP_
