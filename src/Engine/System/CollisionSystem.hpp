@@ -27,7 +27,7 @@ class CollisionSystem : public System {
 
     static constexpr SystemID ID = SystemID::collision;
 
-    static constexpr float k_collisionOffsetFactor = 0.01f;
+    static constexpr float k_collisionOffsetFactor = 0.0f;
 
     public:
 

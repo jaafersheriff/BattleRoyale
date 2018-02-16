@@ -143,7 +143,7 @@ int main(int argc, char **argv) {
     /* Setup Player */
     float playerHeight(1.75f);
     float playerWidth(playerHeight / 4.0f);
-    glm::vec3 playerPos(0.0f, 20.0f, 0.0f);
+    glm::vec3 playerPos(0.0f, 5.0f, 0.0f);
     float playerFOV(camFOV);
     float playerLookSpeed(camLookSpeed);
     float playerMoveSpeed(camMoveSpeed);
@@ -233,54 +233,57 @@ int main(int argc, char **argv) {
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
-    GameObject & bunny(scene.createGameObject());
-    bunny.addComponent(scene.createComponent<SpatialComponent>(
-        glm::vec3(0.0f, 0.0f, 0.0f), // position
-        glm::vec3(1.0f, 1.0f, 1.0f), // scale
-        glm::mat3() // rotation
-    ));
-    bunny.addComponent(Scene::get().addComponent<BounderComponent>(CollisionSystem::get().createBounderFromMesh(*bunny.getSpatial(), 1, *bunnyMesh, false, true, false)));
-    DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
-        RenderSystem::get().getShader<DiffuseShader>()->pid,
-        *bunnyMesh,
-        ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
-    bunny.addComponent(bunnyDiffuse);
-    /* Bunny ImGui panes */
-    ImGuiComponent & bIc = scene.createComponent<ImGuiComponent>(
-        "Bunny", 
-        [&]() {
-            /* Material properties */
-            ImGui::SliderFloat("Ambient", &bunnyDiffuse.modelTexture.material.ambient, 0.f, 1.f);
-            ImGui::SliderFloat("Red", &bunnyDiffuse.modelTexture.material.diffuse.r, 0.f, 1.f);
-            ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
-            ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
-            /* Spatial properties */
-            // dont want to be setting spat props unnecessarily
-            glm::vec3 scale = bunny.getSpatial()->scale();
-            if (ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f)) {
-                bunny.getSpatial()->setScale(scale);
-            }
-            glm::vec3 position = bunny.getSpatial()->position();
+    for (int i(0); i < 15; ++i) {
+        GameObject & bunny(scene.createGameObject());
+        SpatialComponent & bunnySpatComp(scene.createComponent<SpatialComponent>(
+            glm::vec3(-10.0f, 5.0, i), // position
+            glm::vec3(0.25f, 0.25f, 0.25f), // scale
+            glm::mat3() // rotation
+        ));
+        bunny.addComponent(bunnySpatComp);
+        bunny.addComponent(Scene::get().addComponent<BounderComponent>(CollisionSystem::get().createBounderFromMesh(*bunny.getSpatial(), 1, *bunnyMesh, false, true, false)));
+        DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
+            RenderSystem::get().getShader<DiffuseShader>()->pid,
+            *bunnyMesh,
+            ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
+        bunny.addComponent(bunnyDiffuse);
+        /* Bunny ImGui panes */
+        /*ImGuiComponent & bIc = scene.createComponent<ImGuiComponent>(
+            "Bunny", 
+            [&]() {
+                // Material properties
+                ImGui::SliderFloat("Ambient", &bunnyDiffuse.modelTexture.material.ambient, 0.f, 1.f);
+                ImGui::SliderFloat("Red", &bunnyDiffuse.modelTexture.material.diffuse.r, 0.f, 1.f);
+                ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
+                ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
+                // Spatial properties
+                // dont want to be setting spat props unnecessarily
+                glm::vec3 scale = bunny.getSpatial()->scale();
+                if (ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f)) {
+                    bunny.getSpatial()->setScale(scale);
+                }
+                glm::vec3 position = bunny.getSpatial()->position();
 
-            if (ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f)) {
-                bunny.getSpatial()->setPosition(position);
-            }
-            static glm::vec3 axis; static float angle(0.0f);
-            if (
-                ImGui::SliderFloat3("Rotation Axis", glm::value_ptr(axis), 0.0f, 1.0f) ||
-                ImGui::SliderFloat("Rotation Angle", &angle, -glm::pi<float>(), glm::pi<float>()))
-            {
-                if (angle != 0.0f && axis != glm::vec3()) {
-                    bunny.getSpatial()->setOrientation(glm::rotate(angle, glm::normalize(axis)));
+                if (ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f)) {
+                    bunny.getSpatial()->setPosition(position);
                 }
-                else {
-                    bunny.getSpatial()->setOrientation(glm::mat3());
+                static glm::vec3 axis; static float angle(0.0f);
+                if (
+                    ImGui::SliderFloat3("Rotation Axis", glm::value_ptr(axis), 0.0f, 1.0f) ||
+                    ImGui::SliderFloat("Rotation Angle", &angle, -glm::pi<float>(), glm::pi<float>()))
+                {
+                    if (angle != 0.0f && axis != glm::vec3()) {
+                        bunny.getSpatial()->setOrientation(glm::rotate(angle, glm::normalize(axis)));
+                    }
+                    else {
+                        bunny.getSpatial()->setOrientation(glm::mat3());
+                    }
                 }
             }
-        }
-    );
-    bunny.addComponent(bIc);
-    bunny.addComponent(scene.createComponent<PathfindingComponent>(player, 1.0f));
+        );*/
+        //bunny.addComponent(bIc);
+        bunny.addComponent(scene.createComponent<PathfindingComponent>(player, 3.0f));
+    }
 
     /* Game stats pane */
     scene.createComponent<ImGuiComponent>(
