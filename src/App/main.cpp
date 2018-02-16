@@ -164,17 +164,20 @@ int main(int argc, char **argv) {
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
         if (msg.key == GLFW_KEY_TAB && msg.action == GLFW_PRESS && msg.mods & GLFW_MOD_CONTROL) {
             if (free) {
+                // disable camera controller
                 camContComp.setEnabled(false);
+                // enable player controller
                 playerContComp.setEnabled(true);
                 RenderSystem::get().setCamera(&playerCamComp);
             }
             else {
                 // disable player controller
-                // enable camera object
-                // set camber object camera to player camera
                 playerContComp.setEnabled(false);
+                // enable camera object
                 camContComp.setEnabled(true);
+                // set camera object camera to player camera
                 camSpatComp.setPosition(playerSpatComp.position());
+                camSpatComp.setUVW(playerSpatComp.u(), playerSpatComp.v(), playerSpatComp.w());
                 camCamComp.lookInDir(playerCamComp.getLookDir());
                 RenderSystem::get().setCamera(&camCamComp);
             }
@@ -238,10 +241,10 @@ int main(int argc, char **argv) {
                 ImGui::SliderFloat("Rotation Angle", &angle, -glm::pi<float>(), glm::pi<float>()))
             {
                 if (angle != 0.0f && axis != glm::vec3()) {
-                    bunny.getSpatial()->setRotation(glm::rotate(angle, glm::normalize(axis)));
+                    bunny.getSpatial()->setOrientation(glm::rotate(angle, glm::normalize(axis)));
                 }
                 else {
-                    bunny.getSpatial()->setRotation(glm::mat3());
+                    bunny.getSpatial()->setOrientation(glm::mat3());
                 }
             }
         }

@@ -23,7 +23,12 @@ void CameraControllerComponent::update(float dt) {
     }
 
     if (Mouse::dx || Mouse::dy) {
-        m_camera.angle(float(Mouse::dx) * m_lookSpeed * dt, -float(Mouse::dy) * m_lookSpeed * dt, true);
+        // orient camera relative to base
+        m_camera.angle(-float(Mouse::dx) * m_lookSpeed * dt, float(Mouse::dy) * m_lookSpeed * dt, true);
+        // set camera base to same orientation
+        m_spatial.setUVW(m_camera.u(), m_camera.v(), m_camera.w(), true);
+        // reset camera to face forward. in absolute space, this puts it back to where it was before the last line
+        m_camera.angle(0.0f, glm::pi<float>() * 0.5f, false, true);
     }
 
     int forward(Keyboard::isKeyPressed(GLFW_KEY_W));
@@ -38,12 +43,12 @@ void CameraControllerComponent::update(float dt) {
         float(up - down),
         float(backward - forward)
     );
-    if (dir != glm::vec3())
+    if (dir != glm::vec3()) {
         dir = glm::normalize(dir);
-
-    glm::vec2 xzDir(dir.x, dir.z);
-    dir = m_spatial.u() * xzDir.x + glm::vec3(0.0f, 1.0f, 0.0f) * dir.y +  m_spatial.w() * xzDir.y; // WoW controls
-    m_spatial.move(dir * m_moveSpeed * dt);
+        glm::vec2 xzDir(dir.x, dir.z);
+        dir = m_spatial.u() * xzDir.x + glm::vec3(0.0f, 1.0f, 0.0f) * dir.y +  m_spatial.w() * xzDir.y; // WoW controls
+        m_spatial.move(dir * m_moveSpeed * dt);
+    }
 }
 
 void CameraControllerComponent::setEnabled(bool enabled) {

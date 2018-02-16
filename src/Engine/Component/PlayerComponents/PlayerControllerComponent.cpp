@@ -21,7 +21,12 @@ void PlayerControllerComponent::update(float dt) {
     }
 
     if (Mouse::dx || Mouse::dy) {
-        m_camera.angle(float(Mouse::dx) * m_lookSpeed * dt, -float(Mouse::dy) * m_lookSpeed * dt, true);
+        // angle head
+        m_camera.angle(-float(Mouse::dx) * m_lookSpeed * dt, float(Mouse::dy) * m_lookSpeed * dt, true);
+        // set body to that angle. this also angles head more
+        m_spatial.setUVW(m_camera.u(), glm::vec3(0.0f, 1.0f, 0.0f), glm::cross(m_camera.u(), glm::vec3(0.0f, 1.0f, 0.0f)), true);
+        // reset head to face forward. in absolute space, this puts it back to where it was before the last line
+        m_camera.angle(0.0f, m_camera.phi(), false, true);
     }
 
     int forward(Keyboard::isKeyPressed(GLFW_KEY_W));
@@ -33,11 +38,11 @@ void PlayerControllerComponent::update(float dt) {
         float(right - left),
         float(backward - forward)
     );
-    if (xzDir != glm::vec2())
+    if (xzDir != glm::vec2()) {
         xzDir = glm::normalize(xzDir);
-
-    glm::vec3 dir = xzDir.x * m_spatial.u() + xzDir.y * m_spatial.w();
-    m_spatial.move(dir * m_moveSpeed * dt);
+        glm::vec3 dir = xzDir.x * m_spatial.u() + xzDir.y * m_spatial.w();
+        m_spatial.move(dir * m_moveSpeed * dt);
+    }
 
     if(Keyboard::isKeyPressed(GLFW_KEY_SPACE)) {
         

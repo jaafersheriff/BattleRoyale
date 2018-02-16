@@ -1,17 +1,29 @@
-/* Basic free-floating camera class */
 #pragma once
+
+
+
 #ifndef _CAMERA_COMPONENT_HPP_
 #define _CAMERA_COMPONENT_HPP_
+
+
 
 #include "glm/glm.hpp"
 
 #include "Util/Geometry.hpp"
 #include "Component/Component.hpp"
+#include "Component/SpatialComponents/Orientable.hpp"
+
+
 
 class GameLogicSystem;
 class SpatialComponent;
 
-class CameraComponent : public Component {
+
+
+// Camera is relative to a base, usually the player.
+// Both the camera and the base have an orientation. The camera's angles are
+// relative to the base. The camera's uvw vectors are absolute.
+class CameraComponent : public Component, public Orientable {
 
     friend Scene;
 
@@ -36,16 +48,14 @@ class CameraComponent : public Component {
         void lookInDir(const glm::vec3 & dir);
 
         // sets the camera angle
-        // +yaw is radians right, -yaw is radians left
-        // +pitch is radians up, -pitch is radians down
+        // +theta is radians left, -theta is radians left
+        // +phi is radians down, -pitch is radians up
         // if relative is true, these angles are applied as deltas to the
         // current orientation. if relative is false, these angles are absolute
-        // from the +x axis as forward
-        void angle(float yaw, float pitch, bool relative);
+        // from the orientation of the base
+        void angle(float theta, float phi, bool relative, bool silently = true);
 
         void setFOV(float fov);
-
-        void setNearFar(float near, float far);
 
         const bool sphereInFrustum(const Sphere & sphere) const;
         float theta() const { return m_theta; }
@@ -59,7 +69,7 @@ class CameraComponent : public Component {
 
     private:
 
-        void setUVW();
+        void detUVW();
 
         void detAngles();
 
@@ -70,10 +80,8 @@ class CameraComponent : public Component {
     private:
 
         SpatialComponent & m_spatial;
-        /* Describes the rotation of the camera */
-        float m_theta, m_phi;
-        /* field of view, near plane, and far plane */
-        float m_fov;
+        float m_theta, m_phi; // rotation of camera relative to base
+        float m_fov; // field of view
 
         // DONT USE THESE DIRECTLY, CALL GETVIEW OR GETPROJ
         mutable glm::mat4 m_viewMat;

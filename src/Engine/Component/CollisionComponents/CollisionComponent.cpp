@@ -23,7 +23,7 @@ AABBounderComponent::AABBounderComponent(SpatialComponent & spatial, unsigned in
 
 void AABBounderComponent::update(float dt) {
     // no rotation
-    if (m_spatial.rotationMatrix() == glm::mat3()) {
+    if (m_spatial.orientationMatrix() == glm::mat3()) {
         m_transBox.min = m_box.min * m_spatial.scale() + m_spatial.position();
         m_transBox.max = m_box.max * m_spatial.scale() + m_spatial.position();
     }

@@ -12,6 +12,8 @@
 
 
 CameraComponent::CameraComponent(SpatialComponent & spatial, float fov) :
+    Component(),
+    Orientable(spatial.u(), spatial.v(), spatial.w()),
     m_spatial(spatial),
     m_theta(0.0f),
     m_phi(glm::pi<float>() * 0.5f),
@@ -29,13 +31,13 @@ void CameraComponent::init() {
     });
     auto spatRotationCallback([&](const Message & msg_) {
         m_viewMatValid = false;
-        detAngles();
+        detUVW();
     });
     Scene::get().addReceiver<SpatialPositionSetMessage>(getGameObject(), spatTransformCallback);
     Scene::get().addReceiver<SpatialMovedMessage>(getGameObject(), spatTransformCallback);
     Scene::get().addReceiver<SpatialScaleSetMessage>(getGameObject(), spatTransformCallback);
     Scene::get().addReceiver<SpatialScaledMessage>(getGameObject(), spatTransformCallback);
-    Scene::get().addReceiver<SpatialRotationSetMessage>(getGameObject(), spatRotationCallback);
+    Scene::get().addReceiver<SpatialOrientationSetMessage>(getGameObject(), spatRotationCallback);
     Scene::get().addReceiver<SpatialRotatedMessage>(getGameObject(), spatRotationCallback);
 
     auto windowSizeCallback([&] (const Message & msg_) {
@@ -60,31 +62,34 @@ void CameraComponent::lookAt(const glm::vec3 & p) {
 }
 
 void CameraComponent::lookInDir(const glm::vec3 & dir) {
-    glm::vec3 spherical(Util::cartesianToSpherical(glm::vec3(-dir.z, -dir.x, dir.y)));
+    glm::vec3 relativeDir = Util::mapTo(m_spatial.u(), m_spatial.v(), m_spatial.w()) * dir;
+    glm::vec3 spherical(Util::cartesianToSpherical(glm::vec3(-relativeDir.z, -relativeDir.x, relativeDir.y)));
     m_theta = spherical.y;
     m_phi = spherical.z;
-    setUVW();
+    detUVW();
     m_viewMatValid = false;
     m_frustumValid = false;
 }
 
-void CameraComponent::angle(float yaw, float pitch, bool relative) {
+void CameraComponent::angle(float theta, float phi, bool relative, bool silently) {
     if (relative) {
-        m_theta -= yaw;
-        m_phi -= pitch;
+        m_theta += theta;
+        m_phi += phi;
     }
     else {
-        m_theta = -yaw;
-        m_phi = glm::pi<float>() * 0.5f - pitch;
+        m_theta = theta;
+        m_phi = phi;
     }
-    if      (m_theta > glm::pi<float>()) m_theta -= glm::pi<float>() * 2.0f;
-    else if (m_theta < -glm::pi<float>()) m_theta += glm::pi<float>() * 2.0f;
+    if      (m_theta >  glm::pi<float>()) m_theta = std::fmod(m_theta, glm::pi<float>()) - glm::pi<float>();
+    else if (m_theta < -glm::pi<float>()) m_theta = glm::pi<float>() - std::fmod(-m_theta, glm::pi<float>());
     if (m_phi < 0.0f) m_phi = 0.0f;
     if (m_phi > glm::pi<float>()) m_phi = glm::pi<float>();
 
-    setUVW();
+    detUVW();
     m_viewMatValid = false;
     m_frustumValid = false;
+
+    if (!silently) Scene::get().sendMessage<CameraRotatedMessage>(m_gameObject, *this);
 }
 
 void CameraComponent::setFOV(float fov) {
@@ -94,7 +99,7 @@ void CameraComponent::setFOV(float fov) {
 }
 
 glm::vec3 CameraComponent::getLookDir() const {
-    return m_spatial.w();
+    return -w();
 }
 
 namespace {
@@ -128,29 +133,20 @@ const glm::mat4 & CameraComponent::getProj() const {
     return m_projMat;
 }
 
-void CameraComponent::setUVW() {
+void CameraComponent::detUVW() {
     glm::vec3 w(-Util::sphericalToCartesian(1.0f, m_theta, m_phi));
     w = glm::vec3(-w.y, w.z, -w.x); // one of the many reasons I like z to be up
     glm::vec3 v(Util::sphericalToCartesian(1.0f, m_theta, m_phi - glm::pi<float>() * 0.5f));
     v = glm::vec3(-v.y, v.z, -v.x);
     glm::vec3 u(glm::cross(v, w));
-    m_spatial.setUVW(u, v, w, true);
-}
 
-void CameraComponent::detAngles() {
-    glm::vec3 forward(-m_spatial.w());
-    glm::vec3 xyz(-forward.z, -forward.x, forward.y);
-    if (xyz.x == 0 && xyz.y == 0) {// straight up or straight down
-        xyz.x = -glm::sign(xyz.z) *  m_spatial.v().x;
-        xyz.y = -glm::sign(xyz.z) * -m_spatial.v().z;
-    }
-    glm::vec3 spherical(Util::cartesianToSpherical(xyz));
-    m_theta = spherical.y;
-    m_phi = spherical.z;
+    // adjust relative to orientation of base
+    const glm::mat3 & orient(m_spatial.orientationMatrix());
+    setUVW(orient * u, orient * v, orient * w);
 }
 
 void CameraComponent::detView() const {
-    m_viewMat = Util::viewMatrix(m_spatial.position(), m_spatial.u(), m_spatial.v(), m_spatial.w());
+    m_viewMat = Util::viewMatrix(m_spatial.position(), u(), v(), w());
     m_viewMatValid = true;
 }
 

@@ -4,13 +4,15 @@
 
 #include "glm/glm.hpp"
 
+#include "Orientable.hpp"
+
 
 
 class SpatialSystem;
 
 
 
-class SpatialComponent : public Component {
+class SpatialComponent : public Component, public Orientable {
 
     friend Scene;
     friend SpatialSystem;
@@ -19,15 +21,17 @@ class SpatialComponent : public Component {
 
     SpatialComponent();
     SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale);
-    SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & rotation);
+    SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & orientation);
 
     public:
 
     virtual SystemID systemID() const override { return SystemID::spatial; };
 
-    virtual void update(float dt) override;
-
     public:
+
+    virtual void init() override;
+
+    virtual void update(float dt) override;
 
     // sets the absolute position
     void setPosition(const glm::vec3 & pos, bool silently = false);
@@ -42,7 +46,7 @@ class SpatialComponent : public Component {
     void scale(const glm::vec3 & factor, bool silently = false);
 
     // sets the absolute rotation
-    void setRotation(const glm::mat3 & rot, bool silently = false);
+    void setOrientation(const glm::mat3 & rot, bool silently = false);
     
     // rotates current rotation by mat
     void rotate(const glm::mat3 & mat, bool silently = false);
@@ -54,17 +58,12 @@ class SpatialComponent : public Component {
 
     const glm::vec3 & position() const { return m_position; }
     const glm::vec3 & scale() const { return m_scale; }
-    const glm::vec3 & u() const { return m_u; }
-    const glm::vec3 & v() const { return m_v; }
-    const glm::vec3 & w() const { return m_w; }
 
-    const glm::mat3 & rotationMatrix() const;
     const glm::mat4 & modelMatrix() const;
     const glm::mat3 & normalMatrix() const;
 
     private:
 
-    void detRotationMatrix() const;
     void detModelMatrix() const;
     void detNormalMatrix() const;
 
@@ -72,12 +71,9 @@ class SpatialComponent : public Component {
 
     glm::vec3 m_position;
     glm::vec3 m_scale;
-    glm::vec3 m_u, m_v, m_w; // orthonormal basis vectors
 
-    mutable glm::mat3 m_rotationMatrix;
     mutable glm::mat4 m_modelMatrix;
     mutable glm::mat3 m_normalMatrix;
-    mutable bool m_rotationMatrixValid;
     mutable bool m_modelMatrixValid;
     mutable bool m_normalMatrixValid;
 

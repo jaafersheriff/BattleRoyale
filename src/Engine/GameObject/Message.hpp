@@ -6,8 +6,8 @@
 
 
 #include "glm/glm.hpp"
-// This file shouldn't contain any functionality, and it will be included all
-// over the place. Forward declare, don't include (if possible).
+// Don't add includes. If possible, forward declard. This file shouldn't contain
+// any functionality, and it will be included all over the place.
 
 
 
@@ -59,6 +59,7 @@
 class GameObject;
 class SpatialComponent;
 class BounderComponent;
+class CameraComponent;
 
 
 
@@ -95,13 +96,21 @@ struct SpatialScaledMessage :  public SpatialTransformTag {
 };
 
 // a spatial's rotation was set
-struct SpatialRotationSetMessage :  public SpatialTransformTag {
-    SpatialRotationSetMessage(const SpatialComponent & spatial) : SpatialTransformTag(spatial) {}
+struct SpatialOrientationSetMessage :  public SpatialTransformTag {
+    SpatialOrientationSetMessage(const SpatialComponent & spatial) : SpatialTransformTag(spatial) {}
 };
 
 // a spatial was rotated
 struct SpatialRotatedMessage :  public SpatialTransformTag {
     SpatialRotatedMessage(const SpatialComponent & spatial) : SpatialTransformTag(spatial) {}
+};
+
+
+
+// a camera was rotated
+struct CameraRotatedMessage : public Message {
+    const CameraComponent & camera;
+    CameraRotatedMessage(const CameraComponent & camera) : camera(camera) {}
 };
 
 

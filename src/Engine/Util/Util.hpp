@@ -114,6 +114,10 @@ struct Util {
         return glm::mat3(x, y, z);
     }
 
+    static std::string toString(const glm::vec3 & v) {
+        return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ")";
+    }
+
 };
 
 #endif

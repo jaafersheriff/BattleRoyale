@@ -166,7 +166,7 @@ void CollisionSystem::init() {
     Scene::get().addReceiver<SpatialMovedMessage>(nullptr, spatTransformCallback);
     Scene::get().addReceiver<SpatialScaleSetMessage>(nullptr, spatTransformCallback);
     Scene::get().addReceiver<SpatialScaledMessage>(nullptr, spatTransformCallback);
-    Scene::get().addReceiver<SpatialRotationSetMessage>(nullptr, spatTransformCallback);
+    Scene::get().addReceiver<SpatialOrientationSetMessage>(nullptr, spatTransformCallback);
     Scene::get().addReceiver<SpatialRotatedMessage>(nullptr, spatTransformCallback);
 }
 
