@@ -132,7 +132,7 @@ void CameraComponent::detUVW() {
 
 void CameraComponent::detView() const {
     const glm::vec3 & pos(gameObject->getSpatial()->position());
-    m_viewMat = glm::lookAt(pos, pos - m_w, glm::vec3(0.0f, 1.0f, 0.0f));
+    m_viewMat = Util::viewMatrix(pos, m_u, m_v, m_w);
     m_viewMatValid = true;
 
 }

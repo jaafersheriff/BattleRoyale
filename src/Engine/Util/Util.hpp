@@ -93,6 +93,17 @@ struct Util {
         );
     }
 
+    // calculated a view matrix based on camera u v w vectors, which must be orthonormal
+    static glm::mat4 viewMatrix(const glm::vec3 & camPos, const glm::vec3 & camU, const glm::vec3 & camV, const glm::vec3 & camW) {
+        glm::vec3 trans(-camPos);
+        return glm::mat4(
+                           camU.x,                camV.x,                camW.x, 0.0f,
+                           camU.y,                camV.y,                camW.y, 0.0f,
+                           camU.z,                camV.z,                camW.z, 0.0f,
+            glm::dot(camU, trans), glm::dot(camV, trans), glm::dot(camW, trans), 1.0f
+        );
+    }
+
 };
 
 #endif
