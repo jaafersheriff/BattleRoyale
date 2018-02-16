@@ -10,4 +10,3 @@ SoundComponent::SoundComponent(FMOD::System *m_system) :
 {
 }
 #endif
-}

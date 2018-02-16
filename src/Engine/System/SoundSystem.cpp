@@ -6,7 +6,7 @@ SoundSystem::SoundSystem(const std::vector<Component *> & components) :
 #ifdef HAVE_FMOD_LIBRARY
 	FMOD_RESULT result;
 
-	result = FMOD::System_Create(&m_system); // Create the Studio System object.
+	result = FMOD::System_Create(&m_system);
 	if (result != FMOD_OK)
 	{
 		printf("failed to create system");
@@ -43,6 +43,7 @@ FMOD::Sound* SoundSystem::createSound(std::string soundfilename)
 	return sound;
 }
 
+//play sound from resources/soundeffects by index
 void SoundSystem::playSound(int sid) {
 	FMOD::Sound *sound = createSound(soundfiles[sid]);
 	FMOD_RESULT result = m_system->playSound(sound, NULL, false, NULL);
@@ -51,10 +52,3 @@ void SoundSystem::playSound(int sid) {
 	}
 }
 #endif
-
-void SoundSystem::setupSoundComponent(SoundComponent *sc)
-{
-#ifdef HAVE_FMOD_LIBRARY
-	sc->sounds.emplace_back(createSound("drill.wav"));
-#endif
-}
