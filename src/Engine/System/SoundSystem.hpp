@@ -1,21 +1,46 @@
 #pragma once
-#define HAVE_FMOD_LIBRARY true
+#ifndef _SOUND_SYSTEM_HPP_
+#define _SOUND_SYSTEM_HPP_
+
+#define HAVE_FMOD_LIBRARY false
 #include "System.hpp"
+#include "Component/SoundComponents/SoundComponent.hpp"
 
 #ifdef HAVE_FMOD_LIBRARY 
+#include "fmod.hpp"
 #include "fmod_studio.hpp"
 #endif
 
+class SoundComponent;
+
 class SoundSystem : public System {
-public:
-#ifdef HAVE_FMOD_LIBRARY
-	FMOD::Studio::System *system = NULL;
-#endif
 
-private:
+	friend Scene;
+	/* Attributes */
+	public:
+		std::vector<std::string> soundfiles = {
+			"drill.wav",
+			"doorbump.wav",
+			"softbump.wav"
+		};
+	#ifdef HAVE_FMOD_LIBRARY
+		FMOD::System *m_system = NULL;
+	#endif
 
-public:
-	SoundSystem(const std::vector<Component *> & comps);
+	private:
+		std::string SOUND_DIR;
 
-	virtual void update(float dt) override;
+	/* Constructor */
+	public:
+		SoundSystem(const std::vector<Component *> & components);
+	
+	private:
+		/* Functions */
+		void update(float dt);
+		void setupSoundComponent(SoundComponent *c);
+	#ifdef HAVE_FMOD_LIBRARY
+		FMOD::Sound* createSound(std::string soundfilename);
+		void playSound(int sid);
+	#endif
 };
+#endif

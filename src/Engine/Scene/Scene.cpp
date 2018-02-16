@@ -3,11 +3,12 @@
 #include <algorithm>
 
 Scene::Scene() :
-    m_gameLogicSystem(),
-    m_renderSystem(),
-    m_spatialSystem(),
-    m_collisionSystem(),
-    m_pathfindingSystem(),
+	m_gameLogicSystem(),
+	m_renderSystem(),
+	m_spatialSystem(),
+	m_collisionSystem(),
+	m_pathfindingSystem(),
+	m_soundSystem(),
     m_gameObjectsStore(),
     m_gameObjectRefs(),
     m_componentsStore(),
