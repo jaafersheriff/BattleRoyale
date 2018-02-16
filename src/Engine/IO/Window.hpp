@@ -45,12 +45,17 @@ class Window {
         static glm::ivec2 getSize();
         static float getAspectRatio();
 
+        static void toggleVSync();
+        static bool isVSyncEnabled() { return vSyncEnabled; }
+
         /* ImGui */
         static void toggleImGui() { imGuiEnabled = !imGuiEnabled; }
         static bool isImGuiEnabled() { return imGuiEnabled; }
 
     private:
     
+        static bool vSyncEnabled;
+
         /* ImGui */
         static bool imGuiEnabled;
         static float imGuiTimer;

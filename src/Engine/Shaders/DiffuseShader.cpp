@@ -39,6 +39,8 @@ bool DiffuseShader::init() {
 }
 
 void DiffuseShader::render(const std::vector<Component *> & components) {
+    static std::vector<Component *> s_compsToRender;
+
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
@@ -48,17 +50,11 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
 
-    for (auto cp : components) {
-        // TODO : component list should be passed in as diffuserendercomponent
-        DiffuseRenderComponent *drc;
-        if (!(drc = dynamic_cast<DiffuseRenderComponent *>(cp)) || drc->pid != this->pid) {
-            continue;
-        }
-
-        /* Determine if component should be culled */
-        /* Only doing frustum culling if object has bounder(s) */
-        /* Get the center and radius of the component */
-        /*const std::vector<Component *> & bounders(drc->getGameObject()->getComponentsBySystem(SystemID::collision));
+    /* Determine if component should be culled */
+    /* Only doing frustum culling if object has bounder(s) */
+    /* Get the center and radius of the component */
+    for (Component * comp : components) {
+        const std::vector<Component *> & bounders(comp->getGameObject()->getComponentsBySystem(SystemID::collision));
         if (bounders.size()) {
             bool inFrustum(false);
             for (Component * bounder_ : bounders) {
@@ -68,10 +64,21 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
                     break;
                 }
             }
-            if (!inFrustum) {
-                continue;
+            if (inFrustum) {
+                s_compsToRender.push_back(comp);
             }
-        }*/
+        }
+        else {
+            s_compsToRender.push_back(comp);
+        }
+    }
+
+    for (Component * cp : s_compsToRender) {
+        // TODO : component list should be passed in as diffuserendercomponent
+        DiffuseRenderComponent *drc;
+        if (!(drc = dynamic_cast<DiffuseRenderComponent *>(cp)) || drc->pid != this->pid) {
+            continue;
+        }
 
         /* Model matrix */
         loadMat4(getUniform("M"), drc->getGameObject()->getSpatial()->modelMatrix());
@@ -147,5 +154,7 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
 
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    }
+    }    
+
+    s_compsToRender.clear();
 }

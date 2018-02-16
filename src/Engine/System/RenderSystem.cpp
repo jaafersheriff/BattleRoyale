@@ -16,7 +16,7 @@ void RenderSystem::init() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void RenderSystem::update(float dt) {
+void RenderSystem::update(float dt) {\
     /* Reset rendering display */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
@@ -33,6 +33,7 @@ void RenderSystem::update(float dt) {
         // to this shader -- right now we are passing the entire    //
         // list and expecting each shader to filter through         //
         //////////////////////////////////////////////////////////////
+
         shader.second->render(m_componentRefs);
         shader.second->unbind();
     }

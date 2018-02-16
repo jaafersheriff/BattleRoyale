@@ -17,7 +17,12 @@
 // A message can be sent from anywhere using Scene's sendMessage method, which
 // looks like...
 //
-//     Scene::get().sendMessage<MessageType>(message args);
+//     Scene::get().sendMessage<MessageType>([nullptr | gameobject], message args);
+//
+// This message is sent out to all receivers of the specified message type. If
+// gameobject is not null, the message is ALSO sent to any receiver of that
+// game object and message type. This is for efficient inter-component
+// communication.
 //
 // The scene keeps a list of messages, and what type they were, until it's time
 // to relay the messages. This happens before and after every system update.
@@ -25,12 +30,17 @@
 // type. A receiver is a std::function<void (const Message &)> . To add a
 // receiver, do...
 //
-//     Scene::get().addReceiver<MessageType>(receiver);
+//     Scene::get().addReceiver<MessageType>([nullptr | gameobject], receiver);
 //
-// You can pass either a function pointer or a lambda. Note, you can technically
-// bind a method to a std::function, but it's ugly. For adding receivers from
-// objects that can reference that object, I reccommend using a lambda, like
-// so...
+// Here, if gameobject is null, the receiver will receive all messages of the
+// specified type. If gameobject is not null, the receiver will only receive
+// messages of the specified type that have been sent to that object. This is
+// how you do efficient inter-component communication.
+//
+// For receiver, can pass either a function pointer or a lambda. Note, you can
+// technically bind a method to a std::function, but it's ugly. For adding
+// receivers from objects that can reference that object, I reccommend using a
+// lambda, like so...
 //    
 //    auto receiver = [&](const Message & msg_) {
 //        const MessageIWantType & msg(static_cast<const MessageIWantType &>(msg_));
@@ -42,11 +52,6 @@
 // different types but sharing the same data to be accessed. For an example of
 // this, take a look in CollisionSystem's init method. Tags must not be used as
 // message types in sendMessage or addReceiver! They are only helpers.
-//
-// This form of messaging excells when the recipient wants messages from all
-// objects, which is usually the case in systems and "higher level" structures.
-// On the other hand, for components, this form of messaging may be inefficient.
-// Game object local inter-component communication is a TODO.
 //------------------------------------------------------------------------------
 
 

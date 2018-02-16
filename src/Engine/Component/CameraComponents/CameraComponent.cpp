@@ -102,14 +102,14 @@ float distToPlane(const glm::vec4 & plane, const glm::vec3 & p) {
 const bool CameraComponent::sphereInFrustum(const Sphere & sphere) const {
     if (!m_frustumValid) detFrustum();
 
-    if (distToPlane(m_frustumLeft,   sphere.origin) < sphere.radius) return true;
-    if (distToPlane(m_frustumRight,  sphere.origin) < sphere.radius) return true;
-    if (distToPlane(m_frustumBottom, sphere.origin) < sphere.radius) return true;
-    if (distToPlane(m_frustumTop,    sphere.origin) < sphere.radius) return true;
-    if (distToPlane(m_frustumNear,   sphere.origin) < sphere.radius) return true;
-    if (distToPlane(m_frustumFar,    sphere.origin) < sphere.radius) return true;
+    if (distToPlane(m_frustumLeft,   sphere.origin) < -sphere.radius) return false;
+    if (distToPlane(m_frustumRight,  sphere.origin) < -sphere.radius) return false;
+    if (distToPlane(m_frustumBottom, sphere.origin) < -sphere.radius) return false;
+    if (distToPlane(m_frustumTop,    sphere.origin) < -sphere.radius) return false;
+    if (distToPlane(m_frustumNear,   sphere.origin) < -sphere.radius) return false;
+    if (distToPlane(m_frustumFar,    sphere.origin) < -sphere.radius) return false;
 
-    return false;
+    return true;
 }
 
 const glm::mat4 & CameraComponent::getView() const {

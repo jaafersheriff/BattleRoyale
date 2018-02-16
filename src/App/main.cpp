@@ -82,6 +82,16 @@ int main(int argc, char **argv) {
 
     camera.addComponent(scene.createComponent<SphereBounderComponent>(1, Sphere(glm::vec3(0, 0, 0), 4)));
 
+    /* VSync ImGui Pane */
+    scene.createComponent<ImGuiComponent>(
+        "VSync",
+        [&]() {
+            if (ImGui::Button("VSync")) {
+                Window::toggleVSync();
+            }
+        }
+    );
+
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
@@ -143,7 +153,7 @@ int main(int argc, char **argv) {
         glm::vec3(1.0f, 1.0f, 1.0f), // scale
         glm::mat3() // rotation
     ));
-    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(1, *bunnyMesh, true, true, true)));
+    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(1, *bunnyMesh, false, true, false)));
     DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
         RenderSystem::get().getShader<DiffuseShader>()->pid,
         *bunnyMesh,

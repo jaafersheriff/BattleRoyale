@@ -8,6 +8,7 @@
 #include "Scene/Scene.hpp"
 
 GLFWwindow * Window::window = nullptr;
+bool Window::vSyncEnabled = true;
 bool Window::imGuiEnabled = false;
 float Window::imGuiTimer = 1.0;
 
@@ -100,7 +101,7 @@ int Window::init(std::string name) {
     glGetError();
 
     /* Vsync */
-    glfwSwapInterval(1);
+    glfwSwapInterval(vSyncEnabled);
 
     return 0;
 }
@@ -122,6 +123,11 @@ glm::ivec2 Window::getSize() {
 float Window::getAspectRatio() {
     glm::ivec2 size(getSize());
     return float(size.x) / float(size.y);
+}
+
+void Window::toggleVSync() {
+    vSyncEnabled = !vSyncEnabled;
+    glfwSwapInterval(vSyncEnabled);
 }
 
 void Window::update(float dt) {
