@@ -48,7 +48,7 @@ class CollisionSystem : public System {
 
     virtual void update(float dt) override;
 
-    Intersect pick(const Ray & ray) const;
+    std::pair<BounderComponent *, Intersect> pick(const Ray & ray) const;
 
     private:
     

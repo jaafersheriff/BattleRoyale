@@ -39,6 +39,7 @@ void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int
     }
     else {
         Mouse::setButtonStatus(button, action);
+        Scene::get().sendMessage<MouseMessage>(nullptr, button, action, mods);
     }
 }
 
@@ -52,6 +53,10 @@ void Window::framebufferSizeCallback(GLFWwindow * window, int width, int height)
     /* Set viewport to window size */
     glViewport(0, 0, width, height);
     Scene::get().sendMessage<WindowSizeMessage>(nullptr, width, height);
+}
+
+void Window::cursorEnterCallback(GLFWwindow * window, int entered) {
+    Mouse::reset();
 }
 
 int Window::init(std::string name) {
@@ -87,6 +92,7 @@ int Window::init(std::string name) {
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
     glfwSetCharCallback(window, characterCallback);
     glfwSetWindowSizeCallback(window, framebufferSizeCallback);
+    glfwSetCursorEnterCallback(window, cursorEnterCallback);
 
     /* Init GLEW */
     glewExperimental = GL_FALSE;

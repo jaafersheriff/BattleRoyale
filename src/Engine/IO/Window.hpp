@@ -69,6 +69,7 @@ class Window {
         static void mouseButtonCallback(GLFWwindow *, int, int, int);
         static void characterCallback(GLFWwindow *, unsigned int);
         static void framebufferSizeCallback(GLFWwindow *, int width, int height);
+        static void cursorEnterCallback(GLFWwindow * window, int entered);
 };
 
 #endif

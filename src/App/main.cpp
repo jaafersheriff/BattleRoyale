@@ -186,6 +186,17 @@ int main(int argc, char **argv) {
     });
     scene.addReceiver<KeyMessage>(nullptr, camSwitchCallback);
 
+    // Demo ray picking
+    auto rayPickCallback([&](const Message & msg_) {
+        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
+        if (msg.key == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
+            auto pair(CollisionSystem::get().pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir())));
+            if (pair.first && pair.first->weight() < UINT_MAX) {
+                pair.first->getGameObject()->getSpatial()->scale(glm::vec3(1.1f));
+            }
+        }
+    });
+
     /* VSync ImGui Pane */
     scene.createComponent<ImGuiComponent>(
         "VSync",

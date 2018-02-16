@@ -153,6 +153,12 @@ struct KeyMessage : public Message {
     KeyMessage(int key, int action, int mods) : key(key), action(action), mods(mods) {}
 };
 
+// mouse input
+struct MouseMessage : public Message {
+    int button, action, mods;
+    MouseMessage(int button, int action, int mods) : button(button), action(action), mods(mods) {}
+};
+
 
 
 #endif
