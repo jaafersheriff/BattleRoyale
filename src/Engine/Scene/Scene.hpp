@@ -12,8 +12,8 @@
 #include <typeinfo>
 #include <typeindex>
 
-#include "System/Systems.hpp"
 #include "GameObject/GameObject.hpp"
+#include "GameObject/Message.hpp"
 #include "Component/Components.hpp"
 
 

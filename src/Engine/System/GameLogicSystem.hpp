@@ -6,7 +6,8 @@
 
 #include "System.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
-#include "Component/CameraComponents/CameraController.hpp"
+#include "Component/CameraComponents/CameraControllerComponent.hpp"
+#include "Component/PlayerComponents/PlayerControllerComponent.hpp"
 #include "Component/ImGuiComponents/ImGuiComponent.hpp"
 
 
@@ -46,7 +47,8 @@ class GameLogicSystem : public System {
     private:
 
     std::vector<std::unique_ptr<CameraComponent>> m_cameraComponents;
-    std::vector<std::unique_ptr<CameraController>> m_cameraControllers;
+    std::vector<std::unique_ptr<CameraControllerComponent>> m_CameraControllerComponents;
+    std::vector<std::unique_ptr<PlayerControllerComponent>> m_playerControllers;
     std::vector<std::unique_ptr<ImGuiComponent>> m_imguiComponents;
 
 };

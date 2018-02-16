@@ -12,6 +12,8 @@ void PathfindingSystem::add(std::unique_ptr<Component> component) {
     m_componentRefs.push_back(component.get());
     if (dynamic_cast<PathfindingComponent *>(component.get()))
         m_pathfindingComponents.emplace_back(static_cast<PathfindingComponent *>(component.release()));
+    else
+        assert(false);
 }
 
 void PathfindingSystem::remove(Component * component) {

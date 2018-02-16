@@ -1,5 +1,7 @@
 #include "FileReader.hpp"
 
+#include "System/RenderSystem.hpp"
+
 int FileReader::loadLevel(const char & filePath, Scene & scene) {
     rapidjson::Document document;
     glm::vec3 position, scale;

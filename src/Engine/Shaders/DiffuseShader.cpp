@@ -6,10 +6,10 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/CollisionComponent.hpp"
 #include "System/CollisionSystem.hpp"
+#include "Component/CameraComponents/CameraComponent.hpp"
 
-DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam, const glm::vec3 & light) :
+DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & fragFile, const glm::vec3 & light) :
     Shader(vertFile, fragFile),
-    camera(&cam),
     lightPos(&light)
 {}
 
@@ -38,7 +38,7 @@ bool DiffuseShader::init() {
     return true;
 }
 
-void DiffuseShader::render(const std::vector<Component *> & components) {
+void DiffuseShader::render(const CameraComponent & camera, const std::vector<Component *> & components) {
     static std::vector<Component *> s_compsToRender;
 
     if (showWireFrame) {
@@ -46,8 +46,8 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
     }
 
     /* Bind uniforms */
-    loadMat4(getUniform("P"), camera->getProj());
-    loadMat4(getUniform("V"), camera->getView());
+    loadMat4(getUniform("P"), camera.getProj());
+    loadMat4(getUniform("V"), camera.getView());
     loadVec3(getUniform("lightPos"), *lightPos);
 
     /* Determine if component should be culled */
@@ -59,7 +59,7 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
             bool inFrustum(false);
             for (Component * bounder_ : bounders) {
                 BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
-                if (camera->sphereInFrustum(bounder->enclosingSphere())) {
+                if (camera.sphereInFrustum(bounder->enclosingSphere())) {
                     inFrustum = true;
                     break;
                 }

@@ -4,6 +4,8 @@
 
 #include "Component/CollisionComponents/CollisionComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Component/CameraComponents/CameraComponent.hpp"
+#include "System/CollisionSystem.hpp"
 
 namespace {
 
@@ -37,9 +39,8 @@ glm::mat4 detCapsuleRodMat(const CapsuleBounderComponent & bounder) {
 
 
 
-BounderShader::BounderShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam) :
+BounderShader::BounderShader(const std::string & vertFile, const std::string & fragFile) :
     Shader(vertFile, fragFile),
-    m_camera(&cam),
     
     m_aabVBO(0), m_aabIBO(0), m_aabVAO(0),
     m_sphereVBO(0), m_sphereIBO(0), m_sphereVAO(0),
@@ -69,9 +70,9 @@ bool BounderShader::init() {
     return true;
 }
 
-void BounderShader::render(const std::vector<Component *> & components_) {
-    loadMat4(getUniform("u_viewMat"), m_camera->getView());
-    loadMat4(getUniform("u_projMat"), m_camera->getProj());
+void BounderShader::render(const CameraComponent & camera, const std::vector<Component *> & components_) {
+    loadMat4(getUniform("u_viewMat"), camera.getView());
+    loadMat4(getUniform("u_projMat"), camera.getProj());
 
     for (auto & comp : CollisionSystem::get().components()) {
         BounderComponent & bounder(static_cast<BounderComponent &>(*comp));

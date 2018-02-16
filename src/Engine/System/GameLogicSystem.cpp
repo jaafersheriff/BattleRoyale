@@ -1,16 +1,15 @@
 #include "GameLogicSystem.hpp"
 
-#include "Component/CameraComponents/CameraComponent.hpp"
-#include "Component/CameraComponents/CameraController.hpp"
-#include "Component/ImGuiComponents/ImGuiComponent.hpp"
-
 
 
 void GameLogicSystem::update(float dt) {
     for (auto & comp : m_imguiComponents) {
         comp->update(dt);
     }
-    for (auto & comp : m_cameraControllers) {
+    for (auto & comp : m_playerControllers) {
+        comp->update(dt);
+    }
+    for (auto & comp : m_CameraControllerComponents) {
         comp->update(dt);
     }
     for (auto & comp : m_cameraComponents) {
@@ -22,10 +21,14 @@ void GameLogicSystem::add(std::unique_ptr<Component> component) {
     m_componentRefs.push_back(component.get());
     if (dynamic_cast<CameraComponent *>(component.get()))
         m_cameraComponents.emplace_back(static_cast<CameraComponent *>(component.release()));
-    else if (dynamic_cast<CameraController *>(component.get()))
-        m_cameraControllers.emplace_back(static_cast<CameraController *>(component.release()));
+    else if (dynamic_cast<CameraControllerComponent *>(component.get()))
+        m_CameraControllerComponents.emplace_back(static_cast<CameraControllerComponent *>(component.release()));
+    else if (dynamic_cast<PlayerControllerComponent *>(component.get()))
+        m_playerControllers.emplace_back(static_cast<PlayerControllerComponent *>(component.release()));
     else if (dynamic_cast<ImGuiComponent *>(component.get()))
         m_imguiComponents.emplace_back(static_cast<ImGuiComponent *>(component.release()));
+    else
+        assert(false);
 }
 
 void GameLogicSystem::remove(Component * component) {
@@ -37,10 +40,10 @@ void GameLogicSystem::remove(Component * component) {
             }
         }
     }
-    else if (dynamic_cast<CameraController *>(component)) {
-        for (auto it(m_cameraControllers.begin()); it != m_cameraControllers.end(); ++it) {
+    else if (dynamic_cast<CameraControllerComponent *>(component)) {
+        for (auto it(m_CameraControllerComponents.begin()); it != m_CameraControllerComponents.end(); ++it) {
             if (it->get() == component) {
-                m_cameraControllers.erase(it);
+                m_CameraControllerComponents.erase(it);
                 break;
             }
         }

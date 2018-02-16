@@ -244,6 +244,9 @@ void CollisionSystem::add(std::unique_ptr<Component> component) {
         m_bounderComponents.emplace_back(static_cast<BounderComponent *>(component.release()));
         m_bounderComponents.back()->update(0.0f);
     }
+    else {
+        assert(false);
+    }
 }
 
 void CollisionSystem::remove(Component * component) {

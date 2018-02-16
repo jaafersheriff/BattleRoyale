@@ -3,8 +3,11 @@
 
 
 #include "Shader.hpp"
-#include "Component/CameraComponents/CameraComponent.hpp"
-#include "System/CollisionSystem.hpp"
+
+
+
+class Component;
+class CameraComponent;
 
 
 
@@ -12,11 +15,11 @@ class BounderShader : public Shader {
 
     public:
 
-    BounderShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam);
+    BounderShader(const std::string & vertFile, const std::string & fragFile);
 
     bool init() override;
 
-    void render(const std::vector<Component *> &) override;
+    virtual void render(const CameraComponent & camera, const std::vector<Component *> &) override;
 
     private:
 
@@ -25,10 +28,7 @@ class BounderShader : public Shader {
     bool initCapMesh();
     bool initRodMesh();
 
-
-    private:    
-
-    const CameraComponent * m_camera;
+    private:
 
     unsigned int m_aabVBO, m_aabIBO, m_aabVAO;
     unsigned int m_sphereVBO, m_sphereIBO, m_sphereVAO;

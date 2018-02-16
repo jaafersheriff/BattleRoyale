@@ -6,16 +6,16 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "IO/Window.hpp"
 #include "Scene/Scene.hpp"
+#include "System/RenderSystem.hpp"
+#include "GameObject/Message.hpp"
 
 
 
-CameraComponent::CameraComponent(SpatialComponent & spatial, float fov, float near, float far) :
+CameraComponent::CameraComponent(SpatialComponent & spatial, float fov) :
     m_spatial(spatial),
     m_theta(0.0f),
     m_phi(glm::pi<float>() * 0.5f),
     m_fov(fov),
-    m_near(near),
-    m_far(far),
     m_viewMat(),
     m_projMat(),
     m_viewMatValid(false),
@@ -40,8 +40,15 @@ void CameraComponent::init() {
 
     auto windowSizeCallback([&] (const Message & msg_) {
         m_projMatValid = false;
+        m_frustumValid = false;
     });
     Scene::get().addReceiver<WindowSizeMessage>(nullptr, windowSizeCallback);
+
+    auto nearFarCallback([&] (const Message & msg_) {
+        m_projMatValid = false;
+        m_frustumValid = false;
+    });
+    Scene::get().addReceiver<NearFarMessage>(nullptr, nearFarCallback);
 }
 
 void CameraComponent::update(float dt) {
@@ -86,11 +93,8 @@ void CameraComponent::setFOV(float fov) {
     m_frustumValid = false;
 }
 
-void CameraComponent::setNearFar(float near, float far) {
-    m_near = near;
-    m_far = far;
-    m_projMatValid = false;
-    m_frustumValid = false;
+glm::vec3 CameraComponent::getLookDir() const {
+    return m_spatial.w();
 }
 
 namespace {
@@ -130,7 +134,7 @@ void CameraComponent::setUVW() {
     glm::vec3 v(Util::sphericalToCartesian(1.0f, m_theta, m_phi - glm::pi<float>() * 0.5f));
     v = glm::vec3(-v.y, v.z, -v.x);
     glm::vec3 u(glm::cross(v, w));
-    m_spatial.setUVW(u, v, w);
+    m_spatial.setUVW(u, v, w, true);
 }
 
 void CameraComponent::detAngles() {
@@ -151,7 +155,7 @@ void CameraComponent::detView() const {
 }
 
 void CameraComponent::detProj() const {
-    m_projMat = glm::perspective(m_fov, Window::getAspectRatio(), m_near, m_far);
+    m_projMat = glm::perspective(m_fov, Window::getAspectRatio(), RenderSystem::get().near(), RenderSystem::get().far());
     m_projMatValid = true;
 }
 

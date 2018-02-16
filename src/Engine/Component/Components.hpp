@@ -3,7 +3,7 @@
 #include "Component.hpp"
 
 #include "CameraComponents/CameraComponent.hpp"
-#include "CameraComponents/CameraController.hpp"
+#include "CameraComponents/CameraControllerComponent.hpp"
 
 #include "RenderComponents/DiffuseRenderComponent.hpp"
 
@@ -13,5 +13,6 @@
 
 #include "PathfindingComponents/PathfindingComponent.hpp"
 
-
 #include "ImGuiComponents/ImGuiComponent.hpp"
+
+#include "PlayerComponents/PlayerControllerComponent.hpp"

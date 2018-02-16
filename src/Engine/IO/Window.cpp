@@ -9,6 +9,7 @@
 
 GLFWwindow * Window::window = nullptr;
 bool Window::vSyncEnabled = true;
+bool Window::cursorEnabled = true;
 bool Window::imGuiEnabled = false;
 float Window::imGuiTimer = 1.0;
 
@@ -16,17 +17,18 @@ void Window::errorCallback(int error, const char *desc) {
     std::cerr << "Error " << error << ": " << desc << std::endl;
 }
 
-void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mode) {
+void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
 
     /* ImGui callback if it is active */
     if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
-        ImGui_ImplGlfwGL3_KeyCallback(window, key, scancode, action, mode);
+        ImGui_ImplGlfwGL3_KeyCallback(window, key, scancode, action, mods);
     }
     else {
         Keyboard::setKeyStatus(key, action);
+        Scene::get().sendMessage<KeyMessage>(nullptr, key, action, mods);
     }
 }
 
@@ -142,10 +144,22 @@ void Window::update(float dt) {
     Mouse::update(x, y);
 
     /* Update ImGui */
+    static bool imGuiActive = false;
+    static bool priorCursorState;
     imGuiTimer += dt;
     if (Keyboard::isKeyPressed(GLFW_KEY_GRAVE_ACCENT) && imGuiTimer >= 0.5) {
+        if (!imGuiActive) {
+            priorCursorState = cursorEnabled;
+            setCursorEnabled(true);
+        }
+
         toggleImGui();
         imGuiTimer = 0.0;
+        imGuiActive = !imGuiActive;
+
+        if (!imGuiActive) {
+            setCursorEnabled(priorCursorState);
+        }
     }
     ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
     
@@ -165,4 +179,9 @@ void Window::shutDown() {
     /* Clean up GLFW */
     glfwDestroyWindow(window);
     glfwTerminate();
+}
+
+void Window::setCursorEnabled(bool enabled) {
+    cursorEnabled = enabled;
+    glfwSetInputMode(window, GLFW_CURSOR, cursorEnabled ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
 }

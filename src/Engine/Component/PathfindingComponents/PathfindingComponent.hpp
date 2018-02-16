@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Component/Component.hpp"
-#include "../CameraComponents/CameraComponent.hpp"
 
 #include "glm/glm.hpp"
 #include <iostream>
@@ -16,7 +15,7 @@ class PathfindingComponent : public Component {
 
     using SystemClass = PathfindingSystem;
 
-    PathfindingComponent(CameraComponent & cc, float ms);
+    PathfindingComponent(GameObject & player, float ms);
 
     public:
 
@@ -28,6 +27,6 @@ class PathfindingComponent : public Component {
 
     private:
 
-    CameraComponent * player;
+    GameObject & player;
     float moveSpeed;
 };

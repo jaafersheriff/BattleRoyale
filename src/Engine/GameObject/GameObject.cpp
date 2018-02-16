@@ -2,7 +2,6 @@
 
 #include "Component/Component.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
-#include "System/Systems.hpp"
 
 GameObject::GameObject() :
     m_allComponents(),

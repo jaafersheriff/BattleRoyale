@@ -30,25 +30,25 @@ class SpatialComponent : public Component {
     public:
 
     // sets the absolute position
-    void setPosition(const glm::vec3 & pos);
+    void setPosition(const glm::vec3 & pos, bool silently = false);
 
     // moves current position by delta
-    void move(const glm::vec3 & delta);
+    void move(const glm::vec3 & delta, bool silently = false);
 
     // sets the absolute scale
-    void setScale(const glm::vec3 & scale);
+    void setScale(const glm::vec3 & scale, bool silently = false);
 
     // multiplies current scale by factor
-    void scale(const glm::vec3 & factor);
+    void scale(const glm::vec3 & factor, bool silently = false);
 
     // sets the absolute rotation
-    void setRotation(const glm::mat3 & rot);
+    void setRotation(const glm::mat3 & rot, bool silently = false);
     
     // rotates current rotation by mat
-    void rotate(const glm::mat3 & mat);
+    void rotate(const glm::mat3 & mat, bool silently = false);
 
     // set the orthonormal basis vectors
-    void setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w);
+    void setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w, bool silently = false);
 
     public:
 

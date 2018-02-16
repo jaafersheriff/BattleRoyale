@@ -12,6 +12,11 @@ extern "C" {
 #include "glm/gtx/transform.hpp"
 
 #include "EngineApp/EngineApp.hpp"
+#include "System/GameLogicSystem.hpp"
+#include "System/SpatialSystem.hpp"
+#include "System/PathfindingSystem.hpp"
+#include "System/CollisionSystem.hpp"
+#include "System/RenderSystem.hpp"
 #include "LevelBuilder/FileReader.hpp"
 
 void printUsage() {
@@ -69,27 +74,10 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
+    Window::setCursorEnabled(false);
+
     /* Scene reference for QOL */
     Scene & scene(Scene::get());
-
-    /* Create camera and camera controller components */
-    GameObject & camera(scene.createGameObject());
-    camera.addComponent(scene.createComponent<SpatialComponent>());
-    CameraComponent & cc(scene.createComponent<CameraComponent>(*camera.getSpatial(), 45.f, 0.01f, 250.f));
-    camera.addComponent(cc);
-    camera.addComponent(scene.createComponent<CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT));
-    camera.getSpatial()->setPosition(glm::vec3(-4.0f, 6.0f, 0.0f));
-    camera.addComponent(scene.createComponent<SphereBounderComponent>(*camera.getSpatial(), 1, Sphere(glm::vec3(0, 0, 0), 4)));
-
-    /* VSync ImGui Pane */
-    scene.createComponent<ImGuiComponent>(
-        "VSync",
-        [&]() {
-            if (ImGui::Button("VSync")) {
-                Window::toggleVSync();
-            }
-        }
-    );
 
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
@@ -97,8 +85,7 @@ int main(int argc, char **argv) {
     if (!RenderSystem::get().createShader<DiffuseShader>(
             engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex shader file       */
             engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment shader file     */
-            cc,                                           /* Shader-specific uniforms */
-            lightPos                                      /*                          */
+            lightPos                                      /* Shader-specific uniforms */
         )) {
         std::cerr << "Failed to add diffuse shader" << std::endl;
         std::cin.get(); // don't immediately close the console
@@ -121,8 +108,7 @@ int main(int argc, char **argv) {
     // alternate method using unique_ptr and new
     if (!RenderSystem::get().addShader(std::unique_ptr<BounderShader>(new BounderShader(
             engine.RESOURCE_DIR + "bounder_vert.glsl",
-            engine.RESOURCE_DIR + "bounder_frag.glsl",
-            cc
+            engine.RESOURCE_DIR + "bounder_frag.glsl"
         )))) {
         std::cerr << "Failed to add collider shader" << std::endl;
         std::cin.get(); //don't immediately close the console
@@ -138,12 +124,74 @@ int main(int argc, char **argv) {
         }
     );
 
-    GameObject & player(scene.createGameObject());
-    player.addComponent(scene.createComponent<SpatialComponent>());
-    player.getSpatial()->setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
+    /* Setup Camera */
+    float camFOV(45.0f);
+    float camLookSpeed(0.2f);
+    float camMoveSpeed(15.0f);
+    GameObject & camera(scene.createGameObject());
+    SpatialComponent & camSpatComp(scene.createComponent<SpatialComponent>());
+    camera.addComponent(camSpatComp);
+    CameraComponent & camCamComp(scene.createComponent<CameraComponent>(camSpatComp, camFOV));
+    camera.addComponent(camCamComp);
+    CameraControllerComponent & camContComp(scene.createComponent<CameraControllerComponent>(camCamComp, camLookSpeed, camMoveSpeed));
+    camera.addComponent(camContComp);
+    camContComp.setEnabled(false);
+
+    /* Setup Player */
     float playerHeight(1.75f);
     float playerWidth(playerHeight / 4.0f);
-    player.addComponent(scene.createComponent<CapsuleBounderComponent>(*player.getSpatial(), 1, Capsule(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth)));
+    float playerFOV(camFOV);
+    float playerLookSpeed(camLookSpeed);
+    float playerMoveSpeed(camMoveSpeed);
+    GameObject & player(scene.createGameObject());
+    SpatialComponent & playerSpatComp(scene.createComponent<SpatialComponent>());
+    player.addComponent(playerSpatComp);
+    playerSpatComp.setPosition(glm::vec3(0.0f, 10.0f, 0.0f));
+    Capsule playerCap(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth);
+    CapsuleBounderComponent & playerBoundComp(scene.createComponent<CapsuleBounderComponent>(*player.getSpatial(), 1, playerCap));
+    player.addComponent(playerBoundComp);
+    CameraComponent & playerCamComp(scene.createComponent<CameraComponent>(playerSpatComp, playerFOV));
+    player.addComponent(playerCamComp);
+    PlayerControllerComponent & playerContComp(scene.createComponent<PlayerControllerComponent>(playerCamComp, playerLookSpeed, playerMoveSpeed));
+    player.addComponent(playerContComp);
+
+    RenderSystem::get().setCamera(&playerCamComp);
+
+    // press shift-tab to toggle free camera
+    auto camSwitchCallback([&](const Message & msg_) {
+        static bool free = false;
+
+        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
+        if (msg.key == GLFW_KEY_TAB && msg.action == GLFW_PRESS && msg.mods & GLFW_MOD_CONTROL) {
+            if (free) {
+                camContComp.setEnabled(false);
+                playerContComp.setEnabled(true);
+                RenderSystem::get().setCamera(&playerCamComp);
+            }
+            else {
+                // disable player controller
+                // enable camera object
+                // set camber object camera to player camera
+                playerContComp.setEnabled(false);
+                camContComp.setEnabled(true);
+                camSpatComp.setPosition(playerSpatComp.position());
+                camCamComp.lookInDir(playerCamComp.getLookDir());
+                RenderSystem::get().setCamera(&camCamComp);
+            }
+            free = !free;
+        }
+    });
+    scene.addReceiver<KeyMessage>(nullptr, camSwitchCallback);
+
+    /* VSync ImGui Pane */
+    scene.createComponent<ImGuiComponent>(
+        "VSync",
+        [&]() {
+            if (ImGui::Button("VSync")) {
+                Window::toggleVSync();
+            }
+        }
+    );
 
     /*Parse and load json level*/
     FileReader fileReader;
@@ -199,7 +247,7 @@ int main(int argc, char **argv) {
         }
     );
     bunny.addComponent(bIc);
-    bunny.addComponent(scene.createComponent<PathfindingComponent>(cc, 1.f));
+    bunny.addComponent(scene.createComponent<PathfindingComponent>(player, 1.0f));
 
     /* Game stats pane */
     scene.createComponent<ImGuiComponent>(

@@ -4,7 +4,7 @@
 
 #include "IO/Window.hpp"
 #include "ThirdParty/imgui/imgui.h"
-#include "Component/RenderComponents/DiffuseRenderComponent.hpp"
+#include "Scene/Scene.hpp"
 
 
 
@@ -21,21 +21,23 @@ void RenderSystem::update(float dt) {\
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
 
-    /* Loop through active shaders */
-    for (auto &shader : m_shaders) {
-        if (!shader.second->isEnabled()) {
-            continue;
+    if (m_camera) {
+        /* Loop through active shaders */
+        for (auto &shader : m_shaders) {
+            if (!shader.second->isEnabled()) {
+                continue;
+            }
+
+            shader.second->bind();
+            ///////////////////////////  TODO  ///////////////////////////
+            // pass a list of render components that are specific       //
+            // to this shader -- right now we are passing the entire    //
+            // list and expecting each shader to filter through         //
+            //////////////////////////////////////////////////////////////
+
+            shader.second->render(*m_camera, m_componentRefs);
+            shader.second->unbind();
         }
-
-        shader.second->bind();
-        ///////////////////////////  TODO  ///////////////////////////
-        // pass a list of render components that are specific       //
-        // to this shader -- right now we are passing the entire    //
-        // list and expecting each shader to filter through         //
-        //////////////////////////////////////////////////////////////
-
-        shader.second->render(m_componentRefs);
-        shader.second->unbind();
     }
 
     /* ImGui */
@@ -48,6 +50,8 @@ void RenderSystem::add(std::unique_ptr<Component> component) {
     m_componentRefs.push_back(component.get());
     if (dynamic_cast<DiffuseRenderComponent *>(component.get()))
         m_diffuseComponents.emplace_back(static_cast<DiffuseRenderComponent *>(component.release()));
+    else
+        assert(false);
 }
 
 void RenderSystem::remove(Component * component) {
@@ -66,4 +70,14 @@ void RenderSystem::remove(Component * component) {
             break;
         }
     }
+}
+
+void RenderSystem::setNearFar(float near, float far) {
+    m_near = near;
+    m_far = far;
+    Scene::get().sendMessage<NearFarMessage>(nullptr, near, far);
+}
+
+void RenderSystem::setCamera(const CameraComponent * camera) {
+    m_camera = camera;
 }

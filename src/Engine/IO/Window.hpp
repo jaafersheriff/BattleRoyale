@@ -52,9 +52,12 @@ class Window {
         static void toggleImGui() { imGuiEnabled = !imGuiEnabled; }
         static bool isImGuiEnabled() { return imGuiEnabled; }
 
+        static void setCursorEnabled(bool enabled);
+
     private:
     
         static bool vSyncEnabled;
+        static bool cursorEnabled;
 
         /* ImGui */
         static bool imGuiEnabled;

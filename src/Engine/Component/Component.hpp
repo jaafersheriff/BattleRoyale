@@ -2,8 +2,6 @@
 #ifndef _COMPONENT_HPP_
 #define _COMPONENT_HPP_
 
-#include "GameObject/Message.hpp"
-#include "System/System.hpp"
 #include "GameObject/GameObject.hpp"
 
 class Scene;
@@ -14,7 +12,9 @@ class Component {
 
     protected: // only scene can create components
 
-        Component() : gameObject(nullptr) {};
+        Component() :
+            m_gameObject(nullptr)
+        {};
 
         // TODO: potentially add move support
         Component(const Component & other) = default;
@@ -31,10 +31,10 @@ class Component {
         
         virtual void update(float) {};
 
-        GameObject * getGameObject() { return gameObject; }
-        const GameObject * getGameObject() const { return gameObject; }
+        GameObject * getGameObject() { return m_gameObject; }
+        const GameObject * getGameObject() const { return m_gameObject; }
 
-        void setGameObject(GameObject *go) { this->gameObject = go; }
+        void setGameObject(GameObject * go) { m_gameObject = go; }
 
         /* Receive a message sent by another component */
         //virtual void receiveMessage(Message &);
@@ -43,7 +43,7 @@ class Component {
 
     protected:
         /* Parent game object */
-        GameObject* gameObject;
+        GameObject * m_gameObject;
 };
 
 #endif

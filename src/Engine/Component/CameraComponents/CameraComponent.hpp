@@ -5,10 +5,11 @@
 
 #include "glm/glm.hpp"
 
-#include "Component/Component.hpp"
 #include "Util/Geometry.hpp"
+#include "Component/Component.hpp"
 
 class GameLogicSystem;
+class SpatialComponent;
 
 class CameraComponent : public Component {
 
@@ -16,7 +17,7 @@ class CameraComponent : public Component {
 
     protected: // only scene can create component
 
-        CameraComponent(SpatialComponent & spatial, float fov, float near, float far);
+        CameraComponent(SpatialComponent & spatial, float fov);
 
     public:
         
@@ -50,8 +51,8 @@ class CameraComponent : public Component {
         float theta() const { return m_theta; }
         float phi() const { return m_phi; }
         float fov() const { return m_fov; }
-        float near() const { return m_near; }
-        float far() const { return m_far; }
+
+        glm::vec3 getLookDir() const;
         
         const glm::mat4 & getView() const;
         const glm::mat4 & getProj() const;
@@ -72,7 +73,7 @@ class CameraComponent : public Component {
         /* Describes the rotation of the camera */
         float m_theta, m_phi;
         /* field of view, near plane, and far plane */
-        float m_fov, m_near, m_far;
+        float m_fov;
 
         // DONT USE THESE DIRECTLY, CALL GETVIEW OR GETPROJ
         mutable glm::mat4 m_viewMat;

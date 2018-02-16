@@ -28,6 +28,8 @@ class RenderSystem : public System {
 
     static constexpr SystemID ID = SystemID::render;
 
+    static constexpr float k_defNear = 0.01f, k_defFar = 250.0f;
+
     public:
 
     static RenderSystem & get() {
@@ -60,6 +62,13 @@ class RenderSystem : public System {
         return const_cast<RenderSystem *>(this)->getShader<ShaderT>();
     }
 
+    void setNearFar(float near, float far);
+
+    float near() const { return m_near; }
+    float far() const { return m_far; }
+
+    void setCamera(const CameraComponent * camera);
+
     private:
     
     virtual void add(std::unique_ptr<Component> component) override;
@@ -70,6 +79,9 @@ class RenderSystem : public System {
 
     std::vector<std::unique_ptr<DiffuseRenderComponent>> m_diffuseComponents;
     std::unordered_map<std::type_index, std::unique_ptr<Shader>> m_shaders;
+
+    float m_near = k_defNear, m_far = k_defFar;
+    const CameraComponent * m_camera = nullptr;
 
 };
 
