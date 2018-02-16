@@ -88,7 +88,7 @@
 },
 "object3":{
     "objName": "Assets/Models/Stage Pieces/Roof.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Roof_Tex.png",
     "position": [
         -9.13749885559082,
         12.387465476989746,
@@ -1277,7 +1277,7 @@
 },
 "object44":{
     "objName": "Assets/Models/Cup.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Cup_Tex.png",
     "position": [
         -5.66249942779541,
         -1.8771591186523438,
@@ -2814,7 +2814,7 @@
 },
 "object97":{
     "objName": "Assets/Models/Cup.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Cup_Tex.png",
     "position": [
         -6.1337504386901859,
         -2.341249942779541,
@@ -3394,7 +3394,7 @@
 },
 "object117":{
     "objName": "Assets/Models/Cup.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Cup_Tex.png",
     "position": [
         -11.867637634277344,
         -2.341249942779541,
@@ -3781,6 +3781,93 @@
         0.1861249953508377,
         0.1861249953508377,
         0.1861249953508377
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"object131":{
+    "objName": "Assets/Models/Cup.obj",
+    "objTexture": "Assets/Models/Cup_Tex.png",
+    "position": [
+        -11.867637634277344,
+        -2.341249942779541,
+        -1.4579999446868897
+    ],
+    "scale": [
+        0.07898001372814179,
+        0.07897999882698059,
+        0.07898001372814179
+    ],
+    "rotMat3_0": [
+        -0.26232922077178957,
+        0.0,
+        -0.9649783968925476
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9649783968925476,
+        0.0,
+        -0.26232922077178957
+    ]
+},
+"object132":{
+    "objName": "Assets/Models/Tray.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "position": [
+        -12.005000114440918,
+        -2.3650002479553224,
+        -1.4091260433197022
+    ],
+    "scale": [
+        0.059650029987096789,
+        0.046790000051259997,
+        0.06090002879500389
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object133":{
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "position": [
+        -12.083887100219727,
+        -2.3499999046325685,
+        -1.4353749752044678
+    ],
+    "scale": [
+        0.040869999676942828,
+        0.040869999676942828,
+        0.040869999676942828
     ],
     "rotMat3_0": [
         -1.0,
