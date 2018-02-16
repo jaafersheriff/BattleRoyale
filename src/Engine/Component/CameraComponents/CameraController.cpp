@@ -29,41 +29,42 @@ void CameraController::update(float dt) {
         dir = glm::normalize(dir);
 
     glm::vec2 uw(dir.x, dir.z);
-    dir = camera->u() * uw.x + glm::vec3(0.0f, 1.0f, 0.0f) * dir.y +  camera->w() * uw.y; // WoW controls
-    gameObject->getSpatial()->move(dir * moveSpeed * dt);
+    dir = m_spatial.u() * uw.x + glm::vec3(0.0f, 1.0f, 0.0f) * dir.y +  m_spatial.w() * uw.y; // WoW controls
+    m_spatial.move(dir * m_moveSpeed * dt);
 }
+
 void CameraController::lookAround(float dt) {
-    camera->angle(float(Mouse::dx) * lookSpeed * dt, -float(Mouse::dy) * lookSpeed * dt, true);
+    m_camera.angle(float(Mouse::dx) * m_lookSpeed * dt, -float(Mouse::dy) * m_lookSpeed * dt, true);
 }
 
 void CameraController::moveFront(float dt) {
-    gameObject->getSpatial()->move(-camera->w() * moveSpeed * dt);
+    m_spatial.move(-m_spatial.w() * m_moveSpeed * dt);
 }
 
 void CameraController::strafeForward(float dt) {
-    gameObject->getSpatial()->move(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), camera->u()) * moveSpeed * dt);
+    m_spatial.move(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), m_spatial.u()) * m_moveSpeed * dt);
 }
 
 void CameraController::moveBack(float dt) {
-    gameObject->getSpatial()->move(camera->w() * moveSpeed * dt);
+    m_spatial.move(m_spatial.w() * m_moveSpeed * dt);
 }
 
 void CameraController::strafeBackward(float dt) {    
-    gameObject->getSpatial()->move(glm::cross(camera->u(), glm::vec3(0.0f, 1.0f, 0.0f)) * moveSpeed * dt);
+    m_spatial.move(glm::cross(m_spatial.u(), glm::vec3(0.0f, 1.0f, 0.0f)) * m_moveSpeed * dt);
 }
 
 void CameraController::moveRight(float dt) {
-    gameObject->getSpatial()->move(camera->u() * moveSpeed * dt);
+    m_spatial.move(m_spatial.u() * m_moveSpeed * dt);
 }
 
 void CameraController::moveLeft(float dt) {
-    gameObject->getSpatial()->move(-camera->u() * moveSpeed * dt);
+    m_spatial.move(-m_spatial.u() * m_moveSpeed * dt);
 }
 
 void CameraController::moveUp(float dt) {
-    gameObject->getSpatial()->move(glm::vec3(0.0f, 1.0f, 0.0f) * moveSpeed * dt);
+    m_spatial.move(glm::vec3(0.0f, 1.0f, 0.0f) * m_moveSpeed * dt);
 }
 
 void CameraController::moveDown(float dt) {
-    gameObject->getSpatial()->move(glm::vec3(0.0f, -1.0f, 0.0f) * moveSpeed * dt);
+    m_spatial.move(glm::vec3(0.0f, -1.0f, 0.0f) * m_moveSpeed * dt);
 }

@@ -18,6 +18,7 @@ class SpatialComponent : public Component {
     protected: // only scene can create component
 
     SpatialComponent();
+    SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale);
     SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & rotation);
 
     public:
@@ -46,17 +47,24 @@ class SpatialComponent : public Component {
     // rotates current rotation by mat
     void rotate(const glm::mat3 & mat);
 
+    // set the orthonormal basis vectors
+    void setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w);
+
     public:
 
     const glm::vec3 & position() const { return m_position; }
     const glm::vec3 & scale() const { return m_scale; }
-    const glm::mat3 & rotation() const { return m_rotation; }
+    const glm::vec3 & u() const { return m_u; }
+    const glm::vec3 & v() const { return m_v; }
+    const glm::vec3 & w() const { return m_w; }
 
+    const glm::mat3 & rotationMatrix() const;
     const glm::mat4 & modelMatrix() const;
     const glm::mat3 & normalMatrix() const;
 
     private:
 
+    void detRotationMatrix() const;
     void detModelMatrix() const;
     void detNormalMatrix() const;
 
@@ -64,10 +72,12 @@ class SpatialComponent : public Component {
 
     glm::vec3 m_position;
     glm::vec3 m_scale;
-    glm::mat3 m_rotation;
+    glm::vec3 m_u, m_v, m_w; // orthonormal basis vectors
 
+    mutable glm::mat3 m_rotationMatrix;
     mutable glm::mat4 m_modelMatrix;
     mutable glm::mat3 m_normalMatrix;
+    mutable bool m_rotationMatrixValid;
     mutable bool m_modelMatrixValid;
     mutable bool m_normalMatrixValid;
 

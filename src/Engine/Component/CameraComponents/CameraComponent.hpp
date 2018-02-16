@@ -16,7 +16,7 @@ class CameraComponent : public Component {
 
     protected: // only scene can create component
 
-        CameraComponent(float fov, float near, float far);
+        CameraComponent(SpatialComponent & spatial, float fov, float near, float far);
 
     public:
         
@@ -47,10 +47,6 @@ class CameraComponent : public Component {
         void setNearFar(float near, float far);
 
         const bool sphereInFrustum(const Sphere & sphere) const;
-
-        const glm::vec3 & u() const { return m_u; }
-        const glm::vec3 & v() const { return m_v; }
-        const glm::vec3 & w() const { return m_w; }
         float theta() const { return m_theta; }
         float phi() const { return m_phi; }
         float fov() const { return m_fov; }
@@ -62,18 +58,17 @@ class CameraComponent : public Component {
 
     private:
 
-        void detUVW();
+        void setUVW();
+
+        void detAngles();
+
         void detView() const;
         void detProj() const;
         void detFrustum() const;
 
     private:
 
-        /* u, v, and w define a set of orthonormal basis unit vectors */
-        /* u points right (+x) */
-        /* v points up (+y) */
-        /* w points back (+z) */
-        glm::vec3 m_u, m_v, m_w;
+        SpatialComponent & m_spatial;
         /* Describes the rotation of the camera */
         float m_theta, m_phi;
         /* field of view, near plane, and far plane */

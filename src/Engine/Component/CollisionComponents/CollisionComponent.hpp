@@ -23,13 +23,9 @@ class BounderComponent : public Component {
     friend Scene;
     friend CollisionSystem;
 
-    protected:
-
-    int m_weight;
-
     protected: // only scene can create component
 
-    BounderComponent(int weight);
+    BounderComponent(SpatialComponent & spatial, unsigned int weight);
 
     public:
 
@@ -45,7 +41,12 @@ class BounderComponent : public Component {
 
     virtual Sphere enclosingSphere() const = 0;
 
-    int weight() const { return m_weight; }
+    unsigned int weight() const { return m_weight; }
+
+    protected:
+
+    SpatialComponent & m_spatial;
+    unsigned int m_weight;
 
 };
 
@@ -53,14 +54,9 @@ class BounderComponent : public Component {
 
 class AABBounderComponent : public BounderComponent {
 
-    private:
-
-    const AABox m_box;
-    AABox m_transBox;
-
     public:
 
-    AABBounderComponent(int weight, const AABox & box);
+    AABBounderComponent(SpatialComponent & spatial, unsigned int weight, const AABox & box);
 
     virtual void update(float dt) override;
 
@@ -73,20 +69,20 @@ class AABBounderComponent : public BounderComponent {
     const AABox & box() const { return m_box; }
     const AABox & transBox() const { return m_transBox; }
 
+    private:
+
+    const AABox m_box;
+    AABox m_transBox;
+
 };
 
 
 
 class SphereBounderComponent : public BounderComponent {
 
-    private:
-
-    const Sphere m_sphere;
-    Sphere m_transSphere;
-
     public:
 
-    SphereBounderComponent(int weight, const Sphere & sphere);
+    SphereBounderComponent(SpatialComponent & spatial, unsigned int weight, const Sphere & sphere);
 
     virtual void update(float dt) override;
 
@@ -99,20 +95,20 @@ class SphereBounderComponent : public BounderComponent {
     const Sphere & sphere() const { return m_sphere; }
     const Sphere & transSphere() const { return m_transSphere; }
 
+    private:
+
+    const Sphere m_sphere;
+    Sphere m_transSphere;
+
 };
 
 
 
 class CapsuleBounderComponent : public BounderComponent {
 
-    private:
-
-    const Capsule m_capsule;
-    Capsule m_transCapsule;
-
     public:
 
-    CapsuleBounderComponent(int weight, const Capsule & capsule);
+    CapsuleBounderComponent(SpatialComponent & spatial, unsigned int weight, const Capsule & capsule);
 
     virtual void update(float dt) override;
 
@@ -125,6 +121,11 @@ class CapsuleBounderComponent : public BounderComponent {
     const Capsule & capsule() const { return m_capsule; }
     const Capsule & transCapsule() const { return m_transCapsule; }
 
+    private:
+
+    const Capsule m_capsule;
+    Capsule m_transCapsule;
+
 };
 
 
@@ -132,4 +133,4 @@ class CapsuleBounderComponent : public BounderComponent {
 // chooses the bounder with the smallest volume from the vertex data of the given mesh
 // optionally enable/disable certain types of bounders. If all are false you are
 // dumb and it acts as if all were true
-std::unique_ptr<BounderComponent> createBounderFromMesh(int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule);
+std::unique_ptr<BounderComponent> createBounderFromMesh(SpatialComponent & spatial, unsigned int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule);

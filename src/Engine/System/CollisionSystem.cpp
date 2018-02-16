@@ -37,15 +37,18 @@ struct Collision {
 
 
 bool collide(BounderComponent & b1, BounderComponent & b2, std::unordered_map<BounderComponent *, std::vector<std::pair<int, glm::vec3>>> * collisions) {
+    if (b1.weight() == UINT_MAX && b2.weight() == UINT_MAX) {
+        return false;
+    }
     if (!collisions) {
         return b1.collide(b2, nullptr);
     }
 
-    if (b1.weight() <= 0 || b2.weight() <= 0) {
-        bool res(collide(b1, b2, nullptr));
+    if (b1.weight() == 0 || b2.weight() == 0) {
+        bool res(b1.collide(b2, nullptr));
         if (res) {
-            (*collisions)[&b1];
-            (*collisions)[&b2];
+            if (b1.weight() != UINT_MAX) (*collisions)[&b1];
+            if (b2.weight() != UINT_MAX) (*collisions)[&b2];
         }
         return res;
     }
@@ -56,10 +59,10 @@ bool collide(BounderComponent & b1, BounderComponent & b2, std::unordered_map<Bo
     }    
     if (b1.weight() < b2.weight()) {
         (*collisions)[&b1].push_back({ b2.weight(), delta });
-        (*collisions)[&b2];
+        if (b2.weight() != UINT_MAX) (*collisions)[&b2];
     }
     else if (b2.weight() < b1.weight()) {
-        (*collisions)[&b1];
+        if (b1.weight() != UINT_MAX) (*collisions)[&b1];
         (*collisions)[&b2].push_back({ b1.weight(), -delta });
     }
     else {
@@ -120,9 +123,9 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
     std::sort(weightDeltas.begin(), weightDeltas.end(), compWeightDelta);
     
     glm::vec3 net;
-    int weightI(0);
-    int i(weightI);
-    int weight(weightDeltas[weightI].first);
+    unsigned int weightI(0);
+    unsigned int i(weightI);
+    unsigned int weight(weightDeltas[weightI].first);
     glm::vec3 weightDelta;
     for (; i < weightDeltas.size() && weightDeltas[i].first == weight; ++i) {
         weightDelta = compositeDeltas(weightDelta, weightDeltas[i].second);
@@ -178,7 +181,6 @@ void CollisionSystem::update(float dt) {
     // gather all collisions
     for (BounderComponent * bounder : m_potentials) {
         bounder->update(dt);
-        SpatialComponent & spat(*bounder->getGameObject()->getSpatial());
         s_checked.insert(bounder);
         for (auto & other : m_bounderComponents) {
             if (s_checked.count(other.get()) || other->getGameObject() == bounder->getGameObject()) {

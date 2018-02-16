@@ -9,10 +9,8 @@
 
 
 
-CameraComponent::CameraComponent(float fov, float near, float far) :
-    m_u(0.0f, 0.0f, 1.0f),
-    m_v(0.0f, 1.0f, 0.0f),
-    m_w(-1.0f, 0.0f, 0.0f),
+CameraComponent::CameraComponent(SpatialComponent & spatial, float fov, float near, float far) :
+    m_spatial(spatial),
     m_theta(0.0f),
     m_phi(glm::pi<float>() * 0.5f),
     m_fov(fov),
@@ -29,12 +27,16 @@ void CameraComponent::init() {
     auto spatTransformCallback([&](const Message & msg_) {
         m_viewMatValid = false;
     });
+    auto spatRotationCallback([&](const Message & msg_) {
+        m_viewMatValid = false;
+        detAngles();
+    });
     Scene::get().addReceiver<SpatialPositionSetMessage>(getGameObject(), spatTransformCallback);
     Scene::get().addReceiver<SpatialMovedMessage>(getGameObject(), spatTransformCallback);
     Scene::get().addReceiver<SpatialScaleSetMessage>(getGameObject(), spatTransformCallback);
     Scene::get().addReceiver<SpatialScaledMessage>(getGameObject(), spatTransformCallback);
-    Scene::get().addReceiver<SpatialRotationSetMessage>(getGameObject(), spatTransformCallback);
-    Scene::get().addReceiver<SpatialRotatedMessage>(getGameObject(), spatTransformCallback);
+    Scene::get().addReceiver<SpatialRotationSetMessage>(getGameObject(), spatRotationCallback);
+    Scene::get().addReceiver<SpatialRotatedMessage>(getGameObject(), spatRotationCallback);
 
     auto windowSizeCallback([&] (const Message & msg_) {
         m_projMatValid = false;
@@ -47,14 +49,14 @@ void CameraComponent::update(float dt) {
 }
 
 void CameraComponent::lookAt(const glm::vec3 & p) {
-    lookInDir(p - gameObject->getSpatial()->position());
+    lookInDir(p - m_spatial.position());
 }
 
 void CameraComponent::lookInDir(const glm::vec3 & dir) {
-    glm::vec3 spherical(Util::cartesianToSpherical(glm::vec3(dir.x, -dir.z, dir.y)));
+    glm::vec3 spherical(Util::cartesianToSpherical(glm::vec3(-dir.z, -dir.x, dir.y)));
     m_theta = spherical.y;
     m_phi = spherical.z;
-    detUVW();
+    setUVW();
     m_viewMatValid = false;
     m_frustumValid = false;
 }
@@ -73,7 +75,7 @@ void CameraComponent::angle(float yaw, float pitch, bool relative) {
     if (m_phi < 0.0f) m_phi = 0.0f;
     if (m_phi > glm::pi<float>()) m_phi = glm::pi<float>();
 
-    detUVW();
+    setUVW();
     m_viewMatValid = false;
     m_frustumValid = false;
 }
@@ -122,19 +124,30 @@ const glm::mat4 & CameraComponent::getProj() const {
     return m_projMat;
 }
 
-void CameraComponent::detUVW() {    
-    m_w = -Util::sphericalToCartesian(1.0f, m_theta, m_phi);
-    m_w = glm::vec3(m_w.x, m_w.z, -m_w.y); // one of the many reasons I like z to be up
-    m_v = Util::sphericalToCartesian(1.0f, m_theta, m_phi - glm::pi<float>() * 0.5f);
-    m_v = glm::vec3(m_v.x, m_v.z, -m_v.y);
-    m_u = glm::cross(m_v, m_w);
+void CameraComponent::setUVW() {
+    glm::vec3 w(-Util::sphericalToCartesian(1.0f, m_theta, m_phi));
+    w = glm::vec3(-w.y, w.z, -w.x); // one of the many reasons I like z to be up
+    glm::vec3 v(Util::sphericalToCartesian(1.0f, m_theta, m_phi - glm::pi<float>() * 0.5f));
+    v = glm::vec3(-v.y, v.z, -v.x);
+    glm::vec3 u(glm::cross(v, w));
+    m_spatial.setUVW(u, v, w);
+}
+
+void CameraComponent::detAngles() {
+    glm::vec3 forward(-m_spatial.w());
+    glm::vec3 xyz(-forward.z, -forward.x, forward.y);
+    if (xyz.x == 0 && xyz.y == 0) {// straight up or straight down
+        xyz.x = -glm::sign(xyz.z) *  m_spatial.v().x;
+        xyz.y = -glm::sign(xyz.z) * -m_spatial.v().z;
+    }
+    glm::vec3 spherical(Util::cartesianToSpherical(xyz));
+    m_theta = spherical.y;
+    m_phi = spherical.z;
 }
 
 void CameraComponent::detView() const {
-    const glm::vec3 & pos(gameObject->getSpatial()->position());
-    m_viewMat = Util::viewMatrix(pos, m_u, m_v, m_w);
+    m_viewMat = Util::viewMatrix(m_spatial.position(), m_spatial.u(), m_spatial.v(), m_spatial.w());
     m_viewMatValid = true;
-
 }
 
 void CameraComponent::detProj() const {

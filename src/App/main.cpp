@@ -74,13 +74,12 @@ int main(int argc, char **argv) {
 
     /* Create camera and camera controller components */
     GameObject & camera(scene.createGameObject());
-    CameraComponent & cc(scene.createComponent<CameraComponent>(45.f, 0.01f, 250.f));
+    camera.addComponent(scene.createComponent<SpatialComponent>());
+    CameraComponent & cc(scene.createComponent<CameraComponent>(*camera.getSpatial(), 45.f, 0.01f, 250.f));
     camera.addComponent(cc);
     camera.addComponent(scene.createComponent<CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT));
-    camera.addComponent(scene.createComponent<SpatialComponent>());
     camera.getSpatial()->setPosition(glm::vec3(-4.0f, 6.0f, 0.0f));
-
-    camera.addComponent(scene.createComponent<SphereBounderComponent>(1, Sphere(glm::vec3(0, 0, 0), 4)));
+    camera.addComponent(scene.createComponent<SphereBounderComponent>(*camera.getSpatial(), 1, Sphere(glm::vec3(0, 0, 0), 4)));
 
     /* VSync ImGui Pane */
     scene.createComponent<ImGuiComponent>(
@@ -144,7 +143,7 @@ int main(int argc, char **argv) {
     player.getSpatial()->setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
     float playerHeight(1.75f);
     float playerWidth(playerHeight / 4.0f);
-    player.addComponent(scene.createComponent<CapsuleBounderComponent>(1, Capsule(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth)));
+    player.addComponent(scene.createComponent<CapsuleBounderComponent>(*player.getSpatial(), 1, Capsule(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth)));
 
     /*Parse and load json level*/
     FileReader fileReader;
@@ -159,7 +158,7 @@ int main(int argc, char **argv) {
         glm::vec3(1.0f, 1.0f, 1.0f), // scale
         glm::mat3() // rotation
     ));
-    bunny.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(1, *bunnyMesh, false, true, false)));
+    bunny.addComponent(Scene::get().addComponent<BounderComponent>(createBounderFromMesh(*bunny.getSpatial(), 1, *bunnyMesh, false, true, false)));
     DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
         RenderSystem::get().getShader<DiffuseShader>()->pid,
         *bunnyMesh,

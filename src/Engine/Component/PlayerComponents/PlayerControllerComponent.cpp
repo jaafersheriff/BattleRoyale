@@ -18,9 +18,14 @@ void PlayerControllerComponent::update(float dt) {
     int up(Keyboard::isKeyPressed(GLFW_KEY_SPACE));
     int down(Keyboard::isKeyPressed(GLFW_KEY_LEFT_SHIFT));
     
-    glm::vec3 dir(
+    glm::vec2 uw(
         float(right - left),
-        float(up - down),
         float(backward - forward)
     );
+    if (uw != glm::vec2())
+        uw = glm::normalize(uw);
+
+    //glm::vec3 dir(uw * )
+
+    //gameObject->getSpatial()->move(glm::vec3(uw))
 }

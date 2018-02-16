@@ -9,28 +9,23 @@
 
 
 
-BounderComponent::BounderComponent(int weight) :
+BounderComponent::BounderComponent(SpatialComponent & spatial, unsigned int weight) :
+    m_spatial(spatial),
     m_weight(weight)
 {}
 
 
-AABBounderComponent::AABBounderComponent(int weight, const AABox & box) :
-    BounderComponent(weight),
+AABBounderComponent::AABBounderComponent(SpatialComponent & spatial, unsigned int weight, const AABox & box) :
+    BounderComponent(spatial, weight),
     m_box(box),
     m_transBox(m_box)
 {}
 
 void AABBounderComponent::update(float dt) {
-    if (!gameObject->getSpatial()) {
-        return;
-    }
-
-    SpatialComponent & spat(*gameObject->getSpatial());
-
     // no rotation
-    if (spat.rotation() == glm::mat3()) {
-        m_transBox.min = m_box.min * spat.scale() + spat.position();
-        m_transBox.max = m_box.max * spat.scale() + spat.position();
+    if (m_spatial.rotationMatrix() == glm::mat3()) {
+        m_transBox.min = m_box.min * m_spatial.scale() + m_spatial.position();
+        m_transBox.max = m_box.max * m_spatial.scale() + m_spatial.position();
     }
     // is rotation
     else {
@@ -44,7 +39,7 @@ void AABBounderComponent::update(float dt) {
             glm::vec3(m_box.min.x, m_box.max.y, m_box.max.z),
             glm::vec3(m_box.max.x, m_box.max.y, m_box.max.z)
         };
-        const glm::mat4 & modelMat(spat.modelMatrix());
+        const glm::mat4 & modelMat(m_spatial.modelMatrix());
         for (int i(0); i < 8; ++i) {
             corners[i] = modelMat * glm::vec4(corners[i], 1.0f);
         }
@@ -79,21 +74,15 @@ Sphere AABBounderComponent::enclosingSphere() const {
 
 
 
-SphereBounderComponent::SphereBounderComponent(int weight, const Sphere & sphere) :
-    BounderComponent(weight),
+SphereBounderComponent::SphereBounderComponent(SpatialComponent & spatial, unsigned int weight, const Sphere & sphere) :
+    BounderComponent(spatial, weight),
     m_sphere(sphere),
     m_transSphere(m_sphere)
 {}
 
 void SphereBounderComponent::update(float dt) {
-    if (!gameObject->getSpatial()) {
-        return;
-    }
-
-    SpatialComponent & spat(*gameObject->getSpatial());
-
-    m_transSphere.origin = spat.modelMatrix() * glm::vec4(m_sphere.origin, 1.0f);
-    m_transSphere.radius = glm::compMax(spat.scale()) * m_sphere.radius;
+    m_transSphere.origin = m_spatial.modelMatrix() * glm::vec4(m_sphere.origin, 1.0f);
+    m_transSphere.radius = glm::compMax(m_spatial.scale()) * m_sphere.radius;
 }
 
 bool SphereBounderComponent::collide(const BounderComponent & o, glm::vec3 * delta) const {
@@ -119,21 +108,15 @@ Sphere SphereBounderComponent::enclosingSphere() const {
 
 
 
-CapsuleBounderComponent::CapsuleBounderComponent(int weight, const Capsule & capsule) :
-    BounderComponent(weight),
+CapsuleBounderComponent::CapsuleBounderComponent(SpatialComponent & spatial, unsigned int weight, const Capsule & capsule) :
+    BounderComponent(spatial, weight),
     m_capsule(capsule),
     m_transCapsule(m_capsule)
 {}
 
 void CapsuleBounderComponent::update(float dt) {
-    if (!gameObject->getSpatial()) {
-        return;
-    }
-
-    SpatialComponent & spat(*gameObject->getSpatial());
-
-    m_transCapsule.center = spat.modelMatrix() * glm::vec4(m_capsule.center, 1.0f);
-    const glm::vec3 & scale(spat.scale());
+    m_transCapsule.center = m_spatial.modelMatrix() * glm::vec4(m_capsule.center, 1.0f);
+    const glm::vec3 & scale(m_spatial.scale());
     m_transCapsule.radius = glm::max(scale.x, scale.z) * m_capsule.radius;
     m_transCapsule.height = glm::max(0.0f, scale.y * (m_capsule.height + 2.0f * m_capsule.radius) - 2.0f * m_transCapsule.radius);
 }
@@ -215,7 +198,7 @@ std::tuple<float, float, float> detCapsuleSpecs(int n, const glm::vec3 * positio
 
 }
 
-std::unique_ptr<BounderComponent> createBounderFromMesh(int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule) {
+std::unique_ptr<BounderComponent> createBounderFromMesh(SpatialComponent & spatial, unsigned int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule) {
     if (!allowAAB && !allowSphere && !allowCapsule) {
         allowAAB = allowSphere = allowCapsule = true;
     }
@@ -250,13 +233,13 @@ std::unique_ptr<BounderComponent> createBounderFromMesh(int weight, const Mesh &
     }
 
     if (allowAAB && boxV <= sphereV && boxV <= capsuleV) {
-        return std::unique_ptr<BounderComponent>(new AABBounderComponent(weight, box));
+        return std::unique_ptr<BounderComponent>(new AABBounderComponent(spatial, weight, box));
     }
     else if (allowSphere && sphereV <= boxV && sphereV <= capsuleV) {
-        return std::unique_ptr<BounderComponent>(new SphereBounderComponent(weight, sphere));
+        return std::unique_ptr<BounderComponent>(new SphereBounderComponent(spatial, weight, sphere));
     }
     else if (allowCapsule && capsuleV <= boxV && capsuleV <= sphereV) {
-        return std::unique_ptr<BounderComponent>(new CapsuleBounderComponent(weight, capsule));
+        return std::unique_ptr<BounderComponent>(new CapsuleBounderComponent(spatial, weight, capsule));
     }
 
     return nullptr;

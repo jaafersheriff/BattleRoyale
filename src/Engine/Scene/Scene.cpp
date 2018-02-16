@@ -2,6 +2,12 @@
 
 #include <algorithm>
 
+#include "GLFW/glfw3.h"
+
+#include "IO/Keyboard.hpp"
+
+
+
 void Scene::init() {
     GameLogicSystem::get().init();
     PathfindingSystem::get().init();

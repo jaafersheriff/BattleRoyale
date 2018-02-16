@@ -104,6 +104,16 @@ struct Util {
         );
     }
 
+    // creates a matrix that maps to the given orthonormal basis
+    static glm::mat3 mapTo(const glm::vec3 & x, const glm::vec3 & y, const glm::vec3 & z) {
+        return glm::transpose(glm::mat3(x, y, z));
+    }
+
+    // creates a matrix that maps from the given orthonormal basis
+    static glm::mat3 mapFrom(const glm::vec3 & x, const glm::vec3 & y, const glm::vec3 & z) {
+        return glm::mat3(x, y, z);
+    }
+
 };
 
 #endif

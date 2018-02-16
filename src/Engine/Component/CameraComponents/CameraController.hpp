@@ -15,15 +15,16 @@ class CameraController : public Component {
     protected: // only scene can create component
 
         CameraController(CameraComponent & cc, float ls, float ms, int f, int b, int l, int r, int u, int d) :
-            camera(&cc),
-            lookSpeed(ls),
-            moveSpeed(ms),
-            front(f),
-            back(b),
-            left(l),
-            right(r),
-            up(u),
-            down(d)
+            m_spatial(*cc.getGameObject()->getSpatial()),
+            m_camera(cc),
+            m_lookSpeed(ls),
+            m_moveSpeed(ms),
+            m_front(f),
+            m_back(b),
+            m_left(l),
+            m_right(r),
+            m_up(u),
+            m_down(d)
         {}
 
     public:
@@ -46,9 +47,10 @@ class CameraController : public Component {
 
     private:
 
-        CameraComponent * camera;
-        float lookSpeed, moveSpeed;
-        int front, back, left, right, up, down;
+        SpatialComponent & m_spatial;
+        CameraComponent & m_camera;
+        float m_lookSpeed, m_moveSpeed;
+        int m_front, m_back, m_left, m_right, m_up, m_down;
 
 };
 

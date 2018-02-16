@@ -10,22 +10,36 @@
 SpatialComponent::SpatialComponent() :
     m_position(),
     m_scale(1.0f),
-    m_rotation(),
+    m_u(1.0f, 0.0f, 0.0f),
+    m_v(0.0f, 1.0f, 0.0f),
+    m_w(0.0f, 0.0f, 1.0f),
+    m_rotationMatrix(),
     m_modelMatrix(),
     m_normalMatrix(),
+    m_rotationMatrixValid(false),
     m_modelMatrixValid(false),
     m_normalMatrixValid(false)
 {}
 
-SpatialComponent::SpatialComponent(const glm::vec3 & loc, const glm::vec3 & scale, const glm::mat3 & rot) :
+SpatialComponent::SpatialComponent(const glm::vec3 & loc, const glm::vec3 & scale) :
     m_position(loc),
     m_scale(scale),
-    m_rotation(rot),
+    m_u(1.0f, 0.0f, 0.0f),
+    m_v(0.0f, 1.0f, 0.0f),
+    m_w(0.0f, 0.0f, 1.0f),
     m_modelMatrix(),
     m_normalMatrix(),
+    m_rotationMatrix(),
+    m_rotationMatrixValid(false),
     m_modelMatrixValid(false),
     m_normalMatrixValid(false)
 {}
+
+SpatialComponent::SpatialComponent(const glm::vec3 & loc, const glm::vec3 & scale, const glm::mat3 & rotation) :
+    SpatialComponent(loc, scale)
+{
+    setRotation(rotation);
+}
 
 void SpatialComponent::update(float dt) {
     
@@ -58,17 +72,39 @@ void SpatialComponent::scale(const glm::vec3 & factor) {
 }
 
 void SpatialComponent::setRotation(const glm::mat3 & rot) {
-    m_rotation = rot;
+    m_rotationMatrix = rot;
+    m_rotationMatrixValid = true;
+    glm::mat3 trans(glm::transpose(m_rotationMatrix));
+    m_u = trans[0];
+    m_v = trans[1];
+    m_w = trans[2];
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
     Scene::get().sendMessage<SpatialRotationSetMessage>(getGameObject(), *this);
 }
 
 void SpatialComponent::rotate(const glm::mat3 & mat) {
-    m_rotation = mat * m_rotation;
+    m_rotationMatrix = mat * m_rotationMatrix;
+    m_rotationMatrixValid = true;
+    glm::mat3 trans(glm::transpose(m_rotationMatrix));
+    m_u = trans[0];
+    m_v = trans[1];
+    m_w = trans[2];
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
     Scene::get().sendMessage<SpatialRotatedMessage>(getGameObject(), *this);
+}
+
+void SpatialComponent::setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w) {
+    m_u = u;
+    m_v = v;
+    m_w = w;
+    Scene::get().sendMessage<SpatialRotationSetMessage>(getGameObject(), *this);
+}
+
+const glm::mat3 & SpatialComponent::rotationMatrix() const {
+    if (!m_rotationMatrixValid) detRotationMatrix();
+    return m_rotationMatrix;
 }
     
 const glm::mat4 & SpatialComponent::modelMatrix() const {
@@ -81,13 +117,18 @@ const glm::mat3 & SpatialComponent::normalMatrix() const {
     return m_normalMatrix;
 }
 
+void SpatialComponent::detRotationMatrix() const {
+    m_rotationMatrix = Util::mapTo(m_u, m_v, m_w);
+    m_rotationMatrixValid = true;
+}
+
 void SpatialComponent::detModelMatrix() const {
-    m_modelMatrix = Util::compositeTransform(m_scale, m_rotation, m_position);
+    m_modelMatrix = Util::compositeTransform(m_scale, rotationMatrix(), m_position);
     m_modelMatrixValid = true;
 }
 
 void SpatialComponent::detNormalMatrix() const {
     // this is valid and waaaaaaaay faster than inverting the model matrix
-    m_normalMatrix = m_rotation * glm::mat3(glm::scale(glm::mat4(), 1.0f / m_scale));
+    m_normalMatrix = rotationMatrix() * glm::mat3(glm::scale(glm::mat4(), 1.0f / m_scale));
     m_normalMatrixValid = true;
 }
