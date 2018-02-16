@@ -29,10 +29,10 @@ void CameraControllerComponent::update(float dt) {
     if (Mouse::dx || Mouse::dy) {
         // orient camera relative to base
         m_camera.angle(-float(Mouse::dx) * m_lookSpeed * dt, float(Mouse::dy) * m_lookSpeed * dt, true);
-        // set camera base to same orientation
-        m_spatial.setUVW(m_camera.u(), m_camera.v(), m_camera.w(), true);
+        // set camera base to same xz orientation
+        m_spatial.setUVW(m_camera.u(), glm::vec3(0.0f, 1.0f, 0.0f), glm::cross(m_camera.u(), glm::vec3(0.0f, 1.0f, 0.0f)), true);
         // reset camera to face forward. in absolute space, this puts it back to where it was before the last line
-        m_camera.angle(0.0f, glm::pi<float>() * 0.5f, false, true);
+        m_camera.angle(0.0f, m_camera.phi(), false, true);
     }
 
     int forward(Keyboard::isKeyPressed(GLFW_KEY_W));
