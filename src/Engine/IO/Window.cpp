@@ -144,6 +144,7 @@ void Window::update(float dt) {
     Mouse::update(x, y);
 
     /* Update ImGui */
+    // TODO: clean up this code
     static bool imGuiActive = false;
     static bool priorCursorState;
     imGuiTimer += dt;
@@ -156,12 +157,15 @@ void Window::update(float dt) {
         toggleImGui();
         imGuiTimer = 0.0;
         imGuiActive = !imGuiActive;
+        ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
 
         if (!imGuiActive) {
             setCursorEnabled(priorCursorState);
         }
     }
-    ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
+    else {
+        ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
+    }
     
     glfwSwapBuffers(window);
     glfwPollEvents();

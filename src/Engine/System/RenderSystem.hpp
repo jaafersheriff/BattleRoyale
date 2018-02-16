@@ -28,7 +28,7 @@ class RenderSystem : public System {
 
     static constexpr SystemID ID = SystemID::render;
 
-    static constexpr float k_defNear = 0.01f, k_defFar = 250.0f;
+    static constexpr float k_defNear = 0.01f, k_defFar = 500.0f;
 
     public:
 

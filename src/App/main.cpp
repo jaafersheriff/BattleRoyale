@@ -127,7 +127,7 @@ int main(int argc, char **argv) {
     /* Setup Camera */
     float camFOV(45.0f);
     float camLookSpeed(0.2f);
-    float camMoveSpeed(15.0f);
+    float camMoveSpeed(60.0f);
     GameObject & camera(scene.createGameObject());
     SpatialComponent & camSpatComp(scene.createComponent<SpatialComponent>());
     camera.addComponent(camSpatComp);

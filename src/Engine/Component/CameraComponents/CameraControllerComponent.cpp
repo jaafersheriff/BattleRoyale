@@ -1,5 +1,6 @@
 #include "CameraControllerComponent.hpp"
 
+#include "IO/Window.hpp"
 #include "IO/Mouse.hpp"
 #include "IO/Keyboard.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
@@ -19,6 +20,9 @@ void CameraControllerComponent::init() {
 
 void CameraControllerComponent::update(float dt) {
     if (!m_enabled) {
+        return;
+    }
+    if (Window::isImGuiEnabled()) {
         return;
     }
 

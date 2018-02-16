@@ -1,5 +1,6 @@
 #include "PlayerControllerComponent.hpp"
 
+#include "IO/Window.hpp"
 #include "IO/Mouse.hpp"
 #include "IO/Keyboard.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
@@ -17,6 +18,9 @@ PlayerControllerComponent::PlayerControllerComponent(CameraComponent & camera, f
 
 void PlayerControllerComponent::update(float dt) {
     if (!m_enabled) {
+        return;
+    }
+    if (Window::isImGuiEnabled()) {
         return;
     }
 
