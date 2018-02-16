@@ -3,15 +3,19 @@
 #define _SOUND_COMPONENT_HPP_
 
 #include "glm/glm.hpp"
-
 #include "System/SoundSystem.hpp"
+#include "Component/Component.hpp"
 
-#ifdef HAVE_FMOD_LIBRARY
+#ifndef HAVE_FMOD_LIBRARY
+#define HAVE_FMOD_LIBRARY false
+#endif
+
+#if HAVE_FMOD_LIBRARY
 #include "fmod.hpp"
 #include "fmod_studio.hpp"
 #endif
 
-#include "Component/Component.hpp"
+
 
 class SoundSystem;
 
@@ -24,7 +28,7 @@ class SoundComponent : public Component{
         using SystemClass = SoundSystem;
 
     private:
-    #ifdef HAVE_FMOD_LIBRARY
+    #if HAVE_FMOD_LIBRARY
         FMOD::System *m_system;
     #endif
 
@@ -32,7 +36,7 @@ class SoundComponent : public Component{
 
         /* Constructors */
         SoundComponent();
-    #ifdef HAVE_FMOD_LIBRARY
+    #if HAVE_FMOD_LIBRARY
 	    SoundComponent(FMOD::System *m_system);	
     #endif
 };

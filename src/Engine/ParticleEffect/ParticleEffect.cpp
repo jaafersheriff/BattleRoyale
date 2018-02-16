@@ -6,7 +6,6 @@ ParticleEffect::ParticleEffect(int type, int total, double duration, glm::vec3 o
     duration(duration),
     origin(origin),
     life(0),
-    toDie(false),
     particles(generateParticles()),
     tData(0.f)
 {
@@ -25,12 +24,9 @@ std::vector<Particle> ParticleEffect::generateParticles() {
 void ParticleEffect::update(float dt) {
     life += dt;
     tData = life / duration;
-    if (life < duration && !toDie) {
+    if (life < duration) {
         for (int i = 0; i < total; i++) {
             particles[i].update(tData);
         }
-    }
-    else {
-        toDie = true;
     }
 }

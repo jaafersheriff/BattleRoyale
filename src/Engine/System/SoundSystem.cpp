@@ -3,7 +3,7 @@
 SoundSystem::SoundSystem(const std::vector<Component *> & components) :
     System(components)
 {
-#ifdef HAVE_FMOD_LIBRARY
+#if HAVE_FMOD_LIBRARY
     FMOD_RESULT result;
     
     result = FMOD::System_Create(&m_system);
@@ -22,12 +22,12 @@ SoundSystem::SoundSystem(const std::vector<Component *> & components) :
 
 void SoundSystem::update(float dt) 
 {
-#ifdef HAVE_FMOD_LIBRARY
+#if HAVE_FMOD_LIBRARY
     m_system->update();
 #endif
 }
 
-#ifdef HAVE_FMOD_LIBRARY
+#if HAVE_FMOD_LIBRARY
 FMOD::Sound* SoundSystem::createSound(std::string soundfilename) 
 {
     std::string fullpath = SOUND_DIR + soundfilename;

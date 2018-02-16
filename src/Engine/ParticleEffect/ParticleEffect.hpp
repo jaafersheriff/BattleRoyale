@@ -22,7 +22,6 @@ class ParticleEffect {
         double duration;
         glm::vec3 origin;
         double life;
-        bool toDie;
 
         std::vector<Particle> particles;
         float tData;
