@@ -14,12 +14,8 @@ void SpatialSystem::update(float dt) {
     }
 }
 
-void SpatialSystem::setGravityDir(const glm::vec3 & dir) {
-    for (auto & comp : m_acceleratorComponents) {
-        if (dynamic_cast<GravityComponent *>(comp.get())) {
-            static_cast<GravityComponent &>(*comp.get()).setDirection(dir);
-        }
-    }
+void SpatialSystem::setGravity(const glm::vec3 & gravity) {
+    m_gravity = gravity;
 }
 
 void SpatialSystem::add(std::unique_ptr<Component> component) {

@@ -4,6 +4,7 @@
 
 #include "SpatialComponent.hpp"
 #include "Scene/Scene.hpp"
+#include "System/SpatialSystem.hpp"
 
 
 
@@ -55,9 +56,9 @@ void AcceleratorComponent::update(float dt) {
 
 
 GravityComponent::GravityComponent(NewtonianComponent & newtonian) :
-    AcceleratorComponent(newtonian, glm::vec3(0.0f, -10.0f, 0.0f))
+    AcceleratorComponent(newtonian, SpatialSystem::get().gravity())
 {}
 
-void GravityComponent::setDirection(const glm::vec3 & dir) {
-    m_acceleration = dir;
+void GravityComponent::update(float dt) {
+    m_newtonian.accelerate(SpatialSystem::get().gravity());
 }

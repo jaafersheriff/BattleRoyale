@@ -124,10 +124,13 @@ int main(int argc, char **argv) {
         }
     );
 
+    /* Set Gravity */
+    SpatialSystem::get().setGravity(glm::vec3(0.0f, -20.0f, 0.0f));
+
     /* Setup Camera */
     float camFOV(45.0f);
     float camLookSpeed(0.2f);
-    float camMoveSpeed(10.0f);
+    float camMoveSpeed(5.0f);
     GameObject & camera(scene.createGameObject());
     SpatialComponent & camSpatComp(scene.createComponent<SpatialComponent>());
     camera.addComponent(camSpatComp);
@@ -208,10 +211,7 @@ int main(int argc, char **argv) {
     auto gravSwapCallback([&](const Message & msg_) {
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
         if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_CONTROL) {
-            auto pair(CollisionSystem::get().pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir())));
-            if (pair.first && pair.first->weight() < UINT_MAX) {
-                pair.first->getGameObject()->getSpatial()->scale(glm::vec3(1.1f));
-            }
+            SpatialSystem::get().setGravity(-SpatialSystem::get().gravity());
         }
     });
     scene.addReceiver<KeyMessage>(nullptr, gravSwapCallback);

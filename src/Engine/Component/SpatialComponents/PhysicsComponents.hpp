@@ -1,3 +1,5 @@
+#pragma once
+
 #include "glm/glm.hpp"
 
 #include "Component/Component.hpp"
@@ -84,6 +86,6 @@ class GravityComponent : public AcceleratorComponent {
 
     virtual ~GravityComponent() = default;
 
-    void setDirection(const glm::vec3 & dir);
+    virtual void update(float dt) override;
 
 };

@@ -32,11 +32,13 @@ class SpatialSystem : public System {
 
     public:
 
-    virtual void init() override {}
+    virtual void init() override {};
 
     virtual void update(float dt) override;
 
-    void setGravityDir(const glm::vec3 & dir);
+    void setGravity(const glm::vec3 & gravity);
+
+    const glm::vec3 & gravity() const { return m_gravity; }
 
     private:
 
@@ -49,5 +51,6 @@ class SpatialSystem : public System {
     std::vector<std::unique_ptr<SpatialComponent>> m_spatialComponents;
     std::vector<std::unique_ptr<NewtonianComponent>> m_newtonianComponents;
     std::vector<std::unique_ptr<AcceleratorComponent>> m_acceleratorComponents;
+    glm::vec3 m_gravity = glm::vec3(0.0f, -10.0f, 0.0f);
 
 };

@@ -28,9 +28,11 @@ CameraComponent::CameraComponent(SpatialComponent & spatial, float fov) :
 void CameraComponent::init() {
     auto spatTransformCallback([&](const Message & msg_) {
         m_viewMatValid = false;
+        m_frustumValid = false;
     });
     auto spatRotationCallback([&](const Message & msg_) {
         m_viewMatValid = false;
+        m_frustumValid = false;
         detUVW();
     });
     Scene::get().addReceiver<SpatialPositionSetMessage>(getGameObject(), spatTransformCallback);
