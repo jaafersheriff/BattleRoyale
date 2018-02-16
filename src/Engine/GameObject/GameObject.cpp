@@ -22,17 +22,6 @@ void GameObject::init() {
     }
 }
 
-/* Take in a message and pass it to all components that match the sender's 
- * desired type */
-void GameObject::sendMessage(Message & msg) {
-    for (Component * c : m_allComponents) {
-        // TODO : how does message know which component to send to?
-        // if (c != nullptr && c->type == msg->type) {
-        //     c->receiveMessage(msg);
-        // }
-    }
-}
-
 const std::vector<Component *> & GameObject::getComponentsBySystem(SystemID sysID) const {
     static const std::vector<Component *> s_emptyList;
 

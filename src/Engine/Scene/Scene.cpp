@@ -102,10 +102,24 @@ void Scene::doKillQueue() {
 
 void Scene::relayMessages() {
     for (auto & message : m_messages) {
-        auto receivers(m_receivers.find(message.first));
+        GameObject * gameObject(std::get<0>(message));
+        std::type_index msgTypeI(std::get<1>(message));
+        auto & msg(std::get<2>(message));
+
+        // send object-level message
+        if (gameObject) {
+            auto receivers(gameObject->m_receivers.find(msgTypeI));
+            if (receivers != gameObject->m_receivers.end()) {
+                for (auto & receiver : receivers->second) {
+                    receiver(*msg);
+                }
+            }
+        }
+        // send scene-level message
+        auto receivers(m_receivers.find(msgTypeI));
         if (receivers != m_receivers.end()) {
             for (auto & receiver : receivers->second) {
-                receiver(*message.second);
+                receiver(*msg);
             }
         }
     }

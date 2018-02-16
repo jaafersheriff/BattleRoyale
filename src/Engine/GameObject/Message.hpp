@@ -103,8 +103,7 @@ struct SpatialRotatedMessage :  public SpatialTransformTag {
 
 // a collision occurred between the two bounders
 // there may not necessarily have been any adjustment
-// one message is sent per unique pair of colliding bounders, so it could be
-// either the first or the second
+// two messages are sent per pair of bounders, where the order of bounders is swapped
 struct CollisionMessage : public Message {
     const BounderComponent & bounder1, & bounder2;
     CollisionMessage(const BounderComponent & bounder1, const BounderComponent & bounder2) : bounder1(bounder1), bounder2(bounder2) {}
@@ -114,6 +113,14 @@ struct CollisionMessage : public Message {
 struct CollisionAdjustMessage : public Message {
     const GameObject & gameObject;
     CollisionAdjustMessage(const GameObject & gameObject) : gameObject(gameObject) {}
+};
+
+
+
+// the window was resized
+struct WindowSizeMessage : public Message {
+    int width, height;
+    WindowSizeMessage(int width, int height) : width(width), height(height) {}
 };
 
 

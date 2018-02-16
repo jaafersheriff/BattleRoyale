@@ -50,9 +50,15 @@ class Scene {
     // the scene takes ownership of the component
     template <typename CompT> CompT & addComponent(std::unique_ptr<CompT> component);
 
-    template<typename MsgT, typename... Args> void sendMessage(Args &&... args);
+    // Sends out a message for any receivers of that message type to pick up.
+    // If gameObject is not null, first sends the message locally to receivers
+    // of only that object.
+    template<typename MsgT, typename... Args> void sendMessage(GameObject * gameObject, Args &&... args);
 
-    template <typename MsgT> void addReceiver(const std::function<void (const Message &)> & receiver);
+    // Adds a receiver for a message type. If gameObject is null, the receiver
+    // will pick up all messages of that type. If gameObject is not null, the
+    // receiver will pick up only messages sent to that object
+    template <typename MsgT> void addReceiver(GameObject * gameObject, const std::function<void (const Message &)> & receiver);
 
     const std::vector<GameObject *> & getGameObjects() const { return m_gameObjectRefs; }
 
@@ -75,7 +81,7 @@ class Scene {
     std::vector<std::unique_ptr<Component>> m_componentInitQueue;
     std::vector<Component *> m_componentKillQueue;
 
-    std::vector<std::pair<std::type_index, std::unique_ptr<Message>>> m_messages;
+    std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>> m_messages;
     std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> m_receivers;
 
 };
@@ -99,13 +105,18 @@ CompT & Scene::addComponent(std::unique_ptr<CompT> component) {
 }
 
 template<typename MsgT, typename... Args>
-void Scene::sendMessage(Args &&... args) {
-    m_messages.emplace_back(typeid(MsgT), new MsgT(std::forward<Args>(args)...));
+void Scene::sendMessage(GameObject * gameObject, Args &&... args) {
+    m_messages.emplace_back(gameObject, typeid(MsgT), new MsgT(std::forward<Args>(args)...));
 }
 
 template <typename MsgT>
-void Scene::addReceiver(const std::function<void (const Message &)> & receiver) {
-    m_receivers[std::type_index(typeid(MsgT))].emplace_back(receiver);
+void Scene::addReceiver(GameObject * gameObject, const std::function<void (const Message &)> & receiver) {
+    if (gameObject) {
+        gameObject->m_receivers[std::type_index(typeid(MsgT))].emplace_back(receiver);
+    }
+    else {
+        m_receivers[std::type_index(typeid(MsgT))].emplace_back(receiver);
+    }
 }
 
 

@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <type_traits>
 #include <typeindex>
+#include <functional>
 
 #include "System/System.hpp"
 
@@ -37,8 +38,6 @@ class GameObject {
     // add a component
     template <typename CompT> void addComponent(CompT & component);
 
-    void sendMessage(Message &);
-
     // get all components;
     const std::vector<Component *> & getComponents() const { return m_allComponents; }
     // get all components belonging to a system
@@ -67,6 +66,7 @@ class GameObject {
     std::unordered_map<SystemID, std::vector<Component *>> m_compsBySysT;
     std::unordered_map<std::type_index, std::vector<Component *>> m_compsByCompT;
     SpatialComponent * m_spatialComponent;
+    std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> m_receivers;
 
 };
 

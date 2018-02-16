@@ -42,6 +42,10 @@ class CameraComponent : public Component {
         // from the +x axis as forward
         void angle(float yaw, float pitch, bool relative);
 
+        void setFOV(float fov);
+
+        void setNearFar(float near, float far);
+
         const bool sphereInFrustum(const Sphere & sphere) const;
 
         const glm::vec3 & u() const { return m_u; }
@@ -61,21 +65,7 @@ class CameraComponent : public Component {
         void detUVW();
         void detView() const;
         void detProj() const;
-
-    public:
-
-        /* Data about the view frustum */
-        float
-            farPlaneWidth, farPlaneHeight,
-            nearPlaneWidth, nearPlaneHeight;
-        /* Planes can be described by a point in space and a normal */
-        glm::vec3
-            farPlanePoint, farPlaneNormal,
-            nearPlanePoint, nearPlaneNormal,
-            topPlanePoint, topPlaneNormal,
-            bottomPlanePoint, bottomPlaneNormal,
-            leftPlanePoint, leftPlaneNormal,
-            rightPlanePoint, rightPlaneNormal;
+        void detFrustum() const;
 
     private:
 
@@ -94,6 +84,14 @@ class CameraComponent : public Component {
         mutable glm::mat4 m_projMat;
         mutable bool m_viewMatValid;
         mutable bool m_projMatValid;
+        
+        mutable glm::vec4 m_frustumLeft;
+        mutable glm::vec4 m_frustumRight;
+        mutable glm::vec4 m_frustumBottom;
+        mutable glm::vec4 m_frustumTop;
+        mutable glm::vec4 m_frustumNear;
+        mutable glm::vec4 m_frustumFar;
+        mutable bool m_frustumValid;
 };
 
 #endif

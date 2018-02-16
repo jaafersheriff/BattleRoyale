@@ -159,12 +159,12 @@ void CollisionSystem::init() {
             }
         }
     );
-    Scene::get().addReceiver<SpatialPositionSetMessage>(spatTransformCallback);
-    Scene::get().addReceiver<SpatialMovedMessage>(spatTransformCallback);
-    Scene::get().addReceiver<SpatialScaleSetMessage>(spatTransformCallback);
-    Scene::get().addReceiver<SpatialScaledMessage>(spatTransformCallback);
-    Scene::get().addReceiver<SpatialRotationSetMessage>(spatTransformCallback);
-    Scene::get().addReceiver<SpatialRotatedMessage>(spatTransformCallback);
+    Scene::get().addReceiver<SpatialPositionSetMessage>(nullptr, spatTransformCallback);
+    Scene::get().addReceiver<SpatialMovedMessage>(nullptr, spatTransformCallback);
+    Scene::get().addReceiver<SpatialScaleSetMessage>(nullptr, spatTransformCallback);
+    Scene::get().addReceiver<SpatialScaledMessage>(nullptr, spatTransformCallback);
+    Scene::get().addReceiver<SpatialRotationSetMessage>(nullptr, spatTransformCallback);
+    Scene::get().addReceiver<SpatialRotatedMessage>(nullptr, spatTransformCallback);
 }
 
 void CollisionSystem::update(float dt) {
@@ -185,7 +185,8 @@ void CollisionSystem::update(float dt) {
                 continue;
             }
             if (collide(*bounder, *other, &s_collisions)) {
-                Scene::get().sendMessage<CollisionMessage>(*bounder, *other);
+                Scene::get().sendMessage<CollisionMessage>(bounder->getGameObject(), *bounder, *other);
+                Scene::get().sendMessage<CollisionMessage>(other->getGameObject(), *other, *bounder);
             }
         }
     }
@@ -214,7 +215,7 @@ void CollisionSystem::update(float dt) {
             BounderComponent * bounder(static_cast<BounderComponent *>(comp));
             bounder->update(dt);
             m_adjusted.insert(bounder);
-            Scene::get().sendMessage<CollisionAdjustMessage>(*gameObject);
+            Scene::get().sendMessage<CollisionAdjustMessage>(gameObject, *gameObject);
         }
     }
     

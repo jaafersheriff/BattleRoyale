@@ -5,8 +5,9 @@
 
 #include <iostream> /* cout, cerr */
 
-int Window::width = DEFAULT_WIDTH;
-int Window::height = DEFAULT_HEIGHT;
+#include "Scene/Scene.hpp"
+
+GLFWwindow * Window::window = nullptr;
 bool Window::imGuiEnabled = false;
 float Window::imGuiTimer = 1.0;
 
@@ -44,6 +45,12 @@ void Window::characterCallback(GLFWwindow *window, unsigned int c) {
     }
 }
 
+void Window::framebufferSizeCallback(GLFWwindow * window, int width, int height) {
+    /* Set viewport to window size */
+    glViewport(0, 0, width, height);
+    Scene::get().sendMessage<WindowSizeMessage>(nullptr, width, height);
+}
+
 int Window::init(std::string name) {
     /* Set error callback */
     glfwSetErrorCallback(errorCallback);
@@ -61,7 +68,7 @@ int Window::init(std::string name) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
     /* Create GLFW window */
-    window = glfwCreateWindow(this->width, this->height, name.c_str(), NULL, NULL);
+    window = glfwCreateWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, name.c_str(), NULL, NULL);
     if (!window) {
         std::cerr << "Failed to create window" << std::endl;
         glfwTerminate();
@@ -70,12 +77,13 @@ int Window::init(std::string name) {
     glfwMakeContextCurrent(window);
 
     /* Init ImGui */
-    ImGui_ImplGlfwGL3_Init(this->window, false);
+    ImGui_ImplGlfwGL3_Init(window, false);
 
     /* Set callbacks */
     glfwSetKeyCallback(window, keyCallback);
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
     glfwSetCharCallback(window, characterCallback);
+    glfwSetWindowSizeCallback(window, framebufferSizeCallback);
 
     /* Init GLEW */
     glewExperimental = GL_FALSE;
@@ -101,13 +109,24 @@ void Window::setTitle(const char *name) {
     glfwSetWindowTitle(window, name);
 }
 
-void Window::update(float dt) { 
-    /* Set viewport to window size */
-    glfwGetFramebufferSize(window, &width, &height);
-    glViewport(0, 0, width, height);
+void Window::setSize(int w, int h) {
+    glfwSetWindowSize(window, w, h);
+}
 
+glm::ivec2 Window::getSize() {
+    glm::ivec2 size;
+    glfwGetFramebufferSize(window, &size.x, &size.y);
+    return size;
+}
+
+float Window::getAspectRatio() {
+    glm::ivec2 size(getSize());
+    return float(size.x) / float(size.y);
+}
+
+void Window::update(float dt) {
     /* Don't update display if window is minimized */
-    if (!width && !height) {
+    if (glfwGetWindowAttrib(window, GLFW_ICONIFIED)) {
         return;
     }
 
@@ -118,9 +137,7 @@ void Window::update(float dt) {
 
     /* Update ImGui */
     imGuiTimer += dt;
-    if (Keyboard::isKeyPressed(GLFW_KEY_GRAVE_ACCENT) && 
-       (Keyboard::isKeyPressed(GLFW_KEY_LEFT_SHIFT) || Keyboard::isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) &&
-        imGuiTimer >= 0.5) {
+    if (Keyboard::isKeyPressed(GLFW_KEY_GRAVE_ACCENT) && imGuiTimer >= 0.5) {
         toggleImGui();
         imGuiTimer = 0.0;
     }

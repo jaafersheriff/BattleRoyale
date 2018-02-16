@@ -34,41 +34,41 @@ void SpatialComponent::update(float dt) {
 void SpatialComponent::setPosition(const glm::vec3 & loc) {
     m_position = loc;
     m_modelMatrixValid = false;
-    Scene::get().sendMessage<SpatialPositionSetMessage>(*this);
+    Scene::get().sendMessage<SpatialPositionSetMessage>(getGameObject(), *this);
 }
 
 void SpatialComponent::move(const glm::vec3 & delta) {
     m_position += delta;
     m_modelMatrixValid = false;
-    Scene::get().sendMessage<SpatialMovedMessage>(*this);
+    Scene::get().sendMessage<SpatialMovedMessage>(getGameObject(), *this);
 }
 
 void SpatialComponent::setScale(const glm::vec3 & scale) {
     m_scale = scale;
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
-    Scene::get().sendMessage<SpatialScaleSetMessage>(*this);
+    Scene::get().sendMessage<SpatialScaleSetMessage>(getGameObject(), *this);
 }
 
 void SpatialComponent::scale(const glm::vec3 & factor) {
     m_scale *= factor;
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
-    Scene::get().sendMessage<SpatialScaledMessage>(*this);
+    Scene::get().sendMessage<SpatialScaledMessage>(getGameObject(), *this);
 }
 
 void SpatialComponent::setRotation(const glm::mat3 & rot) {
     m_rotation = rot;
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
-    Scene::get().sendMessage<SpatialRotationSetMessage>(*this);
+    Scene::get().sendMessage<SpatialRotationSetMessage>(getGameObject(), *this);
 }
 
 void SpatialComponent::rotate(const glm::mat3 & mat) {
     m_rotation = mat * m_rotation;
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
-    Scene::get().sendMessage<SpatialRotatedMessage>(*this);
+    Scene::get().sendMessage<SpatialRotatedMessage>(getGameObject(), *this);
 }
     
 const glm::mat4 & SpatialComponent::modelMatrix() const {

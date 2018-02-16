@@ -58,7 +58,7 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
         /* Determine if component should be culled */
         /* Only doing frustum culling if object has bounder(s) */
         /* Get the center and radius of the component */
-        const std::vector<Component *> & bounders(drc->getGameObject()->getComponentsBySystem(SystemID::collision));
+        /*const std::vector<Component *> & bounders(drc->getGameObject()->getComponentsBySystem(SystemID::collision));
         if (bounders.size()) {
             bool inFrustum(false);
             for (Component * bounder_ : bounders) {
@@ -71,7 +71,7 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
             if (!inFrustum) {
                 continue;
             }
-        }
+        }*/
 
         /* Model matrix */
         loadMat4(getUniform("M"), drc->getGameObject()->getSpatial()->modelMatrix());
