@@ -1,5 +1,4 @@
 #include "ParticleEffect.hpp"
-#include <GLFW/glfw3.h>
 
 ParticleEffect::ParticleEffect(int type, int total, double duration, glm::vec3 origin) :
     type(type),
@@ -9,8 +8,7 @@ ParticleEffect::ParticleEffect(int type, int total, double duration, glm::vec3 o
     life(0),
     toDie(false),
     particles(generateParticles()),
-    tData(0.f),
-    t(glfwGetTime())
+    tData(0.f)
 {
 }
 
@@ -24,9 +22,7 @@ std::vector<Particle> ParticleEffect::generateParticles() {
     return vp;
 }
 
-void ParticleEffect::update() {
-    double dt = glfwGetTime() - t;
-    t += dt;
+void ParticleEffect::update(float dt) {
     life += dt;
     tData = life / duration;
     if (life < duration && !toDie) {
@@ -36,12 +32,5 @@ void ParticleEffect::update() {
     }
     else {
         toDie = true;
-    }
-}
-
-void ParticleEffect::die() {
-    // Just die
-    for (int i = 0; i < total; i++) {
-        particles[i].die();
     }
 }

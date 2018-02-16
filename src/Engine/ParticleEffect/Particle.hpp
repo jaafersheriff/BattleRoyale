@@ -16,7 +16,6 @@ class Particle {
         Particle(int type, int i, int total, glm::vec3 origin);
 
         void Particle::update(double tData);
-        void Particle::die();
         void Particle::updateMovement(double tData);
         glm::vec3 Particle::sphereMove(double tData);
         glm::vec3 Particle::sphereExplode(double tData);

@@ -1,5 +1,4 @@
 #include "Particle.hpp"
-#include <GLFW/glfw3.h>
 #include <glm/gtc/constants.hpp>
 
 Particle::Particle(int type, int i, int total, glm::vec3 origin) :
@@ -14,10 +13,6 @@ Particle::Particle(int type, int i, int total, glm::vec3 origin) :
 void Particle::update(double tData) {
  
     updateMovement(tData);
-}
-
-void Particle::die() {
-    // Just Die
 }
 
 void Particle::updateMovement(double tData) {

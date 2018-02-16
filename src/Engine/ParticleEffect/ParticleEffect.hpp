@@ -20,21 +20,19 @@ class ParticleEffect {
         int type;
         int total;
         double duration;
-		glm::vec3 origin;
-		double life;
+        glm::vec3 origin;
+        double life;
         bool toDie;
 
         std::vector<Particle> particles;
         float tData;
-        double t;
 
         /* Constructors */
         ParticleEffect(int type, int n, double duration, glm::vec3 origin);
 
         std::vector<Particle> ParticleEffect::generateParticles();
 
-        void ParticleEffect::die();
-        void ParticleEffect::update();
+        void ParticleEffect::update(float dt);
 };
 
 #endif // !_PARTICLEEFFECT_HPP_

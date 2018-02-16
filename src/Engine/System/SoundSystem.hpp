@@ -15,32 +15,32 @@ class SoundComponent;
 
 class SoundSystem : public System {
 
-	friend Scene;
-	/* Attributes */
-	public:
-		std::vector<std::string> soundfiles = {
-			"drill.wav",
-			"doorbump.wav",
-			"softbump.wav"
-		};
-	#ifdef HAVE_FMOD_LIBRARY
-		FMOD::System *m_system = NULL;
-	#endif
+    friend Scene;
+    /* Attributes */
+    public:
+        std::vector<std::string> soundfiles = {
+            "drill.wav",
+            "doorbump.wav",
+            "softbump.wav"
+        };
+    #ifdef HAVE_FMOD_LIBRARY
+        FMOD::System *m_system = NULL;
+    #endif
+
+    private:
+        std::string SOUND_DIR;
+
+    /* Constructor */
+    public:
+        SoundSystem(const std::vector<Component *> & components);
 
 	private:
-		std::string SOUND_DIR;
-
-	/* Constructor */
-	public:
-		SoundSystem(const std::vector<Component *> & components);
-	
-	private:
-		/* Functions */
-		void update(float dt);
-		void setupSoundComponent(SoundComponent *c);
-	#ifdef HAVE_FMOD_LIBRARY
-		FMOD::Sound* createSound(std::string soundfilename);
-		void playSound(int sid);
-	#endif
+        /* Functions */
+        void update(float dt);
+        void setupSoundComponent(SoundComponent *c);
+    #ifdef HAVE_FMOD_LIBRARY
+        FMOD::Sound* createSound(std::string soundfilename);
+	    void playSound(int sid);
+    #endif
 };
 #endif
