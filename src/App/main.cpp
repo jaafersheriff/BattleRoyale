@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
     GameObject & player(scene.createGameObject());
     SpatialComponent & playerSpatComp(scene.createComponent<SpatialComponent>());
     player.addComponent(playerSpatComp);
-    playerSpatComp.setPosition(glm::vec3(0.0f, 10.0f, 0.0f));
+    playerSpatComp.setPosition(glm::vec3(-4.0f, 6.0f, 0.0f));
     Capsule playerCap(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth);
     CapsuleBounderComponent & playerBoundComp(scene.createComponent<CapsuleBounderComponent>(*player.getSpatial(), 1, playerCap));
     player.addComponent(playerBoundComp);
