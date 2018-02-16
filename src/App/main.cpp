@@ -144,7 +144,7 @@ int main(int argc, char **argv) {
     float playerFOV(camFOV);
     float playerLookSpeed(camLookSpeed);
     float playerMoveSpeed(camMoveSpeed);
-    float playerMaxSpeed(10.0f);
+    float playerMaxSpeed(100.0f);
     GameObject & player(scene.createGameObject());
     SpatialComponent & playerSpatComp(scene.createComponent<SpatialComponent>());
     player.addComponent(playerSpatComp);
