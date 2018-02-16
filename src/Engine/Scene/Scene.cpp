@@ -8,6 +8,7 @@ Scene::Scene() :
     m_spatialSystem(),
     m_collisionSystem(),
     m_pathfindingSystem(),
+    m_soundSystem(),
     m_gameObjectsStore(),
     m_gameObjectRefs(),
     m_componentsStore(),
@@ -40,6 +41,10 @@ Scene::Scene() :
     sysI = typeid(PathfindingSystem);
     m_compRefsBySysT[sysI].reset(new std::vector<Component *>());
     m_pathfindingSystem.reset(new PathfindingSystem(*m_compRefsBySysT[sysI]));
+
+    sysI = typeid(SoundSystem);
+    m_compRefsBySysT[sysI].reset(new std::vector<Component *>());
+    m_soundSystem.reset(new SoundSystem(*m_compRefsBySysT[sysI]));
 }
 
 GameObject & Scene::createGameObject() {
@@ -55,6 +60,7 @@ void Scene::update(float dt) {
     m_pathfindingSystem->update(dt);
     m_spatialSystem->update(dt); // needs to happen before collision
     m_collisionSystem->update(dt);
+    m_soundSystem->update(dt);
     m_renderSystem->update(dt); // rendering should be last
 
     doKillQueue();

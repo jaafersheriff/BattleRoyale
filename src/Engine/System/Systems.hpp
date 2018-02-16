@@ -7,3 +7,4 @@
 #include "SpatialSystem.hpp"
 #include "PathfindingSystem.hpp"
 #include "CollisionSystem.hpp"
+#include "SoundSystem.hpp"
