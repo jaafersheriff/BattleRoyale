@@ -103,10 +103,11 @@ else()
       message(STATUS "Using .lib files")
     endif()
   else()
-    target_link_libraries(${CMAKE_PROJECT_NAME} ${FMOD_DIR}/api/studio/lib/libfmodstudio.a)
-    target_link_libraries(${CMAKE_PROJECT_NAME} ${FMOD_DIR}/api/lowlevel/lib/libfmod.a)
+    target_link_libraries(${CMAKE_PROJECT_NAME} ${FMOD_DIR}/api/studio/lib/libfmodstudio.so)
+    target_link_libraries(${CMAKE_PROJECT_NAME} ${FMOD_DIR}/api/lowlevel/lib/libfmod.so)
   endif()
 endif()
+
 # OS specific options and libraries
 if(WIN32)
   # c++0x is enabled by default.
