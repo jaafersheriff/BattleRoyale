@@ -1,16 +1,16 @@
 {
 "object0":{
     "objName": "Assets/Models/Window.obj",
-    "objTexture": "Assets/Models/Blue_Tex.png",
+    "objTexture": "Assets/Models/window_tex.png",
     "position": [
-        0.600006103515625,
-        12.100000381469727,
-        -31.000015258789064
+        -26.174999237060548,
+        6.062465667724609,
+        -26.675552368164064
     ],
     "scale": [
-        1.8382761478424073,
-        4.126282691955566,
-        5.5822062492370609
+        0.4595709443092346,
+        1.0315706729888917,
+        0.6214255690574646
     ],
     "rotMat3_0": [
         1.7881393432617188e-7,
@@ -29,75 +29,17 @@
     ]
 },
 "object1":{
-    "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objName": "Assets/Models/Bench.obj",
+    "objTexture": "Assets/Models/Bench_Tex.png",
     "position": [
-        -23.79999542236328,
-        4.539861679077148,
-        22.69219970703125
+        -36.0099983215332,
+        4.860000133514404,
+        26.170000076293947
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
-    ],
-    "rotMat3_0": [
-        -1.0,
-        0.0,
-        -8.742277657347586e-8
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        8.742277657347586e-8,
-        0.0,
-        -1.0
-    ]
-},
-"object2":{
-    "objName": "Assets/Models/Stage Pieces/Roof.obj",
-    "objTexture": "Assets/Models/Blue_Tex.png",
-    "position": [
-        1.100006103515625,
-        86.94985961914063,
-        142.2021942138672
-    ],
-    "scale": [
-        299.3202209472656,
-        409.3450927734375,
-        409.3455810546875
-    ],
-    "rotMat3_0": [
-        1.7881393432617188e-7,
-        0.0,
-        0.9999999403953552
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        -0.9999999403953552,
-        0.0,
-        1.7881393432617188e-7
-    ]
-},
-"object3":{
-    "objName": "Assets/Models/Tray.obj",
-    "objTexture": "Assets/Models/Blue_Tex.png",
-    "position": [
-        27.970001220703126,
-        -27.2701358795166,
-        231.19219970703126
-    ],
-    "scale": [
-        0.2844212055206299,
-        0.2844212055206299,
-        0.2844212055206299
+        0.3364526927471161,
+        0.3364526331424713,
+        0.3364526331424713
     ],
     "rotMat3_0": [
         5.960464477539063e-8,
@@ -115,18 +57,76 @@
         5.960464477539063e-8
     ]
 },
-"object4":{
-    "objName": "Assets/Models/GarbageCan.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
+"object2":{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        27.970001220703126,
-        -39.040000915527347,
-        232.02999877929688
+        -24.5,
+        4.172430992126465,
+        -13.252498626708985
     ],
     "scale": [
+        0.25,
+        0.25,
+        0.25
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
         1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"object3":{
+    "objName": "Assets/Models/Stage Pieces/Roof.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "position": [
+        -18.27499771118164,
+        24.774930953979493,
+        16.625
+    ],
+    "scale": [
+        74.8302993774414,
+        102.33627319335938,
+        102.33688354492188
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
         1.0,
-        1.0
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"object4":{
+    "objName": "Assets/Models/Tray.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "position": [
+        -11.557498931884766,
+        -3.7800683975219728,
+        38.87249755859375
+    ],
+    "scale": [
+        0.07110553979873657,
+        0.07110530138015747,
+        0.07110553979873657
     ],
     "rotMat3_0": [
         5.960464477539063e-8,
@@ -145,22 +145,22 @@
     ]
 },
 "object5":{
-    "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objName": "Assets/Models/GarbageCan.obj",
+    "objTexture": "Assets/Models/FFCounter_Tex.png",
     "position": [
-        -34.79999542236328,
-        -0.7701377868652344,
-        231.8721923828125
+        -11.557498931884766,
+        -6.722535133361816,
+        39.081947326660159
     ],
     "scale": [
-        10.823383331298829,
-        0.2762221395969391,
-        0.4601340889930725
+        0.2500009536743164,
+        0.25,
+        0.2500009536743164
     ],
     "rotMat3_0": [
-        -1.0,
+        5.960464477539063e-8,
         0.0,
-        -8.742277657347586e-8
+        -0.9999999403953552
     ],
     "rotMat3_1": [
         0.0,
@@ -168,23 +168,23 @@
         0.0
     ],
     "rotMat3_2": [
-        8.742277657347586e-8,
+        0.9999999403953552,
         0.0,
-        -1.0
+        5.960464477539063e-8
     ]
 },
 "object6":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -34.79999542236328,
-        -3.4501380920410158,
-        239.81219482421876
+        -27.249998092651368,
+        2.844931125640869,
+        39.042503356933597
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.705845832824707,
+        0.06905553489923477,
+        0.11503352224826813
     ],
     "rotMat3_0": [
         -1.0,
@@ -204,16 +204,16 @@
 },
 "object7":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -34.79999542236328,
-        -6.140138626098633,
-        247.8221893310547
+        -27.249998092651368,
+        2.174931049346924,
+        41.027496337890628
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -233,16 +233,16 @@
 },
 "object8":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -34.79999542236328,
-        -8.820138931274414,
-        255.76219177246095
+        -27.249998092651368,
+        1.5024309158325196,
+        43.029998779296878
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -262,16 +262,16 @@
 },
 "object9":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -34.79999542236328,
-        -10.90013313293457,
-        263.71221923828127
+        -27.249998092651368,
+        0.8324308395385742,
+        45.01499938964844
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -291,16 +291,16 @@
 },
 "object10":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -34.79999542236328,
-        -13.580133438110352,
-        271.6522216796875
+        -27.249998092651368,
+        0.31243228912353518,
+        47.00250244140625
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -320,16 +320,16 @@
 },
 "object11":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -34.79999542236328,
-        -16.2701358795166,
-        279.6622009277344
+        -27.249998092651368,
+        -0.35756778717041018,
+        48.98750305175781
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -349,16 +349,16 @@
 },
 "object12":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -34.79999542236328,
-        -18.950136184692384,
-        287.6022033691406
+        -27.249998092651368,
+        -1.0300683975219727,
+        50.98999786376953
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -378,16 +378,16 @@
 },
 "object13":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        0.40000152587890627,
-        -21.250139236450197,
-        305.9921875
+        -27.249998092651368,
+        -1.700068473815918,
+        52.974998474121097
     ],
     "scale": [
-        45.365760803222659,
-        0.2762199938297272,
-        1.7119182348251343
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -407,16 +407,16 @@
 },
 "object14":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        37.30000305175781,
-        -0.7701377868652344,
-        231.8721923828125
+        -18.44999885559082,
+        -2.275069236755371,
+        57.57250213623047
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        11.341440200805664,
+        0.0690549984574318,
+        0.42797955870628359
     ],
     "rotMat3_0": [
         -1.0,
@@ -436,16 +436,16 @@
 },
 "object15":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        37.30000305175781,
-        -3.4501380920410158,
-        239.81219482421876
+        -9.224998474121094,
+        2.844931125640869,
+        39.042503356933597
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -465,16 +465,16 @@
 },
 "object16":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        37.30000305175781,
-        -6.140138626098633,
-        247.8221893310547
+        -9.224998474121094,
+        2.174931049346924,
+        41.027503967285159
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -494,16 +494,16 @@
 },
 "object17":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        37.30000305175781,
-        -8.820138931274414,
-        255.76219177246095
+        -9.224998474121094,
+        1.5024309158325196,
+        43.029998779296878
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -523,16 +523,16 @@
 },
 "object18":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        37.30000305175781,
-        -10.90013313293457,
-        263.71221923828127
+        -9.224998474121094,
+        0.8324308395385742,
+        45.01499938964844
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -552,16 +552,16 @@
 },
 "object19":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        37.30000305175781,
-        -13.580133438110352,
-        271.6522216796875
+        -9.224998474121094,
+        0.31243228912353518,
+        47.00251007080078
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -581,16 +581,16 @@
 },
 "object20":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        37.30000305175781,
-        -16.2701358795166,
-        279.6622009277344
+        -9.224998474121094,
+        -0.35756778717041018,
+        48.987510681152347
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -610,16 +610,16 @@
 },
 "object21":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        37.30000305175781,
-        -18.950136184692384,
-        287.6022033691406
+        -9.224998474121094,
+        -1.0300683975219727,
+        50.98999786376953
     ],
     "scale": [
-        10.823379516601563,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         -1.0,
@@ -639,21 +639,21 @@
 },
 "object22":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        1.1710052490234376,
-        -21.620141983032228,
-        286.8869934082031
+        -9.224998474121094,
+        -1.700068473815918,
+        52.974998474121097
     ],
     "scale": [
-        20.861207962036134,
-        0.2762199938297272,
-        0.460129976272583
+        2.7058448791503908,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
-        1.0,
+        -1.0,
         0.0,
-        1.7484555314695172e-7
+        -8.742277657347586e-8
     ],
     "rotMat3_1": [
         0.0,
@@ -661,23 +661,23 @@
         0.0
     ],
     "rotMat3_2": [
-        -1.7484555314695172e-7,
+        8.742277657347586e-8,
         0.0,
-        1.0
+        -1.0
     ]
 },
 "object23":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        1.3230056762695313,
-        -24.300142288208009,
-        278.9607238769531
+        -18.257247924804689,
+        -2.367569923400879,
+        52.79619598388672
     ],
     "scale": [
-        20.861207962036134,
-        0.2762199938297272,
-        0.460129976272583
+        5.215301990509033,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         1.0,
@@ -697,16 +697,16 @@
 },
 "object24":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        1.35400390625,
-        -26.990144729614259,
-        270.96466064453127
+        -18.219247817993165,
+        -3.037569999694824,
+        50.81462860107422
     ],
     "scale": [
-        20.861207962036134,
-        0.2762199938297272,
-        0.460129976272583
+        5.215301990509033,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         1.0,
@@ -726,16 +726,16 @@
 },
 "object25":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        1.1760025024414063,
-        -29.67014503479004,
-        263.0384216308594
+        -18.211498260498048,
+        -3.7100706100463869,
+        48.81562042236328
     ],
     "scale": [
-        20.861207962036134,
-        0.2762199938297272,
-        0.460129976272583
+        5.215301990509033,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         1.0,
@@ -755,16 +755,16 @@
 },
 "object26":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        1.1970062255859376,
-        -31.750139236450197,
-        255.10218811035157
+        -18.255998611450197,
+        -4.380070686340332,
+        46.83405303955078
     ],
     "scale": [
-        20.861207962036134,
-        0.2762199938297272,
-        0.460129976272583
+        5.215301990509033,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         1.0,
@@ -784,16 +784,16 @@
 },
 "object27":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        1.2910003662109376,
-        -34.430137634277347,
-        247.17591857910157
+        -18.250747680664064,
+        -4.900069236755371,
+        44.849998474121097
     ],
     "scale": [
-        20.861207962036134,
-        0.2762199938297272,
-        0.460129976272583
+        5.215301990509033,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         1.0,
@@ -813,16 +813,16 @@
 },
 "object28":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        1.3120040893554688,
-        -37.120140075683597,
-        239.17979431152345
+        -18.227249145507814,
+        -5.570069313049316,
+        42.868431091308597
     ],
     "scale": [
-        20.861207962036134,
-        0.2762199938297272,
-        0.460129976272583
+        5.215301990509033,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         1.0,
@@ -842,16 +842,16 @@
 },
 "object29":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        1.2490005493164063,
-        -39.800140380859378,
-        231.25364685058595
+        -18.22199821472168,
+        -6.242569923400879,
+        40.86940002441406
     ],
     "scale": [
-        20.861207962036134,
-        0.2762199938297272,
-        0.460129976272583
+        5.215301990509033,
+        0.0690549984574318,
+        0.11503249406814575
     ],
     "rotMat3_0": [
         1.0,
@@ -871,16 +871,45 @@
 },
 "object30":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        0.0,
-        -87.7901382446289,
-        -38.29780578613281
+        -18.237749099731447,
+        -6.912569999694824,
+        38.88786315917969
     ],
     "scale": [
-        7.440121650695801,
-        13.114656448364258,
-        17.172677993774415
+        5.215301990509033,
+        0.0690549984574318,
+        0.11503249406814575
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"object31":{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "position": [
+        -18.549999237060548,
+        -18.91006851196289,
+        -28.5
+    ],
+    "scale": [
+        1.8600380420684815,
+        3.2786641120910646,
+        4.293184757232666
     ],
     "rotMat3_0": [
         1.7881393432617188e-7,
@@ -898,47 +927,18 @@
         1.7881393432617188e-7
     ]
 },
-"object31":{
-    "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
-    "position": [
-        -108.79999542236328,
-        -87.7901382446289,
-        141.80218505859376
-    ],
-    "scale": [
-        7.440123558044434,
-        13.114652633666993,
-        22.238243103027345
-    ],
-    "rotMat3_0": [
-        -1.0,
-        0.0,
-        -8.742277657347586e-8
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        8.742277657347586e-8,
-        0.0,
-        -1.0
-    ]
-},
 "object32":{
-    "objName": "Assets/Models/Stage Pieces/Ceiling.obj",
-    "objTexture": "Assets/Models/Blue_Tex.png",
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
     "position": [
-        3.3000030517578127,
-        -138.8501434326172,
-        142.10220336914063
+        -45.75,
+        -18.91006851196289,
+        16.525001525878908
     ],
     "scale": [
-        8.194823265075684,
-        9.234054565429688,
-        16.592065811157228
+        1.8600308895111085,
+        3.278663158416748,
+        5.559560775756836
     ],
     "rotMat3_0": [
         -1.0,
@@ -957,17 +957,17 @@
     ]
 },
 "object33":{
-    "objName": "Assets/Models/Stage Pieces/Floor2.obj",
+    "objName": "Assets/Models/Stage Pieces/Ceiling.obj",
     "objTexture": "Assets/Models/Blue_Tex.png",
     "position": [
-        1.0999984741210938,
-        1.5760993957519532,
-        -8.199996948242188
+        -17.724998474121095,
+        -31.675067901611329,
+        16.599998474121095
     ],
     "scale": [
-        2.010014057159424,
-        2.010014057159424,
-        2.010014057159424
+        2.048705816268921,
+        2.308513641357422,
+        4.148016452789307
     ],
     "rotMat3_0": [
         -1.0,
@@ -986,46 +986,17 @@
     ]
 },
 "object34":{
-    "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "objName": "Assets/Models/Stage Pieces/Floor2.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
     "position": [
-        -0.1999969482421875,
-        -87.7901382446289,
-        327.30218505859377
+        -18.274999618530275,
+        3.431490421295166,
+        -20.975547790527345
     ],
     "scale": [
-        7.440123558044434,
-        13.114652633666993,
-        17.17269515991211
-    ],
-    "rotMat3_0": [
-        1.7881393432617188e-7,
-        0.0,
-        0.9999999403953552
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        -0.9999999403953552,
-        0.0,
-        1.7881393432617188e-7
-    ]
-},
-"object35":{
-    "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
-    "position": [
-        109.30000305175781,
-        -87.7901382446289,
-        141.80218505859376
-    ],
-    "scale": [
-        7.440119743347168,
-        13.114652633666993,
-        22.238239288330079
+        0.502503514289856,
+        0.502503514289856,
+        0.502503514289856
     ],
     "rotMat3_0": [
         -1.0,
@@ -1043,18 +1014,47 @@
         -1.0
     ]
 },
-"object36":{
-    "objName": "Assets/Models/PottedPlant.obj",
-    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+"object35":{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
     "position": [
-        1.8899993896484376,
-        -38.09014129638672,
-        45.10218811035156
+        -18.599998474121095,
+        -18.91006851196289,
+        62.900001525878909
     ],
     "scale": [
-        0.6869300007820129,
-        0.6869300007820129,
-        0.6869300007820129
+        1.8600385189056397,
+        3.278663158416748,
+        4.29318904876709
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"object36":{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "position": [
+        8.775001525878907,
+        -18.91006851196289,
+        16.525001525878908
+    ],
+    "scale": [
+        1.860029935836792,
+        3.278663158416748,
+        5.5595598220825199
     ],
     "rotMat3_0": [
         -1.0,
@@ -1073,17 +1073,17 @@
     ]
 },
 "object37":{
-    "objName": "Assets/Models/Pillar.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
     "position": [
-        -34.6199951171875,
-        -48.550132751464847,
-        6.1421966552734379
+        -18.389999389648439,
+        -6.485069274902344,
+        -7.099999904632568
     ],
     "scale": [
-        2.9933483600616457,
-        3.47118878364563,
-        2.9933485984802248
+        0.5495890378952026,
+        0.5495890378952026,
+        0.5495890378952026
     ],
     "rotMat3_0": [
         -1.0,
@@ -1102,17 +1102,17 @@
     ]
 },
 "object38":{
-    "objName": "Assets/Models/table.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "objName": "Assets/Models/Pillar.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        2.9000015258789064,
-        -37.90013885498047,
-        19.30218505859375
+        -27.204998016357423,
+        -9.100068092346192,
+        -17.389999389648439
     ],
     "scale": [
-        0.6958699822425842,
-        0.6958699822425842,
-        0.6958699822425842
+        0.7483370900154114,
+        0.8677971959114075,
+        0.7483371496200562
     ],
     "rotMat3_0": [
         -1.0,
@@ -1132,16 +1132,16 @@
 },
 "object39":{
     "objName": "Assets/Models/table.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "objTexture": "Assets/Models/Table_Tex.png",
     "position": [
-        23.5,
-        -37.90013885498047,
-        19.30218505859375
+        -12.510000228881836,
+        -5.630000114440918,
+        -13.349998474121094
     ],
     "scale": [
-        0.6958699822425842,
-        0.6958699822425842,
-        0.6958699822425842
+        0.2567732334136963,
+        0.25677329301834109,
+        0.25677329301834109
     ],
     "rotMat3_0": [
         -1.0,
@@ -1160,17 +1160,17 @@
     ]
 },
 "object40":{
-    "objName": "Assets/Models/table.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "objName": "Assets/Models/Pillar.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -19.099998474121095,
-        -37.90013885498047,
-        19.30218505859375
+        -9.874998092651368,
+        -9.100068092346192,
+        -17.389999389648439
     ],
     "scale": [
-        0.6958699822425842,
-        0.6958699822425842,
-        0.6958699822425842
+        0.7483375072479248,
+        0.8677974939346314,
+        0.7483375072479248
     ],
     "rotMat3_0": [
         -1.0,
@@ -1189,17 +1189,17 @@
     ]
 },
 "object41":{
-    "objName": "Assets/Models/table.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "objName": "Assets/Models/Pillar.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        23.5,
-        -37.90013885498047,
-        44.002197265625
+        -27.204998016357423,
+        -9.100068092346192,
+        2.240000009536743
     ],
     "scale": [
-        0.6958699822425842,
-        0.6958699822425842,
-        0.6958699822425842
+        0.7483375072479248,
+        0.8677974939346314,
+        0.7483375072479248
     ],
     "rotMat3_0": [
         -1.0,
@@ -1218,17 +1218,17 @@
     ]
 },
 "object42":{
-    "objName": "Assets/Models/table.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "objName": "Assets/Models/Pillar.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -19.099998474121095,
-        -37.90013885498047,
-        44.002197265625
+        -9.874998092651368,
+        -9.100068092346192,
+        2.240000009536743
     ],
     "scale": [
-        0.6958699822425842,
-        0.6958699822425842,
-        0.6958699822425842
+        0.7483375072479248,
+        0.8677974939346314,
+        0.7483375072479248
     ],
     "rotMat3_0": [
         -1.0,
@@ -1247,17 +1247,17 @@
     ]
 },
 "object43":{
-    "objName": "Assets/Models/table.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
     "position": [
-        2.9000015258789064,
-        -37.90013885498047,
-        71.20219421386719
+        -9.722497940063477,
+        -6.510068893432617,
+        38.74579620361328
     ],
     "scale": [
-        0.6958699822425842,
-        0.6958699822425842,
-        0.6958699822425842
+        0.3722514808177948,
+        0.37225136160850527,
+        0.37225136160850527
     ],
     "rotMat3_0": [
         -1.0,
@@ -1276,17 +1276,17 @@
     ]
 },
 "object44":{
-    "objName": "Assets/Models/table.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "objName": "Assets/Models/Cup.obj",
+    "objTexture": "Assets/Models/CashRegister_Tex.png",
     "position": [
-        23.5,
-        -37.90013885498047,
-        71.20219421386719
+        -11.32499885559082,
+        -3.7543182373046877,
+        38.7535400390625
     ],
     "scale": [
-        0.6958699822425842,
-        0.6958699822425842,
-        0.6958699822425842
+        0.11949076503515244,
+        0.11949072033166886,
+        0.11949072033166886
     ],
     "rotMat3_0": [
         -1.0,
@@ -1305,22 +1305,22 @@
     ]
 },
 "object45":{
-    "objName": "Assets/Models/table.obj",
+    "objName": "Assets/Models/GarbageCan.obj",
     "objTexture": "Assets/Models/FFCounter_Tex.png",
     "position": [
-        -19.099998474121095,
-        -37.90013885498047,
-        71.20219421386719
+        -25.224998474121095,
+        -6.722535133361816,
+        39.081947326660159
     ],
     "scale": [
-        0.6958699822425842,
-        0.6958699822425842,
-        0.6958699822425842
+        0.25000107288360598,
+        0.25,
+        0.25000107288360598
     ],
     "rotMat3_0": [
-        -1.0,
+        5.960464477539063e-8,
         0.0,
-        -8.742277657347586e-8
+        -0.9999999403953552
     ],
     "rotMat3_1": [
         0.0,
@@ -1328,23 +1328,23 @@
         0.0
     ],
     "rotMat3_2": [
-        8.742277657347586e-8,
+        0.9999999403953552,
         0.0,
-        -1.0
+        5.960464477539063e-8
     ]
 },
 "object46":{
-    "objName": "Assets/Models/Pillar.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
     "position": [
-        34.70000457763672,
-        -48.550132751464847,
-        6.1421966552734379
+        -27.32499885559082,
+        -6.510069847106934,
+        38.74579620361328
     ],
     "scale": [
-        2.993350028991699,
-        3.4711899757385256,
-        2.993350028991699
+        0.372252494096756,
+        0.372252494096756,
+        0.372252494096756
     ],
     "rotMat3_0": [
         -1.0,
@@ -1364,16 +1364,16 @@
 },
 "object47":{
     "objName": "Assets/Models/Pillar.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -34.6199951171875,
-        -48.550132751464847,
-        88.20219421386719
+        -27.204998016357423,
+        -9.100068092346192,
+        24.399999618530275
     ],
     "scale": [
-        2.993350028991699,
-        3.4711899757385256,
-        2.993350028991699
+        0.7483375072479248,
+        0.8677974939346314,
+        0.7483375072479248
     ],
     "rotMat3_0": [
         -1.0,
@@ -1393,16 +1393,16 @@
 },
 "object48":{
     "objName": "Assets/Models/Pillar.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        34.70000457763672,
-        -48.550132751464847,
-        88.20219421386719
+        -9.874998092651368,
+        -9.100068092346192,
+        24.399999618530275
     ],
     "scale": [
-        2.993350028991699,
-        3.4711899757385256,
-        2.993350028991699
+        0.7483375072479248,
+        0.8677974939346314,
+        0.7483375072479248
     ],
     "rotMat3_0": [
         -1.0,
@@ -1421,17 +1421,17 @@
     ]
 },
 "object49":{
-    "objName": "Assets/Models/PottedPlant.obj",
-    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "objName": "Assets/Models/Pillar.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        35.31000518798828,
-        -38.19013977050781,
-        230.68539428710938
+        -27.204998016357423,
+        -9.100068092346192,
+        34.07499694824219
     ],
     "scale": [
-        1.4890059232711793,
-        1.489005446434021,
-        1.489005446434021
+        0.7483375072479248,
+        0.8677974939346314,
+        0.7483375072479248
     ],
     "rotMat3_0": [
         -1.0,
@@ -1450,17 +1450,17 @@
     ]
 },
 "object50":{
-    "objName": "Assets/Models/Cup.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objName": "Assets/Models/Pillar.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        28.900001525878908,
-        -27.16713523864746,
-        230.7163543701172
+        -9.874998092651368,
+        -9.100068092346192,
+        34.07500457763672
     ],
     "scale": [
-        0.47796306014060976,
-        0.4779628813266754,
-        0.4779628813266754
+        0.7483375072479248,
+        0.8677974939346314,
+        0.7483375072479248
     ],
     "rotMat3_0": [
         -1.0,
@@ -1479,22 +1479,22 @@
     ]
 },
 "object51":{
-    "objName": "Assets/Models/GarbageCan.obj",
-    "objTexture": "Assets/Models/FFCounter_Tex.png",
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -26.699996948242189,
-        -39.040000915527347,
-        232.02999877929688
+        -24.5,
+        4.172430992126465,
+        -9.220001220703125
     ],
     "scale": [
-        1.0000004768371583,
-        1.0,
-        1.0000004768371583
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
-        5.960464477539063e-8,
+        -1.0,
         0.0,
-        -0.9999999403953552
+        -8.742277657347586e-8
     ],
     "rotMat3_1": [
         0.0,
@@ -1502,23 +1502,23 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9999999403953552,
+        8.742277657347586e-8,
         0.0,
-        5.960464477539063e-8
+        -1.0
     ]
 },
 "object52":{
-    "objName": "Assets/Models/PottedPlant.obj",
-    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -35.099998474121097,
-        -38.19013977050781,
-        230.68539428710938
+        -24.5,
+        4.172430992126465,
+        -5.194999694824219
     ],
     "scale": [
-        1.489009976387024,
-        1.489009976387024,
-        1.489009976387024
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1537,17 +1537,17 @@
     ]
 },
 "object53":{
-    "objName": "Assets/Models/Pillar.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -34.6199951171875,
-        -48.550132751464847,
-        129.94219970703126
+        -24.5,
+        4.172430992126465,
+        -1.1624984741210938
     ],
     "scale": [
-        2.993350028991699,
-        3.4711899757385256,
-        2.993350028991699
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1566,17 +1566,17 @@
     ]
 },
 "object54":{
-    "objName": "Assets/Models/Pillar.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        34.70000457763672,
-        -48.550132751464847,
-        129.94219970703126
+        -24.5,
+        4.172430992126465,
+        2.8400039672851564
     ],
     "scale": [
-        2.993350028991699,
-        3.4711899757385256,
-        2.993350028991699
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1595,17 +1595,17 @@
     ]
 },
 "object55":{
-    "objName": "Assets/Models/Pillar.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -34.6199951171875,
-        -48.550132751464847,
-        212.002197265625
+        -24.5,
+        4.172430992126465,
+        6.87249755859375
     ],
     "scale": [
-        2.993350028991699,
-        3.4711899757385256,
-        2.993350028991699
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1624,17 +1624,17 @@
     ]
 },
 "object56":{
-    "objName": "Assets/Models/Pillar.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        34.70000457763672,
-        -48.550132751464847,
-        212.002197265625
+        -24.5,
+        4.172430992126465,
+        10.897499084472657
     ],
     "scale": [
-        2.993350028991699,
-        3.4711899757385256,
-        2.993350028991699
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1654,16 +1654,16 @@
 },
 "object57":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -23.79999542236328,
-        4.539861679077148,
-        38.82218933105469
+        -24.5,
+        4.172430992126465,
+        14.930000305175782
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1683,16 +1683,16 @@
 },
 "object58":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -23.79999542236328,
-        4.539861679077148,
-        54.92219543457031
+        -24.5,
+        4.172430992126465,
+        18.907501220703126
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1712,16 +1712,16 @@
 },
 "object59":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -23.79999542236328,
-        4.539861679077148,
-        71.05218505859375
+        -24.5,
+        4.172430992126465,
+        22.93250274658203
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1741,16 +1741,16 @@
 },
 "object60":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -23.79999542236328,
-        4.539861679077148,
-        87.06219482421875
+        -24.5,
+        4.172430992126465,
+        26.965003967285158
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1770,16 +1770,16 @@
 },
 "object61":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -23.79999542236328,
-        4.539861679077148,
-        103.19218444824219
+        -24.5,
+        4.172430992126465,
+        30.967506408691408
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1799,16 +1799,16 @@
 },
 "object62":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -23.79999542236328,
-        4.539861679077148,
-        119.29219055175781
+        -24.5,
+        4.172430992126465,
+        35.0
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1828,16 +1828,16 @@
 },
 "object63":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -23.79999542236328,
-        4.539861679077148,
-        135.42218017578126
+        -11.924999237060547,
+        4.172430992126465,
+        -13.252498626708985
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1857,16 +1857,16 @@
 },
 "object64":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -23.79999542236328,
-        4.539861679077148,
-        151.3321990966797
+        -11.924999237060547,
+        4.172430992126465,
+        -9.220001220703125
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1886,16 +1886,16 @@
 },
 "object65":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -23.79999542236328,
-        4.539861679077148,
-        167.4322052001953
+        -11.924999237060547,
+        4.172430992126465,
+        -5.194999694824219
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1915,16 +1915,16 @@
 },
 "object66":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -23.79999542236328,
-        4.539861679077148,
-        183.56219482421876
+        -11.924999237060547,
+        4.172430992126465,
+        -1.1624984741210938
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1944,16 +1944,16 @@
 },
 "object67":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -23.79999542236328,
-        4.539861679077148,
-        199.57220458984376
+        -11.924999237060547,
+        4.172430992126465,
+        2.8400039672851564
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -1973,16 +1973,16 @@
 },
 "object68":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -23.79999542236328,
-        4.539861679077148,
-        215.7021942138672
+        -11.924999237060547,
+        4.172430992126465,
+        6.87249755859375
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -2002,16 +2002,16 @@
 },
 "object69":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        26.5,
-        4.539861679077148,
-        22.69219970703125
+        -11.924999237060547,
+        4.172430992126465,
+        10.897499084472657
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -2031,16 +2031,16 @@
 },
 "object70":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        26.5,
-        4.539861679077148,
-        38.82218933105469
+        -11.924999237060547,
+        4.172430992126465,
+        14.930000305175782
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -2060,16 +2060,16 @@
 },
 "object71":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        26.5,
-        4.539861679077148,
-        54.92219543457031
+        -11.924999237060547,
+        4.172430992126465,
+        18.907501220703126
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -2089,16 +2089,16 @@
 },
 "object72":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        26.5,
-        4.539861679077148,
-        71.05218505859375
+        -11.924999237060547,
+        4.172430992126465,
+        22.93250274658203
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -2118,16 +2118,16 @@
 },
 "object73":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        26.5,
-        4.539861679077148,
-        87.06219482421875
+        -11.924999237060547,
+        4.172430992126465,
+        26.965003967285158
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -2147,16 +2147,16 @@
 },
 "object74":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        26.5,
-        4.539861679077148,
-        103.19218444824219
+        -11.924999237060547,
+        4.172430992126465,
+        30.967506408691408
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -2176,16 +2176,16 @@
 },
 "object75":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        26.5,
-        4.539861679077148,
-        119.29219055175781
+        -11.924999237060547,
+        4.172430992126465,
+        35.0
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
     ],
     "rotMat3_0": [
         -1.0,
@@ -2205,21 +2205,21 @@
 },
 "object76":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        26.5,
-        4.539861679077148,
-        135.42218017578126
+        -14.204998016357422,
+        4.172430992126465,
+        -15.462501525878907
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.2500009536743164,
+        0.25,
+        0.2500009536743164
     ],
     "rotMat3_0": [
-        -1.0,
+        5.960464477539063e-8,
         0.0,
-        -8.742277657347586e-8
+        -0.9999999403953552
     ],
     "rotMat3_1": [
         0.0,
@@ -2227,28 +2227,28 @@
         0.0
     ],
     "rotMat3_2": [
-        8.742277657347586e-8,
+        0.9999999403953552,
         0.0,
-        -1.0
+        5.960464477539063e-8
     ]
 },
 "object77":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        26.5,
-        4.539861679077148,
-        151.3321990966797
+        -18.23499870300293,
+        4.172430992126465,
+        -15.462501525878907
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25000107288360598,
+        0.25,
+        0.25000107288360598
     ],
     "rotMat3_0": [
-        -1.0,
+        5.960464477539063e-8,
         0.0,
-        -8.742277657347586e-8
+        -0.9999999403953552
     ],
     "rotMat3_1": [
         0.0,
@@ -2256,28 +2256,28 @@
         0.0
     ],
     "rotMat3_2": [
-        8.742277657347586e-8,
+        0.9999999403953552,
         0.0,
-        -1.0
+        5.960464477539063e-8
     ]
 },
 "object78":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        26.5,
-        4.539861679077148,
-        167.4322052001953
+        -22.267498016357423,
+        4.172430992126465,
+        -15.462501525878907
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25000107288360598,
+        0.25,
+        0.25000107288360598
     ],
     "rotMat3_0": [
-        -1.0,
+        5.960464477539063e-8,
         0.0,
-        -8.742277657347586e-8
+        -0.9999999403953552
     ],
     "rotMat3_1": [
         0.0,
@@ -2285,28 +2285,28 @@
         0.0
     ],
     "rotMat3_2": [
-        8.742277657347586e-8,
+        0.9999999403953552,
         0.0,
-        -1.0
+        5.960464477539063e-8
     ]
 },
 "object79":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        26.5,
-        4.539861679077148,
-        183.56219482421876
+        -5.329999923706055,
+        3.640000104904175,
+        30.967605590820314
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.2499997615814209,
+        0.25,
+        0.2499997615814209
     ],
     "rotMat3_0": [
-        -1.0,
+        -0.9999592304229736,
         0.0,
-        -8.742277657347586e-8
+        -0.009040320292115212
     ],
     "rotMat3_1": [
         0.0,
@@ -2314,28 +2314,28 @@
         0.0
     ],
     "rotMat3_2": [
-        8.742277657347586e-8,
+        0.009040320292115212,
         0.0,
-        -1.0
+        -0.9999592304229736
     ]
 },
 "object80":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        26.5,
-        4.539861679077148,
-        199.57220458984376
+        -5.366456985473633,
+        3.640000104904175,
+        34.99993896484375
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.2499997615814209,
+        0.25,
+        0.2499997615814209
     ],
     "rotMat3_0": [
-        -1.0,
+        -0.9999592304229736,
         0.0,
-        -8.742277657347586e-8
+        -0.009040320292115212
     ],
     "rotMat3_1": [
         0.0,
@@ -2343,28 +2343,28 @@
         0.0
     ],
     "rotMat3_2": [
-        8.742277657347586e-8,
+        0.009040320292115212,
         0.0,
-        -1.0
+        -0.9999592304229736
     ]
 },
 "object81":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        26.5,
-        4.539861679077148,
-        215.7021942138672
+        -3.4800000190734865,
+        4.172430992126465,
+        28.19390106201172
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.2500014305114746,
+        0.25,
+        0.2500014305114746
     ],
     "rotMat3_0": [
-        -1.0,
+        0.007555961608886719,
         0.0,
-        -8.742277657347586e-8
+        -0.9999714493751526
     ],
     "rotMat3_1": [
         0.0,
@@ -2372,28 +2372,28 @@
         0.0
     ],
     "rotMat3_2": [
-        8.742277657347586e-8,
+        0.9999714493751526,
         0.0,
-        -1.0
+        0.007555961608886719
     ]
 },
 "object82":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        17.3800048828125,
-        4.539861679077148,
-        13.852188110351563
+        0.5136981010437012,
+        4.172430992126465,
+        28.224998474121095
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25000160932540896,
+        0.25,
+        0.25000160932540896
     ],
     "rotMat3_0": [
-        5.960464477539063e-8,
+        0.007555961608886719,
         0.0,
-        -0.9999999403953552
+        -0.9999714493751526
     ],
     "rotMat3_1": [
         0.0,
@@ -2401,28 +2401,28 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9999999403953552,
+        0.9999714493751526,
         0.0,
-        5.960464477539063e-8
+        0.007555961608886719
     ]
 },
 "object83":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        1.2600021362304688,
-        4.539861679077148,
-        13.852188110351563
+        4.552379131317139,
+        4.172430992126465,
+        28.255287170410158
     ],
     "scale": [
-        1.0000004768371583,
-        1.0,
-        1.0000004768371583
+        0.25000160932540896,
+        0.25,
+        0.25000160932540896
     ],
     "rotMat3_0": [
-        5.960464477539063e-8,
+        0.007555961608886719,
         0.0,
-        -0.9999999403953552
+        -0.9999714493751526
     ],
     "rotMat3_1": [
         0.0,
@@ -2430,28 +2430,28 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9999999403953552,
+        0.9999714493751526,
         0.0,
-        5.960464477539063e-8
+        0.007555961608886719
     ]
 },
 "object84":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -14.8699951171875,
-        4.539861679077148,
-        13.852188110351563
+        -31.219999313354493,
+        3.9100000858306886,
+        30.787315368652345
     ],
     "scale": [
-        1.0000004768371583,
-        1.0,
-        1.0000004768371583
+        0.2499997317790985,
+        0.25,
+        0.2499997317790985
     ],
     "rotMat3_0": [
-        5.960464477539063e-8,
+        -0.9999592304229736,
         0.0,
-        -0.9999999403953552
+        -0.009040320292115212
     ],
     "rotMat3_1": [
         0.0,
@@ -2459,23 +2459,23 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9999999403953552,
+        0.009040320292115212,
         0.0,
-        5.960464477539063e-8
+        -0.9999592304229736
     ]
 },
 "object85":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        49.65327453613281,
-        4.539861679077148,
-        199.57261657714845
+        -31.25645637512207,
+        3.9100000858306886,
+        34.81964874267578
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.2499997317790985,
+        0.25,
+        0.2499997317790985
     ],
     "rotMat3_0": [
         -0.9999592304229736,
@@ -2495,21 +2495,21 @@
 },
 "object86":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        49.5074462890625,
-        4.539861679077148,
-        215.7019500732422
+        -41.599998474121097,
+        4.172430992126465,
+        27.918617248535158
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25000160932540896,
+        0.25,
+        0.25000160932540896
     ],
     "rotMat3_0": [
-        -0.9999592304229736,
+        0.007555961608886719,
         0.0,
-        -0.009040320292115212
+        -0.9999714493751526
     ],
     "rotMat3_1": [
         0.0,
@@ -2517,23 +2517,23 @@
         0.0
     ],
     "rotMat3_2": [
-        0.009040320292115212,
+        0.9999714493751526,
         0.0,
-        -0.9999592304229736
+        0.007555961608886719
     ]
 },
 "object87":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        57.22520446777344,
-        4.539861679077148,
-        188.47779846191407
+        -37.606300354003909,
+        4.172430992126465,
+        27.94971466064453
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25000160932540896,
+        0.25,
+        0.25000160932540896
     ],
     "rotMat3_0": [
         0.007555961608886719,
@@ -2553,16 +2553,16 @@
 },
 "object88":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        73.19999694824219,
-        4.539861679077148,
-        188.60220336914063
+        -33.56761932373047,
+        4.172430992126465,
+        27.980003356933595
     ],
     "scale": [
-        1.0000007152557374,
-        1.0,
-        1.0000007152557374
+        0.25000160932540896,
+        0.25,
+        0.25000160932540896
     ],
     "rotMat3_0": [
         0.007555961608886719,
@@ -2582,21 +2582,21 @@
 },
 "object89":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        89.35472106933594,
-        4.539861679077148,
-        188.7233428955078
+        -30.107498168945314,
+        -1.397568702697754,
+        57.425010681152347
     ],
     "scale": [
-        1.0000007152557374,
-        1.0,
-        1.0000007152557374
+        0.2499999701976776,
+        0.25,
+        0.3963066637516022
     ],
     "rotMat3_0": [
-        0.007555961608886719,
+        -0.9999971389770508,
         0.0,
-        -0.9999714493751526
+        0.0024404264986515047
     ],
     "rotMat3_1": [
         0.0,
@@ -2604,28 +2604,28 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9999714493751526,
+        -0.0024404264986515047,
         0.0,
-        0.007555961608886719
+        -0.9999971389770508
     ]
 },
 "object90":{
     "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Grey_Tex.png",
     "position": [
-        -46.501441955566409,
-        4.539861679077148,
-        198.85147094726563
+        -6.924999237060547,
+        -1.397568702697754,
+        57.425010681152347
     ],
     "scale": [
-        0.9999998807907105,
-        1.0,
-        0.9999998807907105
+        0.25,
+        0.25,
+        0.39630696177482607
     ],
     "rotMat3_0": [
-        -0.9999592304229736,
+        -0.9999971389770508,
         0.0,
-        -0.009040320292115212
+        0.0024404264986515047
     ],
     "rotMat3_1": [
         0.0,
@@ -2633,28 +2633,28 @@
         0.0
     ],
     "rotMat3_2": [
-        0.009040320292115212,
+        -0.0024404264986515047,
         0.0,
-        -0.9999592304229736
+        -0.9999971389770508
     ]
 },
 "object91":{
-    "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objName": "Assets/Models/Door.obj",
+    "objTexture": "Assets/Models/Door_Tex.png",
     "position": [
-        -46.64727020263672,
-        4.539861679077148,
-        214.98080444335938
+        -35.775001525878909,
+        -6.4625349044799809,
+        60.599449157714847
     ],
     "scale": [
-        0.9999998807907105,
-        1.0,
-        0.9999998807907105
+        0.3122391700744629,
+        0.3122391402721405,
+        0.3122391402721405
     ],
     "rotMat3_0": [
-        -0.9999592304229736,
+        -1.0,
         0.0,
-        -0.009040320292115212
+        -8.742277657347586e-8
     ],
     "rotMat3_1": [
         0.0,
@@ -2662,28 +2662,28 @@
         0.0
     ],
     "rotMat3_2": [
-        0.009040320292115212,
+        8.742277657347586e-8,
         0.0,
-        -0.9999592304229736
+        -1.0
     ]
 },
 "object92":{
-    "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objName": "Assets/Models/Door.obj",
+    "objTexture": "Assets/Models/Door_Tex.png",
     "position": [
-        -89.30950927734375,
-        4.539861679077148,
-        187.37664794921876
+        1.0250015258789063,
+        -6.4625349044799809,
+        60.599449157714847
     ],
     "scale": [
-        1.0000007152557374,
-        1.0,
-        1.0000007152557374
+        0.3122391700744629,
+        0.3122391402721405,
+        0.3122391402721405
     ],
     "rotMat3_0": [
-        0.007555961608886719,
+        -1.0,
         0.0,
-        -0.9999714493751526
+        -8.742277657347586e-8
     ],
     "rotMat3_1": [
         0.0,
@@ -2691,28 +2691,28 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9999714493751526,
+        8.742277657347586e-8,
         0.0,
-        0.007555961608886719
+        -1.0
     ]
 },
 "object93":{
-    "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objName": "Assets/Models/Door.obj",
+    "objTexture": "Assets/Models/Door_Tex.png",
     "position": [
-        -73.334716796875,
-        4.539861679077148,
-        187.5010528564453
+        -35.775001525878909,
+        -6.4625349044799809,
+        -26.150550842285158
     ],
     "scale": [
-        1.0000007152557374,
-        1.0,
-        1.0000007152557374
+        0.3122391700744629,
+        0.3122391402721405,
+        0.3122391402721405
     ],
     "rotMat3_0": [
-        0.007555961608886719,
+        1.0,
         0.0,
-        -0.9999714493751526
+        1.7484555314695172e-7
     ],
     "rotMat3_1": [
         0.0,
@@ -2720,28 +2720,28 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9999714493751526,
+        -1.7484555314695172e-7,
         0.0,
-        0.007555961608886719
+        1.0
     ]
 },
 "object94":{
-    "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objName": "Assets/Models/Door.obj",
+    "objTexture": "Assets/Models/Door_Tex.png",
     "position": [
-        -57.179996490478519,
-        4.539861679077148,
-        187.6221923828125
+        1.0250015258789063,
+        -6.4625349044799809,
+        -26.15054702758789
     ],
     "scale": [
-        1.0000007152557374,
-        1.0,
-        1.0000007152557374
+        0.3122391700744629,
+        0.3122391402721405,
+        0.3122391402721405
     ],
     "rotMat3_0": [
-        0.007555961608886719,
+        1.0,
         0.0,
-        -0.9999714493751526
+        1.7484555314695172e-7
     ],
     "rotMat3_1": [
         0.0,
@@ -2749,28 +2749,28 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9999714493751526,
+        -1.7484555314695172e-7,
         0.0,
-        0.007555961608886719
+        1.0
     ]
 },
 "object95":{
-    "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objName": "Assets/Models/Door.obj",
+    "objTexture": "Assets/Models/Door_Tex.png",
     "position": [
-        -46.22999572753906,
-        -17.740137100219728,
-        305.4022521972656
+        -35.14999771118164,
+        4.149930477142334,
+        -26.400550842285158
     ],
     "scale": [
-        0.9999998807907105,
-        1.0,
-        1.5852285623550416
+        0.3122391700744629,
+        0.3122391402721405,
+        0.3122391402721405
     ],
     "rotMat3_0": [
-        -0.9999971389770508,
+        1.0,
         0.0,
-        0.0024404264986515047
+        1.7484555314695172e-7
     ],
     "rotMat3_1": [
         0.0,
@@ -2778,28 +2778,28 @@
         0.0
     ],
     "rotMat3_2": [
-        -0.0024404264986515047,
+        -1.7484555314695172e-7,
         0.0,
-        -0.9999971389770508
+        1.0
     ]
 },
 "object96":{
-    "objName": "Assets/Models/Railing.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objName": "Assets/Models/Door.obj",
+    "objTexture": "Assets/Models/Door_Tex.png",
     "position": [
-        46.5,
-        -17.740137100219728,
-        305.4022521972656
+        -2.0249977111816408,
+        4.149930953979492,
+        -26.40054702758789
     ],
     "scale": [
-        1.0,
-        1.0,
-        1.585229754447937
+        0.3122391700744629,
+        0.3122391402721405,
+        0.3122391402721405
     ],
     "rotMat3_0": [
-        -0.9999971389770508,
+        1.0,
         0.0,
-        0.0024404264986515047
+        1.7484555314695172e-7
     ],
     "rotMat3_1": [
         0.0,
@@ -2807,197 +2807,23 @@
         0.0
     ],
     "rotMat3_2": [
-        -0.0024404264986515047,
+        -1.7484555314695172e-7,
         0.0,
-        -0.9999971389770508
+        1.0
     ]
 },
 "object97":{
-    "objName": "Assets/Models/Door.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
-    "position": [
-        -68.9000015258789,
-        -38.0,
-        318.1000061035156
-    ],
-    "scale": [
-        1.2489566802978516,
-        1.248956561088562,
-        1.248956561088562
-    ],
-    "rotMat3_0": [
-        -1.0,
-        0.0,
-        -8.742277657347586e-8
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        8.742277657347586e-8,
-        0.0,
-        -1.0
-    ]
-},
-"object98":{
-    "objName": "Assets/Models/Door.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
-    "position": [
-        78.30000305175781,
-        -38.0,
-        318.1000061035156
-    ],
-    "scale": [
-        1.2489566802978516,
-        1.248956561088562,
-        1.248956561088562
-    ],
-    "rotMat3_0": [
-        -1.0,
-        0.0,
-        -8.742277657347586e-8
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        8.742277657347586e-8,
-        0.0,
-        -1.0
-    ]
-},
-"object99":{
-    "objName": "Assets/Models/Door.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
-    "position": [
-        -68.9000015258789,
-        -38.0,
-        -28.900009155273439
-    ],
-    "scale": [
-        1.2489566802978516,
-        1.248956561088562,
-        1.248956561088562
-    ],
-    "rotMat3_0": [
-        1.0,
-        0.0,
-        1.7484555314695172e-7
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        -1.7484555314695172e-7,
-        0.0,
-        1.0
-    ]
-},
-"object100":{
-    "objName": "Assets/Models/Door.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
-    "position": [
-        78.30000305175781,
-        -38.0,
-        -28.899993896484376
-    ],
-    "scale": [
-        1.2489566802978516,
-        1.248956561088562,
-        1.248956561088562
-    ],
-    "rotMat3_0": [
-        1.0,
-        0.0,
-        1.7484555314695172e-7
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        -1.7484555314695172e-7,
-        0.0,
-        1.0
-    ]
-},
-"object101":{
-    "objName": "Assets/Models/Door.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
-    "position": [
-        -66.39999389648438,
-        4.449859619140625,
-        -29.900009155273439
-    ],
-    "scale": [
-        1.2489566802978516,
-        1.248956561088562,
-        1.248956561088562
-    ],
-    "rotMat3_0": [
-        1.0,
-        0.0,
-        1.7484555314695172e-7
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        -1.7484555314695172e-7,
-        0.0,
-        1.0
-    ]
-},
-"object102":{
-    "objName": "Assets/Models/Door.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
-    "position": [
-        66.10000610351563,
-        4.449861526489258,
-        -29.899993896484376
-    ],
-    "scale": [
-        1.2489566802978516,
-        1.248956561088562,
-        1.248956561088562
-    ],
-    "rotMat3_0": [
-        1.0,
-        0.0,
-        1.7484555314695172e-7
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        -1.7484555314695172e-7,
-        0.0,
-        1.0
-    ]
-},
-"object103":{
     "objName": "Assets/Models/Cup.obj",
     "objTexture": "Assets/Models/CashRegister_Tex.png",
     "position": [
-        4.0200042724609379,
-        -33.589996337890628,
-        70.99900817871094
+        -12.267500877380371,
+        -4.682499885559082,
+        -13.601249694824219
     ],
     "scale": [
-        0.4280601143836975,
-        0.42805999517440798,
-        0.4280601143836975
+        0.15795281529426576,
+        0.1579524576663971,
+        0.1579529047012329
     ],
     "rotMat3_0": [
         -0.26232922077178957,
@@ -3015,18 +2841,18 @@
         -0.26232922077178957
     ]
 },
-"object104":{
+"object98":{
     "objName": "Assets/Models/Tray.obj",
     "objTexture": "Assets/Models/Blue_Tex.png",
     "position": [
-        2.9210968017578127,
-        -33.779998779296878,
-        71.38999938964844
+        -12.54222583770752,
+        -4.7300004959106449,
+        -13.503501892089844
     ],
     "scale": [
-        0.32328012585639956,
-        0.2536199986934662,
-        0.3300801217556
+        0.1192895770072937,
+        0.09358478337526322,
+        0.12179877609014511
     ],
     "rotMat3_0": [
         5.960464477539063e-8,
@@ -3044,18 +2870,192 @@
         5.960464477539063e-8
     ]
 },
-"object105":{
+"object99":{
     "objName": "Assets/Models/Hamburger.obj",
     "objTexture": "Assets/Models/Hamburger_BaseColor.png",
     "position": [
-        2.2900009155273439,
-        -33.659996032714847,
-        71.18000793457031
+        -12.699999809265137,
+        -4.699999809265137,
+        -13.555999755859375
     ],
     "scale": [
-        0.2215299904346466,
-        0.2215299904346466,
-        0.2215299904346466
+        0.08174367994070053,
+        0.08174370229244232,
+        0.08174370229244232
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"object100":{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "position": [
+        0.3000030517578125,
+        6.062465667724609,
+        60.75000762939453
+    ],
+    "scale": [
+        0.4595721364021301,
+        1.0315699577331544,
+        0.5727266073226929
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object101":{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "position": [
+        -37.349998474121097,
+        6.062465667724609,
+        60.75000762939453
+    ],
+    "scale": [
+        0.4595721364021301,
+        1.0315699577331544,
+        0.5727271437644959
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object102":{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "position": [
+        -41.310001373291019,
+        4.249931335449219,
+        26.67499542236328
+    ],
+    "scale": [
+        0.372252494096756,
+        0.372252494096756,
+        0.372252494096756
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"object103":{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "position": [
+        4.100006103515625,
+        4.224931240081787,
+        26.29999542236328
+    ],
+    "scale": [
+        0.372252494096756,
+        0.372252494096756,
+        0.372252494096756
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"object104":{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "position": [
+        -40.224998474121097,
+        4.249931335449219,
+        -25.275001525878908
+    ],
+    "scale": [
+        0.372252494096756,
+        0.372252494096756,
+        0.372252494096756
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"object105":{
+    "objName": "Assets/Models/Ketchup.obj",
+    "objTexture": "Assets/Models/Red_Tex.png",
+    "position": [
+        -25.447498321533204,
+        -3.8100690841674806,
+        38.852500915527347
+    ],
+    "scale": [
+        0.08189554512500763,
+        0.08189555257558823,
+        0.08189555257558823
     ],
     "rotMat3_0": [
         -1.0,
@@ -3074,22 +3074,22 @@
     ]
 },
 "object106":{
-    "objName": "Assets/Models/Cup.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
     "position": [
-        24.720001220703126,
-        -33.589996337890628,
-        43.95899963378906
+        4.100006103515625,
+        4.224931240081787,
+        -24.849998474121095
     ],
     "scale": [
-        0.4280601143836975,
-        0.42805999517440798,
-        0.4280601143836975
+        0.372252494096756,
+        0.372252494096756,
+        0.372252494096756
     ],
     "rotMat3_0": [
-        -0.26232922077178957,
+        -1.0,
         0.0,
-        -0.9649783968925476
+        -8.742277657347586e-8
     ],
     "rotMat3_1": [
         0.0,
@@ -3097,28 +3097,28 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9649783968925476,
+        8.742277657347586e-8,
         0.0,
-        -0.26232922077178957
+        -1.0
     ]
 },
 "object107":{
-    "objName": "Assets/Models/Tray.obj",
-    "objTexture": "Assets/Models/Blue_Tex.png",
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
     "position": [
-        23.62110137939453,
-        -33.779998779296878,
-        44.34999084472656
+        -10.674999237060547,
+        6.062465667724609,
+        -26.675552368164064
     ],
     "scale": [
-        0.32328012585639956,
-        0.2536199986934662,
-        0.3300801217556
+        0.4595721364021301,
+        1.0315699577331544,
+        0.6214271187782288
     ],
     "rotMat3_0": [
-        5.960464477539063e-8,
+        1.7881393432617188e-7,
         0.0,
-        -0.9999999403953552
+        0.9999999403953552
     ],
     "rotMat3_1": [
         0.0,
@@ -3126,28 +3126,28 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9999999403953552,
+        -0.9999999403953552,
         0.0,
-        5.960464477539063e-8
+        1.7881393432617188e-7
     ]
 },
 "object108":{
-    "objName": "Assets/Models/Hamburger.obj",
-    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
     "position": [
-        22.98999786376953,
-        -33.659996032714847,
-        44.13999938964844
+        -11.94999885559082,
+        6.062465667724609,
+        60.75000762939453
     ],
     "scale": [
-        0.2215299904346466,
-        0.2215299904346466,
-        0.2215299904346466
+        0.4595721364021301,
+        1.0315699577331544,
+        0.5727271437644959
     ],
     "rotMat3_0": [
-        -1.0,
+        5.960464477539063e-8,
         0.0,
-        -8.742277657347586e-8
+        -0.9999999403953552
     ],
     "rotMat3_1": [
         0.0,
@@ -3155,52 +3155,23 @@
         0.0
     ],
     "rotMat3_2": [
-        8.742277657347586e-8,
+        0.9999999403953552,
         0.0,
-        -1.0
+        5.960464477539063e-8
     ]
 },
 "object109":{
-    "objName": "Assets/Models/Cup.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
     "position": [
-        -17.801101684570314,
-        -33.589996337890628,
-        18.72900390625
+        -24.94999885559082,
+        6.062465667724609,
+        60.75000762939453
     ],
     "scale": [
-        0.4280601143836975,
-        0.42805999517440798,
-        0.4280601143836975
-    ],
-    "rotMat3_0": [
-        -0.26232922077178957,
-        0.0,
-        -0.9649783968925476
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        0.9649783968925476,
-        0.0,
-        -0.26232922077178957
-    ]
-},
-"object110":{
-    "objName": "Assets/Models/Tray.obj",
-    "objTexture": "Assets/Models/Blue_Tex.png",
-    "position": [
-        -18.900001525878908,
-        -33.779998779296878,
-        19.1199951171875
-    ],
-    "scale": [
-        0.32328012585639956,
-        0.2536199986934662,
-        0.3300801217556
+        0.4595721364021301,
+        1.0315699577331544,
+        0.5727271437644959
     ],
     "rotMat3_0": [
         5.960464477539063e-8,
@@ -3218,18 +3189,76 @@
         5.960464477539063e-8
     ]
 },
-"object111":{
-    "objName": "Assets/Models/Hamburger.obj",
-    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+"object110":{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
     "position": [
-        -19.531097412109376,
-        -33.659996032714847,
-        18.910003662109376
+        -25.57499885559082,
+        -4.775069236755371,
+        -26.675552368164064
     ],
     "scale": [
-        0.2215299904346466,
-        0.2215299904346466,
-        0.2215299904346466
+        0.4595721364021301,
+        0.3861887753009796,
+        0.6239254474639893
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"object111":{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "position": [
+        -10.849998474121094,
+        -4.775069236755371,
+        -26.675552368164064
+    ],
+    "scale": [
+        0.4595721364021301,
+        0.3861899971961975,
+        0.6239246129989624
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"object112":{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "position": [
+        -24.110000610351564,
+        -5.630000114440918,
+        -13.349998474121094
+    ],
+    "scale": [
+        0.25676998496055605,
+        0.25676998496055605,
+        0.25676998496055605
     ],
     "rotMat3_0": [
         -1.0,
@@ -3247,52 +3276,23 @@
         -1.0
     ]
 },
-"object112":{
-    "objName": "Assets/Models/Window.obj",
-    "objTexture": "Assets/Models/Blue_Tex.png",
-    "position": [
-        0.600006103515625,
-        12.100000381469727,
-        319.002197265625
-    ],
-    "scale": [
-        1.8382809162139893,
-        4.126279830932617,
-        5.582211971282959
-    ],
-    "rotMat3_0": [
-        5.960464477539063e-8,
-        0.0,
-        -0.9999999403953552
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        0.9999999403953552,
-        0.0,
-        5.960464477539063e-8
-    ]
-},
 "object113":{
-    "objName": "Assets/Models/Window.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
     "position": [
-        75.40000915527344,
-        12.100000381469727,
-        318.70220947265627
+        -12.510000228881836,
+        -5.630000114440918,
+        -2.8199994564056398
     ],
     "scale": [
-        1.8382809162139893,
-        4.126279830932617,
-        2.2908987998962404
+        0.25676998496055605,
+        0.25676998496055605,
+        0.25676998496055605
     ],
     "rotMat3_0": [
-        5.960464477539063e-8,
+        -1.0,
         0.0,
-        -0.9999999403953552
+        -8.742277657347586e-8
     ],
     "rotMat3_1": [
         0.0,
@@ -3300,28 +3300,28 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9999999403953552,
+        8.742277657347586e-8,
         0.0,
-        5.960464477539063e-8
+        -1.0
     ]
 },
 "object114":{
-    "objName": "Assets/Models/Window.obj",
-    "objTexture": "Assets/Models/CashRegister_Tex.png",
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
     "position": [
-        -75.19999694824219,
-        12.100000381469727,
-        318.70220947265627
+        -24.110000610351564,
+        -5.630000114440918,
+        -2.819999933242798
     ],
     "scale": [
-        1.8382809162139893,
-        4.126279830932617,
-        2.290900945663452
+        0.25676998496055605,
+        0.25676998496055605,
+        0.25676998496055605
     ],
     "rotMat3_0": [
-        5.960464477539063e-8,
+        -1.0,
         0.0,
-        -0.9999999403953552
+        -8.742277657347586e-8
     ],
     "rotMat3_1": [
         0.0,
@@ -3329,23 +3329,23 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9999999403953552,
+        8.742277657347586e-8,
         0.0,
-        5.960464477539063e-8
+        -1.0
     ]
 },
 "object115":{
     "objName": "Assets/Models/PottedPlant.obj",
     "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
     "position": [
-        -86.69999694824219,
-        4.849863052368164,
-        182.40219116210938
+        -18.389999389648439,
+        -6.485069274902344,
+        13.739999771118164
     ],
     "scale": [
-        1.489009976387024,
-        1.489009976387024,
-        1.489009976387024
+        0.5495794415473938,
+        0.5495793223381043,
+        0.5495793223381043
     ],
     "rotMat3_0": [
         -1.0,
@@ -3364,17 +3364,17 @@
     ]
 },
 "object116":{
-    "objName": "Assets/Models/PottedPlant.obj",
-    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
     "position": [
-        90.60002136230469,
-        4.7498626708984379,
-        180.90219116210938
+        -12.510000228881836,
+        -5.630000114440918,
+        7.553503513336182
     ],
     "scale": [
-        1.489009976387024,
-        1.489009976387024,
-        1.489009976387024
+        0.25676998496055605,
+        0.25676998496055605,
+        0.25676998496055605
     ],
     "rotMat3_0": [
         -1.0,
@@ -3393,22 +3393,22 @@
     ]
 },
 "object117":{
-    "objName": "Assets/Models/PottedPlant.obj",
-    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "objName": "Assets/Models/Cup.obj",
+    "objTexture": "Assets/Models/CashRegister_Tex.png",
     "position": [
-        75.60002136230469,
-        4.7498626708984379,
-        180.90219116210938
+        -23.735275268554689,
+        -4.682499885559082,
+        7.302252292633057
     ],
     "scale": [
-        1.489009976387024,
-        1.489009976387024,
-        1.489009976387024
+        0.1579500287771225,
+        0.1579499989748001,
+        0.1579500287771225
     ],
     "rotMat3_0": [
-        -1.0,
+        -0.26232922077178957,
         0.0,
-        -8.742277657347586e-8
+        -0.9649783968925476
     ],
     "rotMat3_1": [
         0.0,
@@ -3416,28 +3416,28 @@
         0.0
     ],
     "rotMat3_2": [
-        8.742277657347586e-8,
+        0.9649783968925476,
         0.0,
-        -1.0
+        -0.26232922077178957
     ]
 },
 "object118":{
-    "objName": "Assets/Models/PottedPlant.obj",
-    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "objName": "Assets/Models/Tray.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
     "position": [
-        58.90000915527344,
-        4.7498626708984379,
-        180.90219116210938
+        -24.010000228881837,
+        -4.7300004959106449,
+        7.400000095367432
     ],
     "scale": [
-        1.489009976387024,
-        1.489009976387024,
-        1.489009976387024
+        0.1192900538444519,
+        0.09358000010251999,
+        0.12180005759000778
     ],
     "rotMat3_0": [
-        -1.0,
+        5.960464477539063e-8,
         0.0,
-        -8.742277657347586e-8
+        -0.9999999403953552
     ],
     "rotMat3_1": [
         0.0,
@@ -3445,23 +3445,23 @@
         0.0
     ],
     "rotMat3_2": [
-        8.742277657347586e-8,
+        0.9999999403953552,
         0.0,
-        -1.0
+        5.960464477539063e-8
     ]
 },
 "object119":{
-    "objName": "Assets/Models/PottedPlant.obj",
-    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
     "position": [
-        -57.70000076293945,
-        4.849863052368164,
-        182.40219116210938
+        -24.167774200439454,
+        -4.699999809265137,
+        7.3475022315979
     ],
     "scale": [
-        1.489009976387024,
-        1.489009976387024,
-        1.489009976387024
+        0.08173999935388565,
+        0.08173999935388565,
+        0.08173999935388565
     ],
     "rotMat3_0": [
         -1.0,
@@ -3480,17 +3480,17 @@
     ]
 },
 "object120":{
-    "objName": "Assets/Models/PottedPlant.obj",
-    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
     "position": [
-        -73.0,
-        4.849863052368164,
-        182.40219116210938
+        -24.110000610351564,
+        -5.630000114440918,
+        7.553503513336182
     ],
     "scale": [
-        1.489009976387024,
-        1.489009976387024,
-        1.489009976387024
+        0.25676998496055605,
+        0.25676998496055605,
+        0.25676998496055605
     ],
     "rotMat3_0": [
         -1.0,
@@ -3509,17 +3509,17 @@
     ]
 },
 "object121":{
-    "objName": "Assets/Models/PottedPlant.obj",
-    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
     "position": [
-        -86.69999694824219,
-        4.849863052368164,
-        -25.397811889648439
+        -12.510000228881836,
+        -5.630000114440918,
+        19.68000030517578
     ],
     "scale": [
-        1.489009976387024,
-        1.489009976387024,
-        1.489009976387024
+        0.25676998496055605,
+        0.25676998496055605,
+        0.25676998496055605
     ],
     "rotMat3_0": [
         -1.0,
@@ -3538,17 +3538,17 @@
     ]
 },
 "object122":{
-    "objName": "Assets/Models/Ketchup.obj",
-    "objTexture": "Assets/Models/Red_Tex.png",
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
     "position": [
-        -27.589996337890626,
-        -27.390138626098634,
-        231.11219787597657
+        -24.110000610351564,
+        -5.630000114440918,
+        19.68000030517578
     ],
     "scale": [
-        0.3275821805000305,
-        0.3275822103023529,
-        0.3275822103023529
+        0.25676998496055605,
+        0.25676998496055605,
+        0.25676998496055605
     ],
     "rotMat3_0": [
         -1.0,
@@ -3567,17 +3567,17 @@
     ]
 },
 "object123":{
-    "objName": "Assets/Models/PottedPlant.obj",
-    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "objName": "Assets/Models/Ketchup.obj",
+    "objTexture": "Assets/Models/Red_Tex.png",
     "position": [
-        90.60002136230469,
-        4.7498626708984379,
-        -23.697799682617189
+        -13.399999618530274,
+        -4.749000072479248,
+        19.729999542236329
     ],
     "scale": [
-        1.489009976387024,
-        1.489009976387024,
-        1.489009976387024
+        0.08190000057220459,
+        0.08190000057220459,
+        0.08190000057220459
     ],
     "rotMat3_0": [
         -1.0,
@@ -3596,17 +3596,191 @@
     ]
 },
 "object124":{
-    "objName": "Assets/Models/Ketchup.obj",
-    "objTexture": "Assets/Models/Red_Tex.png",
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
     "position": [
-        -20.269996643066408,
-        -33.88013458251953,
-        70.07218933105469
+        -43.79999923706055,
+        6.062465667724609,
+        5.900000095367432
     ],
     "scale": [
-        0.3275800049304962,
-        0.3275800049304962,
-        0.3275800049304962
+        0.4595702290534973,
+        1.0315699577331544,
+        0.6214302182197571
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"object125":{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "position": [
+        6.599999904632568,
+        6.062465667724609,
+        5.900000095367432
+    ],
+    "scale": [
+        0.4595699906349182,
+        1.0315699577331544,
+        0.621429979801178
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"object126":{
+    "objName": "Assets/Models/Bench.obj",
+    "objTexture": "Assets/Models/Bench_Tex.png",
+    "position": [
+        -0.9100000262260437,
+        4.860000133514404,
+        26.170000076293947
+    ],
+    "scale": [
+        0.33645009994506838,
+        0.3364499807357788,
+        0.33645009994506838
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"object127":{
+    "objName": "Assets/Models/Bench.obj",
+    "objTexture": "Assets/Models/Bench_Tex.png",
+    "position": [
+        -17.84000015258789,
+        -6.039999961853027,
+        -24.110000610351564
+    ],
+    "scale": [
+        0.33645009994506838,
+        0.3364499807357788,
+        0.33645009994506838
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"object128":{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "position": [
+        -28.34000015258789,
+        -1.2999999523162842,
+        57.790000915527347
+    ],
+    "scale": [
+        0.3722499907016754,
+        0.3722499907016754,
+        0.3722499907016754
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"object129":{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "position": [
+        -8.420000076293946,
+        -1.2899999618530274,
+        59.86000061035156
+    ],
+    "scale": [
+        0.3722499907016754,
+        0.3722499907016754,
+        0.3722499907016754
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"object130":{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "position": [
+        -8.420000076293946,
+        -1.2899999618530274,
+        59.86000061035156
+    ],
+    "scale": [
+        0.3722499907016754,
+        0.3722499907016754,
+        0.3722499907016754
     ],
     "rotMat3_0": [
         -1.0,
