@@ -127,7 +127,7 @@ int main(int argc, char **argv) {
     /* Setup Camera */
     float camFOV(45.0f);
     float camLookSpeed(0.2f);
-    float camMoveSpeed(60.0f);
+    float camMoveSpeed(10.0f);
     GameObject & camera(scene.createGameObject());
     SpatialComponent & camSpatComp(scene.createComponent<SpatialComponent>());
     camera.addComponent(camSpatComp);
@@ -140,11 +140,11 @@ int main(int argc, char **argv) {
     /* Setup Player */
     float playerHeight(1.75f);
     float playerWidth(playerHeight / 4.0f);
-    glm::vec3 playerPos(0.0f, 200.0f, 0.0f);
+    glm::vec3 playerPos(0.0f, 20.0f, 0.0f);
     float playerFOV(camFOV);
     float playerLookSpeed(camLookSpeed);
     float playerMoveSpeed(camMoveSpeed);
-    float playerMaxSpeed(100.0f);
+    float playerMaxSpeed(20.0f);
     GameObject & player(scene.createGameObject());
     SpatialComponent & playerSpatComp(scene.createComponent<SpatialComponent>());
     player.addComponent(playerSpatComp);
