@@ -10,7 +10,6 @@ class Particle {
         int type;
         int i;
         int total;
-        glm::vec3 origin;
 
         /* Constructors */
         Particle(int type, int i, int total, glm::vec3 origin);

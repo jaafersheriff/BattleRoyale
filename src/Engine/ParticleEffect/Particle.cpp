@@ -5,8 +5,7 @@ Particle::Particle(int type, int i, int total, glm::vec3 origin) :
     position(origin),
     type(type),
     i(i),
-    total(total),
-    origin(origin)
+    total(total)
 {
 }
 
@@ -29,7 +28,7 @@ glm::vec3 Particle::sphereMove(float tData) {
     float theta = 2 * glm::pi<float>() * (2 - phi) * float(i);
     float default_speed = 10.f;
 
-    return origin + float(default_speed * tData) * glm::vec3(radius * cos(theta), radius * sin(theta), z);
+    return position + float(default_speed * tData) * glm::vec3(radius * cos(theta), radius * sin(theta), z);
 }
 
 glm::vec3 Particle::sphereExplode(float tData) {
@@ -40,6 +39,6 @@ glm::vec3 Particle::sphereExplode(float tData) {
     float theta = 2 * glm::pi<float>() * (2 - phi) * float(i);
     float speed = 50.f;
     float accel = -100.0f;
-    return origin + float(speed * tData + accel * tData * tData) * glm::vec3(radius * cos(theta), radius * sin(theta), z);
+    return position + float(speed * tData + accel * tData * tData) * glm::vec3(radius * cos(theta), radius * sin(theta), z);
 }
 

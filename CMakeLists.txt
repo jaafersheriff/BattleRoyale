@@ -77,12 +77,11 @@ include_directories(${GLFW_DIR}/include)
 target_link_libraries(${CMAKE_PROJECT_NAME} glfw ${GLFW_LIBRARIES})
 
 # FMOD
-set(FMOD_DIR "$ENV{FMOD_DIR}")
+set(FMOD_DIR "${PROJECT_SOURCE_DIR}/libraries/fmod")
 if(NOT FMOD_DIR)
   message(STATUS "FMOD_DIR not set. No audio.")
 else()
   message(STATUS "FMOD_DIR: ${FMOD_DIR}")
-
   if(WIN32)
     #with prebuilt binaries
     link_directories(${FMOD_DIR}/api/lowlevel/lib)
