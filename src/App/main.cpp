@@ -139,6 +139,12 @@ int main(int argc, char **argv) {
         }
     );
 
+    GameObject & player(scene.createGameObject());
+    player.addComponent(scene.createComponent<SpatialComponent>());
+    player.getSpatial()->setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
+    float playerHeight(1.75f);
+    float playerWidth(playerHeight / 4.0f);
+    player.addComponent(scene.createComponent<CapsuleBounderComponent>(1, Capsule(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth)));
 
     /*Parse and load json level*/
     FileReader fileReader;
@@ -194,7 +200,6 @@ int main(int argc, char **argv) {
         }
     );
     bunny.addComponent(bIc);
-
     bunny.addComponent(scene.createComponent<PathfindingComponent>(cc, 1.f));
 
     /* Game stats pane */
