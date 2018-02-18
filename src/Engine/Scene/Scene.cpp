@@ -52,7 +52,8 @@ void Scene::doInitQueue() {
     }
     m_gameObjectInitQueue.clear();
 
-    for (auto & comp : m_componentInitQueue) {
+    for (int i(0); i < m_componentInitQueue.size(); ++i) {
+        auto & comp(m_componentInitQueue[i]);
         comp->init();
         switch (comp->systemID()) {
             case SystemID::  gameLogic:   GameLogicSystem::get().add(std::move(comp)); break;

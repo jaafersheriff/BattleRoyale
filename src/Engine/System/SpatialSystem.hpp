@@ -39,6 +39,7 @@ class SpatialSystem : public System {
     void setGravity(const glm::vec3 & gravity);
 
     const glm::vec3 & gravity() const { return m_gravity; }
+    float coefficientOfFriction() const { return m_coefficientOfFriction; }
 
     private:
 
@@ -52,5 +53,6 @@ class SpatialSystem : public System {
     std::vector<std::unique_ptr<NewtonianComponent>> m_newtonianComponents;
     std::vector<std::unique_ptr<AcceleratorComponent>> m_acceleratorComponents;
     glm::vec3 m_gravity = glm::vec3(0.0f, -10.0f, 0.0f);
+    float m_coefficientOfFriction = 0.1f;
 
 };

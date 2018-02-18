@@ -125,7 +125,7 @@ int main(int argc, char **argv) {
     );
 
     /* Set Gravity */
-    SpatialSystem::get().setGravity(glm::vec3(0.0f, -20.0f, 0.0f));
+    SpatialSystem::get().setGravity(glm::vec3(0.0f, -10.0f, 0.0f));
 
     /* Setup Camera */
     float camFOV(45.0f);
@@ -143,11 +143,11 @@ int main(int argc, char **argv) {
     /* Setup Player */
     float playerHeight(1.75f);
     float playerWidth(playerHeight / 4.0f);
-    glm::vec3 playerPos(0.0f, 5.0f, 0.0f);
+    glm::vec3 playerPos(0.0f, 6.0f, 0.0f);
     float playerFOV(camFOV);
     float playerLookSpeed(camLookSpeed);
     float playerMoveSpeed(camMoveSpeed);
-    float playerMaxSpeed(20.0f);
+    float playerMaxSpeed(50.0f);
     GameObject & player(scene.createGameObject());
     SpatialComponent & playerSpatComp(scene.createComponent<SpatialComponent>());
     player.addComponent(playerSpatComp);
@@ -233,7 +233,7 @@ int main(int argc, char **argv) {
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
-    for (int i(0); i < 15; ++i) {
+    for (int i(0); i < 10; ++i) {
         GameObject & bunny(scene.createGameObject());
         SpatialComponent & bunnySpatComp(scene.createComponent<SpatialComponent>(
             glm::vec3(-10.0f, 5.0, i), // position
@@ -241,6 +241,10 @@ int main(int argc, char **argv) {
             glm::mat3() // rotation
         ));
         bunny.addComponent(bunnySpatComp);
+        NewtonianComponent & bunnyNewtComp(scene.createComponent<NewtonianComponent>(bunnySpatComp, playerMaxSpeed));
+        bunny.addComponent(bunnyNewtComp);
+        GravityComponent & bunnyGravComp(scene.createComponent<GravityComponent>(bunnyNewtComp));
+        bunny.addComponent(bunnyGravComp);
         bunny.addComponent(Scene::get().addComponent<BounderComponent>(CollisionSystem::get().createBounderFromMesh(*bunny.getSpatial(), 1, *bunnyMesh, false, true, false)));
         DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
             RenderSystem::get().getShader<DiffuseShader>()->pid,
@@ -282,7 +286,7 @@ int main(int argc, char **argv) {
             }
         );*/
         //bunny.addComponent(bIc);
-        bunny.addComponent(scene.createComponent<PathfindingComponent>(player, 3.0f));
+        bunny.addComponent(scene.createComponent<PathfindingComponent>(player, 1.0f));
     }
 
     /* Game stats pane */

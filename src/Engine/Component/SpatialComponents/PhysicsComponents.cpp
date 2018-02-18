@@ -17,10 +17,28 @@ NewtonianComponent::NewtonianComponent(SpatialComponent & spatial, float maxSpee
 {}
 
 void NewtonianComponent::init() {
-    auto velocityResetCallback([&](const Message & msg) {
-        m_velocity = glm::vec3();
+    auto collisionCallback([&](const Message & msg_) {
+        const CollisionNormMessage & msg(static_cast<const CollisionNormMessage &>(msg_));
+        // Calculate "friction"
+        float y(-glm::dot(m_velocity, msg.norm)); // speed into surface
+        if (y <= 0.0) { // not trying to move into surface
+            return;
+        }
+        glm::vec3 v(m_velocity + y * msg.norm); // would-be velocity along surface
+        float x(glm::length2(v)); // length of v
+        if (Util::isZero(x)) {
+            m_velocity = glm::vec3();
+            return;
+        }
+        x = std::sqrt(x);
+        float factor(y / x * SpatialSystem::get().coefficientOfFriction());
+        if (factor >= 1.0f) { // frictional force prevents movement
+            m_velocity = glm::vec3();
+            return;
+        }
+        m_velocity = v * (1.0f - factor);
     });
-    Scene::get().addReceiver<SpatialPositionSetMessage>(m_gameObject, velocityResetCallback);
+    Scene::get().addReceiver<CollisionNormMessage>(m_gameObject, collisionCallback);
 }
 
 void NewtonianComponent::update(float dt) {

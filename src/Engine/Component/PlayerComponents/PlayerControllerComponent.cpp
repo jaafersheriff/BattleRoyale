@@ -5,6 +5,7 @@
 #include "IO/Keyboard.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
+#include "Component/SpatialComponents/PhysicsComponents.hpp"
 
 
 
@@ -49,7 +50,7 @@ void PlayerControllerComponent::update(float dt) {
     }
 
     if(Keyboard::isKeyPressed(GLFW_KEY_SPACE)) {
-        
+        m_gameObject->getComponentByType<NewtonianComponent>()->accelerate(glm::vec3(10.0f, 0.0f, 0.0f));
     }
 }
 

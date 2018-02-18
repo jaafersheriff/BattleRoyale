@@ -118,6 +118,17 @@ struct Util {
         return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ")";
     }
 
+    // norm must be unit vector
+    // If v dot norm is positive, just return v. Otherwise, return the closest
+    // point on the plane defined by norm.
+    static glm::vec3 hemiClamp(const glm::vec3 & v, const glm::vec3 & norm) {
+        float dot(glm::dot(v, norm));
+        if (dot >= 0) {
+            return v;
+        }
+        return v - dot * norm;
+    }
+
 };
 
 #endif

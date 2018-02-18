@@ -30,7 +30,7 @@ void EngineApp::run() {
     while (!windowHandler.shouldClose()) {
         /* Update time and FPS */
         runTime = windowHandler.getTime();
-        timeStep = glm::min((runTime - lastFrameTime), 1.0); // don't allow timestep to be too large, otherwise stuff breaks
+        timeStep = glm::min((runTime - lastFrameTime), 0.25); // right now physics/collisions break when dt is too large, so this is a workaround
         lastFrameTime = runTime;
         nFrames++;
         if (runTime - lastFpsTime >= 1.0) {

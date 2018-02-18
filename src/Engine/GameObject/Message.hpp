@@ -123,10 +123,19 @@ struct CollisionMessage : public Message {
     CollisionMessage(const BounderComponent & bounder1, const BounderComponent & bounder2) : bounder1(bounder1), bounder2(bounder2) {}
 };
 
+// a collision occured where norm is the normal of the surface collided with
+// mainly for physics
+struct CollisionNormMessage : public Message {
+    const BounderComponent & bounder;
+    glm::vec3 norm; // normalized
+    CollisionNormMessage(const BounderComponent & bounder, const glm::vec3 & norm) : bounder(bounder), norm(norm) {}
+};
+
 // a collision occurred and the game object's position was adjusted
 struct CollisionAdjustMessage : public Message {
     const GameObject & gameObject;
-    CollisionAdjustMessage(const GameObject & gameObject) : gameObject(gameObject) {}
+    glm::vec3 delta;
+    CollisionAdjustMessage(const GameObject & gameObject, const glm::vec3 & delta) : gameObject(gameObject), delta(delta) {}
 };
 
 

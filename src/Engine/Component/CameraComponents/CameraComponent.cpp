@@ -41,6 +41,7 @@ void CameraComponent::init() {
     Scene::get().addReceiver<SpatialScaledMessage>(getGameObject(), spatTransformCallback);
     Scene::get().addReceiver<SpatialOrientationSetMessage>(getGameObject(), spatRotationCallback);
     Scene::get().addReceiver<SpatialRotatedMessage>(getGameObject(), spatRotationCallback);
+    Scene::get().addReceiver<CollisionAdjustMessage>(getGameObject(), spatTransformCallback); // necessary as collision sets position silently
 
     auto windowSizeCallback([&] (const Message & msg_) {
         m_projMatValid = false;

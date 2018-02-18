@@ -98,17 +98,6 @@ bool compWeightDelta(const std::pair<int, glm::vec3> & d1, const std::pair<int, 
     return d1.first < d2.first;
 }
 
-// norm must be unit vector
-// If v dot norm is positive, just return v. Otherwise, return the closest
-// point on the plane defined by norm.
-glm::vec3 hemiClamp(const glm::vec3 & v, const glm::vec3 & norm) {
-    float dot(glm::dot(v, norm));
-    if (dot >= 0) {
-        return v;
-    }
-    return v - dot * norm;
-}
-
 // Computes the net delta from the given deltas mapped by weight
 // A nieve approach would be to simply add all deltas together.
 // This breaks down when introducing the concept of weight. A delta of a higher
@@ -138,7 +127,7 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
         for (; i < weightDeltas.size() && weightDeltas[i].first == weight; ++i) {
             const glm::vec3 & delta(weightDeltas[i].second);
             weightDelta = compositeDeltas(weightDelta, delta);
-            net = hemiClamp(net, glm::normalize(delta));
+            net = Util::hemiClamp(net, glm::normalize(delta));
         }
         net = compositeDeltas(net, weightDelta);
         weightI = i;
@@ -193,13 +182,19 @@ void CollisionSystem::update(float dt) {
         }
     }
     
+    m_potentials.clear();
+    
     // composite deltas into a single delta per game object
+    // additionally send norm messages
     for (auto & pair : s_collisions) {
         BounderComponent & bounder(*pair.first);
         auto & weightDeltas(pair.second);
         m_collided.insert(&bounder);
         // there was an adjustment
         if (weightDeltas.size()) {
+            for (auto & weightDelta : weightDeltas) { // send norm messages
+                Scene::get().sendMessage<CollisionNormMessage>(bounder.getGameObject(), bounder, glm::normalize(weightDelta.second));
+            }
             glm::vec3 & gameObjectDelta(s_gameObjectDeltas[bounder.getGameObject()]);
             gameObjectDelta = compositeDeltas(gameObjectDelta, detNetDelta(weightDeltas));
         }
@@ -212,16 +207,16 @@ void CollisionSystem::update(float dt) {
         const glm::vec3 & delta(pair.second);
         // set position rather than move because they are conceptually different
         // this will come into play if we do time step interpolation
-        spat.setPosition(spat.position() + delta + glm::normalize(delta) * k_collisionOffsetFactor);
+        spat.setPosition(spat.position() + delta, true);
         for (Component * comp : gameObject->getComponentsBySystem(SystemID::collision)) {
             BounderComponent * bounder(static_cast<BounderComponent *>(comp));
+            m_potentials.insert(bounder);
             bounder->update(dt);
             m_adjusted.insert(bounder);
-            Scene::get().sendMessage<CollisionAdjustMessage>(gameObject, *gameObject);
+            Scene::get().sendMessage<CollisionAdjustMessage>(gameObject, *gameObject, delta);
         }
     }
-    
-    m_potentials.clear();
+
     s_checked.clear();
     s_collisions.clear();
     s_gameObjectDeltas.clear();
