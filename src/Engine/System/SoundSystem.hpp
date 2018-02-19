@@ -4,13 +4,14 @@
 
 // Set whether you have fmod library or not. Must be done manually!
 #ifndef HAVE_FMOD_LIBRARY
-#define HAVE_FMOD_LIBRARY false
+#define HAVE_FMOD_LIBRARY true
 #endif
 
 #include "System.hpp"
 #include "Component/SoundComponents/SoundComponent.hpp"
 #include <string>
 #include <vector>
+#include <map>
 
 #if HAVE_FMOD_LIBRARY 
 #include "fmod.hpp"
@@ -35,18 +36,26 @@ class SoundSystem : public System {
 
     private:
         std::string SOUND_DIR;
+    #if HAVE_FMOD_LIBRARY
+        std::map<std::string, FMOD::Sound*> soundLibrary;
+    #endif
 
     /* Constructor */
     public:
         SoundSystem(const std::vector<Component *> & components);
 
-	private:
-        /* Functions */
+    /* Functions */
         void update(float dt);
+    #if HAVE_FMOD_LIBRARY
+        
+        void playSound(std::string name);
+    #endif
+
+	private:
         void setupSoundComponent(SoundComponent *c);
     #if HAVE_FMOD_LIBRARY
         FMOD::Sound* createSound(std::string soundfilename);
-	    void playSound(int sid);
+        void initSoundLibrary();
     #endif
 };
 #endif
