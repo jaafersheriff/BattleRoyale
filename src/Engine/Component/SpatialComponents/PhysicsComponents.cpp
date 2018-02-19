@@ -8,15 +8,18 @@
 
 
 
-NewtonianComponent::NewtonianComponent(SpatialComponent & spatial, float maxSpeed) :
+NewtonianComponent::NewtonianComponent(float maxSpeed) :
     Component(),
-    m_spatial(spatial),
+    m_spatial(nullptr),
     m_velocity(),
     m_acceleration(),
     m_maxSpeed(maxSpeed)
 {}
 
-void NewtonianComponent::init() {
+void NewtonianComponent::init(GameObject & gameObject) {
+    m_gameObject = &gameObject;
+    if (!(m_spatial = m_gameObject->getSpatial())) assert(false);
+
     auto collisionCallback([&](const Message & msg_) {
         const CollisionNormMessage & msg(static_cast<const CollisionNormMessage &>(msg_));
         // Calculate "friction"
@@ -49,7 +52,7 @@ void NewtonianComponent::update(float dt) {
     }
     glm::vec3 delta(0.5f * dt * (m_velocity + newVelocity));
     if (!Util::isZero(glm::length2(delta))) {
-        m_spatial.move(delta);
+        m_spatial->move(delta);
     }
     m_velocity = newVelocity;
     m_acceleration = glm::vec3();
@@ -61,22 +64,27 @@ void NewtonianComponent::accelerate(const glm::vec3 & acceleration) {
 
 
 
-AcceleratorComponent::AcceleratorComponent(NewtonianComponent & spatial, const glm::vec3 & acceleration) :
+AcceleratorComponent::AcceleratorComponent(const glm::vec3 & acceleration) :
     Component(),
-    m_newtonian(spatial),
+    m_newtonian(nullptr),
     m_acceleration(acceleration)
 {}
 
+void AcceleratorComponent::init(GameObject & gameObject) {
+    m_gameObject = &gameObject;
+    if (!(m_newtonian = m_gameObject->getComponentByType<NewtonianComponent>())) assert(false);
+}
+
 void AcceleratorComponent::update(float dt) {
-    m_newtonian.accelerate(m_acceleration);
+    m_newtonian->accelerate(m_acceleration);
 }
 
 
 
-GravityComponent::GravityComponent(NewtonianComponent & newtonian) :
-    AcceleratorComponent(newtonian, SpatialSystem::get().gravity())
+GravityComponent::GravityComponent() :
+    AcceleratorComponent(SpatialSystem::get().gravity())
 {}
 
 void GravityComponent::update(float dt) {
-    m_newtonian.accelerate(SpatialSystem::get().gravity());
+    m_newtonian->accelerate(SpatialSystem::get().gravity());
 }

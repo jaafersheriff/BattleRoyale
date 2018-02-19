@@ -19,15 +19,15 @@ class CameraControllerComponent : public Component {
 
     protected: // only scene or friends can create component
 
-        CameraControllerComponent(CameraComponent & cc, float ls, float ms);
+        CameraControllerComponent(float ls, float ms);
+
+        virtual void init(GameObject & gameObject) override;
 
     public:
 
         virtual SystemID systemID() const override { return SystemID::gameLogic; };
 
-        void init();
-
-        void update(float dt);
+        virtual void update(float dt) override;
 
         void setEnabled(bool enabled);
 
@@ -35,8 +35,8 @@ class CameraControllerComponent : public Component {
 
     private:
 
-        SpatialComponent & m_spatial;
-        CameraComponent & m_camera;
+        SpatialComponent * m_spatial;
+        CameraComponent * m_camera;
         float m_lookSpeed, m_moveSpeed;
         bool m_enabled; // TODO: way for any component / game object to be enabled/disabled
 

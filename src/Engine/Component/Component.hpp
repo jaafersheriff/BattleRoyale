@@ -20,30 +20,25 @@ class Component {
         Component(const Component & other) = default;
         Component & operator=(const Component & other) = default;
 
+        // assigns component to game object and initializes it
+        virtual void init(GameObject & gameObject) { m_gameObject = &gameObject; };
+
     public:
 
         /* virtual destructor necessary for polymorphic destruction */
         virtual ~Component() = default;
 
         virtual SystemID systemID() const = 0;
-
-        virtual void init() {};
         
         virtual void update(float) {};
 
         GameObject * getGameObject() { return m_gameObject; }
         const GameObject * getGameObject() const { return m_gameObject; }
 
-        void setGameObject(GameObject * go) { m_gameObject = go; }
-
-        /* Receive a message sent by another component */
-        //virtual void receiveMessage(Message &);
-
-
-
     protected:
-        /* Parent game object */
+
         GameObject * m_gameObject;
+
 };
 
 #endif

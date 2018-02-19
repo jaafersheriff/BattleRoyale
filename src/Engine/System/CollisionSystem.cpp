@@ -288,7 +288,7 @@ std::tuple<float, float, float> detCapsuleSpecs(int n, const glm::vec3 * positio
 
 }
 
-std::unique_ptr<BounderComponent> CollisionSystem::createBounderFromMesh(SpatialComponent & spatial, unsigned int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule) const {
+BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, unsigned int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule) const {
     if (!allowAAB && !allowSphere && !allowCapsule) {
         allowAAB = allowSphere = allowCapsule = true;
     }
@@ -322,24 +322,22 @@ std::unique_ptr<BounderComponent> CollisionSystem::createBounderFromMesh(Spatial
         capsuleV = capsule.volume();
     }
 
-    if (allowAAB && boxV <= sphereV && boxV <= capsuleV) {
-        return std::unique_ptr<BounderComponent>(new AABBounderComponent(spatial, weight, box));
+    if (allowSphere && sphereV <= boxV && sphereV <= capsuleV) {
+        return Scene::get().addComponent<SphereBounderComponent>(gameObject, weight, sphere);
     }
-    else if (allowSphere && sphereV <= boxV && sphereV <= capsuleV) {
-        return std::unique_ptr<BounderComponent>(new SphereBounderComponent(spatial, weight, sphere));
+    else if (allowAAB && boxV <= sphereV && boxV <= capsuleV) {
+        return Scene::get().addComponent<AABBounderComponent>(gameObject, weight, box);
     }
-    else if (allowCapsule && capsuleV <= boxV && capsuleV <= sphereV) {
-        return std::unique_ptr<BounderComponent>(new CapsuleBounderComponent(spatial, weight, capsule));
+    else {
+        return Scene::get().addComponent<CapsuleBounderComponent>(gameObject, weight, capsule);
     }
-
-    return nullptr;
 }
 
 void CollisionSystem::add(std::unique_ptr<Component> component) {
     m_componentRefs.push_back(component.get());
     if (dynamic_cast<BounderComponent *>(component.get())) {
         m_bounderComponents.emplace_back(static_cast<BounderComponent *>(component.release()));
-        m_bounderComponents.back()->update(0.0f);
+        m_potentials.insert(m_bounderComponents.back().get());
     }
     else {
         assert(false);

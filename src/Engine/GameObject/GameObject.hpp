@@ -31,12 +31,13 @@ class GameObject {
 
     public:
 
-    ~GameObject();
-
-    void init();
+    private: // only scene can add components
 
     // add a component
     template <typename CompT> void addComponent(CompT & component);
+    void addComponent(Component & component, std::type_index typeI);
+
+    public:
 
     // get all components;
     const std::vector<Component *> & getComponents() const { return m_allComponents; }
@@ -78,13 +79,7 @@ class GameObject {
 
 template <typename CompT>
 void GameObject::addComponent(CompT & component) {
-    m_allComponents.push_back(&component);
-    m_compsBySysT[component.systemID()].push_back(&component);
-    m_compsByCompT[std::type_index(typeid(CompT))].push_back(&component);
-    if (std::is_same<CompT, SpatialComponent>::value) {
-        m_spatialComponent = dynamic_cast<SpatialComponent *>(&component);
-    }
-    component.setGameObject(this);
+    addComponent(component, std::type_index(typeof(CompT)));
 }
 
 template <typename CompT>

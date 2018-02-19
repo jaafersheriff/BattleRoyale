@@ -29,8 +29,6 @@ class SpatialComponent : public Component, public Orientable {
 
     public:
 
-    virtual void init() override;
-
     virtual void update(float dt) override;
 
     // sets the absolute position

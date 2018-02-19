@@ -29,15 +29,15 @@ class CameraComponent : public Component, public Orientable {
 
     protected: // only scene or friends can create component
 
-        CameraComponent(SpatialComponent & spatial, float fov);
+        CameraComponent(float fov);
+
+        virtual void init(GameObject & gameObject) override;
 
     public:
         
         /* Derived functions */
 
         virtual SystemID systemID() const override { return SystemID::gameLogic; };
-
-        void init();
 
         void update(float dt);
 
@@ -79,7 +79,7 @@ class CameraComponent : public Component, public Orientable {
 
     private:
 
-        SpatialComponent & m_spatial;
+        SpatialComponent * m_spatial;
         float m_theta, m_phi; // rotation of camera relative to base
         float m_fov; // field of view
 

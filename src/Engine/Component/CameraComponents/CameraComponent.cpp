@@ -11,10 +11,10 @@
 
 
 
-CameraComponent::CameraComponent(SpatialComponent & spatial, float fov) :
+CameraComponent::CameraComponent(float fov) :
     Component(),
-    Orientable(spatial.u(), spatial.v(), spatial.w()),
-    m_spatial(spatial),
+    Orientable(),
+    m_spatial(nullptr),
     m_theta(0.0f),
     m_phi(glm::pi<float>() * 0.5f),
     m_fov(fov),
@@ -25,7 +25,16 @@ CameraComponent::CameraComponent(SpatialComponent & spatial, float fov) :
     m_frustumValid(false)
 {}
 
-void CameraComponent::init() {
+void CameraComponent::init(GameObject & gameObject) {
+    m_gameObject = &gameObject;
+    if (!(m_spatial = m_gameObject->getComponentByType<SpatialComponent>())) assert(false);
+    setUVW(m_spatial->u(), m_spatial->v(), m_spatial->w());
+    m_theta = 0.0f;
+    m_phi = glm::pi<float>() * 0.5f;
+    m_viewMatValid = false;
+    m_projMatValid = false;
+    m_frustumValid = false;
+
     auto spatTransformCallback([&](const Message & msg_) {
         m_viewMatValid = false;
         m_frustumValid = false;
@@ -61,11 +70,11 @@ void CameraComponent::update(float dt) {
 }
 
 void CameraComponent::lookAt(const glm::vec3 & p) {
-    lookInDir(p - m_spatial.position());
+    lookInDir(p - m_spatial->position());
 }
 
 void CameraComponent::lookInDir(const glm::vec3 & dir) {
-    glm::vec3 relativeDir = Util::mapTo(m_spatial.u(), m_spatial.v(), m_spatial.w()) * dir;
+    glm::vec3 relativeDir = Util::mapTo(m_spatial->u(), m_spatial->v(), m_spatial->w()) * dir;
     glm::vec3 spherical(Util::cartesianToSpherical(glm::vec3(-relativeDir.z, -relativeDir.x, relativeDir.y)));
     m_theta = spherical.y;
     m_phi = spherical.z;
@@ -144,12 +153,12 @@ void CameraComponent::detUVW() {
     glm::vec3 u(glm::cross(v, w));
 
     // adjust relative to orientation of base
-    const glm::mat3 & orient(m_spatial.orientationMatrix());
+    const glm::mat3 & orient(m_spatial->orientationMatrix());
     setUVW(orient * u, orient * v, orient * w);
 }
 
 void CameraComponent::detView() const {
-    m_viewMat = Util::viewMatrix(m_spatial.position(), u(), v(), w());
+    m_viewMat = Util::viewMatrix(m_spatial->position(), u(), v(), w());
     m_viewMatValid = true;
 }
 

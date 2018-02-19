@@ -35,10 +35,6 @@ SpatialComponent::SpatialComponent(const glm::vec3 & loc, const glm::vec3 & scal
     setOrientation(orientation, true);
 }
 
-void SpatialComponent::init() {
-
-}
-
 void SpatialComponent::update(float dt) {
     
 }

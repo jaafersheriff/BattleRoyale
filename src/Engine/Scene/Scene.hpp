@@ -44,11 +44,8 @@ class Scene {
     /* Game Objects */
     GameObject & createGameObject();
     
-    // Creates a component of the given type and adds it to the scene
-    template <typename CompT, typename... Args> CompT & createComponent(Args &&... args);
-
-    // the scene takes ownership of the component
-    template <typename CompT> CompT & addComponent(std::unique_ptr<CompT> component);
+    // Creates a component of the given type and adds it to the game object
+    template <typename CompT, typename... Args> CompT & addComponent(GameObject & gameObject, Args &&... args);
 
     // Sends out a message for any receivers of that message type to pick up.
     // If gameObject is not null, first sends the message locally to receivers
@@ -78,7 +75,7 @@ class Scene {
 
     std::vector<std::unique_ptr<GameObject>> m_gameObjectInitQueue;
     std::vector<GameObject *> m_gameObjectKillQueue;
-    std::vector<std::unique_ptr<Component>> m_componentInitQueue;
+    std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Component>>> m_componentInitQueue;
     std::vector<Component *> m_componentKillQueue;
 
     std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>> m_messages;
@@ -93,15 +90,10 @@ class Scene {
 
 
 template <typename CompT, typename... Args>
-CompT & Scene::createComponent(Args &&... args) {
-    return addComponent(std::unique_ptr<CompT>(new CompT(std::forward<Args>(args)...)));
-}
-
-template <typename CompT>
-CompT & Scene::addComponent(std::unique_ptr<CompT> component) {
-    CompT & comp(*component);
-    m_componentInitQueue.emplace_back(std::move(component));
-    return comp;
+CompT & Scene::addComponent(GameObject & gameObject, Args &&... args) {
+    CompT * comp(new CompT(std::forward<Args>(args)...));
+    m_componentInitQueue.emplace_back(&gameObject, typeid(CompT), std::unique_ptr<CompT>(comp));
+    return *comp;
 }
 
 template<typename MsgT, typename... Args>

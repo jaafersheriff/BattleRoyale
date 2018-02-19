@@ -10,14 +10,12 @@ GameObject::GameObject() :
     m_spatialComponent(nullptr)
 {}
 
-GameObject::~GameObject() {
-
-}
-
-/* Initialize all components */
-void GameObject::init() {
-    for (Component * c : m_allComponents) {
-        c->init();
+void GameObject::addComponent(Component & component, std::type_index typeI) {
+    m_allComponents.push_back(&component);
+    m_compsBySysT[component.systemID()].push_back(&component);
+    m_compsByCompT[typeI].push_back(&component);
+    if (typeI == std::type_index(typeid(SpatialComponent))) {
+        m_spatialComponent = dynamic_cast<SpatialComponent *>(&component);
     }
 }
 

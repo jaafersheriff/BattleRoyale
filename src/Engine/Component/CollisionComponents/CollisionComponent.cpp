@@ -9,23 +9,29 @@
 
 
 
-BounderComponent::BounderComponent(SpatialComponent & spatial, unsigned int weight) :
-    m_spatial(spatial),
+BounderComponent::BounderComponent(unsigned int weight) :
+    m_spatial(nullptr),
     m_weight(weight)
 {}
 
+void BounderComponent::init(GameObject & gameObject) {
+    m_gameObject = &gameObject;
+    if (!(m_spatial = m_gameObject->getSpatial())) assert(false);
+}
 
-AABBounderComponent::AABBounderComponent(SpatialComponent & spatial, unsigned int weight, const AABox & box) :
-    BounderComponent(spatial, weight),
+
+
+AABBounderComponent::AABBounderComponent(unsigned int weight, const AABox & box) :
+    BounderComponent(weight),
     m_box(box),
     m_transBox(m_box)
 {}
 
 void AABBounderComponent::update(float dt) {
     // no rotation
-    if (m_spatial.orientationMatrix() == glm::mat3()) {
-        m_transBox.min = m_box.min * m_spatial.scale() + m_spatial.position();
-        m_transBox.max = m_box.max * m_spatial.scale() + m_spatial.position();
+    if (m_spatial->orientationMatrix() == glm::mat3()) {
+        m_transBox.min = m_box.min * m_spatial->scale() + m_spatial->position();
+        m_transBox.max = m_box.max * m_spatial->scale() + m_spatial->position();
     }
     // is rotation
     else {
@@ -39,7 +45,7 @@ void AABBounderComponent::update(float dt) {
             glm::vec3(m_box.min.x, m_box.max.y, m_box.max.z),
             glm::vec3(m_box.max.x, m_box.max.y, m_box.max.z)
         };
-        const glm::mat4 & modelMat(m_spatial.modelMatrix());
+        const glm::mat4 & modelMat(m_spatial->modelMatrix());
         for (int i(0); i < 8; ++i) {
             corners[i] = modelMat * glm::vec4(corners[i], 1.0f);
         }
@@ -74,15 +80,15 @@ Sphere AABBounderComponent::enclosingSphere() const {
 
 
 
-SphereBounderComponent::SphereBounderComponent(SpatialComponent & spatial, unsigned int weight, const Sphere & sphere) :
-    BounderComponent(spatial, weight),
+SphereBounderComponent::SphereBounderComponent(unsigned int weight, const Sphere & sphere) :
+    BounderComponent(weight),
     m_sphere(sphere),
     m_transSphere(m_sphere)
 {}
 
 void SphereBounderComponent::update(float dt) {
-    m_transSphere.origin = m_spatial.modelMatrix() * glm::vec4(m_sphere.origin, 1.0f);
-    m_transSphere.radius = glm::compMax(m_spatial.scale()) * m_sphere.radius;
+    m_transSphere.origin = m_spatial->modelMatrix() * glm::vec4(m_sphere.origin, 1.0f);
+    m_transSphere.radius = glm::compMax(m_spatial->scale()) * m_sphere.radius;
 }
 
 bool SphereBounderComponent::collide(const BounderComponent & o, glm::vec3 * delta) const {
@@ -108,15 +114,15 @@ Sphere SphereBounderComponent::enclosingSphere() const {
 
 
 
-CapsuleBounderComponent::CapsuleBounderComponent(SpatialComponent & spatial, unsigned int weight, const Capsule & capsule) :
-    BounderComponent(spatial, weight),
+CapsuleBounderComponent::CapsuleBounderComponent(unsigned int weight, const Capsule & capsule) :
+    BounderComponent(weight),
     m_capsule(capsule),
     m_transCapsule(m_capsule)
 {}
 
 void CapsuleBounderComponent::update(float dt) {
-    m_transCapsule.center = m_spatial.modelMatrix() * glm::vec4(m_capsule.center, 1.0f);
-    const glm::vec3 & scale(m_spatial.scale());
+    m_transCapsule.center = m_spatial->modelMatrix() * glm::vec4(m_capsule.center, 1.0f);
+    const glm::vec3 & scale(m_spatial->scale());
     m_transCapsule.radius = glm::max(scale.x, scale.z) * m_capsule.radius;
     m_transCapsule.height = glm::max(0.0f, scale.y * (m_capsule.height + 2.0f * m_capsule.radius) - 2.0f * m_transCapsule.radius);
 }

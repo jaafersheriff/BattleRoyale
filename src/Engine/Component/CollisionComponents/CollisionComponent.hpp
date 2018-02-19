@@ -25,7 +25,9 @@ class BounderComponent : public Component {
 
     protected: // only scene or friends can create component
 
-    BounderComponent(SpatialComponent & spatial, unsigned int weight);
+    BounderComponent(unsigned int weight);
+
+    virtual void init(GameObject & gameObject) override;
 
     public:
 
@@ -45,7 +47,7 @@ class BounderComponent : public Component {
 
     protected:
 
-    SpatialComponent & m_spatial;
+    SpatialComponent * m_spatial;
     unsigned int m_weight;
 
 };
@@ -59,7 +61,7 @@ class AABBounderComponent : public BounderComponent {
 
     protected: // only scene or friends can create component
 
-    AABBounderComponent(SpatialComponent & spatial, unsigned int weight, const AABox & box);
+    AABBounderComponent(unsigned int weight, const AABox & box);
 
     public:
 
@@ -90,7 +92,7 @@ class SphereBounderComponent : public BounderComponent {
 
     protected: // only scene or friends can create component
 
-    SphereBounderComponent(SpatialComponent & spatial, unsigned int weight, const Sphere & sphere);
+    SphereBounderComponent(unsigned int weight, const Sphere & sphere);
 
     public:
 
@@ -121,7 +123,7 @@ class CapsuleBounderComponent : public BounderComponent {
 
     protected: // only scene or friends can create component
 
-    CapsuleBounderComponent(SpatialComponent & spatial, unsigned int weight, const Capsule & capsule);
+    CapsuleBounderComponent(unsigned int weight, const Capsule & capsule);
 
     public:
 

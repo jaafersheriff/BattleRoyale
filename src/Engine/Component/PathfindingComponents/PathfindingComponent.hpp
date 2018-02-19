@@ -11,22 +11,21 @@ class PathfindingComponent : public Component {
 
     friend Scene;
     
-    public:
-
-    using SystemClass = PathfindingSystem;
+    protected: // only scene or friends can create component
 
     PathfindingComponent(GameObject & player, float ms);
+
+    virtual void init(GameObject & gameObject) override;
 
     public:
 
     virtual SystemID systemID() const override { return SystemID::pathfinding; };
 
-    virtual void init() override;
-
     virtual void update(float) override;
 
     private:
 
-    GameObject & player;
-    float moveSpeed;
+    SpatialComponent * m_spatial;
+    GameObject * m_player;
+    float m_moveSpeed;
 };

@@ -51,10 +51,22 @@ void Scene::doInitQueue() {
         m_gameObjectRefs.push_back(m_gameObjectsStore.back().get());
     }
     m_gameObjectInitQueue.clear();
-
+    
+    // add components to objects
     for (int i(0); i < m_componentInitQueue.size(); ++i) {
-        auto & comp(m_componentInitQueue[i]);
-        comp->init();
+        auto & initE(m_componentInitQueue[i]);
+        GameObject * go(std::get<0>(initE));
+        std::type_index typeI(std::get<1>(initE));
+        auto & comp(std::get<2>(initE));
+        go->addComponent(*comp.get(), typeI);
+    }
+    // initialize components and add to systems
+    for (int i(0); i < m_componentInitQueue.size(); ++i) {
+        auto & initE(m_componentInitQueue[i]);
+        GameObject * go(std::get<0>(initE));
+        std::type_index typeI(std::get<1>(initE));
+        auto & comp(std::get<2>(initE));
+        comp->init(*go);
         switch (comp->systemID()) {
             case SystemID::  gameLogic:   GameLogicSystem::get().add(std::move(comp)); break;
             case SystemID::pathfinding: PathfindingSystem::get().add(std::move(comp)); break;
@@ -72,7 +84,9 @@ void Scene::doKillQueue() {
         bool found(false);
         // look in active game objects
         for (int i(0); i < m_gameObjectRefs.size(); ++i) {
-            if (m_gameObjectRefs[i] == *killIt) {
+            GameObject * go(m_gameObjectRefs[i]);
+            if (go == *killIt) {
+                m_componentKillQueue.insert(m_componentKillQueue.end(), go->getComponents().cbegin(), go->getComponents().cend());
                 m_gameObjectRefs.erase(m_gameObjectRefs.begin() + i);
                 m_gameObjectsStore.erase(m_gameObjectsStore.begin() + i);
                 found = true;
@@ -103,7 +117,7 @@ void Scene::doKillQueue() {
         }
         // look in initialization queue
         for (auto initIt(m_componentInitQueue.begin()); initIt != m_componentInitQueue.end(); ++initIt) {
-            if (initIt->get() == comp) {
+            if (std::get<2>(*initIt).get() == comp) {
                 m_componentInitQueue.erase(initIt);
                 break;
             }

@@ -79,6 +79,8 @@ int main(int argc, char **argv) {
     /* Scene reference for QOL */
     Scene & scene(Scene::get());
 
+    GameObject & imguiGO(scene.createGameObject());
+
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
@@ -92,7 +94,8 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     /* Diffuse Shader ImGui Pane */
-    scene.createComponent<ImGuiComponent>(
+    scene.addComponent<ImGuiComponent>(
+        imguiGO,
         "Diffuse Shader",
         [&]() {
             if (ImGui::Button("Active")) {
@@ -101,7 +104,7 @@ int main(int argc, char **argv) {
             if (ImGui::Button("Wireframe")) {
                 RenderSystem::get().getShader<DiffuseShader>()->toggleWireFrame();
             }
-       }
+        }
     );
 
     // Create collider
@@ -115,7 +118,8 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     /* Collider ImGui pane */
-    scene.createComponent<ImGuiComponent>(
+    scene.addComponent<ImGuiComponent>(
+        imguiGO,
         "Bounder Shader",
         [&]() {
             if (ImGui::Button("Active")) {
@@ -128,41 +132,32 @@ int main(int argc, char **argv) {
     SpatialSystem::get().setGravity(glm::vec3(0.0f, -10.0f, 0.0f));
 
     /* Setup Camera */
-    float camFOV(45.0f);
-    float camLookSpeed(0.2f);
-    float camMoveSpeed(5.0f);
-    GameObject & camera(scene.createGameObject());
-    SpatialComponent & camSpatComp(scene.createComponent<SpatialComponent>());
-    camera.addComponent(camSpatComp);
-    CameraComponent & camCamComp(scene.createComponent<CameraComponent>(camSpatComp, camFOV));
-    camera.addComponent(camCamComp);
-    CameraControllerComponent & camContComp(scene.createComponent<CameraControllerComponent>(camCamComp, camLookSpeed, camMoveSpeed));
-    camera.addComponent(camContComp);
-    camContComp.setEnabled(false);
+    float freeCamFOV(45.0f);
+    float freeCamLookSpeed(0.2f);
+    float freeCamMoveSpeed(5.0f);
+    GameObject & freeCam(scene.createGameObject());
+    SpatialComponent & freeCamSpatComp(scene.addComponent<SpatialComponent>(freeCam));
+    CameraComponent & freeCamCamComp(scene.addComponent<CameraComponent>(freeCam, freeCamFOV));
+    CameraControllerComponent & freeCamContComp(scene.addComponent<CameraControllerComponent>(freeCam, freeCamLookSpeed, freeCamMoveSpeed));
+    freeCamContComp.setEnabled(false);
 
     /* Setup Player */
     float playerHeight(1.75f);
     float playerWidth(playerHeight / 4.0f);
     glm::vec3 playerPos(0.0f, 6.0f, 0.0f);
-    float playerFOV(camFOV);
-    float playerLookSpeed(camLookSpeed);
-    float playerMoveSpeed(camMoveSpeed);
+    float playerFOV(freeCamFOV);
+    float playerLookSpeed(freeCamLookSpeed);
+    float playerMoveSpeed(freeCamMoveSpeed);
     float playerMaxSpeed(50.0f);
     GameObject & player(scene.createGameObject());
-    SpatialComponent & playerSpatComp(scene.createComponent<SpatialComponent>());
-    player.addComponent(playerSpatComp);
+    SpatialComponent & playerSpatComp(scene.addComponent<SpatialComponent>(player));
     playerSpatComp.setPosition(playerPos);
-    NewtonianComponent & playerNewtComp(scene.createComponent<NewtonianComponent>(playerSpatComp, playerMaxSpeed));
-    player.addComponent(playerNewtComp);
-    GravityComponent & playerGravComp(scene.createComponent<GravityComponent>(playerNewtComp));
-    player.addComponent(playerGravComp);
+    NewtonianComponent & playerNewtComp(scene.addComponent<NewtonianComponent>(player, playerMaxSpeed));
+    GravityComponent & playerGravComp(scene.addComponent<GravityComponent>(player));
     Capsule playerCap(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth);
-    CapsuleBounderComponent & playerBoundComp(scene.createComponent<CapsuleBounderComponent>(*player.getSpatial(), 1, playerCap));
-    player.addComponent(playerBoundComp);
-    CameraComponent & playerCamComp(scene.createComponent<CameraComponent>(playerSpatComp, playerFOV));
-    player.addComponent(playerCamComp);
-    PlayerControllerComponent & playerContComp(scene.createComponent<PlayerControllerComponent>(playerCamComp, playerLookSpeed, playerMoveSpeed));
-    player.addComponent(playerContComp);
+    CapsuleBounderComponent & playerBoundComp(scene.addComponent<CapsuleBounderComponent>(player, 1, playerCap));
+    CameraComponent & playerCamComp(scene.addComponent<CameraComponent>(player, playerFOV));
+    PlayerControllerComponent & playerContComp(scene.addComponent<PlayerControllerComponent>(player, playerLookSpeed, playerMoveSpeed));
 
     RenderSystem::get().setCamera(&playerCamComp);
 
@@ -174,7 +169,7 @@ int main(int argc, char **argv) {
         if (msg.key == GLFW_KEY_TAB && msg.action == GLFW_PRESS && msg.mods & GLFW_MOD_CONTROL) {
             if (free) {
                 // disable camera controller
-                camContComp.setEnabled(false);
+                freeCamContComp.setEnabled(false);
                 // enable player controller
                 playerContComp.setEnabled(true);
                 RenderSystem::get().setCamera(&playerCamComp);
@@ -183,12 +178,12 @@ int main(int argc, char **argv) {
                 // disable player controller
                 playerContComp.setEnabled(false);
                 // enable camera object
-                camContComp.setEnabled(true);
+                freeCamContComp.setEnabled(true);
                 // set camera object camera to player camera
-                camSpatComp.setPosition(playerSpatComp.position());
-                camSpatComp.setUVW(playerSpatComp.u(), playerSpatComp.v(), playerSpatComp.w());
-                camCamComp.lookInDir(playerCamComp.getLookDir());
-                RenderSystem::get().setCamera(&camCamComp);
+                freeCamSpatComp.setPosition(playerSpatComp.position());
+                freeCamSpatComp.setUVW(playerSpatComp.u(), playerSpatComp.v(), playerSpatComp.w());
+                freeCamCamComp.lookInDir(playerCamComp.getLookDir());
+                RenderSystem::get().setCamera(&freeCamCamComp);
             }
             free = !free;
         }
@@ -217,7 +212,8 @@ int main(int argc, char **argv) {
     scene.addReceiver<KeyMessage>(nullptr, gravSwapCallback);
 
     /* VSync ImGui Pane */
-    scene.createComponent<ImGuiComponent>(
+    scene.addComponent<ImGuiComponent>(
+        imguiGO,
         "VSync",
         [&]() {
             if (ImGui::Button("VSync")) {
@@ -229,30 +225,28 @@ int main(int argc, char **argv) {
     /*Parse and load json level*/
     FileReader fileReader;
     const char *levelPath = "../resources/GameLevel_02.json";
-    fileReader.loadLevel(*levelPath, scene);
+    fileReader.loadLevel(*levelPath);
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
     for (int i(0); i < 10; ++i) {
         GameObject & bunny(scene.createGameObject());
-        SpatialComponent & bunnySpatComp(scene.createComponent<SpatialComponent>(
+        SpatialComponent & bunnySpatComp(scene.addComponent<SpatialComponent>(
+            bunny,
             glm::vec3(-10.0f, 5.0, i), // position
             glm::vec3(0.25f, 0.25f, 0.25f), // scale
             glm::mat3() // rotation
         ));
-        bunny.addComponent(bunnySpatComp);
-        NewtonianComponent & bunnyNewtComp(scene.createComponent<NewtonianComponent>(bunnySpatComp, playerMaxSpeed));
-        bunny.addComponent(bunnyNewtComp);
-        GravityComponent & bunnyGravComp(scene.createComponent<GravityComponent>(bunnyNewtComp));
-        bunny.addComponent(bunnyGravComp);
-        bunny.addComponent(Scene::get().addComponent<BounderComponent>(CollisionSystem::get().createBounderFromMesh(*bunny.getSpatial(), 1, *bunnyMesh, false, true, false)));
-        DiffuseRenderComponent & bunnyDiffuse = scene.createComponent<DiffuseRenderComponent>(
+        NewtonianComponent & bunnyNewtComp(scene.addComponent<NewtonianComponent>(bunny, playerMaxSpeed));
+        GravityComponent & bunnyGravComp(scene.addComponent<GravityComponent>(bunny));
+        BounderComponent & bunnyBoundComp(CollisionSystem::get().addBounderFromMesh(bunny, 1, *bunnyMesh, false, true, false));
+        DiffuseRenderComponent & bunnyDiffuse = scene.addComponent<DiffuseRenderComponent>(
+            bunny,
             RenderSystem::get().getShader<DiffuseShader>()->pid,
             *bunnyMesh,
             ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
-        bunny.addComponent(bunnyDiffuse);
         /* Bunny ImGui panes */
-        /*ImGuiComponent & bIc = scene.createComponent<ImGuiComponent>(
+        /*ImGuiComponent & bIc = scene.addComponent<ImGuiComponent>(
             "Bunny", 
             [&]() {
                 // Material properties
@@ -286,11 +280,12 @@ int main(int argc, char **argv) {
             }
         );*/
         //bunny.addComponent(bIc);
-        bunny.addComponent(scene.createComponent<PathfindingComponent>(player, 1.0f));
+        PathfindingComponent & bunnyPathComp(scene.addComponent<PathfindingComponent>(bunny, player, 1.0f));
     }
 
     /* Game stats pane */
-    scene.createComponent<ImGuiComponent>(
+    scene.addComponent<ImGuiComponent>(
+        imguiGO,
         "Stats",
         [&]() {
             ImGui::Text("FPS: %d", engine.fps);

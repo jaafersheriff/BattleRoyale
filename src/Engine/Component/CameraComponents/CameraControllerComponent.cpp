@@ -6,16 +6,18 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "CameraComponent.hpp"
 
-CameraControllerComponent::CameraControllerComponent(CameraComponent & cc, float ls, float ms) :
-    m_spatial(*cc.getGameObject()->getSpatial()),
-    m_camera(cc),
+CameraControllerComponent::CameraControllerComponent(float ls, float ms) :
+    m_spatial(nullptr),
+    m_camera(nullptr),
     m_lookSpeed(ls),
     m_moveSpeed(ms),
     m_enabled(true)
 {}
 
-void CameraControllerComponent::init() {
-
+void CameraControllerComponent::init(GameObject & gameObject) {
+    m_gameObject = &gameObject;
+    if (!(m_spatial = m_gameObject->getSpatial())) assert(false);
+    if (!(m_camera = m_gameObject->getComponentByType<CameraComponent>())) assert(false);
 }
 
 void CameraControllerComponent::update(float dt) {
@@ -28,11 +30,11 @@ void CameraControllerComponent::update(float dt) {
 
     if (Mouse::dx || Mouse::dy) {
         // orient camera relative to base
-        m_camera.angle(-float(Mouse::dx) * m_lookSpeed * dt, float(Mouse::dy) * m_lookSpeed * dt, true);
+        m_camera->angle(-float(Mouse::dx) * m_lookSpeed * dt, float(Mouse::dy) * m_lookSpeed * dt, true);
         // set camera base to same xz orientation
-        m_spatial.setUVW(m_camera.u(), glm::vec3(0.0f, 1.0f, 0.0f), glm::cross(m_camera.u(), glm::vec3(0.0f, 1.0f, 0.0f)), true);
+        m_spatial->setUVW(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f), glm::cross(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f)), true);
         // reset camera to face forward. in absolute space, this puts it back to where it was before the last line
-        m_camera.angle(0.0f, m_camera.phi(), false, true);
+        m_camera->angle(0.0f, m_camera->phi(), false, true);
     }
 
     int forward(Keyboard::isKeyPressed(GLFW_KEY_W));
@@ -50,8 +52,8 @@ void CameraControllerComponent::update(float dt) {
     if (dir != glm::vec3()) {
         dir = glm::normalize(dir);
         glm::vec2 xzDir(dir.x, dir.z);
-        dir = m_spatial.u() * xzDir.x + glm::vec3(0.0f, 1.0f, 0.0f) * dir.y +  m_spatial.w() * xzDir.y; // WoW controls
-        m_spatial.move(dir * m_moveSpeed * dt);
+        dir = m_spatial->u() * xzDir.x + glm::vec3(0.0f, 1.0f, 0.0f) * dir.y +  m_spatial->w() * xzDir.y; // WoW controls
+        m_spatial->move(dir * m_moveSpeed * dt);
     }
 }
 
