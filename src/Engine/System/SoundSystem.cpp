@@ -20,7 +20,7 @@ SoundSystem::SoundSystem(const std::vector<Component *> & components) :
 
     initSoundLibrary();
 #endif
-    
+    playSound("drill.wav");
 }
 
 void SoundSystem::update(float dt) 

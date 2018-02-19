@@ -11,8 +11,8 @@
 #endif
 
 #if HAVE_FMOD_LIBRARY
-#include "fmod.hpp"
-#include "fmod_studio.hpp"
+#include "ThirdParty/fmod/fmod.hpp"
+#include "ThirdParty/fmod/fmod_studio.hpp"
 #endif
 
 
