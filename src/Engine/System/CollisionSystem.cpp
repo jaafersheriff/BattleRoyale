@@ -147,7 +147,7 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
 
 }
 
-
+constexpr float CollisionSystem::k_collisionOffsetFactor;
 
 CollisionSystem::CollisionSystem(const std::vector<Component *> & comps) :
     System(comps)

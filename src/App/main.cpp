@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
                 ImGui::SliderFloat("Rotation Angle", &angle, -glm::pi<float>(), glm::pi<float>()))
             {
                 if (angle != 0.0f && axis != glm::vec3()) {
-                    bunny.getSpatial()->setRotation(glm::rotate(angle, glm::normalize(axis)));
+                    bunny.getSpatial()->setRotation(glm::mat3(glm::rotate(angle, glm::normalize(axis))));
                 }
                 else {
                     bunny.getSpatial()->setRotation(glm::mat3());
