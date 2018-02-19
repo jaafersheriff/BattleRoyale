@@ -20,7 +20,6 @@ SoundSystem::SoundSystem(const std::vector<Component *> & components) :
 
     initSoundLibrary();
 #endif
-    playSound("drill.wav");
 }
 
 void SoundSystem::update(float dt) 
@@ -31,7 +30,8 @@ void SoundSystem::update(float dt)
 }
 
 #if HAVE_FMOD_LIBRARY
-void SoundSystem::initSoundLibrary() {
+void SoundSystem::initSoundLibrary()
+{
     for (auto s : soundfiles) {
         FMOD::Sound* tempSound = createSound(s);
         soundLibrary[s] = tempSound;
