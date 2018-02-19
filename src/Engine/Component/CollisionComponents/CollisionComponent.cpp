@@ -6,7 +6,6 @@
 #include "glm/gtx/norm.hpp"
 
 #include "Component/SpatialComponents/SpatialComponent.hpp"
-#include "Util/Util.hpp"
 
 BounderComponent::BounderComponent(int weight) :
     m_weight(weight),
