@@ -210,7 +210,6 @@ std::tuple<float, float, float> detCapsuleSpecs(int n, const glm::vec3 * positio
         maxQy = minQy = (maxQy + minQy) * 0.5f;
     }
 
-    // return { r, maxQy, minQy };
     return std::make_tuple(r, maxQy, minQy);
 }
 
