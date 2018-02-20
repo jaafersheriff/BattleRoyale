@@ -11,7 +11,7 @@
 #include <map>
 #include <functional>
 
-class GameLogicSystem;
+class RenderSystem;
 
 class ImGuiComponent : public Component {
 
@@ -19,7 +19,7 @@ class ImGuiComponent : public Component {
 
     public:
 
-    using SystemClass = GameLogicSystem;
+    using SystemClass = RenderSystem;
 
     protected:
 

@@ -8,7 +8,7 @@
 int Window::width = DEFAULT_WIDTH;
 int Window::height = DEFAULT_HEIGHT;
 bool Window::imGuiEnabled = false;
-float Window::imGuiTimer = 1.0;
+float Window::imGuiTimer = 1.f;
 
 void Window::errorCallback(int error, const char *desc) {
     std::cerr << "Error " << error << ": " << desc << std::endl;
@@ -19,29 +19,29 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, true);
     }
 
-    /* ImGui callback if it is active */
-    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
+#ifdef DEBUG_MODE
+    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) 
         ImGui_ImplGlfwGL3_KeyCallback(window, key, scancode, action, mode);
-    }
-    else {
+    else 
+#endif
         Keyboard::setKeyStatus(key, action);
-    }
 }
 
 void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
-    /* ImGui callback if it is active */
-    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
+#ifdef DEBUG_MODE
+    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) 
         ImGui_ImplGlfwGL3_MouseButtonCallback(window, button, action, mods);
-    }
-    else {
+    else 
+#endif
         Mouse::setButtonStatus(button, action);
-    }
 }
 
 void Window::characterCallback(GLFWwindow *window, unsigned int c) {
+#ifdef DEBUG_MODE
     if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
         ImGui_ImplGlfwGL3_CharCallback(window, c);
     }
+#endif
 }
 
 int Window::init(std::string name) {
@@ -116,6 +116,7 @@ void Window::update(float dt) {
     glfwGetCursorPos(window, &x, &y);
     Mouse::update(x, y);
 
+#ifdef DEBUG_MODE
     /* Update ImGui */
     imGuiTimer += dt;
     if (Keyboard::isKeyPressed(GLFW_KEY_GRAVE_ACCENT) && 
@@ -124,8 +125,11 @@ void Window::update(float dt) {
         toggleImGui();
         imGuiTimer = 0.0;
     }
-    ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
-    
+    if (isImGuiEnabled()) {
+        ImGui_ImplGlfwGL3_NewFrame(true);
+    }
+#endif
+ 
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
