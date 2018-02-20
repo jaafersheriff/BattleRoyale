@@ -26,7 +26,17 @@
         -0.9999999403953552,
         0.0,
         1.7881393432617188e-7
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": true,
+        "center": [
+            -1.1128343343734742,
+            7.8087968826293949,
+            0.0
+        ],
+        "radius": 7.920430660247803,
+        "height": 0.5534540414810181
+    }
 },
 "object1":{
     "objName": "Assets/Models/Bench.obj",
@@ -55,7 +65,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object2":{
     "objName": "Assets/Models/Railing.obj",
@@ -84,7 +100,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object3":{
     "objName": "Assets/Models/Stage Pieces/Roof.obj",
@@ -113,7 +135,13 @@
         -0.9999999403953552,
         0.0,
         1.7881393432617188e-7
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object4":{
     "objName": "Assets/Models/Tray.obj",
@@ -142,7 +170,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object5":{
     "objName": "Assets/Models/GarbageCan.obj",
@@ -171,7 +205,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object6":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -200,7 +240,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object7":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -229,7 +275,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object8":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -258,7 +310,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object9":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -287,7 +345,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object10":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -316,7 +380,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object11":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -345,7 +415,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object12":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -374,7 +450,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object13":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -403,7 +485,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object14":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -432,7 +520,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object15":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -461,7 +555,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object16":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -490,7 +590,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object17":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -519,7 +625,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object18":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -548,7 +660,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object19":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -577,7 +695,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object20":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -606,7 +730,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object21":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -635,7 +765,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object22":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -664,7 +800,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object23":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -693,7 +835,13 @@
         -1.7484555314695172e-7,
         0.0,
         1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object24":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -722,7 +870,13 @@
         -1.7484555314695172e-7,
         0.0,
         1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object25":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -751,7 +905,13 @@
         -1.7484555314695172e-7,
         0.0,
         1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object26":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -780,7 +940,13 @@
         -1.7484555314695172e-7,
         0.0,
         1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object27":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -809,7 +975,13 @@
         -1.7484555314695172e-7,
         0.0,
         1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object28":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -838,7 +1010,13 @@
         -1.7484555314695172e-7,
         0.0,
         1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object29":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -867,7 +1045,13 @@
         -1.7484555314695172e-7,
         0.0,
         1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object30":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -896,7 +1080,13 @@
         -1.7484555314695172e-7,
         0.0,
         1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object31":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -925,7 +1115,13 @@
         -0.9999999403953552,
         0.0,
         1.7881393432617188e-7
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object32":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -954,7 +1150,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object33":{
     "objName": "Assets/Models/Stage Pieces/Ceiling.obj",
@@ -983,7 +1185,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object34":{
     "objName": "Assets/Models/Stage Pieces/Floor2.obj",
@@ -1012,7 +1220,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object35":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -1041,7 +1255,13 @@
         -0.9999999403953552,
         0.0,
         1.7881393432617188e-7
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object36":{
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
@@ -1070,7 +1290,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object37":{
     "objName": "Assets/Models/PottedPlant.obj",
@@ -1099,7 +1325,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object38":{
     "objName": "Assets/Models/Pillar.obj",
@@ -1128,7 +1360,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object39":{
     "objName": "Assets/Models/table.obj",
@@ -1157,7 +1395,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object40":{
     "objName": "Assets/Models/Pillar.obj",
@@ -1186,7 +1430,17 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": true,
+        "center": [
+            0.0,
+            8.881805419921875,
+            0.0
+        ],
+        "radius": 5.025516510009766,
+        "height": 0.27708420157432558
+    }
 },
 "object41":{
     "objName": "Assets/Models/Pillar.obj",
@@ -1215,7 +1469,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object42":{
     "objName": "Assets/Models/Pillar.obj",
@@ -1244,7 +1504,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object43":{
     "objName": "Assets/Models/PottedPlant.obj",
@@ -1273,7 +1539,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object44":{
     "objName": "Assets/Models/Cup.obj",
@@ -1302,7 +1574,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object45":{
     "objName": "Assets/Models/GarbageCan.obj",
@@ -1331,7 +1609,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object46":{
     "objName": "Assets/Models/PottedPlant.obj",
@@ -1360,7 +1644,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object47":{
     "objName": "Assets/Models/Pillar.obj",
@@ -1389,7 +1679,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object48":{
     "objName": "Assets/Models/Pillar.obj",
@@ -1418,7 +1714,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object49":{
     "objName": "Assets/Models/Pillar.obj",
@@ -1447,7 +1749,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object50":{
     "objName": "Assets/Models/Pillar.obj",
@@ -1476,7 +1784,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object51":{
     "objName": "Assets/Models/Railing.obj",
@@ -1505,7 +1819,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object52":{
     "objName": "Assets/Models/Railing.obj",
@@ -1534,7 +1854,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object53":{
     "objName": "Assets/Models/Railing.obj",
@@ -1563,7 +1889,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object54":{
     "objName": "Assets/Models/Railing.obj",
@@ -1592,7 +1924,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object55":{
     "objName": "Assets/Models/Railing.obj",
@@ -1621,7 +1959,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object56":{
     "objName": "Assets/Models/Railing.obj",
@@ -1650,7 +1994,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object57":{
     "objName": "Assets/Models/Railing.obj",
@@ -1679,7 +2029,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object58":{
     "objName": "Assets/Models/Railing.obj",
@@ -1708,7 +2064,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object59":{
     "objName": "Assets/Models/Railing.obj",
@@ -1737,7 +2099,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object60":{
     "objName": "Assets/Models/Railing.obj",
@@ -1766,7 +2134,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object61":{
     "objName": "Assets/Models/Railing.obj",
@@ -1795,7 +2169,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object62":{
     "objName": "Assets/Models/Railing.obj",
@@ -1824,7 +2204,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object63":{
     "objName": "Assets/Models/Railing.obj",
@@ -1853,7 +2239,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object64":{
     "objName": "Assets/Models/Railing.obj",
@@ -1882,7 +2274,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object65":{
     "objName": "Assets/Models/Railing.obj",
@@ -1911,7 +2309,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object66":{
     "objName": "Assets/Models/Railing.obj",
@@ -1940,7 +2344,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object67":{
     "objName": "Assets/Models/Railing.obj",
@@ -1969,7 +2379,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object68":{
     "objName": "Assets/Models/Railing.obj",
@@ -1998,7 +2414,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object69":{
     "objName": "Assets/Models/Railing.obj",
@@ -2027,7 +2449,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object70":{
     "objName": "Assets/Models/Railing.obj",
@@ -2056,7 +2484,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object71":{
     "objName": "Assets/Models/Railing.obj",
@@ -2085,7 +2519,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object72":{
     "objName": "Assets/Models/Railing.obj",
@@ -2114,7 +2554,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object73":{
     "objName": "Assets/Models/Railing.obj",
@@ -2143,7 +2589,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object74":{
     "objName": "Assets/Models/Railing.obj",
@@ -2172,7 +2624,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object75":{
     "objName": "Assets/Models/Railing.obj",
@@ -2201,7 +2659,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object76":{
     "objName": "Assets/Models/Railing.obj",
@@ -2230,7 +2694,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object77":{
     "objName": "Assets/Models/Railing.obj",
@@ -2259,7 +2729,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object78":{
     "objName": "Assets/Models/Railing.obj",
@@ -2288,7 +2764,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object79":{
     "objName": "Assets/Models/Railing.obj",
@@ -2317,7 +2799,13 @@
         0.009040320292115212,
         0.0,
         -0.9999592304229736
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object80":{
     "objName": "Assets/Models/Railing.obj",
@@ -2346,7 +2834,13 @@
         0.009040320292115212,
         0.0,
         -0.9999592304229736
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object81":{
     "objName": "Assets/Models/Railing.obj",
@@ -2375,7 +2869,13 @@
         0.9999714493751526,
         0.0,
         0.007555961608886719
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object82":{
     "objName": "Assets/Models/Railing.obj",
@@ -2404,7 +2904,13 @@
         0.9999714493751526,
         0.0,
         0.007555961608886719
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object83":{
     "objName": "Assets/Models/Railing.obj",
@@ -2433,7 +2939,13 @@
         0.9999714493751526,
         0.0,
         0.007555961608886719
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object84":{
     "objName": "Assets/Models/Railing.obj",
@@ -2462,7 +2974,13 @@
         0.009040320292115212,
         0.0,
         -0.9999592304229736
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object85":{
     "objName": "Assets/Models/Railing.obj",
@@ -2491,7 +3009,13 @@
         0.009040320292115212,
         0.0,
         -0.9999592304229736
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object86":{
     "objName": "Assets/Models/Railing.obj",
@@ -2520,7 +3044,13 @@
         0.9999714493751526,
         0.0,
         0.007555961608886719
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object87":{
     "objName": "Assets/Models/Railing.obj",
@@ -2549,7 +3079,13 @@
         0.9999714493751526,
         0.0,
         0.007555961608886719
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object88":{
     "objName": "Assets/Models/Railing.obj",
@@ -2578,7 +3114,13 @@
         0.9999714493751526,
         0.0,
         0.007555961608886719
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object89":{
     "objName": "Assets/Models/Railing.obj",
@@ -2607,7 +3149,13 @@
         -0.0024404264986515047,
         0.0,
         -0.9999971389770508
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object90":{
     "objName": "Assets/Models/Railing.obj",
@@ -2636,7 +3184,13 @@
         -0.0024404264986515047,
         0.0,
         -0.9999971389770508
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object91":{
     "objName": "Assets/Models/Door.obj",
@@ -2665,7 +3219,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object92":{
     "objName": "Assets/Models/Door.obj",
@@ -2694,7 +3254,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object93":{
     "objName": "Assets/Models/Door.obj",
@@ -2723,7 +3289,13 @@
         -1.7484555314695172e-7,
         0.0,
         1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object94":{
     "objName": "Assets/Models/Door.obj",
@@ -2752,7 +3324,13 @@
         -1.7484555314695172e-7,
         0.0,
         1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object95":{
     "objName": "Assets/Models/Door.obj",
@@ -2781,7 +3359,13 @@
         -1.7484555314695172e-7,
         0.0,
         1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object96":{
     "objName": "Assets/Models/Door.obj",
@@ -2810,7 +3394,13 @@
         -1.7484555314695172e-7,
         0.0,
         1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object97":{
     "objName": "Assets/Models/Cup.obj",
@@ -2839,7 +3429,13 @@
         0.9649783968925476,
         0.0,
         -0.26232922077178957
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object98":{
     "objName": "Assets/Models/Tray.obj",
@@ -2868,7 +3464,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object99":{
     "objName": "Assets/Models/Hamburger.obj",
@@ -2897,7 +3499,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object100":{
     "objName": "Assets/Models/Window.obj",
@@ -2926,7 +3534,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object101":{
     "objName": "Assets/Models/Window.obj",
@@ -2955,7 +3569,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object102":{
     "objName": "Assets/Models/PottedPlant.obj",
@@ -2984,7 +3604,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object103":{
     "objName": "Assets/Models/PottedPlant.obj",
@@ -3013,7 +3639,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object104":{
     "objName": "Assets/Models/PottedPlant.obj",
@@ -3042,7 +3674,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object105":{
     "objName": "Assets/Models/Ketchup.obj",
@@ -3071,7 +3709,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object106":{
     "objName": "Assets/Models/PottedPlant.obj",
@@ -3100,7 +3744,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object107":{
     "objName": "Assets/Models/Window.obj",
@@ -3129,7 +3779,13 @@
         -0.9999999403953552,
         0.0,
         1.7881393432617188e-7
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object108":{
     "objName": "Assets/Models/Window.obj",
@@ -3158,7 +3814,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object109":{
     "objName": "Assets/Models/Window.obj",
@@ -3187,7 +3849,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object110":{
     "objName": "Assets/Models/Window.obj",
@@ -3216,7 +3884,13 @@
         -0.9999999403953552,
         0.0,
         1.7881393432617188e-7
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object111":{
     "objName": "Assets/Models/Window.obj",
@@ -3245,7 +3919,13 @@
         -0.9999999403953552,
         0.0,
         1.7881393432617188e-7
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object112":{
     "objName": "Assets/Models/table.obj",
@@ -3274,7 +3954,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object113":{
     "objName": "Assets/Models/table.obj",
@@ -3303,7 +3989,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object114":{
     "objName": "Assets/Models/table.obj",
@@ -3332,7 +4024,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object115":{
     "objName": "Assets/Models/PottedPlant.obj",
@@ -3361,7 +4059,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object116":{
     "objName": "Assets/Models/table.obj",
@@ -3390,7 +4094,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object117":{
     "objName": "Assets/Models/Cup.obj",
@@ -3419,7 +4129,13 @@
         0.9649783968925476,
         0.0,
         -0.26232922077178957
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object118":{
     "objName": "Assets/Models/Tray.obj",
@@ -3448,7 +4164,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object119":{
     "objName": "Assets/Models/Hamburger.obj",
@@ -3477,7 +4199,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object120":{
     "objName": "Assets/Models/table.obj",
@@ -3506,7 +4234,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object121":{
     "objName": "Assets/Models/table.obj",
@@ -3535,7 +4269,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object122":{
     "objName": "Assets/Models/table.obj",
@@ -3564,7 +4304,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object123":{
     "objName": "Assets/Models/Ketchup.obj",
@@ -3593,7 +4339,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object124":{
     "objName": "Assets/Models/Window.obj",
@@ -3622,7 +4374,13 @@
         -1.7484555314695172e-7,
         0.0,
         1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object125":{
     "objName": "Assets/Models/Window.obj",
@@ -3651,7 +4409,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object126":{
     "objName": "Assets/Models/Bench.obj",
@@ -3680,7 +4444,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object127":{
     "objName": "Assets/Models/Bench.obj",
@@ -3709,7 +4479,13 @@
         -0.9999999403953552,
         0.0,
         1.7881393432617188e-7
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object128":{
     "objName": "Assets/Models/PottedPlant.obj",
@@ -3738,7 +4514,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object129":{
     "objName": "Assets/Models/PottedPlant.obj",
@@ -3767,7 +4549,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object130":{
     "objName": "Assets/Models/PottedPlant.obj",
@@ -3796,7 +4584,13 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object131":{
     "objName": "Assets/Models/Cup.obj",
@@ -3825,7 +4619,13 @@
         0.9649783968925476,
         0.0,
         -0.26232922077178957
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object132":{
     "objName": "Assets/Models/Tray.obj",
@@ -3854,7 +4654,13 @@
         0.9999999403953552,
         0.0,
         5.960464477539063e-8
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 },
 "object133":{
     "objName": "Assets/Models/Hamburger.obj",
@@ -3883,5 +4689,11 @@
         8.742277657347586e-8,
         0.0,
         -1.0
-    ]
+    ],
+    "jsonCapsule": {
+        "hasCapsule": false,
+        "center": [],
+        "radius": 0.0,
+        "height": 0.0
+    }
 }}
