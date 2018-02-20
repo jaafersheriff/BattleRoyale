@@ -43,7 +43,7 @@ int parseArgs(int argc, char **argv) {
         }
         /* Verbose */
         if (!strcmp(argv[i], "-v")) {
-            EngineApp::get().verbose = true;
+            EngineApp::verbose = true;
         }
         /* Set resource dir */
         if (!strcmp(argv[i], "-r")) {
@@ -51,7 +51,7 @@ int parseArgs(int argc, char **argv) {
                 printUsage();
                 return 1;
             }
-            EngineApp::get().RESOURCE_DIR = argv[i + 1];
+            EngineApp::RESOURCE_DIR = argv[i + 1];
         }
         /* Set application name */
         if (!strcmp(argv[i], "-n")) {
@@ -59,17 +59,14 @@ int parseArgs(int argc, char **argv) {
                 printUsage();
                 return 1;
             }
-            EngineApp::get().APP_NAME = argv[i + 1];
+            EngineApp::APP_NAME = argv[i + 1];
         }
     }
     return 0;
 }
 
 int main(int argc, char **argv) {
-    /* Singular engine */
-    EngineApp & engine(EngineApp::get());
-
-    if (parseArgs(argc, argv) || engine.init()) {
+    if (parseArgs(argc, argv) || EngineApp::init()) {
         std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
     }
@@ -85,8 +82,8 @@ int main(int argc, char **argv) {
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
     if (!RenderSystem::get().createShader<DiffuseShader>(
-            engine.RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex shader file       */
-            engine.RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment shader file     */
+            EngineApp::RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex shader file       */
+            EngineApp::RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment shader file     */
             lightPos                                      /* Shader-specific uniforms */
         )) {
         std::cerr << "Failed to add diffuse shader" << std::endl;
@@ -110,8 +107,8 @@ int main(int argc, char **argv) {
     // Create collider
     // alternate method using unique_ptr and new
     if (!RenderSystem::get().addShader(std::unique_ptr<BounderShader>(new BounderShader(
-            engine.RESOURCE_DIR + "bounder_vert.glsl",
-            engine.RESOURCE_DIR + "bounder_frag.glsl"
+            EngineApp::RESOURCE_DIR + "bounder_vert.glsl",
+            EngineApp::RESOURCE_DIR + "bounder_frag.glsl"
         )))) {
         std::cerr << "Failed to add collider shader" << std::endl;
         std::cin.get(); //don't immediately close the console
@@ -289,13 +286,13 @@ int main(int argc, char **argv) {
         imguiGO,
         "Stats",
         [&]() {
-            ImGui::Text("FPS: %d", engine.fps);
-            ImGui::Text("dt: %f", engine.timeStep);
+            ImGui::Text("FPS: %d", EngineApp::fps);
+            ImGui::Text("dt: %f", EngineApp::timeStep);
         }
     );
 
     /* Main loop */
-    engine.run();
+    EngineApp::run();
 
     return EXIT_SUCCESS;
 }
