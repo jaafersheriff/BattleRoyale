@@ -116,6 +116,11 @@ struct Util {
         return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ")";
     }
 
+    // project v onto plane defined by unit vector norm
+    static glm::vec3 projectOnto(const glm::vec3 & v, const glm::vec3 & norm) {
+        return v - glm::dot(v, norm) * norm;
+    }
+
     // norm must be unit vector
     // If v dot norm is positive, just return v. Otherwise, return the closest
     // point on the plane defined by norm.
