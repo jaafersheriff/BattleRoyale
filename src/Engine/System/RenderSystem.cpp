@@ -8,10 +8,10 @@
 
 
 
-std::vector<std::unique_ptr<DiffuseRenderComponent>> RenderSystem::m_diffuseComponents;
-std::unordered_map<std::type_index, std::unique_ptr<Shader>> RenderSystem::m_shaders;
-float RenderSystem::m_near = k_defNear, RenderSystem::m_far = k_defFar;
-const CameraComponent * RenderSystem::m_camera = nullptr;
+std::vector<std::unique_ptr<DiffuseRenderComponent>> RenderSystem::s_diffuseComponents;
+std::unordered_map<std::type_index, std::unique_ptr<Shader>> RenderSystem::s_shaders;
+float RenderSystem::s_near = k_defNear, RenderSystem::s_far = k_defFar;
+const CameraComponent * RenderSystem::s_camera = nullptr;
 
 void RenderSystem::init() {
     glEnable(GL_DEPTH_TEST);
@@ -26,9 +26,9 @@ void RenderSystem::update(float dt) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
 
-    if (m_camera) {
+    if (s_camera) {
         /* Loop through active shaders */
-        for (auto &shader : m_shaders) {
+        for (auto &shader : s_shaders) {
             if (!shader.second->isEnabled()) {
                 continue;
             }
@@ -42,7 +42,7 @@ void RenderSystem::update(float dt) {
 
             // this reinterpret_cast business works because unique_ptr's data is
             // guaranteed is the same as a pointer
-            shader.second->render(*m_camera, reinterpret_cast<std::vector<Component *> &>(m_diffuseComponents));
+            shader.second->render(*s_camera, reinterpret_cast<std::vector<Component *> &>(s_diffuseComponents));
             shader.second->unbind();
         }
     }
@@ -55,16 +55,16 @@ void RenderSystem::update(float dt) {
 
 void RenderSystem::add(std::unique_ptr<Component> component) {
     if (dynamic_cast<DiffuseRenderComponent *>(component.get()))
-        m_diffuseComponents.emplace_back(static_cast<DiffuseRenderComponent *>(component.release()));
+        s_diffuseComponents.emplace_back(static_cast<DiffuseRenderComponent *>(component.release()));
     else
         assert(false);
 }
 
 void RenderSystem::remove(Component * component) {
     if (dynamic_cast<DiffuseRenderComponent *>(component)) {
-        for (auto it(m_diffuseComponents.begin()); it != m_diffuseComponents.end(); ++it) {
+        for (auto it(s_diffuseComponents.begin()); it != s_diffuseComponents.end(); ++it) {
             if (it->get() == component) {
-                m_diffuseComponents.erase(it);
+                s_diffuseComponents.erase(it);
                 break;
             }
         }
@@ -72,11 +72,11 @@ void RenderSystem::remove(Component * component) {
 }
 
 void RenderSystem::setNearFar(float near, float far) {
-    m_near = near;
-    m_far = far;
+    s_near = near;
+    s_far = far;
     Scene::sendMessage<NearFarMessage>(nullptr, near, far);
 }
 
 void RenderSystem::setCamera(const CameraComponent * camera) {
-    m_camera = camera;
+    s_camera = camera;
 }

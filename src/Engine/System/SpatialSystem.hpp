@@ -29,10 +29,10 @@ class SpatialSystem {
     static void setGravityDir(const glm::vec3 & dir);
     static void setGravityMag(float mag);
 
-    static glm::vec3 gravity() { return m_gravityDir * m_gravityMag; }
-    static const glm::vec3 & gravityDir() { return m_gravityDir; }
-    static float gravityMag() { return m_gravityMag; }
-    static float coefficientOfFriction() { return m_coefficientOfFriction; }
+    static glm::vec3 gravity() { return s_gravityDir * s_gravityMag; }
+    static const glm::vec3 & gravityDir() { return s_gravityDir; }
+    static float gravityMag() { return s_gravityMag; }
+    static float coefficientOfFriction() { return s_coefficientOfFriction; }
 
     private:
 
@@ -42,11 +42,11 @@ class SpatialSystem {
 
     private:
 
-    static std::vector<std::unique_ptr<SpatialComponent>> m_spatialComponents;
-    static std::vector<std::unique_ptr<NewtonianComponent>> m_newtonianComponents;
-    static std::vector<std::unique_ptr<AcceleratorComponent>> m_acceleratorComponents;
-    static glm::vec3 m_gravityDir;
-    static float m_gravityMag;
-    static float m_coefficientOfFriction;
+    static std::vector<std::unique_ptr<SpatialComponent>> s_spatialComponents;
+    static std::vector<std::unique_ptr<NewtonianComponent>> s_newtonianComponents;
+    static std::vector<std::unique_ptr<AcceleratorComponent>> s_acceleratorComponents;
+    static glm::vec3 s_gravityDir;
+    static float s_gravityMag;
+    static float s_coefficientOfFriction;
 
 };

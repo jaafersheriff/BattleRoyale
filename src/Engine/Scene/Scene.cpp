@@ -14,16 +14,16 @@
 
 
 
-std::vector<std::unique_ptr<GameObject>> Scene::m_gameObjectsStore;
-std::vector<GameObject *> Scene::m_gameObjectRefs;
+std::vector<std::unique_ptr<GameObject>> Scene::s_gameObjectsStore;
+std::vector<GameObject *> Scene::s_gameObjectRefs;
 
-std::vector<std::unique_ptr<GameObject>> Scene::m_gameObjectInitQueue;
-std::vector<GameObject *> Scene::m_gameObjectKillQueue;
-std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Component>>> Scene::m_componentInitQueue;
-std::vector<Component *> Scene::m_componentKillQueue;
+std::vector<std::unique_ptr<GameObject>> Scene::s_gameObjectInitQueue;
+std::vector<GameObject *> Scene::s_gameObjectKillQueue;
+std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Component>>> Scene::s_componentInitQueue;
+std::vector<Component *> Scene::s_componentKillQueue;
 
-std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>> Scene::m_messages;
-std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> Scene::m_receivers;
+std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>> Scene::s_messages;
+std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> Scene::s_receivers;
 
 void Scene::init() {
     GameLogicSystem::init();
@@ -35,8 +35,8 @@ void Scene::init() {
 }
 
 GameObject & Scene::createGameObject() {
-    m_gameObjectInitQueue.emplace_back(new GameObject());
-    return *m_gameObjectInitQueue.back().get();
+    s_gameObjectInitQueue.emplace_back(new GameObject());
+    return *s_gameObjectInitQueue.back().get();
 }
 
 void Scene::update(float dt) {
@@ -61,23 +61,23 @@ void Scene::update(float dt) {
 }
 
 void Scene::doInitQueue() {
-    for (auto & o : m_gameObjectInitQueue) {
-        m_gameObjectsStore.emplace_back(o.release());
-        m_gameObjectRefs.push_back(m_gameObjectsStore.back().get());
+    for (auto & o : s_gameObjectInitQueue) {
+        s_gameObjectsStore.emplace_back(o.release());
+        s_gameObjectRefs.push_back(s_gameObjectsStore.back().get());
     }
-    m_gameObjectInitQueue.clear();
+    s_gameObjectInitQueue.clear();
     
     // add components to objects
-    for (int i(0); i < m_componentInitQueue.size(); ++i) {
-        auto & initE(m_componentInitQueue[i]);
+    for (int i(0); i < s_componentInitQueue.size(); ++i) {
+        auto & initE(s_componentInitQueue[i]);
         GameObject * go(std::get<0>(initE));
         std::type_index typeI(std::get<1>(initE));
         auto & comp(std::get<2>(initE));
         go->addComponent(*comp.get(), typeI);
     }
     // initialize components and add to systems
-    for (int i(0); i < m_componentInitQueue.size(); ++i) {
-        auto & initE(m_componentInitQueue[i]);
+    for (int i(0); i < s_componentInitQueue.size(); ++i) {
+        auto & initE(s_componentInitQueue[i]);
         GameObject * go(std::get<0>(initE));
         std::type_index typeI(std::get<1>(initE));
         auto & comp(std::get<2>(initE));
@@ -91,38 +91,38 @@ void Scene::doInitQueue() {
             case SystemID::       render:        RenderSystem::add(std::move(comp)); break;
         }
     }
-    m_componentInitQueue.clear();
+    s_componentInitQueue.clear();
 }
 
 void Scene::doKillQueue() {
     // kill game objects
-    for (auto killIt(m_gameObjectKillQueue.begin()); killIt != m_gameObjectKillQueue.end(); ++killIt) {
+    for (auto killIt(s_gameObjectKillQueue.begin()); killIt != s_gameObjectKillQueue.end(); ++killIt) {
         bool found(false);
         // look in active game objects
-        for (int i(0); i < m_gameObjectRefs.size(); ++i) {
-            GameObject * go(m_gameObjectRefs[i]);
+        for (int i(0); i < s_gameObjectRefs.size(); ++i) {
+            GameObject * go(s_gameObjectRefs[i]);
             if (go == *killIt) {
-                m_componentKillQueue.insert(m_componentKillQueue.end(), go->getComponents().cbegin(), go->getComponents().cend());
-                m_gameObjectRefs.erase(m_gameObjectRefs.begin() + i);
-                m_gameObjectsStore.erase(m_gameObjectsStore.begin() + i);
+                s_componentKillQueue.insert(s_componentKillQueue.end(), go->getComponents().cbegin(), go->getComponents().cend());
+                s_gameObjectRefs.erase(s_gameObjectRefs.begin() + i);
+                s_gameObjectsStore.erase(s_gameObjectsStore.begin() + i);
                 found = true;
                 break;
             }
         }
         // look in game object initialization queue
         if (!found) {
-            for (auto initIt(m_gameObjectInitQueue.begin()); initIt != m_gameObjectInitQueue.end(); ++initIt) {
+            for (auto initIt(s_gameObjectInitQueue.begin()); initIt != s_gameObjectInitQueue.end(); ++initIt) {
                 if (initIt->get() == *killIt) {
-                    m_gameObjectInitQueue.erase(initIt);
+                    s_gameObjectInitQueue.erase(initIt);
                     break;
                 }
             }
         }
     }
-    m_gameObjectKillQueue.clear();
+    s_gameObjectKillQueue.clear();
     
     // kill components
-    for (auto & comp : m_componentKillQueue) {
+    for (auto & comp : s_componentKillQueue) {
         // look in active components
         switch (comp->systemID()) {
             case SystemID::    gameLogic:     GameLogicSystem::remove(comp); continue;
@@ -133,18 +133,18 @@ void Scene::doKillQueue() {
             case SystemID::       render:        RenderSystem::remove(comp); continue;
         }
         // look in initialization queue
-        for (auto initIt(m_componentInitQueue.begin()); initIt != m_componentInitQueue.end(); ++initIt) {
+        for (auto initIt(s_componentInitQueue.begin()); initIt != s_componentInitQueue.end(); ++initIt) {
             if (std::get<2>(*initIt).get() == comp) {
-                m_componentInitQueue.erase(initIt);
+                s_componentInitQueue.erase(initIt);
                 break;
             }
         }
     }
-    m_componentKillQueue.clear();
+    s_componentKillQueue.clear();
 }
 
 void Scene::relayMessages() {
-    for (auto & message : m_messages) {
+    for (auto & message : s_messages) {
         GameObject * gameObject(std::get<0>(message));
         std::type_index msgTypeI(std::get<1>(message));
         auto & msg(std::get<2>(message));
@@ -159,12 +159,12 @@ void Scene::relayMessages() {
             }
         }
         // send scene-level message
-        auto receivers(m_receivers.find(msgTypeI));
-        if (receivers != m_receivers.end()) {
+        auto receivers(s_receivers.find(msgTypeI));
+        if (receivers != s_receivers.end()) {
             for (auto & receiver : receivers->second) {
                 receiver(*msg);
             }
         }
     }
-    m_messages.clear();
+    s_messages.clear();
 }

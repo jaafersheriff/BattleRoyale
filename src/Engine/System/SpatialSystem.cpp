@@ -2,70 +2,70 @@
 
 
 
-std::vector<std::unique_ptr<SpatialComponent>> SpatialSystem::m_spatialComponents;
-std::vector<std::unique_ptr<NewtonianComponent>> SpatialSystem::m_newtonianComponents;
-std::vector<std::unique_ptr<AcceleratorComponent>> SpatialSystem::m_acceleratorComponents;
-glm::vec3 SpatialSystem::m_gravityDir = glm::vec3(0.0f, -1.0f, 0.0f);
-float SpatialSystem::m_gravityMag = 10.0f;
-float SpatialSystem::m_coefficientOfFriction = 0.1f;
+std::vector<std::unique_ptr<SpatialComponent>> SpatialSystem::s_spatialComponents;
+std::vector<std::unique_ptr<NewtonianComponent>> SpatialSystem::s_newtonianComponents;
+std::vector<std::unique_ptr<AcceleratorComponent>> SpatialSystem::s_acceleratorComponents;
+glm::vec3 SpatialSystem::s_gravityDir = glm::vec3(0.0f, -1.0f, 0.0f);
+float SpatialSystem::s_gravityMag = 10.0f;
+float SpatialSystem::s_coefficientOfFriction = 0.1f;
 
 void SpatialSystem::update(float dt) {
-    for (auto & comp : m_acceleratorComponents) {
+    for (auto & comp : s_acceleratorComponents) {
         comp->update(dt);
     }
-    for (auto & comp : m_newtonianComponents) {
+    for (auto & comp : s_newtonianComponents) {
         comp->update(dt);
     }
-    for (auto & comp : m_spatialComponents) {
+    for (auto & comp : s_spatialComponents) {
         comp->update(dt);
     }
 }
 
 void SpatialSystem::setGravity(const glm::vec3 & gravity) {
-    m_gravityMag = glm::length(gravity);
-    m_gravityDir = gravity / m_gravityMag;
+    s_gravityMag = glm::length(gravity);
+    s_gravityDir = gravity / s_gravityMag;
 }
 
 void SpatialSystem::setGravityDir(const glm::vec3 & dir) {
-    m_gravityDir = dir;
+    s_gravityDir = dir;
 }
 
 void SpatialSystem::setGravityMag(float mag) {
-    m_gravityMag = mag;
+    s_gravityMag = mag;
 }
 
 void SpatialSystem::add(std::unique_ptr<Component> component) {
     if (dynamic_cast<SpatialComponent *>(component.get()))
-        m_spatialComponents.emplace_back(static_cast<SpatialComponent *>(component.release()));
+        s_spatialComponents.emplace_back(static_cast<SpatialComponent *>(component.release()));
     else if (dynamic_cast<NewtonianComponent *>(component.get()))
-        m_newtonianComponents.emplace_back(static_cast<NewtonianComponent *>(component.release()));
+        s_newtonianComponents.emplace_back(static_cast<NewtonianComponent *>(component.release()));
     else if (dynamic_cast<AcceleratorComponent *>(component.get()))
-        m_acceleratorComponents.emplace_back(static_cast<AcceleratorComponent *>(component.release()));
+        s_acceleratorComponents.emplace_back(static_cast<AcceleratorComponent *>(component.release()));
     else
         assert(false);
 }
 
 void SpatialSystem::remove(Component * component) {
     if (dynamic_cast<SpatialComponent *>(component)) {
-        for (auto it(m_spatialComponents.begin()); it != m_spatialComponents.end(); ++it) {
+        for (auto it(s_spatialComponents.begin()); it != s_spatialComponents.end(); ++it) {
             if (it->get() == component) {
-                m_spatialComponents.erase(it);
+                s_spatialComponents.erase(it);
                 break;
             }
         }
     }
     else if (dynamic_cast<NewtonianComponent *>(component)) {
-        for (auto it(m_newtonianComponents.begin()); it != m_newtonianComponents.end(); ++it) {
+        for (auto it(s_newtonianComponents.begin()); it != s_newtonianComponents.end(); ++it) {
             if (it->get() == component) {
-                m_newtonianComponents.erase(it);
+                s_newtonianComponents.erase(it);
                 break;
             }
         }
     }
     else if (dynamic_cast<AcceleratorComponent *>(component)) {
-        for (auto it(m_acceleratorComponents.begin()); it != m_acceleratorComponents.end(); ++it) {
+        for (auto it(s_acceleratorComponents.begin()); it != s_acceleratorComponents.end(); ++it) {
             if (it->get() == component) {
-                m_acceleratorComponents.erase(it);
+                s_acceleratorComponents.erase(it);
                 break;
             }
         }

@@ -35,10 +35,10 @@ class GameLogicSystem {
 
     private:
 
-    static std::vector<std::unique_ptr<CameraComponent>> m_cameraComponents;
-    static std::vector<std::unique_ptr<CameraControllerComponent>> m_CameraControllerComponents;
-    static std::vector<std::unique_ptr<PlayerControllerComponent>> m_playerControllers;
-    static std::vector<std::unique_ptr<ImGuiComponent>> m_imguiComponents;
+    static std::vector<std::unique_ptr<CameraComponent>> s_cameraComponents;
+    static std::vector<std::unique_ptr<CameraControllerComponent>> s_cameraControllerComponents;
+    static std::vector<std::unique_ptr<PlayerControllerComponent>> s_playerControllers;
+    static std::vector<std::unique_ptr<ImGuiComponent>> s_imguiComponents;
 
 };
 

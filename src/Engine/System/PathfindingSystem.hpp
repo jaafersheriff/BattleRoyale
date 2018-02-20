@@ -26,6 +26,6 @@ class PathfindingSystem {
 
     private:
 
-    static std::vector<std::unique_ptr<PathfindingComponent>> m_pathfindingComponents;
+    static std::vector<std::unique_ptr<PathfindingComponent>> s_pathfindingComponents;
 
 };

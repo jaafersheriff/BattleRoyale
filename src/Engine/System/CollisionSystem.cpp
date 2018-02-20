@@ -141,17 +141,17 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
 
 
 
-std::vector<std::unique_ptr<BounderComponent>> CollisionSystem::m_bounderComponents;
-std::unordered_set<BounderComponent *> CollisionSystem::m_potentials;
-std::unordered_set<BounderComponent *> CollisionSystem::m_collided;
-std::unordered_set<BounderComponent *> CollisionSystem::m_adjusted;
+std::vector<std::unique_ptr<BounderComponent>> CollisionSystem::s_bounderComponents;
+std::unordered_set<BounderComponent *> CollisionSystem::s_potentials;
+std::unordered_set<BounderComponent *> CollisionSystem::s_collided;
+std::unordered_set<BounderComponent *> CollisionSystem::s_adjusted;
 
 void CollisionSystem::init() {
     auto spatTransformCallback(
         [&](const Message & msg_) {
             const SpatialTransformTag & msg(static_cast<const SpatialTransformTag &>(msg_));
             for (auto & bounder : msg.spatial.gameObject()->getComponentsBySystem(SystemID::collision)) {
-                m_potentials.insert(static_cast<BounderComponent *>(bounder));
+                s_potentials.insert(static_cast<BounderComponent *>(bounder));
             }
         }
     );
@@ -168,14 +168,14 @@ void CollisionSystem::update(float dt) {
     static std::unordered_set<BounderComponent *> s_checked;
     static std::unordered_map<GameObject *, glm::vec3> s_gameObjectDeltas;
 
-    m_collided.clear();
-    m_adjusted.clear();
+    s_collided.clear();
+    s_adjusted.clear();
 
     // gather all collisions
-    for (BounderComponent * bounder : m_potentials) {
+    for (BounderComponent * bounder : s_potentials) {
         bounder->update(dt);
         s_checked.insert(bounder);
-        for (auto & other : m_bounderComponents) {
+        for (auto & other : s_bounderComponents) {
             if (s_checked.count(other.get()) || other->gameObject() == bounder->gameObject()) {
                 continue;
             }
@@ -186,14 +186,14 @@ void CollisionSystem::update(float dt) {
         }
     }
     
-    m_potentials.clear();
+    s_potentials.clear();
     
     // composite deltas into a single delta per game object
     // additionally send norm messages
     for (auto & pair : s_collisions) {
         BounderComponent & bounder(*pair.first);
         auto & weightDeltas(pair.second);
-        m_collided.insert(&bounder);
+        s_collided.insert(&bounder);
         // there was an adjustment
         if (weightDeltas.size()) {
             for (auto & weightDelta : weightDeltas) { // send norm messages
@@ -214,9 +214,9 @@ void CollisionSystem::update(float dt) {
         spat.setPosition(spat.position() + delta, true);
         for (Component * comp : gameObject->getComponentsBySystem(SystemID::collision)) {
             BounderComponent * bounder(static_cast<BounderComponent *>(comp));
-            m_potentials.insert(bounder);
+            s_potentials.insert(bounder);
             bounder->update(dt);
-            m_adjusted.insert(bounder);
+            s_adjusted.insert(bounder);
             Scene::sendMessage<CollisionAdjustMessage>(gameObject, *gameObject, delta);
         }
     }
@@ -229,7 +229,7 @@ void CollisionSystem::update(float dt) {
 std::pair<BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray) {
     BounderComponent * bounder(nullptr);
     Intersect inter;
-    for (const auto & b : m_bounderComponents) {
+    for (const auto & b : s_bounderComponents) {
         Intersect potential(b->intersect(ray));
         if (potential.dist < inter.dist) {
             bounder = b.get();
@@ -339,8 +339,8 @@ BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, 
 
 void CollisionSystem::add(std::unique_ptr<Component> component) {
     if (dynamic_cast<BounderComponent *>(component.get())) {
-        m_bounderComponents.emplace_back(static_cast<BounderComponent *>(component.release()));
-        m_potentials.insert(m_bounderComponents.back().get());
+        s_bounderComponents.emplace_back(static_cast<BounderComponent *>(component.release()));
+        s_potentials.insert(s_bounderComponents.back().get());
     }
     else {
         assert(false);
@@ -349,9 +349,9 @@ void CollisionSystem::add(std::unique_ptr<Component> component) {
 
 void CollisionSystem::remove(Component * component) {
     if (dynamic_cast<BounderComponent *>(component)) {
-        for (auto it(m_bounderComponents.begin()); it != m_bounderComponents.end(); ++it) {
+        for (auto it(s_bounderComponents.begin()); it != s_bounderComponents.end(); ++it) {
             if (it->get() == component) {
-                m_bounderComponents.erase(it);
+                s_bounderComponents.erase(it);
                 break;
             }
         }

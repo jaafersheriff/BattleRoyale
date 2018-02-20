@@ -74,11 +74,11 @@ void BounderShader::render(const CameraComponent & camera, const std::vector<Com
     loadMat4(getUniform("u_viewMat"), camera.getView());
     loadMat4(getUniform("u_projMat"), camera.getProj());
 
-    for (auto & comp : CollisionSystem::m_bounderComponents) {
+    for (auto & comp : CollisionSystem::s_bounderComponents) {
         BounderComponent & bounder(static_cast<BounderComponent &>(*comp));
 
-        bool collided(CollisionSystem::m_collided.count(&bounder));
-        bool adjusted(CollisionSystem::m_adjusted.count(&bounder));
+        bool collided(CollisionSystem::s_collided.count(&bounder));
+        bool adjusted(CollisionSystem::s_adjusted.count(&bounder));
 
         loadVec3(getUniform("u_color"), collided ? adjusted ? glm::vec3(1.0f, 0.0f, 0.0f) : glm::vec3(1.0f, 0.5f, 0.0f) : glm::vec3(0.0f, 1.0f, 0.0f));
 

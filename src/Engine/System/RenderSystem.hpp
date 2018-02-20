@@ -50,8 +50,8 @@ class RenderSystem {
 
     static void setNearFar(float near, float far);
 
-    static float near() { return m_near; }
-    static float far() { return m_far; }
+    static float near() { return s_near; }
+    static float far() { return s_far; }
 
     static void setCamera(const CameraComponent * camera);
 
@@ -63,10 +63,10 @@ class RenderSystem {
     
     private:
 
-    static std::vector<std::unique_ptr<DiffuseRenderComponent>> m_diffuseComponents;
-    static std::unordered_map<std::type_index, std::unique_ptr<Shader>> m_shaders;
-    static float m_near, m_far;
-    static const CameraComponent * m_camera;
+    static std::vector<std::unique_ptr<DiffuseRenderComponent>> s_diffuseComponents;
+    static std::unordered_map<std::type_index, std::unique_ptr<Shader>> s_shaders;
+    static float s_near, s_far;
+    static const CameraComponent * s_camera;
 
 };
 
@@ -82,12 +82,12 @@ bool RenderSystem::createShader(Args &&... args) {
 template <typename ShaderT>
 bool RenderSystem::addShader(std::unique_ptr<ShaderT> shader) {
     std::type_index typeI(typeid(ShaderT));
-    auto it(m_shaders.find(typeI));
-    if (it != m_shaders.end()) {
+    auto it(s_shaders.find(typeI));
+    if (it != s_shaders.end()) {
         return true;
     }
     if (shader->init()) {
-        m_shaders[typeI] = std::move(shader);
+        s_shaders[typeI] = std::move(shader);
         return true;
     }
     else {
@@ -99,10 +99,10 @@ bool RenderSystem::addShader(std::unique_ptr<ShaderT> shader) {
 template <typename ShaderT>
 ShaderT * RenderSystem::getShader() {
     std::type_index typeI(typeid(ShaderT));
-    if (!m_shaders.count(typeI)) {
+    if (!s_shaders.count(typeI)) {
         return nullptr;
     }
-    return static_cast<ShaderT *>(m_shaders.at(typeI).get());
+    return static_cast<ShaderT *>(s_shaders.at(typeI).get());
 }
 
 
