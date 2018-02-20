@@ -47,19 +47,12 @@ class GameObject {
     template <typename CompT> const std::vector<Component *> & getComponentsByType() const;
 
     // get first component belonging to a system
-    Component * getComponentBySystem(SystemID sysID);
-    const Component * getComponentBySystem(SystemID sysID) const {
-        return const_cast<GameObject*>(this)->getComponentBySystem(sysID);
-    }
+    Component * getComponentBySystem(SystemID sysID) const;
     // get first component of a specific type
-    template <typename CompT> CompT * getComponentByType();
-    template <typename CompT> const CompT * getComponentByType() const {
-        return const_cast<GameObject*>(this)->getComponentByType<CompT>();
-    }
+    template <typename CompT> CompT * getComponentByType() const;
 
     // get the spatial component
-    SpatialComponent * getSpatial() { return m_spatialComponent; }
-    const SpatialComponent * getSpatial() const { return m_spatialComponent; }
+    SpatialComponent * getSpatial() const { return m_spatialComponent; }
 
     private:
 
@@ -94,7 +87,7 @@ const std::vector<Component *> & GameObject::getComponentsByType() const {
 }
 
 template <typename CompT>
-CompT * GameObject::getComponentByType() {
+CompT * GameObject::getComponentByType() const {
     auto it(m_compsByCompT.find(std::type_index(typeid(CompT))));
     if (it != m_compsByCompT.end() && it->second.size()) {
         return static_cast<CompT *>(it->second.front());

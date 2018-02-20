@@ -29,7 +29,7 @@ const std::vector<Component *> & GameObject::getComponentsBySystem(SystemID sysI
     return s_emptyList;
 }
 
-Component * GameObject::getComponentBySystem(SystemID sysID) {
+Component * GameObject::getComponentBySystem(SystemID sysID) const {
     auto it(m_compsBySysT.find(sysID));
     if (it != m_compsBySysT.end() && it->second.size()) {
         return it->second.front();
