@@ -11,8 +11,6 @@
 #include "Model/Mesh.hpp"
 
 struct Util {
-    
-    static constexpr double PI = 3.14159265359;
 
     static constexpr float infinity = std::numeric_limits<float>::infinity();
 

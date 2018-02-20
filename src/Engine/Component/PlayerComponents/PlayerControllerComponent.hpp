@@ -10,6 +10,7 @@ class GameLogicSystem;
 class CameraComponent;
 class SpatialComponent;
 class NewtonianComponent;
+class GroundComponent;
 
 
 
@@ -22,7 +23,7 @@ class PlayerControllerComponent : public Component {
 
     PlayerControllerComponent(float lookSpeed, float moveSpeed);
 
-    virtual void init(GameObject & gameObject) override;
+    virtual void init(GameObject & go) override;
 
     public:
 
@@ -38,6 +39,7 @@ class PlayerControllerComponent : public Component {
 
     SpatialComponent * m_spatial;
     NewtonianComponent * m_newtonian;
+    GroundComponent * m_ground;
     CameraComponent * m_camera;
     float m_lookSpeed, m_moveSpeed;
     bool m_enabled; // TODO: make a way to enable/disable any object or component

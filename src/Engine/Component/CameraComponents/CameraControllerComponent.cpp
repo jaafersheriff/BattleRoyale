@@ -14,10 +14,10 @@ CameraControllerComponent::CameraControllerComponent(float ls, float ms) :
     m_enabled(true)
 {}
 
-void CameraControllerComponent::init(GameObject & gameObject) {
-    m_gameObject = &gameObject;
-    if (!(m_spatial = m_gameObject->getSpatial())) assert(false);
-    if (!(m_camera = m_gameObject->getComponentByType<CameraComponent>())) assert(false);
+void CameraControllerComponent::init(GameObject & go) {
+    Component::init(go);
+    if (!(m_spatial = gameObject()->getSpatial())) assert(false);
+    if (!(m_camera = gameObject()->getComponentByType<CameraComponent>())) assert(false);
 }
 
 void CameraControllerComponent::update(float dt) {

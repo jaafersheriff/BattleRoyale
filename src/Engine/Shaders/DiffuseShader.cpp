@@ -4,7 +4,7 @@
 
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
-#include "Component/CollisionComponents/CollisionComponent.hpp"
+#include "Component/CollisionComponents/BounderComponent.hpp"
 #include "System/CollisionSystem.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 
@@ -54,7 +54,7 @@ void DiffuseShader::render(const CameraComponent & camera, const std::vector<Com
     /* Only doing frustum culling if object has bounder(s) */
     /* Get the center and radius of the component */
     for (Component * comp : components) {
-        const std::vector<Component *> & bounders(comp->getGameObject()->getComponentsBySystem(SystemID::collision));
+        const std::vector<Component *> & bounders(comp->gameObject()->getComponentsBySystem(SystemID::collision));
         if (bounders.size()) {
             bool inFrustum(false);
             for (Component * bounder_ : bounders) {
@@ -81,9 +81,9 @@ void DiffuseShader::render(const CameraComponent & camera, const std::vector<Com
         }
 
         /* Model matrix */
-        loadMat4(getUniform("M"), drc->getGameObject()->getSpatial()->modelMatrix());
+        loadMat4(getUniform("M"), drc->gameObject()->getSpatial()->modelMatrix());
         /* Normal matrix */
-        loadMat3(getUniform("N"), drc->getGameObject()->getSpatial()->normalMatrix());
+        loadMat3(getUniform("N"), drc->gameObject()->getSpatial()->normalMatrix());
 
         /* Bind materials */
         loadFloat(getUniform("matAmbient"), drc->modelTexture.material.ambient);

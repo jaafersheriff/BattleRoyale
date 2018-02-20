@@ -154,6 +154,7 @@ int main(int argc, char **argv) {
     playerSpatComp.setPosition(playerPos);
     NewtonianComponent & playerNewtComp(scene.addComponent<NewtonianComponent>(player, playerMaxSpeed));
     GravityComponent & playerGravComp(scene.addComponent<GravityComponent>(player));
+    GroundComponent & playerGroundComp(scene.addComponent<GroundComponent>(player));
     Capsule playerCap(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth);
     CapsuleBounderComponent & playerBoundComp(scene.addComponent<CapsuleBounderComponent>(player, 1, playerCap));
     CameraComponent & playerCamComp(scene.addComponent<CameraComponent>(player, playerFOV));
@@ -196,7 +197,7 @@ int main(int argc, char **argv) {
         if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
             auto pair(CollisionSystem::get().pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir())));
             if (pair.first && pair.first->weight() < UINT_MAX) {
-                pair.first->getGameObject()->getSpatial()->scale(glm::vec3(1.1f));
+                pair.first->gameObject()->getSpatial()->scale(glm::vec3(1.1f));
             }
         }
     });

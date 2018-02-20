@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include "glm/gtc/constants.hpp"
 
 #include "Component/Component.hpp"
 
@@ -12,23 +13,28 @@ class SpatialComponent;
 
 
 
+// has a velocity and can undergo classical mechanics operations
 class NewtonianComponent : public Component {
 
     friend Scene;
 
-    protected: // only scene or friends can create component
-
-    NewtonianComponent(float maxSpeed);
-
-    virtual void init(GameObject & gameObject) override;
-
-    public:
+  public:
 
     virtual SystemID systemID() const override { return SystemID::spatial; };
 
-    public:
+  protected: // only scene or friends can create component
+
+    NewtonianComponent(float maxSpeed);
+
+  public:
 
     virtual ~NewtonianComponent() = default;
+
+  protected:
+
+    virtual void init(GameObject & go) override;
+
+  public:
 
     virtual void update(float dt) override;
 
@@ -43,38 +49,44 @@ class NewtonianComponent : public Component {
 
     const glm::vec3 & velocity() const { return m_velocity; }
 
-    protected:
+  protected:
 
     SpatialComponent * m_spatial;
     glm::vec3 m_velocity;
     glm::vec3 m_acceleration;
     float m_maxSpeed;
 
+
 };
 
 
 
+// accelerates the object by the given amount
 class AcceleratorComponent : public Component {
 
     friend Scene;
 
-    protected: // only scene or friends can create component
-
-    AcceleratorComponent(const glm::vec3 & acceleration);
-
-    virtual void init(GameObject & gameObject) override;
-
-    public:
+  public:
 
     virtual SystemID systemID() const override { return SystemID::spatial; };
 
-    public:
+  protected: // only scene or friends can create component
+
+    AcceleratorComponent(const glm::vec3 & acceleration);
+
+  public:
 
     virtual ~AcceleratorComponent() = default;
 
+  protected:
+
+    virtual void init(GameObject & go) override;
+
+  public:
+
     virtual void update(float dt) override;
 
-    protected:
+  protected:
 
     NewtonianComponent * m_newtonian;
     glm::vec3 m_acceleration;
@@ -83,15 +95,16 @@ class AcceleratorComponent : public Component {
 
 
 
+// accelerates the object by gravity
 class GravityComponent : public AcceleratorComponent {
 
     friend Scene;
 
-    protected: // only scene or friends can create component
+  protected: // only scene or friends can create component
 
     GravityComponent();
 
-    public:
+  public:
 
     virtual ~GravityComponent() = default;
 

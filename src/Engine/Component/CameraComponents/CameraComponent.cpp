@@ -25,9 +25,9 @@ CameraComponent::CameraComponent(float fov) :
     m_frustumValid(false)
 {}
 
-void CameraComponent::init(GameObject & gameObject) {
-    m_gameObject = &gameObject;
-    if (!(m_spatial = m_gameObject->getComponentByType<SpatialComponent>())) assert(false);
+void CameraComponent::init(GameObject & go) {
+    Component::init(go);
+    if (!(m_spatial = gameObject()->getComponentByType<SpatialComponent>())) assert(false);
     setUVW(m_spatial->u(), m_spatial->v(), m_spatial->w());
     m_theta = 0.0f;
     m_phi = glm::pi<float>() * 0.5f;
@@ -44,13 +44,13 @@ void CameraComponent::init(GameObject & gameObject) {
         m_frustumValid = false;
         detUVW();
     });
-    Scene::get().addReceiver<SpatialPositionSetMessage>(getGameObject(), spatTransformCallback);
-    Scene::get().addReceiver<SpatialMovedMessage>(getGameObject(), spatTransformCallback);
-    Scene::get().addReceiver<SpatialScaleSetMessage>(getGameObject(), spatTransformCallback);
-    Scene::get().addReceiver<SpatialScaledMessage>(getGameObject(), spatTransformCallback);
-    Scene::get().addReceiver<SpatialOrientationSetMessage>(getGameObject(), spatRotationCallback);
-    Scene::get().addReceiver<SpatialRotatedMessage>(getGameObject(), spatRotationCallback);
-    Scene::get().addReceiver<CollisionAdjustMessage>(getGameObject(), spatTransformCallback); // necessary as collision sets position silently
+    Scene::get().addReceiver<SpatialPositionSetMessage>(gameObject(), spatTransformCallback);
+    Scene::get().addReceiver<SpatialMovedMessage>(gameObject(), spatTransformCallback);
+    Scene::get().addReceiver<SpatialScaleSetMessage>(gameObject(), spatTransformCallback);
+    Scene::get().addReceiver<SpatialScaledMessage>(gameObject(), spatTransformCallback);
+    Scene::get().addReceiver<SpatialOrientationSetMessage>(gameObject(), spatRotationCallback);
+    Scene::get().addReceiver<SpatialRotatedMessage>(gameObject(), spatRotationCallback);
+    Scene::get().addReceiver<CollisionAdjustMessage>(gameObject(), spatTransformCallback); // necessary as collision sets position silently
 
     auto windowSizeCallback([&] (const Message & msg_) {
         m_projMatValid = false;
@@ -101,7 +101,7 @@ void CameraComponent::angle(float theta, float phi, bool relative, bool silently
     m_viewMatValid = false;
     m_frustumValid = false;
 
-    if (!silently) Scene::get().sendMessage<CameraRotatedMessage>(m_gameObject, *this);
+    if (!silently) Scene::get().sendMessage<CameraRotatedMessage>(gameObject(), *this);
 }
 
 void CameraComponent::setFOV(float fov) {

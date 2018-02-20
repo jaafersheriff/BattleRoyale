@@ -15,7 +15,16 @@ void SpatialSystem::update(float dt) {
 }
 
 void SpatialSystem::setGravity(const glm::vec3 & gravity) {
-    m_gravity = gravity;
+    m_gravityMag = glm::length(gravity);
+    m_gravityDir = gravity / m_gravityMag;
+}
+
+void SpatialSystem::setGravityDir(const glm::vec3 & dir) {
+    m_gravityDir = dir;
+}
+
+void SpatialSystem::setGravityMag(float mag) {
+    m_gravityMag = mag;
 }
 
 void SpatialSystem::add(std::unique_ptr<Component> component) {

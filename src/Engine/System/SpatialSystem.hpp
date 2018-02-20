@@ -37,8 +37,12 @@ class SpatialSystem : public System {
     virtual void update(float dt) override;
 
     void setGravity(const glm::vec3 & gravity);
+    void setGravityDir(const glm::vec3 & dir);
+    void setGravityMag(float mag);
 
-    const glm::vec3 & gravity() const { return m_gravity; }
+    glm::vec3 gravity() const { return m_gravityDir * m_gravityMag; }
+    const glm::vec3 & gravityDir() const { return m_gravityDir; }
+    float gravityMag() const { return m_gravityMag; }
     float coefficientOfFriction() const { return m_coefficientOfFriction; }
 
     private:
@@ -52,7 +56,8 @@ class SpatialSystem : public System {
     std::vector<std::unique_ptr<SpatialComponent>> m_spatialComponents;
     std::vector<std::unique_ptr<NewtonianComponent>> m_newtonianComponents;
     std::vector<std::unique_ptr<AcceleratorComponent>> m_acceleratorComponents;
-    glm::vec3 m_gravity = glm::vec3(0.0f, -10.0f, 0.0f);
+    glm::vec3 m_gravityDir = glm::vec3(0.0f, -1.0f, 0.0f);
+    float m_gravityMag = 10.0f;
     float m_coefficientOfFriction = 0.1f;
 
 };

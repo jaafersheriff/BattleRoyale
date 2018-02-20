@@ -21,7 +21,7 @@ class CameraControllerComponent : public Component {
 
         CameraControllerComponent(float ls, float ms);
 
-        virtual void init(GameObject & gameObject) override;
+        virtual void init(GameObject & go) override;
 
     public:
 

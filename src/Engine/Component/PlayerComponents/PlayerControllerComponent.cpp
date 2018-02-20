@@ -6,6 +6,7 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 #include "Component/SpatialComponents/PhysicsComponents.hpp"
+#include "Component/PostCollisionComponents/GroundComponent.hpp"
 #include "System/SpatialSystem.hpp"
 
 
@@ -19,11 +20,12 @@ PlayerControllerComponent::PlayerControllerComponent(float lookSpeed, float move
     m_enabled(true)
 {}
 
-void PlayerControllerComponent::init(GameObject & gameObject) {
-    m_gameObject = &gameObject;
-    if (!(m_spatial = m_gameObject->getComponentByType<SpatialComponent>())) assert(false);
-    if (!(m_newtonian = m_gameObject->getComponentByType<NewtonianComponent>())) assert(false);
-    if (!(m_camera = m_gameObject->getComponentByType<CameraComponent>())) assert(false);
+void PlayerControllerComponent::init(GameObject & go) {
+    Component::init(go);
+    if (!(m_spatial = gameObject()->getComponentByType<SpatialComponent>())) assert(false);
+    if (!(m_newtonian = gameObject()->getComponentByType<NewtonianComponent>())) assert(false);
+    if (!(m_ground = gameObject()->getComponentByType<GroundComponent>())) assert(false);
+    if (!(m_camera = gameObject()->getComponentByType<CameraComponent>())) assert(false);
 }
 
 void PlayerControllerComponent::update(float dt) {
@@ -64,8 +66,7 @@ void PlayerControllerComponent::update(float dt) {
 
     // jump
     if(Keyboard::isKeyPressed(GLFW_KEY_SPACE)) {
-        m_gameObject->getComponentByType<NewtonianComponent>()->addVelocity(3.0f * m_spatial->w());
-        //m_gameObject->getComponentByType<NewtonianComponent>()->addVelocity(-3.0f * glm::normalize(SpatialSystem::get().gravity()));
+        if (m_ground->onGround()) gameObject()->getComponentByType<NewtonianComponent>()->addVelocity(-3.0f * glm::normalize(SpatialSystem::get().gravity()));
     }
 }
 

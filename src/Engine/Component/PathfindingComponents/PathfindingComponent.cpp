@@ -11,9 +11,9 @@ PathfindingComponent::PathfindingComponent(GameObject & player, float ms) :
     m_moveSpeed(ms)
 {}
 
-void PathfindingComponent::init(GameObject & gameObject) {
-    m_gameObject = &gameObject;
-    if (!(m_spatial = m_gameObject->getSpatial())) assert(false);
+void PathfindingComponent::init(GameObject & go) {
+    Component::init(go);
+    if (!(m_spatial = gameObject()->getSpatial())) assert(false);
 }
 
 void PathfindingComponent::update(float dt) {
@@ -24,5 +24,5 @@ void PathfindingComponent::update(float dt) {
         return;
     }
     
-    m_gameObject->getSpatial()->move(glm::normalize(dir) * m_moveSpeed * dt);
+    gameObject()->getSpatial()->move(glm::normalize(dir) * m_moveSpeed * dt);
 }

@@ -21,6 +21,7 @@ enum class SystemID {
     pathfinding,
     spatial,
     collision,
+    postCollision,
     render
 };
 

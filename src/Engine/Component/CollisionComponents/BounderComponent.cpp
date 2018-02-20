@@ -1,4 +1,4 @@
-#include "CollisionComponent.hpp"
+#include "BounderComponent.hpp"
 
 #include <tuple>
 
@@ -14,9 +14,9 @@ BounderComponent::BounderComponent(unsigned int weight) :
     m_weight(weight)
 {}
 
-void BounderComponent::init(GameObject & gameObject) {
-    m_gameObject = &gameObject;
-    if (!(m_spatial = m_gameObject->getSpatial())) assert(false);
+void BounderComponent::init(GameObject & go) {
+    Component::init(go);
+    if (!(m_spatial = gameObject()->getSpatial())) assert(false);
 }
 
 

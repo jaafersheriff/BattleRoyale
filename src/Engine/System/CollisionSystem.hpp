@@ -5,14 +5,13 @@
 #include <unordered_set>
 
 #include "System.hpp"
-#include "Component/CollisionComponents/CollisionComponent.hpp"
+#include "Component/CollisionComponents/BounderComponent.hpp"
 
 
 
 struct Ray;
 struct Intersect;
 class BounderShader;
-class SpatPosSetReceiver;
 
 
 
@@ -21,7 +20,6 @@ class CollisionSystem : public System {
 
     friend Scene;
     friend BounderShader;
-    friend SpatPosSetReceiver;
 
     public:
 
@@ -58,6 +56,8 @@ class CollisionSystem : public System {
     virtual void add(std::unique_ptr<Component> component) override;
 
     virtual void remove(Component * component) override;
+
+    void updateBounders(float dt);
 
     private:
 

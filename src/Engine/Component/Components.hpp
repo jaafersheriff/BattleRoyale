@@ -1,18 +1,18 @@
 #pragma once
 
 #include "Component.hpp"
-
+// game logic
 #include "CameraComponents/CameraComponent.hpp"
 #include "CameraComponents/CameraControllerComponent.hpp"
-
-#include "RenderComponents/DiffuseRenderComponent.hpp"
-
-#include "SpatialComponents/SpatialComponent.hpp"
-
-#include "CollisionComponents/CollisionComponent.hpp"
-
-#include "PathfindingComponents/PathfindingComponent.hpp"
-
 #include "ImGuiComponents/ImGuiComponent.hpp"
-
 #include "PlayerComponents/PlayerControllerComponent.hpp"
+// pathfinding
+#include "PathfindingComponents/PathfindingComponent.hpp"
+// spatial
+#include "SpatialComponents/SpatialComponent.hpp"
+// collision
+#include "CollisionComponents/BounderComponent.hpp"
+// post collision
+#include "PostCollisionComponents/GroundComponent.hpp"
+// render
+#include "RenderComponents/DiffuseRenderComponent.hpp"

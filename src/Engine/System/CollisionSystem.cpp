@@ -8,7 +8,6 @@
 #include "glm/gtx/norm.hpp"
 
 #include "Component/SpatialComponents/SpatialComponent.hpp"
-#include "Component/CollisionComponents/CollisionComponent.hpp"
 #include "Scene/Scene.hpp"
 
 
@@ -146,7 +145,7 @@ void CollisionSystem::init() {
     auto spatTransformCallback(
         [&](const Message & msg_) {
             const SpatialTransformTag & msg(static_cast<const SpatialTransformTag &>(msg_));
-            for (auto & bounder : msg.spatial.getGameObject()->getComponentsBySystem(SystemID::collision)) {
+            for (auto & bounder : msg.spatial.gameObject()->getComponentsBySystem(SystemID::collision)) {
                 m_potentials.insert(static_cast<BounderComponent *>(bounder));
             }
         }
@@ -160,66 +159,7 @@ void CollisionSystem::init() {
 }
 
 void CollisionSystem::update(float dt) {
-    static std::unordered_map<BounderComponent *, std::vector<std::pair<int, glm::vec3>>> s_collisions;
-    static std::unordered_set<BounderComponent *> s_checked;
-    static std::unordered_map<GameObject *, glm::vec3> s_gameObjectDeltas;
-
-    m_collided.clear();
-    m_adjusted.clear();
-
-    // gather all collisions
-    for (BounderComponent * bounder : m_potentials) {
-        bounder->update(dt);
-        s_checked.insert(bounder);
-        for (auto & other : m_bounderComponents) {
-            if (s_checked.count(other.get()) || other->getGameObject() == bounder->getGameObject()) {
-                continue;
-            }
-            if (collide(*bounder, *other, &s_collisions)) {
-                Scene::get().sendMessage<CollisionMessage>(bounder->getGameObject(), *bounder, *other);
-                Scene::get().sendMessage<CollisionMessage>(other->getGameObject(), *other, *bounder);
-            }
-        }
-    }
-    
-    m_potentials.clear();
-    
-    // composite deltas into a single delta per game object
-    // additionally send norm messages
-    for (auto & pair : s_collisions) {
-        BounderComponent & bounder(*pair.first);
-        auto & weightDeltas(pair.second);
-        m_collided.insert(&bounder);
-        // there was an adjustment
-        if (weightDeltas.size()) {
-            for (auto & weightDelta : weightDeltas) { // send norm messages
-                Scene::get().sendMessage<CollisionNormMessage>(bounder.getGameObject(), bounder, glm::normalize(weightDelta.second));
-            }
-            glm::vec3 & gameObjectDelta(s_gameObjectDeltas[bounder.getGameObject()]);
-            gameObjectDelta = compositeDeltas(gameObjectDelta, detNetDelta(weightDeltas));
-        }
-    }
-
-    // apply deltas to game objects
-    for (auto & pair : s_gameObjectDeltas) {
-        GameObject * gameObject(pair.first);
-        SpatialComponent & spat(*gameObject->getSpatial());
-        const glm::vec3 & delta(pair.second);
-        // set position rather than move because they are conceptually different
-        // this will come into play if we do time step interpolation
-        spat.setPosition(spat.position() + delta, true);
-        for (Component * comp : gameObject->getComponentsBySystem(SystemID::collision)) {
-            BounderComponent * bounder(static_cast<BounderComponent *>(comp));
-            m_potentials.insert(bounder);
-            bounder->update(dt);
-            m_adjusted.insert(bounder);
-            Scene::get().sendMessage<CollisionAdjustMessage>(gameObject, *gameObject, delta);
-        }
-    }
-
-    s_checked.clear();
-    s_collisions.clear();
-    s_gameObjectDeltas.clear();
+    updateBounders(dt);
 }
 
 std::pair<BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray) const {
@@ -360,4 +300,67 @@ void CollisionSystem::remove(Component * component) {
             break;
         }
     }
+}
+
+void CollisionSystem::updateBounders(float dt) {
+    static std::unordered_map<BounderComponent *, std::vector<std::pair<int, glm::vec3>>> s_collisions;
+    static std::unordered_set<BounderComponent *> s_checked;
+    static std::unordered_map<GameObject *, glm::vec3> s_gameObjectDeltas;
+
+    m_collided.clear();
+    m_adjusted.clear();
+
+    // gather all collisions
+    for (BounderComponent * bounder : m_potentials) {
+        bounder->update(dt);
+        s_checked.insert(bounder);
+        for (auto & other : m_bounderComponents) {
+            if (s_checked.count(other.get()) || other->gameObject() == bounder->gameObject()) {
+                continue;
+            }
+            if (collide(*bounder, *other, &s_collisions)) {
+                Scene::get().sendMessage<CollisionMessage>(bounder->gameObject(), *bounder, *other);
+                Scene::get().sendMessage<CollisionMessage>(other->gameObject(), *other, *bounder);
+            }
+        }
+    }
+    
+    m_potentials.clear();
+    
+    // composite deltas into a single delta per game object
+    // additionally send norm messages
+    for (auto & pair : s_collisions) {
+        BounderComponent & bounder(*pair.first);
+        auto & weightDeltas(pair.second);
+        m_collided.insert(&bounder);
+        // there was an adjustment
+        if (weightDeltas.size()) {
+            for (auto & weightDelta : weightDeltas) { // send norm messages
+                Scene::get().sendMessage<CollisionNormMessage>(bounder.gameObject(), bounder, glm::normalize(weightDelta.second));
+            }
+            glm::vec3 & gameObjectDelta(s_gameObjectDeltas[bounder.gameObject()]);
+            gameObjectDelta = compositeDeltas(gameObjectDelta, detNetDelta(weightDeltas));
+        }
+    }
+
+    // apply deltas to game objects
+    for (auto & pair : s_gameObjectDeltas) {
+        GameObject * gameObject(pair.first);
+        SpatialComponent & spat(*gameObject->getSpatial());
+        const glm::vec3 & delta(pair.second);
+        // set position rather than move because they are conceptually different
+        // this will come into play if we do time step interpolation
+        spat.setPosition(spat.position() + delta, true);
+        for (Component * comp : gameObject->getComponentsBySystem(SystemID::collision)) {
+            BounderComponent * bounder(static_cast<BounderComponent *>(comp));
+            m_potentials.insert(bounder);
+            bounder->update(dt);
+            m_adjusted.insert(bounder);
+            Scene::get().sendMessage<CollisionAdjustMessage>(gameObject, *gameObject, delta);
+        }
+    }
+
+    s_checked.clear();
+    s_collisions.clear();
+    s_gameObjectDeltas.clear();
 }

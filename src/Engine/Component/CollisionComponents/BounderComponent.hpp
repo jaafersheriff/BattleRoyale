@@ -27,7 +27,7 @@ class BounderComponent : public Component {
 
     BounderComponent(unsigned int weight);
 
-    virtual void init(GameObject & gameObject) override;
+    virtual void init(GameObject & go) override;
 
     public:
 

@@ -16,9 +16,9 @@ NewtonianComponent::NewtonianComponent(float maxSpeed) :
     m_maxSpeed(maxSpeed)
 {}
 
-void NewtonianComponent::init(GameObject & gameObject) {
-    m_gameObject = &gameObject;
-    if (!(m_spatial = m_gameObject->getSpatial())) assert(false);
+void NewtonianComponent::init(GameObject & go) {
+    Component::init(go);
+    if (!(m_spatial = gameObject()->getSpatial())) assert(false);
 
     auto collisionCallback([&](const Message & msg_) {
         const CollisionNormMessage & msg(static_cast<const CollisionNormMessage &>(msg_));
@@ -41,7 +41,7 @@ void NewtonianComponent::init(GameObject & gameObject) {
         }
         m_velocity = v * (1.0f - factor);
     });
-    Scene::get().addReceiver<CollisionNormMessage>(m_gameObject, collisionCallback);
+    Scene::get().addReceiver<CollisionNormMessage>(gameObject(), collisionCallback);
 }
 
 void NewtonianComponent::update(float dt) {
@@ -82,9 +82,9 @@ AcceleratorComponent::AcceleratorComponent(const glm::vec3 & acceleration) :
     m_acceleration(acceleration)
 {}
 
-void AcceleratorComponent::init(GameObject & gameObject) {
-    m_gameObject = &gameObject;
-    if (!(m_newtonian = m_gameObject->getComponentByType<NewtonianComponent>())) assert(false);
+void AcceleratorComponent::init(GameObject & go) {
+    Component::init(go);
+    if (!(m_newtonian = gameObject()->getComponentByType<NewtonianComponent>())) assert(false);
 }
 
 void AcceleratorComponent::update(float dt) {

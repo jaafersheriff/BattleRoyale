@@ -42,46 +42,46 @@ void SpatialComponent::update(float dt) {
 void SpatialComponent::setPosition(const glm::vec3 & loc, bool silently) {
     m_position = loc;
     m_modelMatrixValid = false;
-    if (!silently) Scene::get().sendMessage<SpatialPositionSetMessage>(getGameObject(), *this);
+    if (!silently) Scene::get().sendMessage<SpatialPositionSetMessage>(gameObject(), *this);
 }
 
 void SpatialComponent::move(const glm::vec3 & delta, bool silently) {
     m_position += delta;
     m_modelMatrixValid = false;
-    if (!silently) Scene::get().sendMessage<SpatialMovedMessage>(getGameObject(), *this);
+    if (!silently) Scene::get().sendMessage<SpatialMovedMessage>(gameObject(), *this);
 }
 
 void SpatialComponent::setScale(const glm::vec3 & scale, bool silently) {
     m_scale = scale;
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
-    if (!silently) Scene::get().sendMessage<SpatialScaleSetMessage>(getGameObject(), *this);
+    if (!silently) Scene::get().sendMessage<SpatialScaleSetMessage>(gameObject(), *this);
 }
 
 void SpatialComponent::scale(const glm::vec3 & factor, bool silently) {
     m_scale *= factor;
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
-    if (!silently) Scene::get().sendMessage<SpatialScaledMessage>(getGameObject(), *this);
+    if (!silently) Scene::get().sendMessage<SpatialScaledMessage>(gameObject(), *this);
 }
 
 void SpatialComponent::setOrientation(const glm::mat3 & orient, bool silently) {
     Orientable::setOrientation(orient);
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
-    if (!silently) Scene::get().sendMessage<SpatialOrientationSetMessage>(getGameObject(), *this);
+    if (!silently) Scene::get().sendMessage<SpatialOrientationSetMessage>(gameObject(), *this);
 }
 
 void SpatialComponent::rotate(const glm::mat3 & mat, bool silently) {
     Orientable::rotate(mat);
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
-    if (!silently) Scene::get().sendMessage<SpatialRotatedMessage>(getGameObject(), *this);
+    if (!silently) Scene::get().sendMessage<SpatialRotatedMessage>(gameObject(), *this);
 }
 
 void SpatialComponent::setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w, bool silently) {
     Orientable::setUVW(u, v, w);
-    if (!silently) Scene::get().sendMessage<SpatialOrientationSetMessage>(getGameObject(), *this);
+    if (!silently) Scene::get().sendMessage<SpatialOrientationSetMessage>(gameObject(), *this);
 }
     
 const glm::mat4 & SpatialComponent::modelMatrix() const {
