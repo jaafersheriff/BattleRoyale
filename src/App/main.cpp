@@ -142,7 +142,8 @@ int main(int argc, char **argv) {
     float playerFOV(freeCamFOV);
     float playerLookSpeed(freeCamLookSpeed);
     float playerMoveSpeed(freeCamMoveSpeed);
-    float playerMaxSpeed(50.0f);
+    float playerJumpSpeed(5.0f);
+    float playerMaxSpeed(50.0f); // terminal velocity
     GameObject & player(Scene::createGameObject());
     SpatialComponent & playerSpatComp(Scene::addComponent<SpatialComponent>(player));
     playerSpatComp.setPosition(playerPos);
@@ -152,7 +153,7 @@ int main(int argc, char **argv) {
     Capsule playerCap(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth);
     CapsuleBounderComponent & playerBoundComp(Scene::addComponent<CapsuleBounderComponent>(player, 1, playerCap));
     CameraComponent & playerCamComp(Scene::addComponent<CameraComponent>(player, playerFOV));
-    PlayerControllerComponent & playerContComp(Scene::addComponent<PlayerControllerComponent>(player, playerLookSpeed, playerMoveSpeed));
+    PlayerControllerComponent & playerContComp(Scene::addComponent<PlayerControllerComponent>(player, playerLookSpeed, playerMoveSpeed, playerJumpSpeed));
 
     RenderSystem::setCamera(&playerCamComp);
 

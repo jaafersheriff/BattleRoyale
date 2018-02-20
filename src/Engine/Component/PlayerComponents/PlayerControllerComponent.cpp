@@ -11,12 +11,13 @@
 
 
 
-PlayerControllerComponent::PlayerControllerComponent(float lookSpeed, float moveSpeed) :
+PlayerControllerComponent::PlayerControllerComponent(float lookSpeed, float moveSpeed, float jumpSpeed) :
     m_spatial(nullptr),
     m_newtonian(nullptr),
     m_camera(nullptr),
     m_lookSpeed(lookSpeed),
     m_moveSpeed(moveSpeed),
+    m_jumpSpeed(jumpSpeed),
     m_enabled(true)
 {}
 
@@ -74,7 +75,7 @@ void PlayerControllerComponent::update(float dt) {
 
     // jump
     if(Keyboard::isKeyPressed(GLFW_KEY_SPACE)) {
-        if (m_ground->onGround()) gameObject()->getComponentByType<NewtonianComponent>()->addVelocity(-3.0f * glm::normalize(SpatialSystem::gravity()));
+        if (m_ground->onGround()) gameObject()->getComponentByType<NewtonianComponent>()->addVelocity(-m_jumpSpeed * glm::normalize(SpatialSystem::gravity()));
     }
 }
 
