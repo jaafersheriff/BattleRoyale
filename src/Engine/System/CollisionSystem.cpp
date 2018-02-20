@@ -141,7 +141,7 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
 
 
 
-std::vector<std::unique_ptr<BounderComponent>> CollisionSystem::s_bounderComponents;
+std::vector<BounderComponent *> CollisionSystem::s_bounderComponents;
 std::unordered_set<BounderComponent *> CollisionSystem::s_potentials;
 std::unordered_set<BounderComponent *> CollisionSystem::s_collided;
 std::unordered_set<BounderComponent *> CollisionSystem::s_adjusted;
@@ -176,7 +176,7 @@ void CollisionSystem::update(float dt) {
         bounder->update(dt);
         s_checked.insert(bounder);
         for (auto & other : s_bounderComponents) {
-            if (s_checked.count(other.get()) || other->gameObject() == bounder->gameObject()) {
+            if (s_checked.count(other) || other->gameObject() == bounder->gameObject()) {
                 continue;
             }
             if (collide(*bounder, *other, &s_collisions)) {
@@ -232,7 +232,7 @@ std::pair<BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray) 
     for (const auto & b : s_bounderComponents) {
         Intersect potential(b->intersect(ray));
         if (potential.dist < inter.dist) {
-            bounder = b.get();
+            bounder = b;
             inter = potential;
         }
     }
@@ -337,20 +337,20 @@ BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, 
     }
 }
 
-void CollisionSystem::add(std::unique_ptr<Component> component) {
-    if (dynamic_cast<BounderComponent *>(component.get())) {
-        s_bounderComponents.emplace_back(static_cast<BounderComponent *>(component.release()));
-        s_potentials.insert(s_bounderComponents.back().get());
+void CollisionSystem::add(Component & component) {
+    if (dynamic_cast<BounderComponent *>(&component)) {
+        s_bounderComponents.push_back(static_cast<BounderComponent *>(&component));
+        s_potentials.insert(s_bounderComponents.back());
     }
     else {
         assert(false);
     }
 }
 
-void CollisionSystem::remove(Component * component) {
-    if (dynamic_cast<BounderComponent *>(component)) {
+void CollisionSystem::remove(Component & component) {
+    if (dynamic_cast<BounderComponent *>(&component)) {
         for (auto it(s_bounderComponents.begin()); it != s_bounderComponents.end(); ++it) {
-            if (it->get() == component) {
+            if (*it == &component) {
                 s_bounderComponents.erase(it);
                 break;
             }

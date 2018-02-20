@@ -57,13 +57,13 @@ class RenderSystem {
 
     private:
     
-    static void add(std::unique_ptr<Component> component);
+    static void add(Component & component);
 
-    static void remove(Component * component);
+    static void remove(Component & component);
     
     private:
 
-    static std::vector<std::unique_ptr<DiffuseRenderComponent>> s_diffuseComponents;
+    static std::vector<DiffuseRenderComponent *> s_diffuseComponents;
     static std::unordered_map<std::type_index, std::unique_ptr<Shader>> s_shaders;
     static float s_near, s_far;
     static const CameraComponent * s_camera;

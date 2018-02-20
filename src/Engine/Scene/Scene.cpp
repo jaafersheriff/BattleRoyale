@@ -14,8 +14,8 @@
 
 
 
-std::vector<std::unique_ptr<GameObject>> Scene::s_gameObjectsStore;
-std::vector<GameObject *> Scene::s_gameObjectRefs;
+std::vector<std::unique_ptr<GameObject>> Scene::s_gameObjects;
+std::vector<std::unique_ptr<Component>> Scene::s_components;
 
 std::vector<std::unique_ptr<GameObject>> Scene::s_gameObjectInitQueue;
 std::vector<GameObject *> Scene::s_gameObjectKillQueue;
@@ -62,8 +62,7 @@ void Scene::update(float dt) {
 
 void Scene::doInitQueue() {
     for (auto & o : s_gameObjectInitQueue) {
-        s_gameObjectsStore.emplace_back(o.release());
-        s_gameObjectRefs.push_back(s_gameObjectsStore.back().get());
+        s_gameObjects.emplace_back(o.release());
     }
     s_gameObjectInitQueue.clear();
     
@@ -83,13 +82,14 @@ void Scene::doInitQueue() {
         auto & comp(std::get<2>(initE));
         comp->init(*go);
         switch (comp->systemID()) {
-            case SystemID::    gameLogic:     GameLogicSystem::add(std::move(comp)); break;
-            case SystemID::  pathfinding:   PathfindingSystem::add(std::move(comp)); break;
-            case SystemID::      spatial:       SpatialSystem::add(std::move(comp)); break;
-            case SystemID::    collision:     CollisionSystem::add(std::move(comp)); break;
-            case SystemID::postCollision: PostCollisionSystem::add(std::move(comp)); break;
-            case SystemID::       render:        RenderSystem::add(std::move(comp)); break;
+            case SystemID::    gameLogic:     GameLogicSystem::add(*comp); break;
+            case SystemID::  pathfinding:   PathfindingSystem::add(*comp); break;
+            case SystemID::      spatial:       SpatialSystem::add(*comp); break;
+            case SystemID::    collision:     CollisionSystem::add(*comp); break;
+            case SystemID::postCollision: PostCollisionSystem::add(*comp); break;
+            case SystemID::       render:        RenderSystem::add(*comp); break;
         }
+        s_components.emplace_back(std::move(comp));
     }
     s_componentInitQueue.clear();
 }
@@ -99,18 +99,17 @@ void Scene::doKillQueue() {
     for (auto killIt(s_gameObjectKillQueue.begin()); killIt != s_gameObjectKillQueue.end(); ++killIt) {
         bool found(false);
         // look in active game objects
-        for (int i(0); i < s_gameObjectRefs.size(); ++i) {
-            GameObject * go(s_gameObjectRefs[i]);
+        for (auto it(s_gameObjects.begin()); it != s_gameObjects.end(); ++it) {
+            GameObject * go(it->get());
             if (go == *killIt) {
                 s_componentKillQueue.insert(s_componentKillQueue.end(), go->getComponents().cbegin(), go->getComponents().cend());
-                s_gameObjectRefs.erase(s_gameObjectRefs.begin() + i);
-                s_gameObjectsStore.erase(s_gameObjectsStore.begin() + i);
+                s_gameObjects.erase(it);
                 found = true;
                 break;
             }
         }
-        // look in game object initialization queue
         if (!found) {
+            // look in game object initialization queue
             for (auto initIt(s_gameObjectInitQueue.begin()); initIt != s_gameObjectInitQueue.end(); ++initIt) {
                 if (initIt->get() == *killIt) {
                     s_gameObjectInitQueue.erase(initIt);
@@ -123,20 +122,30 @@ void Scene::doKillQueue() {
     
     // kill components
     for (auto & comp : s_componentKillQueue) {
+        bool found(false);
         // look in active components
         switch (comp->systemID()) {
-            case SystemID::    gameLogic:     GameLogicSystem::remove(comp); continue;
-            case SystemID::  pathfinding:   PathfindingSystem::remove(comp); continue;
-            case SystemID::      spatial:       SpatialSystem::remove(comp); continue;
-            case SystemID::    collision:     CollisionSystem::remove(comp); continue;
-            case SystemID::postCollision: PostCollisionSystem::remove(comp); continue;
-            case SystemID::       render:        RenderSystem::remove(comp); continue;
+            case SystemID::    gameLogic:     GameLogicSystem::remove(*comp); continue;
+            case SystemID::  pathfinding:   PathfindingSystem::remove(*comp); continue;
+            case SystemID::      spatial:       SpatialSystem::remove(*comp); continue;
+            case SystemID::    collision:     CollisionSystem::remove(*comp); continue;
+            case SystemID::postCollision: PostCollisionSystem::remove(*comp); continue;
+            case SystemID::       render:        RenderSystem::remove(*comp); continue;
         }
-        // look in initialization queue
-        for (auto initIt(s_componentInitQueue.begin()); initIt != s_componentInitQueue.end(); ++initIt) {
-            if (std::get<2>(*initIt).get() == comp) {
-                s_componentInitQueue.erase(initIt);
+        for (auto it(s_components.begin()); it != s_components.end(); ++it) {
+            if (it->get() == comp) {
+                s_components.erase(it);
+                found = true;
                 break;
+            }
+        }
+        if (!found) {
+            // look in component initialization queue
+            for (auto initIt(s_componentInitQueue.begin()); initIt != s_componentInitQueue.end(); ++initIt) {
+                if (std::get<2>(*initIt).get() == comp) {
+                    s_componentInitQueue.erase(initIt);
+                    break;
+                }
             }
         }
     }

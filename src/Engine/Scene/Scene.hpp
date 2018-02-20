@@ -44,7 +44,7 @@ class Scene {
     // receiver will pick up only messages sent to that object
     template <typename MsgT> static void addReceiver(GameObject * gameObject, const std::function<void (const Message &)> & receiver);
 
-    static const std::vector<GameObject *> & getGameObjects() { return s_gameObjectRefs; }
+    static const std::vector<GameObject *> & getGameObjects() { return reinterpret_cast<const std::vector<GameObject *> &>(s_gameObjects); }
 
   private:
 
@@ -56,8 +56,8 @@ class Scene {
 
   private:
 
-    static std::vector<std::unique_ptr<GameObject>> s_gameObjectsStore;
-    static std::vector<GameObject *> s_gameObjectRefs;
+    static std::vector<std::unique_ptr<GameObject>> s_gameObjects;
+    static std::vector<std::unique_ptr<Component>> s_components;
 
     static std::vector<std::unique_ptr<GameObject>> s_gameObjectInitQueue;
     static std::vector<GameObject *> s_gameObjectKillQueue;

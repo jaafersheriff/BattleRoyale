@@ -26,12 +26,12 @@ class PostCollisionSystem {
 
     private:
 
-    static void add(std::unique_ptr<Component> component);
+    static void add(Component & component);
 
-    static void remove(Component * component);
+    static void remove(Component & component);
 
     private:
 
-    static std::vector<std::unique_ptr<GroundComponent>> s_groundComponents;
+    static std::vector<GroundComponent *> s_groundComponents;
 
 };

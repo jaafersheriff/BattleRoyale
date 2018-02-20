@@ -8,7 +8,7 @@
 
 
 
-std::vector<std::unique_ptr<DiffuseRenderComponent>> RenderSystem::s_diffuseComponents;
+std::vector<DiffuseRenderComponent *> RenderSystem::s_diffuseComponents;
 std::unordered_map<std::type_index, std::unique_ptr<Shader>> RenderSystem::s_shaders;
 float RenderSystem::s_near = k_defNear, RenderSystem::s_far = k_defFar;
 const CameraComponent * RenderSystem::s_camera = nullptr;
@@ -53,17 +53,17 @@ void RenderSystem::update(float dt) {
     }
 }
 
-void RenderSystem::add(std::unique_ptr<Component> component) {
-    if (dynamic_cast<DiffuseRenderComponent *>(component.get()))
-        s_diffuseComponents.emplace_back(static_cast<DiffuseRenderComponent *>(component.release()));
+void RenderSystem::add(Component & component) {
+    if (dynamic_cast<DiffuseRenderComponent *>(&component))
+        s_diffuseComponents.emplace_back(static_cast<DiffuseRenderComponent *>(&component));
     else
         assert(false);
 }
 
-void RenderSystem::remove(Component * component) {
-    if (dynamic_cast<DiffuseRenderComponent *>(component)) {
+void RenderSystem::remove(Component & component) {
+    if (dynamic_cast<DiffuseRenderComponent *>(&component)) {
         for (auto it(s_diffuseComponents.begin()); it != s_diffuseComponents.end(); ++it) {
-            if (it->get() == component) {
+            if (*it == &component) {
                 s_diffuseComponents.erase(it);
                 break;
             }

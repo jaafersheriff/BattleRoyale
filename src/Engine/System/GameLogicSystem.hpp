@@ -29,16 +29,16 @@ class GameLogicSystem {
 
     private:
     
-    static void add(std::unique_ptr<Component> component);
+    static void add(Component & component);
 
-    static void remove(Component * component);
+    static void remove(Component & component);
 
     private:
 
-    static std::vector<std::unique_ptr<CameraComponent>> s_cameraComponents;
-    static std::vector<std::unique_ptr<CameraControllerComponent>> s_cameraControllerComponents;
-    static std::vector<std::unique_ptr<PlayerControllerComponent>> s_playerControllers;
-    static std::vector<std::unique_ptr<ImGuiComponent>> s_imguiComponents;
+    static std::vector<CameraComponent *> s_cameraComponents;
+    static std::vector<CameraControllerComponent *> s_cameraControllerComponents;
+    static std::vector<PlayerControllerComponent *> s_playerControllers;
+    static std::vector<ImGuiComponent *> s_imguiComponents;
 
 };
 

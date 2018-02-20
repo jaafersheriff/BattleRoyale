@@ -36,15 +36,15 @@ class SpatialSystem {
 
     private:
 
-    static void add(std::unique_ptr<Component> component);
+    static void add(Component & component);
 
-    static void remove(Component * component);
+    static void remove(Component & component);
 
     private:
 
-    static std::vector<std::unique_ptr<SpatialComponent>> s_spatialComponents;
-    static std::vector<std::unique_ptr<NewtonianComponent>> s_newtonianComponents;
-    static std::vector<std::unique_ptr<AcceleratorComponent>> s_acceleratorComponents;
+    static std::vector<SpatialComponent *> s_spatialComponents;
+    static std::vector<NewtonianComponent *> s_newtonianComponents;
+    static std::vector<AcceleratorComponent *> s_acceleratorComponents;
     static glm::vec3 s_gravityDir;
     static float s_gravityMag;
     static float s_coefficientOfFriction;

@@ -36,9 +36,9 @@ class System {
 
     private:
 
-    static void add(std::unique_ptr<Component> component);
+    static void add(Component & component);
 
-    static void remove(Component * component);
+    static void remove(Component & component);
 
 };
 */
