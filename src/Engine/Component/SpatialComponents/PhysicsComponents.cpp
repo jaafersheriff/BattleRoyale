@@ -62,6 +62,18 @@ void NewtonianComponent::accelerate(const glm::vec3 & acceleration) {
     m_acceleration += acceleration;
 }
 
+void NewtonianComponent::addVelocity(const glm::vec3 & velocity) {
+    m_velocity += velocity;
+}
+
+void NewtonianComponent::removeAllVelocityAgainstDir(const glm::vec3 & dir) {
+    m_velocity = Util::removeAllAgainst(m_velocity, dir);
+}
+
+void NewtonianComponent::removeSomeVelocityAgainstDir(const glm::vec3 & dir, float amount) {
+    m_velocity = Util::removeSomeAgainst(m_velocity, dir, amount);
+}
+
 
 
 AcceleratorComponent::AcceleratorComponent(const glm::vec3 & acceleration) :

@@ -127,7 +127,7 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
         for (; i < weightDeltas.size() && weightDeltas[i].first == weight; ++i) {
             const glm::vec3 & delta(weightDeltas[i].second);
             weightDelta = compositeDeltas(weightDelta, delta);
-            net = Util::hemiClamp(net, glm::normalize(delta));
+            net = Util::removeAllAgainst(net, glm::normalize(delta));
         }
         net = compositeDeltas(net, weightDelta);
         weightI = i;

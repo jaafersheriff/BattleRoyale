@@ -34,6 +34,13 @@ class NewtonianComponent : public Component {
 
     void accelerate(const glm::vec3 & acceleration);
 
+    void addVelocity(const glm::vec3 & velocity);
+
+    // dir should be normalized
+    void removeAllVelocityAgainstDir(const glm::vec3 & dir);
+    // dir should be normalized
+    void removeSomeVelocityAgainstDir(const glm::vec3 & dir, float amount);
+
     const glm::vec3 & velocity() const { return m_velocity; }
 
     protected:

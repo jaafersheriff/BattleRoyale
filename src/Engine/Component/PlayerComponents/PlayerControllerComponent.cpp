@@ -6,6 +6,7 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 #include "Component/SpatialComponents/PhysicsComponents.hpp"
+#include "System/SpatialSystem.hpp"
 
 
 
@@ -33,10 +34,11 @@ void PlayerControllerComponent::update(float dt) {
         return;
     }
 
+    // rotate camera
     if (Mouse::dx || Mouse::dy) {
         // angle head
         m_camera->angle(-float(Mouse::dx) * m_lookSpeed * dt, float(Mouse::dy) * m_lookSpeed * dt, true);
-        // set body to that angle. this also angles head more
+        // set body to that angle. this also angles head more as its orientation is relative to body
         m_spatial->setUVW(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f), glm::cross(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f)), true);
         // reset head to face forward. in absolute space, this puts it back to where it was before the last line
         m_camera->angle(0.0f, m_camera->phi(), false, true);
@@ -47,6 +49,7 @@ void PlayerControllerComponent::update(float dt) {
     int left(Keyboard::isKeyPressed(GLFW_KEY_A));
     int right(Keyboard::isKeyPressed(GLFW_KEY_D));
     
+    // move player
     glm::vec2 xzDir(
         float(right - left),
         float(backward - forward)
@@ -55,10 +58,14 @@ void PlayerControllerComponent::update(float dt) {
         xzDir = glm::normalize(xzDir);
         glm::vec3 dir = xzDir.x * m_spatial->u() + xzDir.y * m_spatial->w();
         m_spatial->move(dir * m_moveSpeed * dt);
+        // remove some velocity against direction of movement
+        m_newtonian->removeSomeVelocityAgainstDir(dir, m_moveSpeed);
     }
 
+    // jump
     if(Keyboard::isKeyPressed(GLFW_KEY_SPACE)) {
-        m_gameObject->getComponentByType<NewtonianComponent>()->accelerate(glm::vec3(10.0f, 0.0f, 0.0f));
+        m_gameObject->getComponentByType<NewtonianComponent>()->addVelocity(3.0f * m_spatial->w());
+        //m_gameObject->getComponentByType<NewtonianComponent>()->addVelocity(-3.0f * glm::normalize(SpatialSystem::get().gravity()));
     }
 }
 

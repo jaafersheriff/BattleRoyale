@@ -121,12 +121,23 @@ struct Util {
     // norm must be unit vector
     // If v dot norm is positive, just return v. Otherwise, return the closest
     // point on the plane defined by norm.
-    static glm::vec3 hemiClamp(const glm::vec3 & v, const glm::vec3 & norm) {
+    static glm::vec3 removeAllAgainst(const glm::vec3 & v, const glm::vec3 & norm) {
         float dot(glm::dot(v, norm));
         if (dot >= 0) {
             return v;
         }
         return v - dot * norm;
+    }
+    
+    // norm must be unit vector
+    // If v dot norm is positive, just return v. Otherwise, return the point
+    // amount closer to the plane defined by norm
+    static glm::vec3 removeSomeAgainst(const glm::vec3 & v, const glm::vec3 & norm, float amount) {
+        float dot(glm::dot(v, norm));
+        if (dot >= 0) {
+            return v;
+        }
+        return v + glm::min(-dot, amount) * norm;
     }
 
 };
