@@ -26,12 +26,12 @@ std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>>
 std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> Scene::m_receivers;
 
 void Scene::init() {
-    GameLogicSystem::get().init();
-    PathfindingSystem::get().init();
-    SpatialSystem::get().init();
-    CollisionSystem::get().init();
-    PostCollisionSystem::get().init();
-    RenderSystem::get().init();
+    GameLogicSystem::init();
+    PathfindingSystem::init();
+    SpatialSystem::init();
+    CollisionSystem::init();
+    PostCollisionSystem::init();
+    RenderSystem::init();
 }
 
 GameObject & Scene::createGameObject() {
@@ -44,17 +44,17 @@ void Scene::update(float dt) {
 
     /* Update systems */
     relayMessages();
-    GameLogicSystem::get().update(dt);
+    GameLogicSystem::update(dt);
     relayMessages();
-    PathfindingSystem::get().update(dt);
+    PathfindingSystem::update(dt);
     relayMessages();
-    SpatialSystem::get().update(dt); // needs to happen before collision
+    SpatialSystem::update(dt); // needs to happen before collision
     relayMessages();
-    CollisionSystem::get().update(dt);
+    CollisionSystem::update(dt);
     relayMessages();
-    PostCollisionSystem::get().update(dt);
+    PostCollisionSystem::update(dt);
     relayMessages();
-    RenderSystem::get().update(dt); // rendering should be last
+    RenderSystem::update(dt); // rendering should be last
     relayMessages();
 
     doKillQueue();
@@ -83,12 +83,12 @@ void Scene::doInitQueue() {
         auto & comp(std::get<2>(initE));
         comp->init(*go);
         switch (comp->systemID()) {
-            case SystemID::    gameLogic:     GameLogicSystem::get().add(std::move(comp)); break;
-            case SystemID::  pathfinding:   PathfindingSystem::get().add(std::move(comp)); break;
-            case SystemID::      spatial:       SpatialSystem::get().add(std::move(comp)); break;
-            case SystemID::    collision:     CollisionSystem::get().add(std::move(comp)); break;
-            case SystemID::postCollision: PostCollisionSystem::get().add(std::move(comp)); break;
-            case SystemID::       render:        RenderSystem::get().add(std::move(comp)); break;
+            case SystemID::    gameLogic:     GameLogicSystem::add(std::move(comp)); break;
+            case SystemID::  pathfinding:   PathfindingSystem::add(std::move(comp)); break;
+            case SystemID::      spatial:       SpatialSystem::add(std::move(comp)); break;
+            case SystemID::    collision:     CollisionSystem::add(std::move(comp)); break;
+            case SystemID::postCollision: PostCollisionSystem::add(std::move(comp)); break;
+            case SystemID::       render:        RenderSystem::add(std::move(comp)); break;
         }
     }
     m_componentInitQueue.clear();
@@ -125,12 +125,12 @@ void Scene::doKillQueue() {
     for (auto & comp : m_componentKillQueue) {
         // look in active components
         switch (comp->systemID()) {
-            case SystemID::    gameLogic:     GameLogicSystem::get().remove(comp); continue;
-            case SystemID::  pathfinding:   PathfindingSystem::get().remove(comp); continue;
-            case SystemID::      spatial:       SpatialSystem::get().remove(comp); continue;
-            case SystemID::    collision:     CollisionSystem::get().remove(comp); continue;
-            case SystemID::postCollision: PostCollisionSystem::get().remove(comp); continue;
-            case SystemID::       render:        RenderSystem::get().remove(comp); continue;
+            case SystemID::    gameLogic:     GameLogicSystem::remove(comp); continue;
+            case SystemID::  pathfinding:   PathfindingSystem::remove(comp); continue;
+            case SystemID::      spatial:       SpatialSystem::remove(comp); continue;
+            case SystemID::    collision:     CollisionSystem::remove(comp); continue;
+            case SystemID::postCollision: PostCollisionSystem::remove(comp); continue;
+            case SystemID::       render:        RenderSystem::remove(comp); continue;
         }
         // look in initialization queue
         for (auto initIt(m_componentInitQueue.begin()); initIt != m_componentInitQueue.end(); ++initIt) {

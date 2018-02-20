@@ -163,7 +163,7 @@ void CameraComponent::detView() const {
 }
 
 void CameraComponent::detProj() const {
-    m_projMat = glm::perspective(m_fov, Window::getAspectRatio(), RenderSystem::get().near(), RenderSystem::get().far());
+    m_projMat = glm::perspective(m_fov, Window::getAspectRatio(), RenderSystem::near(), RenderSystem::far());
     m_projMatValid = true;
 }
 

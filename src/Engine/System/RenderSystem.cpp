@@ -8,6 +8,11 @@
 
 
 
+std::vector<std::unique_ptr<DiffuseRenderComponent>> RenderSystem::m_diffuseComponents;
+std::unordered_map<std::type_index, std::unique_ptr<Shader>> RenderSystem::m_shaders;
+float RenderSystem::m_near = k_defNear, RenderSystem::m_far = k_defFar;
+const CameraComponent * RenderSystem::m_camera = nullptr;
+
 void RenderSystem::init() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -16,7 +21,7 @@ void RenderSystem::init() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void RenderSystem::update(float dt) {\
+void RenderSystem::update(float dt) {
     /* Reset rendering display */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
@@ -35,7 +40,9 @@ void RenderSystem::update(float dt) {\
             // list and expecting each shader to filter through         //
             //////////////////////////////////////////////////////////////
 
-            shader.second->render(*m_camera, m_componentRefs);
+            // this reinterpret_cast business works because unique_ptr's data is
+            // guaranteed is the same as a pointer
+            shader.second->render(*m_camera, reinterpret_cast<std::vector<Component *> &>(m_diffuseComponents));
             shader.second->unbind();
         }
     }
@@ -47,7 +54,6 @@ void RenderSystem::update(float dt) {\
 }
 
 void RenderSystem::add(std::unique_ptr<Component> component) {
-    m_componentRefs.push_back(component.get());
     if (dynamic_cast<DiffuseRenderComponent *>(component.get()))
         m_diffuseComponents.emplace_back(static_cast<DiffuseRenderComponent *>(component.release()));
     else
@@ -61,13 +67,6 @@ void RenderSystem::remove(Component * component) {
                 m_diffuseComponents.erase(it);
                 break;
             }
-        }
-    }
-    // remove from refs
-    for (auto it(m_componentRefs.begin()); it != m_componentRefs.end(); ++it) {
-        if (*it == component) {
-            m_componentRefs.erase(it);
-            break;
         }
     }
 }

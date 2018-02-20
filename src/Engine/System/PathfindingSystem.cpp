@@ -1,6 +1,6 @@
 #include "PathfindingSystem.hpp"
 
-
+std::vector<std::unique_ptr<PathfindingComponent>> PathfindingSystem::m_pathfindingComponents;
 
 void PathfindingSystem::update(float dt) {
     for (auto & comp : m_pathfindingComponents) {
@@ -9,7 +9,6 @@ void PathfindingSystem::update(float dt) {
 }
 
 void PathfindingSystem::add(std::unique_ptr<Component> component) {
-    m_componentRefs.push_back(component.get());
     if (dynamic_cast<PathfindingComponent *>(component.get()))
         m_pathfindingComponents.emplace_back(static_cast<PathfindingComponent *>(component.release()));
     else
@@ -23,13 +22,6 @@ void PathfindingSystem::remove(Component * component) {
                 m_pathfindingComponents.erase(it);
                 break;
             }
-        }
-    }
-    // remove from refs
-    for (auto it(m_componentRefs.begin()); it != m_componentRefs.end(); ++it) {
-        if (*it == component) {
-            m_componentRefs.erase(it);
-            break;
         }
     }
 }

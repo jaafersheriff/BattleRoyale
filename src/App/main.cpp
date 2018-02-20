@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
-    if (!RenderSystem::get().createShader<DiffuseShader>(
+    if (!RenderSystem::createShader<DiffuseShader>(
             EngineApp::RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex shader file       */
             EngineApp::RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment shader file     */
             lightPos                                      /* Shader-specific uniforms */
@@ -93,17 +93,17 @@ int main(int argc, char **argv) {
         "Diffuse Shader",
         [&]() {
             if (ImGui::Button("Active")) {
-                RenderSystem::get().getShader<DiffuseShader>()->toggleEnabled();
+                RenderSystem::getShader<DiffuseShader>()->toggleEnabled();
             }
             if (ImGui::Button("Wireframe")) {
-                RenderSystem::get().getShader<DiffuseShader>()->toggleWireFrame();
+                RenderSystem::getShader<DiffuseShader>()->toggleWireFrame();
             }
         }
     );
 
     // Create collider
     // alternate method using unique_ptr and new
-    if (!RenderSystem::get().addShader(std::unique_ptr<BounderShader>(new BounderShader(
+    if (!RenderSystem::addShader(std::unique_ptr<BounderShader>(new BounderShader(
             EngineApp::RESOURCE_DIR + "bounder_vert.glsl",
             EngineApp::RESOURCE_DIR + "bounder_frag.glsl"
         )))) {
@@ -117,13 +117,13 @@ int main(int argc, char **argv) {
         "Bounder Shader",
         [&]() {
             if (ImGui::Button("Active")) {
-                RenderSystem::get().getShader<BounderShader>()->toggleEnabled();
+                RenderSystem::getShader<BounderShader>()->toggleEnabled();
             }
         }
     );
 
     /* Set Gravity */
-    SpatialSystem::get().setGravity(glm::vec3(0.0f, -10.0f, 0.0f));
+    SpatialSystem::setGravity(glm::vec3(0.0f, -10.0f, 0.0f));
 
     /* Setup Camera */
     float freeCamFOV(45.0f);
@@ -154,7 +154,7 @@ int main(int argc, char **argv) {
     CameraComponent & playerCamComp(Scene::addComponent<CameraComponent>(player, playerFOV));
     PlayerControllerComponent & playerContComp(Scene::addComponent<PlayerControllerComponent>(player, playerLookSpeed, playerMoveSpeed));
 
-    RenderSystem::get().setCamera(&playerCamComp);
+    RenderSystem::setCamera(&playerCamComp);
 
     // Toggle free camera (ctrl-tab)
     auto camSwitchCallback([&](const Message & msg_) {
@@ -167,7 +167,7 @@ int main(int argc, char **argv) {
                 freeCamContComp.setEnabled(false);
                 // enable player controller
                 playerContComp.setEnabled(true);
-                RenderSystem::get().setCamera(&playerCamComp);
+                RenderSystem::setCamera(&playerCamComp);
             }
             else {
                 // disable player controller
@@ -178,7 +178,7 @@ int main(int argc, char **argv) {
                 freeCamSpatComp.setPosition(playerSpatComp.position());
                 freeCamSpatComp.setUVW(playerSpatComp.u(), playerSpatComp.v(), playerSpatComp.w());
                 freeCamCamComp.lookInDir(playerCamComp.getLookDir());
-                RenderSystem::get().setCamera(&freeCamCamComp);
+                RenderSystem::setCamera(&freeCamCamComp);
             }
             free = !free;
         }
@@ -189,7 +189,7 @@ int main(int argc, char **argv) {
     auto rayPickCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
-            auto pair(CollisionSystem::get().pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir())));
+            auto pair(CollisionSystem::pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir())));
             if (pair.first && pair.first->weight() < UINT_MAX) {
                 pair.first->gameObject()->getSpatial()->scale(glm::vec3(1.1f));
             }
@@ -201,7 +201,7 @@ int main(int argc, char **argv) {
     auto gravSwapCallback([&](const Message & msg_) {
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
         if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_CONTROL) {
-            SpatialSystem::get().setGravity(-SpatialSystem::get().gravity());
+            SpatialSystem::setGravity(-SpatialSystem::gravity());
         }
     });
     Scene::addReceiver<KeyMessage>(nullptr, gravSwapCallback);
@@ -234,10 +234,10 @@ int main(int argc, char **argv) {
         ));
         NewtonianComponent & bunnyNewtComp(Scene::addComponent<NewtonianComponent>(bunny, playerMaxSpeed));
         GravityComponent & bunnyGravComp(Scene::addComponent<GravityComponent>(bunny));
-        BounderComponent & bunnyBoundComp(CollisionSystem::get().addBounderFromMesh(bunny, 1, *bunnyMesh, false, true, false));
+        BounderComponent & bunnyBoundComp(CollisionSystem::addBounderFromMesh(bunny, 1, *bunnyMesh, false, true, false));
         DiffuseRenderComponent & bunnyDiffuse = Scene::addComponent<DiffuseRenderComponent>(
             bunny,
-            RenderSystem::get().getShader<DiffuseShader>()->pid,
+            RenderSystem::getShader<DiffuseShader>()->pid,
             *bunnyMesh,
             ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
         /* Bunny ImGui panes */

@@ -9,8 +9,8 @@
 
 
 
-// Singleton
-class PostCollisionSystem : public System {
+// static class
+class PostCollisionSystem {
 
     friend Scene;
 
@@ -20,29 +20,18 @@ class PostCollisionSystem : public System {
 
     public:
 
-    static PostCollisionSystem & get() {
-        static PostCollisionSystem s_postCollisionSystem;
-        return s_postCollisionSystem;
-    }
+    static void init() {};
+
+    static void update(float dt);
 
     private:
 
-    PostCollisionSystem() = default;
+    static void add(std::unique_ptr<Component> component);
 
-    public:
-
-    virtual void init() override {};
-
-    virtual void update(float dt) override;
+    static void remove(Component * component);
 
     private:
 
-    virtual void add(std::unique_ptr<Component> component) override;
-
-    virtual void remove(Component * component) override;
-
-    private:
-
-    std::vector<std::unique_ptr<GroundComponent>> m_groundComponents;
+    static std::vector<std::unique_ptr<GroundComponent>> m_groundComponents;
 
 };

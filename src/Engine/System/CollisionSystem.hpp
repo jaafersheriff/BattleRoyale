@@ -15,8 +15,8 @@ class BounderShader;
 
 
 
-// Singleton
-class CollisionSystem : public System {
+// static class
+class CollisionSystem {
 
     friend Scene;
     friend BounderShader;
@@ -25,45 +25,28 @@ class CollisionSystem : public System {
 
     static constexpr SystemID ID = SystemID::collision;
 
-    public:
+    static void init();
 
-    static CollisionSystem & get() {
-        static CollisionSystem s_collisionSystem;
-        return s_collisionSystem;
-    }
+    static void update(float dt);
 
-    private:
-
-    CollisionSystem() = default;
-
-    public:
-
-    ~CollisionSystem() = default;
-
-    virtual void init() override;
-
-    virtual void update(float dt) override;
-
-    std::pair<BounderComponent *, Intersect> pick(const Ray & ray) const;
+    static std::pair<BounderComponent *, Intersect> pick(const Ray & ray);
 
     // chooses the bounder with the smallest volume from the vertex data of the given mesh
     // optionally enable/disable certain types of bounders. If all are false you are
     // dumb and it acts as if all were true
-    BounderComponent & addBounderFromMesh(GameObject & gameObject, unsigned int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule) const;
+    static BounderComponent & addBounderFromMesh(GameObject & gameObject, unsigned int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule);
 
     private:
     
-    virtual void add(std::unique_ptr<Component> component) override;
+    static void add(std::unique_ptr<Component> component);
 
-    virtual void remove(Component * component) override;
-
-    void updateBounders(float dt);
+    static void remove(Component * component);
 
     private:
 
-    std::vector<std::unique_ptr<BounderComponent>> m_bounderComponents;
-    std::unordered_set<BounderComponent *> m_potentials;
-    std::unordered_set<BounderComponent *> m_collided;
-    std::unordered_set<BounderComponent *> m_adjusted;
+    static std::vector<std::unique_ptr<BounderComponent>> m_bounderComponents;
+    static std::unordered_set<BounderComponent *> m_potentials;
+    static std::unordered_set<BounderComponent *> m_collided;
+    static std::unordered_set<BounderComponent *> m_adjusted;
 
 };

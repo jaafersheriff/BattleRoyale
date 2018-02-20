@@ -12,8 +12,8 @@
 
 
 
-// Singleton
-class GameLogicSystem : public System {
+// static class
+class GameLogicSystem {
 
     friend Scene;
 
@@ -23,33 +23,22 @@ class GameLogicSystem : public System {
 
     public:
 
-    static GameLogicSystem & get() {
-        static GameLogicSystem s_gameLogicSystem;
-        return s_gameLogicSystem;
-    }
+    static void init() {};
 
-    private:
-
-    GameLogicSystem() = default;
-
-    public:
-
-    virtual void init() override {};
-
-    virtual void update(float dt) override;
+    static void update(float dt);
 
     private:
     
-    virtual void add(std::unique_ptr<Component> component) override;
+    static void add(std::unique_ptr<Component> component);
 
-    virtual void remove(Component * component) override;
+    static void remove(Component * component);
 
     private:
 
-    std::vector<std::unique_ptr<CameraComponent>> m_cameraComponents;
-    std::vector<std::unique_ptr<CameraControllerComponent>> m_CameraControllerComponents;
-    std::vector<std::unique_ptr<PlayerControllerComponent>> m_playerControllers;
-    std::vector<std::unique_ptr<ImGuiComponent>> m_imguiComponents;
+    static std::vector<std::unique_ptr<CameraComponent>> m_cameraComponents;
+    static std::vector<std::unique_ptr<CameraControllerComponent>> m_CameraControllerComponents;
+    static std::vector<std::unique_ptr<PlayerControllerComponent>> m_playerControllers;
+    static std::vector<std::unique_ptr<ImGuiComponent>> m_imguiComponents;
 
 };
 

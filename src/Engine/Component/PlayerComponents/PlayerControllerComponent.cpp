@@ -74,7 +74,7 @@ void PlayerControllerComponent::update(float dt) {
 
     // jump
     if(Keyboard::isKeyPressed(GLFW_KEY_SPACE)) {
-        if (m_ground->onGround()) gameObject()->getComponentByType<NewtonianComponent>()->addVelocity(-3.0f * glm::normalize(SpatialSystem::get().gravity()));
+        if (m_ground->onGround()) gameObject()->getComponentByType<NewtonianComponent>()->addVelocity(-3.0f * glm::normalize(SpatialSystem::gravity()));
     }
 }
 

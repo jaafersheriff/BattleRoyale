@@ -14,7 +14,7 @@ void GroundComponent::init(GameObject & go) {
     
     auto collisionCallback([&](const Message & msg_) {
         const CollisionNormMessage & msg(static_cast<const CollisionNormMessage &>(msg_));
-        float dot(glm::dot(msg.norm, -SpatialSystem::get().gravityDir()));
+        float dot(glm::dot(msg.norm, -SpatialSystem::gravityDir()));
         if (dot >= m_cosCriticalAngle) {
             m_potentialGroundNorm += msg.norm;
         }

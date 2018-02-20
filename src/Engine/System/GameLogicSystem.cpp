@@ -2,6 +2,11 @@
 
 
 
+std::vector<std::unique_ptr<CameraComponent>> GameLogicSystem::m_cameraComponents;
+std::vector<std::unique_ptr<CameraControllerComponent>> GameLogicSystem::m_CameraControllerComponents;
+std::vector<std::unique_ptr<PlayerControllerComponent>> GameLogicSystem::m_playerControllers;
+std::vector<std::unique_ptr<ImGuiComponent>> GameLogicSystem::m_imguiComponents;
+
 void GameLogicSystem::update(float dt) {
     for (auto & comp : m_imguiComponents) {
         comp->update(dt);
@@ -18,7 +23,6 @@ void GameLogicSystem::update(float dt) {
 }
 
 void GameLogicSystem::add(std::unique_ptr<Component> component) {
-    m_componentRefs.push_back(component.get());
     if (dynamic_cast<CameraComponent *>(component.get()))
         m_cameraComponents.emplace_back(static_cast<CameraComponent *>(component.release()));
     else if (dynamic_cast<CameraControllerComponent *>(component.get()))
@@ -54,13 +58,6 @@ void GameLogicSystem::remove(Component * component) {
                 m_imguiComponents.erase(it);
                 break;
             }
-        }
-    }
-    // remove from refs
-    for (auto it(m_componentRefs.begin()); it != m_componentRefs.end(); ++it) {
-        if (*it == component) {
-            m_componentRefs.erase(it);
-            break;
         }
     }
 }

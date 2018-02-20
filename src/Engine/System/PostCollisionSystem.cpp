@@ -1,5 +1,6 @@
 #include "PostCollisionSystem.hpp"
 
+std::vector<std::unique_ptr<GroundComponent>> PostCollisionSystem::m_groundComponents;
 
 void PostCollisionSystem::update(float dt) {
     for (auto & comp : m_groundComponents) {
@@ -8,7 +9,6 @@ void PostCollisionSystem::update(float dt) {
 }
 
 void PostCollisionSystem::add(std::unique_ptr<Component> component) {
-    m_componentRefs.push_back(component.get());
     if (dynamic_cast<GroundComponent *>(component.get()))
         m_groundComponents.emplace_back(static_cast<GroundComponent *>(component.release()));
     else
@@ -22,13 +22,6 @@ void PostCollisionSystem::remove(Component * component) {
                 m_groundComponents.erase(it);
                 break;
             }
-        }
-    }
-    // remove from refs
-    for (auto it(m_componentRefs.begin()); it != m_componentRefs.end(); ++it) {
-        if (*it == component) {
-            m_componentRefs.erase(it);
-            break;
         }
     }
 }

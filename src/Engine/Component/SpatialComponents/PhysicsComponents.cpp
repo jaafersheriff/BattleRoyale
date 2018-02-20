@@ -34,7 +34,7 @@ void NewtonianComponent::init(GameObject & go) {
             return;
         }
         x = std::sqrt(x);
-        float factor(y / x * SpatialSystem::get().coefficientOfFriction());
+        float factor(y / x * SpatialSystem::coefficientOfFriction());
         if (factor >= 1.0f) { // frictional force prevents movement
             m_velocity = glm::vec3();
             return;
@@ -94,9 +94,9 @@ void AcceleratorComponent::update(float dt) {
 
 
 GravityComponent::GravityComponent() :
-    AcceleratorComponent(SpatialSystem::get().gravity())
+    AcceleratorComponent(SpatialSystem::gravity())
 {}
 
 void GravityComponent::update(float dt) {
-    m_newtonian->accelerate(SpatialSystem::get().gravity());
+    m_newtonian->accelerate(SpatialSystem::gravity());
 }

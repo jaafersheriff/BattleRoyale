@@ -19,8 +19,8 @@
 
 
 
-// Singleton
-class RenderSystem : public System {
+// static class
+class RenderSystem {
 
     friend Scene;
 
@@ -32,56 +32,41 @@ class RenderSystem : public System {
 
     public:
 
-    static RenderSystem & get() {
-        static RenderSystem s_renderSystem;
-        return s_renderSystem;
-    }
-
-    private:
-
-    RenderSystem() = default;
-
-    public:
-
-    virtual void init() override;
+    static void init();
 
     /* Iterate through shaders map
         * Bind individual shaders 
         * Call shaders' render function with the appropriate render component list */
-    virtual void update(float dt) override;
+    static void update(float dt);
 
     // creates a new shader and initializes it
-    template<typename ShaderT, typename... Args> bool createShader(Args &&... args);
+    template<typename ShaderT, typename... Args> static bool createShader(Args &&... args);
 
     // takes possession of shader and initializes it
-    template <typename ShaderT> bool addShader(std::unique_ptr<ShaderT> shader);
+    template <typename ShaderT> static bool addShader(std::unique_ptr<ShaderT> shader);
 
     // get shader of the specified type
-    template <typename ShaderT> ShaderT * getShader();
-    template <typename ShaderT> const Shader * getShader() const {
-        return const_cast<RenderSystem *>(this)->getShader<ShaderT>();
-    }
+    template <typename ShaderT> static ShaderT * getShader();
 
-    void setNearFar(float near, float far);
+    static void setNearFar(float near, float far);
 
-    float near() const { return m_near; }
-    float far() const { return m_far; }
+    static float near() { return m_near; }
+    static float far() { return m_far; }
 
-    void setCamera(const CameraComponent * camera);
+    static void setCamera(const CameraComponent * camera);
 
     private:
     
-    virtual void add(std::unique_ptr<Component> component) override;
+    static void add(std::unique_ptr<Component> component);
 
-    virtual void remove(Component * component) override;
+    static void remove(Component * component);
     
     private:
 
-    std::vector<std::unique_ptr<DiffuseRenderComponent>> m_diffuseComponents;
-    std::unordered_map<std::type_index, std::unique_ptr<Shader>> m_shaders;
-
-    float m_near = k_defNear, m_far = k_defFar;
-    const CameraComponent * m_camera = nullptr;
+    static std::vector<std::unique_ptr<DiffuseRenderComponent>> m_diffuseComponents;
+    static std::unordered_map<std::type_index, std::unique_ptr<Shader>> m_shaders;
+    static float m_near, m_far;
+    static const CameraComponent * m_camera;
 
 };
 

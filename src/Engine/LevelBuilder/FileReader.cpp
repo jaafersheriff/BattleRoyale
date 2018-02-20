@@ -77,11 +77,11 @@ void FileReader::initGameObject(std::string filePath, std::string texturePath, g
     
     DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(
         gameObject,
-        RenderSystem::get().getShader<DiffuseShader>()->pid,
+        RenderSystem::getShader<DiffuseShader>()->pid,
         *Loader::getMesh(filePath),
         ModelTexture(Loader::getTexture(texturePath), 0.4f, glm::vec3(0.f), glm::vec3(0.f))
     ));
 
-    BounderComponent & boundComp(CollisionSystem::get().addBounderFromMesh(gameObject, UINT_MAX, *Loader::getMesh(filePath), true, true, true));
+    BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(gameObject, UINT_MAX, *Loader::getMesh(filePath), true, true, true));
         
 }

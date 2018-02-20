@@ -2,6 +2,13 @@
 
 
 
+std::vector<std::unique_ptr<SpatialComponent>> SpatialSystem::m_spatialComponents;
+std::vector<std::unique_ptr<NewtonianComponent>> SpatialSystem::m_newtonianComponents;
+std::vector<std::unique_ptr<AcceleratorComponent>> SpatialSystem::m_acceleratorComponents;
+glm::vec3 SpatialSystem::m_gravityDir = glm::vec3(0.0f, -1.0f, 0.0f);
+float SpatialSystem::m_gravityMag = 10.0f;
+float SpatialSystem::m_coefficientOfFriction = 0.1f;
+
 void SpatialSystem::update(float dt) {
     for (auto & comp : m_acceleratorComponents) {
         comp->update(dt);
@@ -28,7 +35,6 @@ void SpatialSystem::setGravityMag(float mag) {
 }
 
 void SpatialSystem::add(std::unique_ptr<Component> component) {
-    m_componentRefs.push_back(component.get());
     if (dynamic_cast<SpatialComponent *>(component.get()))
         m_spatialComponents.emplace_back(static_cast<SpatialComponent *>(component.release()));
     else if (dynamic_cast<NewtonianComponent *>(component.get()))
@@ -62,13 +68,6 @@ void SpatialSystem::remove(Component * component) {
                 m_acceleratorComponents.erase(it);
                 break;
             }
-        }
-    }
-    // remove from refs
-    for (auto it(m_componentRefs.begin()); it != m_componentRefs.end(); ++it) {
-        if (*it == component) {
-            m_componentRefs.erase(it);
-            break;
         }
     }
 }

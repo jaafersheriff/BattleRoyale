@@ -10,8 +10,8 @@
 
 
 
-// Singleton
-class SpatialSystem : public System {
+// static class
+class SpatialSystem {
 
     friend Scene;
 
@@ -21,43 +21,32 @@ class SpatialSystem : public System {
 
     public:
 
-    static SpatialSystem & get() {
-        static SpatialSystem s_spatialSystem;
-        return s_spatialSystem;
-    }
+    static void init() {};
+
+    static void update(float dt);
+
+    static void setGravity(const glm::vec3 & gravity);
+    static void setGravityDir(const glm::vec3 & dir);
+    static void setGravityMag(float mag);
+
+    static glm::vec3 gravity() { return m_gravityDir * m_gravityMag; }
+    static const glm::vec3 & gravityDir() { return m_gravityDir; }
+    static float gravityMag() { return m_gravityMag; }
+    static float coefficientOfFriction() { return m_coefficientOfFriction; }
 
     private:
 
-    SpatialSystem() = default;
+    static void add(std::unique_ptr<Component> component);
 
-    public:
-
-    virtual void init() override {};
-
-    virtual void update(float dt) override;
-
-    void setGravity(const glm::vec3 & gravity);
-    void setGravityDir(const glm::vec3 & dir);
-    void setGravityMag(float mag);
-
-    glm::vec3 gravity() const { return m_gravityDir * m_gravityMag; }
-    const glm::vec3 & gravityDir() const { return m_gravityDir; }
-    float gravityMag() const { return m_gravityMag; }
-    float coefficientOfFriction() const { return m_coefficientOfFriction; }
+    static void remove(Component * component);
 
     private:
 
-    virtual void add(std::unique_ptr<Component> component) override;
-
-    virtual void remove(Component * component) override;
-
-    private:
-
-    std::vector<std::unique_ptr<SpatialComponent>> m_spatialComponents;
-    std::vector<std::unique_ptr<NewtonianComponent>> m_newtonianComponents;
-    std::vector<std::unique_ptr<AcceleratorComponent>> m_acceleratorComponents;
-    glm::vec3 m_gravityDir = glm::vec3(0.0f, -1.0f, 0.0f);
-    float m_gravityMag = 10.0f;
-    float m_coefficientOfFriction = 0.1f;
+    static std::vector<std::unique_ptr<SpatialComponent>> m_spatialComponents;
+    static std::vector<std::unique_ptr<NewtonianComponent>> m_newtonianComponents;
+    static std::vector<std::unique_ptr<AcceleratorComponent>> m_acceleratorComponents;
+    static glm::vec3 m_gravityDir;
+    static float m_gravityMag;
+    static float m_coefficientOfFriction;
 
 };

@@ -10,12 +10,6 @@
 
 
 
-class Scene;
-class Component;
-class GameObject;
-
-
-
 enum class SystemID {
     gameLogic,
     pathfinding,
@@ -27,39 +21,27 @@ enum class SystemID {
 
 
 
-// Singleton
+// Systems are static classes, and static classes can't be polymorphic, but every
+// system should resemble the following...
+/*
 class System {
 
     friend Scene;
 
-    protected:
-
-    System() = default;
-
-    System(const System & other) = delete;
-    System & operator=(const System & other) = delete;
-
     public:
 
-    virtual ~System() = default;
+    static void init();
 
-    virtual void init() = 0;
-
-    virtual void update(float dt) = 0;
-
-    const std::vector<Component *> components() const { return m_componentRefs; }
+    static void update(float dt) = 0;
 
     private:
 
-    virtual void add(std::unique_ptr<Component> component) = 0;
+    static void add(std::unique_ptr<Component> component);
 
-    virtual void remove(Component * component) = 0;
-
-    protected:
-
-    std::vector<Component *> m_componentRefs;
+    static void remove(Component * component);
 
 };
+*/
 
 
 
