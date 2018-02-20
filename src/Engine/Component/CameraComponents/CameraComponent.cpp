@@ -24,13 +24,10 @@ CameraComponent::CameraComponent(float fov, float near, float far) :
 {}
 
 void CameraComponent::init() {    
-    float fovRadians;
-    fovRadians = glm::radians(m_fov);
-
-    farPlaneHeight = 2 * glm::tan(fovRadians / 2) * m_far;
+    farPlaneHeight = 2 * glm::tan(m_fov) * m_far;
     farPlaneWidth = farPlaneHeight * Window::getAspectRatio();
 
-    nearPlaneHeight = 2 * glm::tan(fovRadians / 2) * m_near;
+    nearPlaneHeight = 2 * glm::tan(m_fov) * m_near;
     nearPlaneWidth = nearPlaneHeight * Window::getAspectRatio();
 
     update(0.0f);

@@ -74,9 +74,9 @@ int main(int argc, char **argv) {
 
     /* Create camera and camera controller components */
     GameObject & camera(scene.createGameObject());
-    CameraComponent & cc(scene.createComponent<CameraComponent>(45.f, 0.01f, 250.f));
+    CameraComponent & cc(scene.createComponent<CameraComponent>(45.f, 0.01f, 400.f));
     camera.addComponent(cc);
-    camera.addComponent(scene.createComponent<CameraController>(cc, 0.2f, 15.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT));
+    camera.addComponent(scene.createComponent<CameraController>(cc, 0.2f, 60.f, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT));
     camera.addComponent(scene.createComponent<SpatialComponent>());
     camera.getSpatial()->setPosition(glm::vec3(-4.0f, 6.0f, 0.0f));
 
@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
                 ImGui::SliderFloat("Rotation Angle", &angle, -glm::pi<float>(), glm::pi<float>()))
             {
                 if (angle != 0.0f && axis != glm::vec3()) {
-                    bunny.getSpatial()->setRotation(glm::rotate(angle, glm::normalize(axis)));
+                    bunny.getSpatial()->setRotation(glm::mat3(glm::rotate(angle, glm::normalize(axis))));
                 }
                 else {
                     bunny.getSpatial()->setRotation(glm::mat3());
