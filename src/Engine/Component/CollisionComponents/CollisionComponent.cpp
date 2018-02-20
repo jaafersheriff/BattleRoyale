@@ -7,8 +7,6 @@
 
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
-
-
 BounderComponent::BounderComponent(int weight) :
     m_weight(weight),
     m_collisionFlag(false),
@@ -48,7 +46,7 @@ void AABBounderComponent::update(float dt) {
         };
         const glm::mat4 & modelMat(spat.modelMatrix());
         for (int i(0); i < 8; ++i) {
-            corners[i] = modelMat * glm::vec4(corners[i], 1.0f);
+            corners[i] = glm::vec3(modelMat * glm::vec4(corners[i], 1.0f));
         }
         m_transBox.min = corners[0];
         m_transBox.max = corners[0];
@@ -94,7 +92,7 @@ void SphereBounderComponent::update(float dt) {
 
     SpatialComponent & spat(*gameObject->getSpatial());
 
-    m_transSphere.origin = spat.modelMatrix() * glm::vec4(m_sphere.origin, 1.0f);
+    m_transSphere.origin = glm::vec3(spat.modelMatrix() * glm::vec4(m_sphere.origin, 1.0f));
     m_transSphere.radius = glm::compMax(spat.scale()) * m_sphere.radius;
 }
 
@@ -134,7 +132,7 @@ void CapsuleBounderComponent::update(float dt) {
 
     SpatialComponent & spat(*gameObject->getSpatial());
 
-    m_transCapsule.center = spat.modelMatrix() * glm::vec4(m_capsule.center, 1.0f);
+    m_transCapsule.center = glm::vec3(spat.modelMatrix() * glm::vec4(m_capsule.center, 1.0f));
     const glm::vec3 & scale(spat.scale());
     m_transCapsule.radius = glm::max(scale.x, scale.z) * m_capsule.radius;
     m_transCapsule.height = glm::max(0.0f, scale.y * (m_capsule.height + 2.0f * m_capsule.radius) - 2.0f * m_transCapsule.radius);
@@ -212,7 +210,7 @@ std::tuple<float, float, float> detCapsuleSpecs(int n, const glm::vec3 * positio
         maxQy = minQy = (maxQy + minQy) * 0.5f;
     }
 
-    return { r, maxQy, minQy };
+    return std::make_tuple(r, maxQy, minQy);
 }
 
 }
