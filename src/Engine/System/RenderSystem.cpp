@@ -75,7 +75,7 @@ void RenderSystem::remove(Component * component) {
 void RenderSystem::setNearFar(float near, float far) {
     m_near = near;
     m_far = far;
-    Scene::get().sendMessage<NearFarMessage>(nullptr, near, far);
+    Scene::sendMessage<NearFarMessage>(nullptr, near, far);
 }
 
 void RenderSystem::setCamera(const CameraComponent * camera) {

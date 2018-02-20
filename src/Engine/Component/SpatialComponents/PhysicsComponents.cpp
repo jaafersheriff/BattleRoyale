@@ -41,7 +41,7 @@ void NewtonianComponent::init(GameObject & go) {
         }
         m_velocity = v * (1.0f - factor);
     });
-    Scene::get().addReceiver<CollisionNormMessage>(gameObject(), collisionCallback);
+    Scene::addReceiver<CollisionNormMessage>(gameObject(), collisionCallback);
 }
 
 void NewtonianComponent::update(float dt) {

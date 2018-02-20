@@ -28,7 +28,7 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
     }
     else {
         Keyboard::setKeyStatus(key, action);
-        Scene::get().sendMessage<KeyMessage>(nullptr, key, action, mods);
+        Scene::sendMessage<KeyMessage>(nullptr, key, action, mods);
     }
 }
 
@@ -39,7 +39,7 @@ void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int
     }
     else {
         Mouse::setButtonStatus(button, action);
-        Scene::get().sendMessage<MouseMessage>(nullptr, button, action, mods);
+        Scene::sendMessage<MouseMessage>(nullptr, button, action, mods);
     }
 }
 
@@ -52,7 +52,7 @@ void Window::characterCallback(GLFWwindow *window, unsigned int c) {
 void Window::framebufferSizeCallback(GLFWwindow * window, int width, int height) {
     /* Set viewport to window size */
     glViewport(0, 0, width, height);
-    Scene::get().sendMessage<WindowSizeMessage>(nullptr, width, height);
+    Scene::sendMessage<WindowSizeMessage>(nullptr, width, height);
 }
 
 void Window::cursorEnterCallback(GLFWwindow * window, int entered) {

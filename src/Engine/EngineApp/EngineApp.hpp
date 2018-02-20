@@ -8,6 +8,7 @@
 
 #include <string>
 
+// static class
 class EngineApp {
 
     public:

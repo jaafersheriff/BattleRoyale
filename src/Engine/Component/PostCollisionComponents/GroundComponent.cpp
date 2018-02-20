@@ -19,7 +19,7 @@ void GroundComponent::init(GameObject & go) {
             m_potentialGroundNorm += msg.norm;
         }
     });
-    Scene::get().addReceiver<CollisionNormMessage>(gameObject(), collisionCallback);
+    Scene::addReceiver<CollisionNormMessage>(gameObject(), collisionCallback);
 }
 
 void GroundComponent::update(float dt) {

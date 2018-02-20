@@ -67,15 +67,15 @@ int FileReader::loadLevel(const char & filePath) {
 
 void FileReader::initGameObject(std::string filePath, std::string texturePath, glm::vec3 position, glm::vec3 scale, glm::mat3 rotation) {
 
-    GameObject & gameObject(Scene::get().createGameObject());
-    SpatialComponent & spatComp(Scene::get().addComponent<SpatialComponent>(
+    GameObject & gameObject(Scene::createGameObject());
+    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(
         gameObject,
         position, // position
         scale, // scale
         rotation // rotation
     ));
     
-    DiffuseRenderComponent & renderComp(Scene::get().addComponent<DiffuseRenderComponent>(
+    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(
         gameObject,
         RenderSystem::get().getShader<DiffuseShader>()->pid,
         *Loader::getMesh(filePath),

@@ -14,6 +14,17 @@
 
 
 
+std::vector<std::unique_ptr<GameObject>> Scene::m_gameObjectsStore;
+std::vector<GameObject *> Scene::m_gameObjectRefs;
+
+std::vector<std::unique_ptr<GameObject>> Scene::m_gameObjectInitQueue;
+std::vector<GameObject *> Scene::m_gameObjectKillQueue;
+std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Component>>> Scene::m_componentInitQueue;
+std::vector<Component *> Scene::m_componentKillQueue;
+
+std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>> Scene::m_messages;
+std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> Scene::m_receivers;
+
 void Scene::init() {
     GameLogicSystem::get().init();
     PathfindingSystem::get().init();

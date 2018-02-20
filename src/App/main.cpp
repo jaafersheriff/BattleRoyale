@@ -73,10 +73,7 @@ int main(int argc, char **argv) {
 
     Window::setCursorEnabled(false);
 
-    /* Scene reference for QOL */
-    Scene & scene(Scene::get());
-
-    GameObject & imguiGO(scene.createGameObject());
+    GameObject & imguiGO(Scene::createGameObject());
 
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
@@ -91,7 +88,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     /* Diffuse Shader ImGui Pane */
-    scene.addComponent<ImGuiComponent>(
+    Scene::addComponent<ImGuiComponent>(
         imguiGO,
         "Diffuse Shader",
         [&]() {
@@ -115,7 +112,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     /* Collider ImGui pane */
-    scene.addComponent<ImGuiComponent>(
+    Scene::addComponent<ImGuiComponent>(
         imguiGO,
         "Bounder Shader",
         [&]() {
@@ -132,10 +129,10 @@ int main(int argc, char **argv) {
     float freeCamFOV(45.0f);
     float freeCamLookSpeed(0.2f);
     float freeCamMoveSpeed(5.0f);
-    GameObject & freeCam(scene.createGameObject());
-    SpatialComponent & freeCamSpatComp(scene.addComponent<SpatialComponent>(freeCam));
-    CameraComponent & freeCamCamComp(scene.addComponent<CameraComponent>(freeCam, freeCamFOV));
-    CameraControllerComponent & freeCamContComp(scene.addComponent<CameraControllerComponent>(freeCam, freeCamLookSpeed, freeCamMoveSpeed));
+    GameObject & freeCam(Scene::createGameObject());
+    SpatialComponent & freeCamSpatComp(Scene::addComponent<SpatialComponent>(freeCam));
+    CameraComponent & freeCamCamComp(Scene::addComponent<CameraComponent>(freeCam, freeCamFOV));
+    CameraControllerComponent & freeCamContComp(Scene::addComponent<CameraControllerComponent>(freeCam, freeCamLookSpeed, freeCamMoveSpeed));
     freeCamContComp.setEnabled(false);
 
     /* Setup Player */
@@ -146,16 +143,16 @@ int main(int argc, char **argv) {
     float playerLookSpeed(freeCamLookSpeed);
     float playerMoveSpeed(freeCamMoveSpeed);
     float playerMaxSpeed(50.0f);
-    GameObject & player(scene.createGameObject());
-    SpatialComponent & playerSpatComp(scene.addComponent<SpatialComponent>(player));
+    GameObject & player(Scene::createGameObject());
+    SpatialComponent & playerSpatComp(Scene::addComponent<SpatialComponent>(player));
     playerSpatComp.setPosition(playerPos);
-    NewtonianComponent & playerNewtComp(scene.addComponent<NewtonianComponent>(player, playerMaxSpeed));
-    GravityComponent & playerGravComp(scene.addComponent<GravityComponent>(player));
-    GroundComponent & playerGroundComp(scene.addComponent<GroundComponent>(player));
+    NewtonianComponent & playerNewtComp(Scene::addComponent<NewtonianComponent>(player, playerMaxSpeed));
+    GravityComponent & playerGravComp(Scene::addComponent<GravityComponent>(player));
+    GroundComponent & playerGroundComp(Scene::addComponent<GroundComponent>(player));
     Capsule playerCap(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth);
-    CapsuleBounderComponent & playerBoundComp(scene.addComponent<CapsuleBounderComponent>(player, 1, playerCap));
-    CameraComponent & playerCamComp(scene.addComponent<CameraComponent>(player, playerFOV));
-    PlayerControllerComponent & playerContComp(scene.addComponent<PlayerControllerComponent>(player, playerLookSpeed, playerMoveSpeed));
+    CapsuleBounderComponent & playerBoundComp(Scene::addComponent<CapsuleBounderComponent>(player, 1, playerCap));
+    CameraComponent & playerCamComp(Scene::addComponent<CameraComponent>(player, playerFOV));
+    PlayerControllerComponent & playerContComp(Scene::addComponent<PlayerControllerComponent>(player, playerLookSpeed, playerMoveSpeed));
 
     RenderSystem::get().setCamera(&playerCamComp);
 
@@ -186,7 +183,7 @@ int main(int argc, char **argv) {
             free = !free;
         }
     });
-    scene.addReceiver<KeyMessage>(nullptr, camSwitchCallback);
+    Scene::addReceiver<KeyMessage>(nullptr, camSwitchCallback);
 
     // Demo ray picking (click)
     auto rayPickCallback([&](const Message & msg_) {
@@ -198,7 +195,7 @@ int main(int argc, char **argv) {
             }
         }
     });
-    scene.addReceiver<MouseMessage>(nullptr, rayPickCallback);
+    Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);
 
     // Swap gravity (ctrl-g)
     auto gravSwapCallback([&](const Message & msg_) {
@@ -207,10 +204,10 @@ int main(int argc, char **argv) {
             SpatialSystem::get().setGravity(-SpatialSystem::get().gravity());
         }
     });
-    scene.addReceiver<KeyMessage>(nullptr, gravSwapCallback);
+    Scene::addReceiver<KeyMessage>(nullptr, gravSwapCallback);
 
     /* VSync ImGui Pane */
-    scene.addComponent<ImGuiComponent>(
+    Scene::addComponent<ImGuiComponent>(
         imguiGO,
         "VSync",
         [&]() {
@@ -228,23 +225,23 @@ int main(int argc, char **argv) {
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
     for (int i(0); i < 10; ++i) {
-        GameObject & bunny(scene.createGameObject());
-        SpatialComponent & bunnySpatComp(scene.addComponent<SpatialComponent>(
+        GameObject & bunny(Scene::createGameObject());
+        SpatialComponent & bunnySpatComp(Scene::addComponent<SpatialComponent>(
             bunny,
             glm::vec3(-10.0f, 5.0, i), // position
             glm::vec3(0.25f, 0.25f, 0.25f), // scale
             glm::mat3() // rotation
         ));
-        NewtonianComponent & bunnyNewtComp(scene.addComponent<NewtonianComponent>(bunny, playerMaxSpeed));
-        GravityComponent & bunnyGravComp(scene.addComponent<GravityComponent>(bunny));
+        NewtonianComponent & bunnyNewtComp(Scene::addComponent<NewtonianComponent>(bunny, playerMaxSpeed));
+        GravityComponent & bunnyGravComp(Scene::addComponent<GravityComponent>(bunny));
         BounderComponent & bunnyBoundComp(CollisionSystem::get().addBounderFromMesh(bunny, 1, *bunnyMesh, false, true, false));
-        DiffuseRenderComponent & bunnyDiffuse = scene.addComponent<DiffuseRenderComponent>(
+        DiffuseRenderComponent & bunnyDiffuse = Scene::addComponent<DiffuseRenderComponent>(
             bunny,
             RenderSystem::get().getShader<DiffuseShader>()->pid,
             *bunnyMesh,
             ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
         /* Bunny ImGui panes */
-        /*ImGuiComponent & bIc = scene.addComponent<ImGuiComponent>(
+        /*ImGuiComponent & bIc = Scene::addComponent<ImGuiComponent>(
             "Bunny", 
             [&]() {
                 // Material properties
@@ -278,11 +275,11 @@ int main(int argc, char **argv) {
             }
         );*/
         //bunny.addComponent(bIc);
-        PathfindingComponent & bunnyPathComp(scene.addComponent<PathfindingComponent>(bunny, player, 1.0f));
+        PathfindingComponent & bunnyPathComp(Scene::addComponent<PathfindingComponent>(bunny, player, 1.0f));
     }
 
     /* Game stats pane */
-    scene.addComponent<ImGuiComponent>(
+    Scene::addComponent<ImGuiComponent>(
         imguiGO,
         "Stats",
         [&]() {

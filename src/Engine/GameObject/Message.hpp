@@ -17,7 +17,7 @@
 // A message can be sent from anywhere using Scene's sendMessage method, which
 // looks like...
 //
-//     Scene::get().sendMessage<MessageType>([nullptr | gameobject], message args);
+//     Scene::sendMessage<MessageType>([nullptr | gameobject], message args);
 //
 // This message is sent out to all receivers of the specified message type. If
 // gameobject is not null, the message is ALSO sent to any receiver of that
@@ -30,7 +30,7 @@
 // type. A receiver is a std::function<void (const Message &)> . To add a
 // receiver, do...
 //
-//     Scene::get().addReceiver<MessageType>([nullptr | gameobject], receiver);
+//     Scene::addReceiver<MessageType>([nullptr | gameobject], receiver);
 //
 // Here, if gameobject is null, the receiver will receive all messages of the
 // specified type. If gameobject is not null, the receiver will only receive
@@ -46,7 +46,7 @@
 //        const MessageIWantType & msg(static_cast<const MessageIWantType &>(msg_));
 //        ...
 //    };
-//    Scene::get().addReceiver<MessageIWantType>(receiver);
+//    Scene::addReceiver<MessageIWantType>(receiver);
 //
 // There is also the idea of a Tag, which is simply a way for messages of
 // different types but sharing the same data to be accessed. For an example of

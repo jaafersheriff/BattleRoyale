@@ -20,7 +20,7 @@ int EngineApp::init() {
         return 1;
     }
 
-    Scene::get().init();
+    Scene::init();
     Loader::init(verbose, RESOURCE_DIR);
 
     lastFrameTime = runTime = Window::getTime();
@@ -46,7 +46,7 @@ void EngineApp::run() {
         Window::update(float(timeStep));
 
         /* Update all game objects and components */
-        Scene::get().update(float(timeStep));
+        Scene::update(float(timeStep));
     }
 }
 

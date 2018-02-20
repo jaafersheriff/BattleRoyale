@@ -18,68 +18,54 @@
 
 
 
-// Singleton
+// static class
 class Scene {
 
   public:
 
-    static Scene & get() {
-        static Scene s_scene;
-        return s_scene;
-    }
-
-  private:
-
-    Scene() = default;
-    Scene(const Scene & other) = delete;
-    Scene & operator=(const Scene & other) = delete;
-
-  public:
-
-    void init();
+    static void init();
 
     /* Main udate function */
-    void update(float);
+    static void update(float);
 
     /* Game Objects */
-    GameObject & createGameObject();
+    static GameObject & createGameObject();
     
     // Creates a component of the given type and adds it to the game object
-    template <typename CompT, typename... Args> CompT & addComponent(GameObject & gameObject, Args &&... args);
+    template <typename CompT, typename... Args> static CompT & addComponent(GameObject & gameObject, Args &&... args);
 
     // Sends out a message for any receivers of that message type to pick up.
     // If gameObject is not null, first sends the message locally to receivers
     // of only that object.
-    template<typename MsgT, typename... Args> void sendMessage(GameObject * gameObject, Args &&... args);
+    template<typename MsgT, typename... Args> static void sendMessage(GameObject * gameObject, Args &&... args);
 
     // Adds a receiver for a message type. If gameObject is null, the receiver
     // will pick up all messages of that type. If gameObject is not null, the
     // receiver will pick up only messages sent to that object
-    template <typename MsgT> void addReceiver(GameObject * gameObject, const std::function<void (const Message &)> & receiver);
+    template <typename MsgT> static void addReceiver(GameObject * gameObject, const std::function<void (const Message &)> & receiver);
 
-    const std::vector<GameObject *> & getGameObjects() const { return m_gameObjectRefs; }
+    static const std::vector<GameObject *> & getGameObjects() { return m_gameObjectRefs; }
 
   private:
 
     /* Instantiate/Kill queues */
-    void doInitQueue();
-    void doKillQueue();
+    static void doInitQueue();
+    static void doKillQueue();
 
-    void relayMessages();
+    static void relayMessages();
 
   private:
 
-    /* Lists of all game objects */
-    std::vector<std::unique_ptr<GameObject>> m_gameObjectsStore;
-    std::vector<GameObject *> m_gameObjectRefs;
+    static std::vector<std::unique_ptr<GameObject>> m_gameObjectsStore;
+    static std::vector<GameObject *> m_gameObjectRefs;
 
-    std::vector<std::unique_ptr<GameObject>> m_gameObjectInitQueue;
-    std::vector<GameObject *> m_gameObjectKillQueue;
-    std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Component>>> m_componentInitQueue;
-    std::vector<Component *> m_componentKillQueue;
+    static std::vector<std::unique_ptr<GameObject>> m_gameObjectInitQueue;
+    static std::vector<GameObject *> m_gameObjectKillQueue;
+    static std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Component>>> m_componentInitQueue;
+    static std::vector<Component *> m_componentKillQueue;
 
-    std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>> m_messages;
-    std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> m_receivers;
+    static std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>> m_messages;
+    static std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> m_receivers;
 
 };
 

@@ -150,12 +150,12 @@ void CollisionSystem::init() {
             }
         }
     );
-    Scene::get().addReceiver<SpatialPositionSetMessage>(nullptr, spatTransformCallback);
-    Scene::get().addReceiver<SpatialMovedMessage>(nullptr, spatTransformCallback);
-    Scene::get().addReceiver<SpatialScaleSetMessage>(nullptr, spatTransformCallback);
-    Scene::get().addReceiver<SpatialScaledMessage>(nullptr, spatTransformCallback);
-    Scene::get().addReceiver<SpatialOrientationSetMessage>(nullptr, spatTransformCallback);
-    Scene::get().addReceiver<SpatialRotatedMessage>(nullptr, spatTransformCallback);
+    Scene::addReceiver<SpatialPositionSetMessage>(nullptr, spatTransformCallback);
+    Scene::addReceiver<SpatialMovedMessage>(nullptr, spatTransformCallback);
+    Scene::addReceiver<SpatialScaleSetMessage>(nullptr, spatTransformCallback);
+    Scene::addReceiver<SpatialScaledMessage>(nullptr, spatTransformCallback);
+    Scene::addReceiver<SpatialOrientationSetMessage>(nullptr, spatTransformCallback);
+    Scene::addReceiver<SpatialRotatedMessage>(nullptr, spatTransformCallback);
 }
 
 void CollisionSystem::update(float dt) {
@@ -263,13 +263,13 @@ BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, 
     }
 
     if (allowSphere && sphereV <= boxV && sphereV <= capsuleV) {
-        return Scene::get().addComponent<SphereBounderComponent>(gameObject, weight, sphere);
+        return Scene::addComponent<SphereBounderComponent>(gameObject, weight, sphere);
     }
     else if (allowAAB && boxV <= sphereV && boxV <= capsuleV) {
-        return Scene::get().addComponent<AABBounderComponent>(gameObject, weight, box);
+        return Scene::addComponent<AABBounderComponent>(gameObject, weight, box);
     }
     else {
-        return Scene::get().addComponent<CapsuleBounderComponent>(gameObject, weight, capsule);
+        return Scene::addComponent<CapsuleBounderComponent>(gameObject, weight, capsule);
     }
 }
 
@@ -319,8 +319,8 @@ void CollisionSystem::updateBounders(float dt) {
                 continue;
             }
             if (collide(*bounder, *other, &s_collisions)) {
-                Scene::get().sendMessage<CollisionMessage>(bounder->gameObject(), *bounder, *other);
-                Scene::get().sendMessage<CollisionMessage>(other->gameObject(), *other, *bounder);
+                Scene::sendMessage<CollisionMessage>(bounder->gameObject(), *bounder, *other);
+                Scene::sendMessage<CollisionMessage>(other->gameObject(), *other, *bounder);
             }
         }
     }
@@ -336,7 +336,7 @@ void CollisionSystem::updateBounders(float dt) {
         // there was an adjustment
         if (weightDeltas.size()) {
             for (auto & weightDelta : weightDeltas) { // send norm messages
-                Scene::get().sendMessage<CollisionNormMessage>(bounder.gameObject(), bounder, glm::normalize(weightDelta.second));
+                Scene::sendMessage<CollisionNormMessage>(bounder.gameObject(), bounder, glm::normalize(weightDelta.second));
             }
             glm::vec3 & gameObjectDelta(s_gameObjectDeltas[bounder.gameObject()]);
             gameObjectDelta = compositeDeltas(gameObjectDelta, detNetDelta(weightDeltas));
@@ -356,7 +356,7 @@ void CollisionSystem::updateBounders(float dt) {
             m_potentials.insert(bounder);
             bounder->update(dt);
             m_adjusted.insert(bounder);
-            Scene::get().sendMessage<CollisionAdjustMessage>(gameObject, *gameObject, delta);
+            Scene::sendMessage<CollisionAdjustMessage>(gameObject, *gameObject, delta);
         }
     }
 
