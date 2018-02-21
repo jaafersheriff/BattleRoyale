@@ -4,7 +4,7 @@
 
 // Set whether you have fmod library or not. Must be done manually!
 #ifndef HAVE_FMOD_LIBRARY
-#define HAVE_FMOD_LIBRARY false
+#define HAVE_FMOD_LIBRARY true
 #endif
 
 #include "System.hpp"
