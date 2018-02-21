@@ -72,7 +72,6 @@ int main(int argc, char **argv) {
 
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
-    // TODO : user shouldn't need to specify resource dir here
     if (!RenderSystem::createShader<DiffuseShader>(
             "diffuse_vert.glsl",    /* Vertex shader file       */
             "diffuse_frag.glsl",    /* Fragment shader file     */
