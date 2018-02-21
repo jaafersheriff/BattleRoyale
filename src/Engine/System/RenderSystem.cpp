@@ -11,7 +11,6 @@
 
 const std::vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 std::unordered_map<std::type_index, std::unique_ptr<Shader>> RenderSystem::s_shaders;
-float RenderSystem::s_near = k_defNear, RenderSystem::s_far = k_defFar;
 const CameraComponent * RenderSystem::s_camera = nullptr;
 
 void RenderSystem::init() {
@@ -43,7 +42,7 @@ void RenderSystem::update(float dt) {
 
             // this reinterpret_cast business works because unique_ptr's data is
             // guaranteed is the same as a pointer
-            shader.second->render(*s_camera, reinterpret_cast<const std::vector<Component *> &>(s_diffuseComponents));
+            shader.second->render(s_camera, reinterpret_cast<const std::vector<Component *> &>(s_diffuseComponents));
             shader.second->unbind();
         }
     }
@@ -54,12 +53,6 @@ void RenderSystem::update(float dt) {
         ImGui::Render();
     }
 #endif
-}
-
-void RenderSystem::setNearFar(float near, float far) {
-    s_near = near;
-    s_far = far;
-    Scene::sendMessage<NearFarMessage>(nullptr, near, far);
 }
 
 void RenderSystem::setCamera(const CameraComponent * camera) {

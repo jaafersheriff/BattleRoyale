@@ -12,11 +12,6 @@ extern "C" {
 #include "glm/gtx/transform.hpp"
 
 #include "EngineApp/EngineApp.hpp"
-#include "System/GameLogicSystem.hpp"
-#include "System/SpatialSystem.hpp"
-#include "System/PathfindingSystem.hpp"
-#include "System/CollisionSystem.hpp"
-#include "System/RenderSystem.hpp"
 #include "LevelBuilder/FileReader.hpp"
 
 void printUsage() {
@@ -79,9 +74,9 @@ int main(int argc, char **argv) {
     glm::vec3 lightPos(100.f, 100.f, 100.f);
     // TODO : user shouldn't need to specify resource dir here
     if (!RenderSystem::createShader<DiffuseShader>(
-            EngineApp::RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex shader file       */
-            EngineApp::RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment shader file     */
-            lightPos                                      /* Shader-specific uniforms */
+            "diffuse_vert.glsl",    /* Vertex shader file       */
+            "diffuse_frag.glsl",    /* Fragment shader file     */
+            lightPos                /* Shader-specific uniforms */
         )) {
         std::cerr << "Failed to add diffuse shader" << std::endl;
         std::cin.get(); // don't immediately close the console
@@ -125,23 +120,15 @@ int main(int argc, char **argv) {
     /* Set Gravity */
     SpatialSystem::setGravity(glm::vec3(0.0f, -10.0f, 0.0f));
 
-    /* Setup Camera */
-    float freeCamFOV(45.0f);
-    float freeCamLookSpeed(0.2f);
-    float freeCamMoveSpeed(5.0f);
-    GameObject & freeCam(Scene::createGameObject());
-    SpatialComponent & freeCamSpatComp(Scene::addComponent<SpatialComponent>(freeCam));
-    CameraComponent & freeCamCamComp(Scene::addComponent<CameraComponent>(freeCam, freeCamFOV));
-    CameraControllerComponent & freeCamContComp(Scene::addComponent<CameraControllerComponent>(freeCam, freeCamLookSpeed, freeCamMoveSpeed));
-    freeCamContComp.setEnabled(false);
-
     /* Setup Player */
+    float playerFOV(45.0f);
+    float playerNear(0.1f);
+    float playerFar(300.0f);
     float playerHeight(1.75f);
     float playerWidth(playerHeight / 4.0f);
     glm::vec3 playerPos(0.0f, 6.0f, 0.0f);
-    float playerFOV(freeCamFOV);
-    float playerLookSpeed(freeCamLookSpeed);
-    float playerMoveSpeed(freeCamMoveSpeed);
+    float playerLookSpeed(0.2f);
+    float playerMoveSpeed(5.0f);
     float playerJumpSpeed(5.0f);
     float playerMaxSpeed(50.0f); // terminal velocity
     GameObject & player(Scene::createGameObject());
@@ -152,8 +139,20 @@ int main(int argc, char **argv) {
     GroundComponent & playerGroundComp(Scene::addComponent<GroundComponent>(player));
     Capsule playerCap(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth);
     CapsuleBounderComponent & playerBoundComp(Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(player, 1, playerCap));
-    CameraComponent & playerCamComp(Scene::addComponent<CameraComponent>(player, playerFOV));
+    CameraComponent & playerCamComp(Scene::addComponent<CameraComponent>(player, playerFOV, playerNear, playerFar));
     PlayerControllerComponent & playerContComp(Scene::addComponent<PlayerControllerComponent>(player, playerLookSpeed, playerMoveSpeed, playerJumpSpeed));
+
+    /* Setup Camera */
+    float freeCamFOV(playerFOV);
+    float freeCamNear(playerNear);
+    float freeCamFar(playerFar);
+    float freeCamLookSpeed(playerLookSpeed);
+    float freeCamMoveSpeed(playerMoveSpeed);
+    GameObject & freeCam(Scene::createGameObject());
+    SpatialComponent & freeCamSpatComp(Scene::addComponent<SpatialComponent>(freeCam));
+    CameraComponent & freeCamCamComp(Scene::addComponent<CameraComponent>(freeCam, freeCamFOV, freeCamNear, freeCamFar));
+    CameraControllerComponent & freeCamContComp(Scene::addComponent<CameraControllerComponent>(freeCam, freeCamLookSpeed, freeCamMoveSpeed));
+    freeCamContComp.setEnabled(false);
 
     RenderSystem::setCamera(&playerCamComp);
 

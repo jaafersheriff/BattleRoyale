@@ -150,14 +150,6 @@ struct WindowSizeMessage : public Message {
 
 
 
-// the near/far planes were changed
-struct NearFarMessage : public Message {
-    float near, far;
-    NearFarMessage(float near, float far) : near(near), far(far) {}
-};
-
-
-
 // key input
 struct KeyMessage : public Message {
     int key, action, mods;

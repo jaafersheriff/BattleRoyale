@@ -10,6 +10,7 @@
 #include <iostream>
 #include <cstring>
 #include <cassert>
+#include <fstream>
 
 namespace GLSL {
 
@@ -108,47 +109,42 @@ void checkVersion()
     }
 }
 
-GLuint createShader(const std::string & name, GLenum type) {
+GLuint createShader(const std::string & filepath, GLenum type) {
     GLint rc;
     GLuint shaderId = glCreateShader(type);
 
-    const char *shader = GLSL::textFileRead(name.c_str());
-    glShaderSource(shaderId , 1, &shader, NULL);
+    std::string shader;
+    if (!GLSL::textFileRead(filepath, shader)) {
+        std::cerr << "Could not read shader file: " << filepath << std::endl;
+        return 0;
+    }
+    const char * src(shader.c_str());
+    glShaderSource(shaderId, 1, &src, NULL);
 
     // Compile shader
     glCompileShader(shaderId);
     glGetShaderiv(shaderId, GL_COMPILE_STATUS, &rc);
     if (!rc) {
         GLSL::printShaderInfoLog(shaderId);
-        std::cerr << "Error compiling " << name << std::endl;
-        return -1;
+        std::cerr << "Error compiling shader: " << filepath << std::endl;
+        return 0;
     }
 
     return shaderId;
 }
 
-char *textFileRead(const char *fn)
-{
-    FILE *fp;
-    char *content = NULL;
-    int count = 0;
-    if(fn != NULL) {
-        fp = fopen(fn,"rt");
-        if(fp != NULL) {
-            fseek(fp, 0, SEEK_END);
-            count = (int)ftell(fp);
-            rewind(fp);
-            if(count > 0) {
-                content = (char *)malloc(sizeof(char) * (count+1));
-                count = (int)fread(content,sizeof(char),count,fp);
-                content[count] = '\0';
-            }
-            fclose(fp);
-        } else {
-            printf("error loading %s\n", fn);
-        }
+bool textFileRead(const std::string & filepath, std::string & r_dst) {
+    std::ifstream ifs(filepath);
+    if (!ifs.good()) {
+        return false;
     }
-    return content;
+
+    std::stringstream ss;
+    ss << ifs.rdbuf();
+    ifs.close();
+    r_dst = std::move(ss.str());
+
+    return true;
 }
 
 int textFileWrite(const char *fn, char *s)

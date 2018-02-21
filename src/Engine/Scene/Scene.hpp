@@ -12,6 +12,11 @@
 #include <typeinfo>
 #include <typeindex>
 
+#include "System/GameLogicSystem.hpp"
+#include "System/SpatialSystem.hpp"
+#include "System/PathfindingSystem.hpp"
+#include "System/CollisionSystem.hpp"
+#include "System/RenderSystem.hpp"
 #include "GameObject/GameObject.hpp"
 #include "GameObject/Message.hpp"
 #include "Component/Components.hpp"

@@ -38,16 +38,20 @@ bool DiffuseShader::init() {
     return true;
 }
 
-void DiffuseShader::render(const CameraComponent & camera, const std::vector<Component *> & components) {
+void DiffuseShader::render(const CameraComponent * camera, const std::vector<Component *> & components) {
     static std::vector<Component *> s_compsToRender;
+
+    if (!camera) {
+        return;
+    }
 
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     /* Bind uniforms */
-    loadMat4(getUniform("P"), camera.getProj());
-    loadMat4(getUniform("V"), camera.getView());
+    loadMat4(getUniform("P"), camera->getProj());
+    loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
 
     /* Determine if component should be culled */
@@ -59,7 +63,7 @@ void DiffuseShader::render(const CameraComponent & camera, const std::vector<Com
             bool inFrustum(false);
             for (Component * bounder_ : bounders) {
                 BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
-                if (camera.sphereInFrustum(bounder->enclosingSphere())) {
+                if (camera->sphereInFrustum(bounder->enclosingSphere())) {
                     inFrustum = true;
                     break;
                 }

@@ -70,9 +70,13 @@ bool BounderShader::init() {
     return true;
 }
 
-void BounderShader::render(const CameraComponent & camera, const std::vector<Component *> & components_) {
-    loadMat4(getUniform("u_viewMat"), camera.getView());
-    loadMat4(getUniform("u_projMat"), camera.getProj());
+void BounderShader::render(const CameraComponent * camera, const std::vector<Component *> & components_) {
+    if (!camera) {
+        return;
+    }
+
+    loadMat4(getUniform("u_viewMat"), camera->getView());
+    loadMat4(getUniform("u_projMat"), camera->getProj());
 
     for (auto & comp : CollisionSystem::s_bounderComponents) {
         BounderComponent & bounder(static_cast<BounderComponent &>(*comp));

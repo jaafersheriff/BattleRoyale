@@ -165,17 +165,14 @@ void Window::update(float dt) {
             priorCursorState = cursorEnabled;
             setCursorEnabled(true);
         }
-
-        toggleImGui();
-        imGuiTimer = 0.0;
-        ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
-
-        if (!isImGuiEnabled()) {
+        else {
             setCursorEnabled(priorCursorState);
         }
+        toggleImGui();
+        imGuiTimer = 0.0;
     }
-    else {
-        ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
+    if (isImGuiEnabled()) {
+        ImGui_ImplGlfwGL3_NewFrame(true);
     }
 #endif
     
