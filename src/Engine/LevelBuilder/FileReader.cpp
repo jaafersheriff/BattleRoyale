@@ -3,7 +3,7 @@
 #include "System/RenderSystem.hpp"
 #include "System/CollisionSystem.hpp"
 
-int FileReader::loadLevel(const char & filePath, Scene & scene) {
+int FileReader::loadLevel(const char & filePath) {
     rapidjson::Document document;
     glm::vec3 position, scale;
     glm::mat3 rotation;
@@ -59,12 +59,12 @@ int FileReader::loadLevel(const char & filePath, Scene & scene) {
         rotation[1] = glm::vec3(objRotation_row1[0].GetFloat(), objRotation_row1[1].GetFloat(), objRotation_row1[2].GetFloat());
         rotation[2] = glm::vec3(objRotation_row2[0].GetFloat(), objRotation_row2[1].GetFloat(), objRotation_row2[2].GetFloat());
 
-        GameObject & gameObject(scene.createGameObject());
-        gameObject.addComponent(scene.createComponent<SpatialComponent>(
+        GameObject & gameObject(Scene::createGameObject());
+        Scene::addComponent<SpatialComponent>(gameObject,
             position, // position
             scale, // scale
             rotation // rotation
-            ));
+            );
 
         const rapidjson::Value& capsule = jsonObject["jsonCapsule"];
         if (capsule["hasCapsule"].GetBool()) {
@@ -73,45 +73,21 @@ int FileReader::loadLevel(const char & filePath, Scene & scene) {
             const rapidjson::Value& height = capsule["height"];
  
             Capsule gameObjectCap(glm::vec3(center[0].GetFloat(), center[1].GetFloat(), center[2].GetFloat()), radius.GetFloat(), height.GetFloat());
-            CapsuleBounderComponent & gameObjectBoundComp(scene.createComponent<CapsuleBounderComponent>(UINT_MAX, gameObjectCap));
-
-            gameObject.addComponent(gameObjectBoundComp);
-
+            CapsuleBounderComponent & gameObjectBoundComp(Scene::addComponent<CapsuleBounderComponent>(gameObject, UINT_MAX, gameObjectCap));
         }
         else {
-            gameObject.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(UINT_MAX, *Loader::getMesh(filePath), true, true, true)));
+            CollisionSystem::addBounderFromMesh(gameObject, UINT_MAX, *Loader::getMesh(filePath), true, true, true);
         }
 
 
-        gameObject.addComponent(scene.createComponent<DiffuseRenderComponent>(
-            scene.renderSystem().getShader<DiffuseShader>()->pid,
+        Scene::addComponent<DiffuseRenderComponent>(
+            gameObject,
+            RenderSystem::getShader<DiffuseShader>()->pid,
             *Loader::getMesh(filePath),
-            ModelTexture(Loader::getTexture(texturePath), 0.4f, glm::vec3(0.f), glm::vec3(0.f))));
+            ModelTexture(Loader::getTexture(texturePath), 0.4f, glm::vec3(0.f), glm::vec3(0.f)));
 
         //initGameObject(scene, filePath, texturePath, position, scale, rotation);
     }
 
     return 0;
-}
-
-void FileReader::initGameObject(Scene & scene, std::string filePath, std::string texturePath, glm::vec3 position, glm::vec3 scale, glm::mat3 rotation) {
-
-    GameObject & gameObject(scene.createGameObject());
-    gameObject.addComponent(scene.createComponent<SpatialComponent>(
-        position, // position
-        scale, // scale
-        rotation // rotation
-        ));
-
-
-    //Sphere objSphere(glm::vec3(0.3698047, 4.297255, 0), 9.954116);
-    //SphereBounderComponent & objBoundComp(scene.createComponent<SphereBounderComponent>(*gameObject.getSpatial(), UINT_MAX, objSphere));
-    //gameObject.addComponent(objBoundComp);
-
-    
-    gameObject.addComponent(scene.createComponent<DiffuseRenderComponent>(
-        scene.renderSystem().getShader<DiffuseShader>()->pid,
-        *Loader::getMesh(filePath),
-        ModelTexture(Loader::getTexture(texturePath), 0.4f, glm::vec3(0.f), glm::vec3(0.f))));
-        gameObject.addComponent(scene.addComponent<BounderComponent>(createBounderFromMesh(UINT_MAX, *Loader::getMesh(filePath), true, true, true)));
 }

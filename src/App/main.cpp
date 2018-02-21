@@ -148,7 +148,7 @@ int main(int argc, char **argv) {
     SpatialComponent & playerSpatComp(Scene::addComponent<SpatialComponent>(player));
     playerSpatComp.setPosition(playerPos);
     NewtonianComponent & playerNewtComp(Scene::addComponent<NewtonianComponent>(player, playerMaxSpeed));
-    GravityComponent & playerGravComp(Scene::addComponent<GravityComponent>(player));
+    //GravityComponent & playerGravComp(Scene::addComponent<GravityComponent>(player));
     GroundComponent & playerGroundComp(Scene::addComponent<GroundComponent>(player));
     Capsule playerCap(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth);
     CapsuleBounderComponent & playerBoundComp(Scene::addComponent<CapsuleBounderComponent>(player, 1, playerCap));
@@ -225,7 +225,7 @@ int main(int argc, char **argv) {
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
-    for (int i(0); i < 10; ++i) {
+    for (int i(0); i < 0; ++i) {
         GameObject & bunny(Scene::createGameObject());
         SpatialComponent & bunnySpatComp(Scene::addComponent<SpatialComponent>(
             bunny,
