@@ -26,8 +26,8 @@ inline bool readTextFile(const std::string & filepath, std::string & dst) {
 
 class FileReader {
 public:
-    int loadLevel(const char & file, Scene & scene);
-    void initGameObject(Scene & scene, std::string filePath, std::string texturePath, glm::vec3 position, glm::vec3 scale, glm::mat3 rotation);
+    int loadLevel(const char & file);
+    void initGameObject(std::string filePath, std::string texturePath, glm::vec3 position, glm::vec3 scale, glm::mat3 rotation);
 };
 
 #endif

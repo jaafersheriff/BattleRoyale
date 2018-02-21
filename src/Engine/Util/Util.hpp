@@ -11,8 +11,6 @@
 #include "Model/Mesh.hpp"
 
 struct Util {
-    
-    static constexpr double PI = 3.14159265359;
 
     static constexpr float infinity = std::numeric_limits<float>::infinity();
 
@@ -91,6 +89,58 @@ struct Util {
             std::atan2(v.y, v.x),
             std::acos(v.z / rad)
         );
+    }
+
+    // calculated a view matrix based on camera u v w vectors, which must be orthonormal
+    static glm::mat4 viewMatrix(const glm::vec3 & camPos, const glm::vec3 & camU, const glm::vec3 & camV, const glm::vec3 & camW) {
+        glm::vec3 trans(-camPos);
+        return glm::mat4(
+                           camU.x,                camV.x,                camW.x, 0.0f,
+                           camU.y,                camV.y,                camW.y, 0.0f,
+                           camU.z,                camV.z,                camW.z, 0.0f,
+            glm::dot(camU, trans), glm::dot(camV, trans), glm::dot(camW, trans), 1.0f
+        );
+    }
+
+    // creates a matrix that maps to the given orthonormal basis
+    static glm::mat3 mapTo(const glm::vec3 & x, const glm::vec3 & y, const glm::vec3 & z) {
+        return glm::transpose(glm::mat3(x, y, z));
+    }
+
+    // creates a matrix that maps from the given orthonormal basis
+    static glm::mat3 mapFrom(const glm::vec3 & x, const glm::vec3 & y, const glm::vec3 & z) {
+        return glm::mat3(x, y, z);
+    }
+
+    static std::string toString(const glm::vec3 & v) {
+        return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ")";
+    }
+
+    // project v onto plane defined by unit vector norm
+    static glm::vec3 projectOnto(const glm::vec3 & v, const glm::vec3 & norm) {
+        return v - glm::dot(v, norm) * norm;
+    }
+
+    // norm must be unit vector
+    // If v dot norm is positive, just return v. Otherwise, return the closest
+    // point on the plane defined by norm.
+    static glm::vec3 removeAllAgainst(const glm::vec3 & v, const glm::vec3 & norm) {
+        float dot(glm::dot(v, norm));
+        if (dot >= 0) {
+            return v;
+        }
+        return v - dot * norm;
+    }
+    
+    // norm must be unit vector
+    // If v dot norm is positive, just return v. Otherwise, return the point
+    // amount closer to the plane defined by norm
+    static glm::vec3 removeSomeAgainst(const glm::vec3 & v, const glm::vec3 & norm, float amount) {
+        float dot(glm::dot(v, norm));
+        if (dot >= 0) {
+            return v;
+        }
+        return v + glm::min(-dot, amount) * norm;
     }
 
 };

@@ -8,44 +8,65 @@
 #include <string>
 #include <type_traits>
 #include <typeindex>
+#include <iostream>
 
 #include "System.hpp"
 
 #include "Shaders/Shader.hpp"
 #include "Shaders/DiffuseShader.hpp"
 #include "Shaders/BounderShader.hpp"
+#include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 
-#include <iostream>
 
-class RenderSystem : public System {
+
+// static class
+class RenderSystem {
 
     friend Scene;
 
-    private: // only scene can create system
+    public:
 
-    RenderSystem(std::vector<Component *> & components);
+    static constexpr SystemID ID = SystemID::render;
+
+    static constexpr float k_defNear = 0.01f, k_defFar = 500.0f;
 
     public:
 
-    // creates a new shader and initializes it
-    template<typename ShaderT, typename... Args> bool createShader(Args &&... args);
-
-    // takes possession of shader and initializes it
-    template <typename ShaderT> bool addShader(std::unique_ptr<ShaderT> shader);
-
-    // get shader of the specified type
-    template <typename ShaderT> ShaderT * getShader();
-    template <typename ShaderT> const Shader * getShader() const {
-        return const_cast<RenderSystem *>(this)->getShader<ShaderT>();
-    }
+    static void init();
 
     /* Iterate through shaders map
         * Bind individual shaders 
         * Call shaders' render function with the appropriate render component list */
-    void update(float);
+    static void update(float dt);
+
+    // creates a new shader and initializes it
+    template<typename ShaderT, typename... Args> static bool createShader(Args &&... args);
+
+    // takes possession of shader and initializes it
+    template <typename ShaderT> static bool addShader(std::unique_ptr<ShaderT> shader);
+
+    // get shader of the specified type
+    template <typename ShaderT> static ShaderT * getShader();
+
+    static void setNearFar(float near, float far);
+
+    static float near() { return s_near; }
+    static float far() { return s_far; }
+
+    static void setCamera(const CameraComponent * camera);
+
+    private:
     
-    // Map of shader type to Shader objects
-    std::unordered_map<std::type_index, std::unique_ptr<Shader>> m_shaders;
+    static void add(Component & component);
+
+    static void remove(Component & component);
+    
+    private:
+
+    static std::vector<DiffuseRenderComponent *> s_diffuseComponents;
+    static std::unordered_map<std::type_index, std::unique_ptr<Shader>> s_shaders;
+    static float s_near, s_far;
+    static const CameraComponent * s_camera;
 
 };
 
@@ -61,12 +82,12 @@ bool RenderSystem::createShader(Args &&... args) {
 template <typename ShaderT>
 bool RenderSystem::addShader(std::unique_ptr<ShaderT> shader) {
     std::type_index typeI(typeid(ShaderT));
-    auto it(m_shaders.find(typeI));
-    if (it != m_shaders.end()) {
+    auto it(s_shaders.find(typeI));
+    if (it != s_shaders.end()) {
         return true;
     }
     if (shader->init()) {
-        m_shaders[typeI] = std::move(shader);
+        s_shaders[typeI] = std::move(shader);
         return true;
     }
     else {
@@ -78,10 +99,10 @@ bool RenderSystem::addShader(std::unique_ptr<ShaderT> shader) {
 template <typename ShaderT>
 ShaderT * RenderSystem::getShader() {
     std::type_index typeI(typeid(ShaderT));
-    if (!m_shaders.count(typeI)) {
+    if (!s_shaders.count(typeI)) {
         return nullptr;
     }
-    return static_cast<ShaderT *>(m_shaders.at(typeI).get());
+    return static_cast<ShaderT *>(s_shaders.at(typeI).get());
 }
 
 

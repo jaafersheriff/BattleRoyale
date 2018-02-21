@@ -1,30 +1,43 @@
-/* Basic free-floating camera class */
 #pragma once
+
+
+
 #ifndef _CAMERA_COMPONENT_HPP_
 #define _CAMERA_COMPONENT_HPP_
 
+
+
 #include "glm/glm.hpp"
 
-#include "Component/Component.hpp"
 #include "Util/Geometry.hpp"
+#include "Component/Component.hpp"
+#include "Component/SpatialComponents/Orientable.hpp"
+
+
 
 class GameLogicSystem;
+class SpatialComponent;
 
-class CameraComponent : public Component {
+
+
+// Camera is relative to a base, usually the player.
+// Both the camera and the base have an orientation. The camera's angles are
+// relative to the base. The camera's uvw vectors are absolute.
+class CameraComponent : public Component, public Orientable {
 
     friend Scene;
 
-    public:
+    protected: // only scene or friends can create component
 
-    using SystemClass = GameLogicSystem;
+        CameraComponent(float fov);
 
-    protected: // only scene can create component
-
-        CameraComponent(float fov, float near, float far);
+        virtual void init(GameObject & go) override;
 
     public:
         
-        void init();
+        /* Derived functions */
+
+        virtual SystemID systemID() const override { return SystemID::gameLogic; };
 
         void update(float dt);
 
@@ -35,23 +48,21 @@ class CameraComponent : public Component {
         void lookInDir(const glm::vec3 & dir);
 
         // sets the camera angle
-        // +yaw is radians right, -yaw is radians left
-        // +pitch is radians up, -pitch is radians down
+        // +theta is radians left, -theta is radians left
+        // +phi is radians down, -pitch is radians up
         // if relative is true, these angles are applied as deltas to the
         // current orientation. if relative is false, these angles are absolute
-        // from the +x axis as forward
-        void angle(float yaw, float pitch, bool relative);
+        // from the orientation of the base
+        void angle(float theta, float phi, bool relative, bool silently = true);
+
+        void setFOV(float fov);
 
         const bool sphereInFrustum(const Sphere & sphere) const;
-
-        const glm::vec3 & u() const { return m_u; }
-        const glm::vec3 & v() const { return m_v; }
-        const glm::vec3 & w() const { return m_w; }
         float theta() const { return m_theta; }
         float phi() const { return m_phi; }
         float fov() const { return m_fov; }
-        float near() const { return m_near; }
-        float far() const { return m_far; }
+
+        glm::vec3 getLookDir() const;
         
         const glm::mat4 & getView() const;
         const glm::mat4 & getProj() const;
@@ -59,41 +70,32 @@ class CameraComponent : public Component {
     private:
 
         void detUVW();
+
+        void detAngles();
+
         void detView() const;
         void detProj() const;
-
-    public:
-
-        /* Data about the view frustum */
-        float
-            farPlaneWidth, farPlaneHeight,
-            nearPlaneWidth, nearPlaneHeight;
-        /* Planes can be described by a point in space and a normal */
-        glm::vec3
-            farPlanePoint, farPlaneNormal,
-            nearPlanePoint, nearPlaneNormal,
-            topPlanePoint, topPlaneNormal,
-            bottomPlanePoint, bottomPlaneNormal,
-            leftPlanePoint, leftPlaneNormal,
-            rightPlanePoint, rightPlaneNormal;
+        void detFrustum() const;
 
     private:
 
-        /* u, v, and w define a set of orthonormal basis unit vectors */
-        /* u points right (+x) */
-        /* v points up (+y) */
-        /* w points back (+z) */
-        glm::vec3 m_u, m_v, m_w;
-        /* Describes the rotation of the camera */
-        float m_theta, m_phi;
-        /* field of view, near plane, and far plane */
-        float m_fov, m_near, m_far;
+        SpatialComponent * m_spatial;
+        float m_theta, m_phi; // rotation of camera relative to base
+        float m_fov; // field of view
 
         // DONT USE THESE DIRECTLY, CALL GETVIEW OR GETPROJ
         mutable glm::mat4 m_viewMat;
         mutable glm::mat4 m_projMat;
         mutable bool m_viewMatValid;
         mutable bool m_projMatValid;
+        
+        mutable glm::vec4 m_frustumLeft;
+        mutable glm::vec4 m_frustumRight;
+        mutable glm::vec4 m_frustumBottom;
+        mutable glm::vec4 m_frustumTop;
+        mutable glm::vec4 m_frustumNear;
+        mutable glm::vec4 m_frustumFar;
+        mutable bool m_frustumValid;
 };
 
 #endif

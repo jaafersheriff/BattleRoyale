@@ -5,8 +5,11 @@
 
 #include <iostream> /* cout, cerr */
 
-int Window::width = DEFAULT_WIDTH;
-int Window::height = DEFAULT_HEIGHT;
+#include "Scene/Scene.hpp"
+
+GLFWwindow * Window::window = nullptr;
+bool Window::vSyncEnabled = true;
+bool Window::cursorEnabled = true;
 bool Window::imGuiEnabled = false;
 float Window::imGuiTimer = 1.0;
 
@@ -14,17 +17,18 @@ void Window::errorCallback(int error, const char *desc) {
     std::cerr << "Error " << error << ": " << desc << std::endl;
 }
 
-void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mode) {
+void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
 
     /* ImGui callback if it is active */
     if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
-        ImGui_ImplGlfwGL3_KeyCallback(window, key, scancode, action, mode);
+        ImGui_ImplGlfwGL3_KeyCallback(window, key, scancode, action, mods);
     }
     else {
         Keyboard::setKeyStatus(key, action);
+        Scene::sendMessage<KeyMessage>(nullptr, key, action, mods);
     }
 }
 
@@ -35,6 +39,7 @@ void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int
     }
     else {
         Mouse::setButtonStatus(button, action);
+        Scene::sendMessage<MouseMessage>(nullptr, button, action, mods);
     }
 }
 
@@ -42,6 +47,16 @@ void Window::characterCallback(GLFWwindow *window, unsigned int c) {
     if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
         ImGui_ImplGlfwGL3_CharCallback(window, c);
     }
+}
+
+void Window::framebufferSizeCallback(GLFWwindow * window, int width, int height) {
+    /* Set viewport to window size */
+    glViewport(0, 0, width, height);
+    Scene::sendMessage<WindowSizeMessage>(nullptr, width, height);
+}
+
+void Window::cursorEnterCallback(GLFWwindow * window, int entered) {
+    Mouse::reset();
 }
 
 int Window::init(std::string name) {
@@ -61,7 +76,7 @@ int Window::init(std::string name) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
     /* Create GLFW window */
-    window = glfwCreateWindow(this->width, this->height, name.c_str(), NULL, NULL);
+    window = glfwCreateWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, name.c_str(), NULL, NULL);
     if (!window) {
         std::cerr << "Failed to create window" << std::endl;
         glfwTerminate();
@@ -70,12 +85,14 @@ int Window::init(std::string name) {
     glfwMakeContextCurrent(window);
 
     /* Init ImGui */
-    ImGui_ImplGlfwGL3_Init(this->window, false);
+    ImGui_ImplGlfwGL3_Init(window, false);
 
     /* Set callbacks */
     glfwSetKeyCallback(window, keyCallback);
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
     glfwSetCharCallback(window, characterCallback);
+    glfwSetWindowSizeCallback(window, framebufferSizeCallback);
+    glfwSetCursorEnterCallback(window, cursorEnterCallback);
 
     /* Init GLEW */
     glewExperimental = GL_FALSE;
@@ -92,7 +109,7 @@ int Window::init(std::string name) {
     glGetError();
 
     /* Vsync */
-    glfwSwapInterval(1);
+    glfwSwapInterval(vSyncEnabled);
 
     return 0;
 }
@@ -101,13 +118,29 @@ void Window::setTitle(const char *name) {
     glfwSetWindowTitle(window, name);
 }
 
-void Window::update(float dt) { 
-    /* Set viewport to window size */
-    glfwGetFramebufferSize(window, &width, &height);
-    glViewport(0, 0, width, height);
+void Window::setSize(int w, int h) {
+    glfwSetWindowSize(window, w, h);
+}
 
+glm::ivec2 Window::getSize() {
+    glm::ivec2 size;
+    glfwGetFramebufferSize(window, &size.x, &size.y);
+    return size;
+}
+
+float Window::getAspectRatio() {
+    glm::ivec2 size(getSize());
+    return float(size.x) / float(size.y);
+}
+
+void Window::toggleVSync() {
+    vSyncEnabled = !vSyncEnabled;
+    glfwSwapInterval(vSyncEnabled);
+}
+
+void Window::update(float dt) {
     /* Don't update display if window is minimized */
-    if (!width && !height) {
+    if (glfwGetWindowAttrib(window, GLFW_ICONIFIED)) {
         return;
     }
 
@@ -117,14 +150,28 @@ void Window::update(float dt) {
     Mouse::update(x, y);
 
     /* Update ImGui */
+    // TODO: clean up this code
+    static bool imGuiActive = false;
+    static bool priorCursorState;
     imGuiTimer += dt;
-    if (Keyboard::isKeyPressed(GLFW_KEY_GRAVE_ACCENT) && 
-       (Keyboard::isKeyPressed(GLFW_KEY_LEFT_SHIFT) || Keyboard::isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) &&
-        imGuiTimer >= 0.5) {
+    if (Keyboard::isKeyPressed(GLFW_KEY_GRAVE_ACCENT) && imGuiTimer >= 0.5) {
+        if (!imGuiActive) {
+            priorCursorState = cursorEnabled;
+            setCursorEnabled(true);
+        }
+
         toggleImGui();
         imGuiTimer = 0.0;
+        imGuiActive = !imGuiActive;
+        ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
+
+        if (!imGuiActive) {
+            setCursorEnabled(priorCursorState);
+        }
     }
-    ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
+    else {
+        ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
+    }
     
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -142,4 +189,9 @@ void Window::shutDown() {
     /* Clean up GLFW */
     glfwDestroyWindow(window);
     glfwTerminate();
+}
+
+void Window::setCursorEnabled(bool enabled) {
+    cursorEnabled = enabled;
+    glfwSetInputMode(window, GLFW_CURSOR, cursorEnabled ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
 }

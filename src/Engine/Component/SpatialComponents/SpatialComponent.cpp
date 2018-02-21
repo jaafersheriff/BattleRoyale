@@ -2,74 +2,86 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "Scene/Scene.hpp"
 #include "Util/Util.hpp"
 
 
 
 SpatialComponent::SpatialComponent() :
+    Component(),
+    Orientable(),
     m_position(),
     m_scale(1.0f),
-    m_rotation(),
-    m_transformedFlag(false),
     m_modelMatrix(),
     m_normalMatrix(),
     m_modelMatrixValid(false),
     m_normalMatrixValid(false)
 {}
 
-SpatialComponent::SpatialComponent(const glm::vec3 & loc, const glm::vec3 & scale, const glm::mat3 & rot) :
+SpatialComponent::SpatialComponent(const glm::vec3 & loc, const glm::vec3 & scale) :
+    Component(),
+    Orientable(),
     m_position(loc),
     m_scale(scale),
-    m_rotation(rot),
-    m_transformedFlag(false),
     m_modelMatrix(),
     m_normalMatrix(),
     m_modelMatrixValid(false),
     m_normalMatrixValid(false)
 {}
+
+SpatialComponent::SpatialComponent(const glm::vec3 & loc, const glm::vec3 & scale, const glm::mat3 & orientation) :
+    SpatialComponent(loc, scale)
+{
+    setOrientation(orientation, true);
+}
 
 void SpatialComponent::update(float dt) {
     
 }
 
-void SpatialComponent::setPosition(const glm::vec3 & loc) {
+void SpatialComponent::setPosition(const glm::vec3 & loc, bool silently) {
     m_position = loc;
     m_modelMatrixValid = false;
-    m_transformedFlag = true;
+    if (!silently) Scene::sendMessage<SpatialPositionSetMessage>(gameObject(), *this);
 }
 
-void SpatialComponent::move(const glm::vec3 & delta) {
+void SpatialComponent::move(const glm::vec3 & delta, bool silently) {
     m_position += delta;
     m_modelMatrixValid = false;
-    m_transformedFlag = true;
+    if (!silently) Scene::sendMessage<SpatialMovedMessage>(gameObject(), *this);
 }
 
-void SpatialComponent::setScale(const glm::vec3 & scale) {
+void SpatialComponent::setScale(const glm::vec3 & scale, bool silently) {
     m_scale = scale;
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
-    m_transformedFlag = true;
+    if (!silently) Scene::sendMessage<SpatialScaleSetMessage>(gameObject(), *this);
 }
 
-void SpatialComponent::scale(const glm::vec3 & factor) {
+void SpatialComponent::scale(const glm::vec3 & factor, bool silently) {
     m_scale *= factor;
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
-    m_transformedFlag = true;
+    if (!silently) Scene::sendMessage<SpatialScaledMessage>(gameObject(), *this);
 }
 
-void SpatialComponent::setRotation(const glm::mat3 & rot) {
-    m_rotation = rot;
+void SpatialComponent::setOrientation(const glm::mat3 & orient, bool silently) {
+    Orientable::setOrientation(orient);
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
-    m_transformedFlag = true;
+    if (!silently) Scene::sendMessage<SpatialOrientationSetMessage>(gameObject(), *this);
 }
 
-void SpatialComponent::rotate(const glm::mat3 & mat) {
-    m_rotation = mat * m_rotation;
+void SpatialComponent::rotate(const glm::mat3 & mat, bool silently) {
+    Orientable::rotate(mat);
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
-    m_transformedFlag = true;
+    if (!silently) Scene::sendMessage<SpatialRotatedMessage>(gameObject(), *this);
+}
+
+void SpatialComponent::setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w, bool silently) {
+    Orientable::setUVW(u, v, w);
+    if (!silently) Scene::sendMessage<SpatialOrientationSetMessage>(gameObject(), *this);
 }
     
 const glm::mat4 & SpatialComponent::modelMatrix() const {
@@ -83,12 +95,12 @@ const glm::mat3 & SpatialComponent::normalMatrix() const {
 }
 
 void SpatialComponent::detModelMatrix() const {
-    m_modelMatrix = Util::compositeTransform(m_scale, m_rotation, m_position);
+    m_modelMatrix = Util::compositeTransform(m_scale, orientationMatrix(), m_position);
     m_modelMatrixValid = true;
 }
 
 void SpatialComponent::detNormalMatrix() const {
     // this is valid and waaaaaaaay faster than inverting the model matrix
-    m_normalMatrix = m_rotation * glm::mat3(glm::scale(glm::mat4(), 1.0f / m_scale));
+    m_normalMatrix = orientationMatrix() * glm::mat3(glm::scale(glm::mat4(), 1.0f / m_scale));
     m_normalMatrixValid = true;
 }

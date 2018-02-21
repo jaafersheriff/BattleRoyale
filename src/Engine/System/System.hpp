@@ -3,39 +3,45 @@
 #ifndef _SYSTEM_HPP_
 #define _SYSTEM_HPP_
 
+
+
 #include <vector>
 #include <memory>
 
-#include "Component/Component.hpp"
 
-class Scene;
 
+enum class SystemID {
+    gameLogic,
+    pathfinding,
+    spatial,
+    collision,
+    postCollision,
+    render
+};
+
+
+
+// Systems are static classes, and static classes can't be polymorphic, but every
+// system should resemble the following...
+/*
 class System {
 
-    protected: // only scene can create system
-
-        System(const std::vector<Component *> & components);
-
-        // TODO: potentially add move support
-        System(const System & other) = delete; // doesn't make sense to copy system
-        System & operator=(const System & other) = delete;
+    friend Scene;
 
     public:
 
-        /* virtual destructor necessary for polymorphic destruction */
-        virtual ~System() = default;
+    static void init();
 
-        /* Generic update function */
-        virtual void update(float dt);
+    static void update(float dt) = 0;
 
-        const std::vector<Component *> & components() const { return m_components; }
+    private:
 
-    protected:
+    static void add(Component & component);
 
-        /* Reference to components of this system */
-        const std::vector<Component *> & m_components;
+    static void remove(Component & component);
 
 };
+*/
 
 
 

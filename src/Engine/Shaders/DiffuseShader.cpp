@@ -4,17 +4,14 @@
 
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
-#include "Component/CollisionComponents/CollisionComponent.hpp"
+#include "Component/CollisionComponents/BounderComponent.hpp"
 #include "System/CollisionSystem.hpp"
+#include "Component/CameraComponents/CameraComponent.hpp"
 
-DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam, const glm::vec3 & light) :
+DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & fragFile, const glm::vec3 & light) :
     Shader(vertFile, fragFile),
-    camera(&cam),
     lightPos(&light)
 {}
-
-// Debug
-#include "GameObject/GameObject.hpp"
 
 bool DiffuseShader::init() {
     if (!Shader::init()) {
@@ -41,45 +38,52 @@ bool DiffuseShader::init() {
     return true;
 }
 
-void DiffuseShader::render(const std::vector<Component *> & components) {
+void DiffuseShader::render(const CameraComponent & camera, const std::vector<Component *> & components) {
+    static std::vector<Component *> s_compsToRender;
+
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     /* Bind uniforms */
-    loadMat4(getUniform("P"), camera->getProj());
-    loadMat4(getUniform("V"), camera->getView());
+    loadMat4(getUniform("P"), camera.getProj());
+    loadMat4(getUniform("V"), camera.getView());
     loadVec3(getUniform("lightPos"), *lightPos);
 
-    for (auto cp : components) {
+    /* Determine if component should be culled */
+    /* Only doing frustum culling if object has bounder(s) */
+    /* Get the center and radius of the component */
+    for (Component * comp : components) {
+        const std::vector<Component *> & bounders(comp->gameObject()->getComponentsBySystem(SystemID::collision));
+        if (bounders.size()) {
+            bool inFrustum(false);
+            for (Component * bounder_ : bounders) {
+                BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
+                if (camera.sphereInFrustum(bounder->enclosingSphere())) {
+                    inFrustum = true;
+                    break;
+                }
+            }
+            if (inFrustum) {
+                s_compsToRender.push_back(comp);
+            }
+        }
+        else {
+            s_compsToRender.push_back(comp);
+        }
+    }
+
+    for (Component * cp : s_compsToRender) {
         // TODO : component list should be passed in as diffuserendercomponent
         DiffuseRenderComponent *drc;
         if (!(drc = dynamic_cast<DiffuseRenderComponent *>(cp)) || drc->pid != this->pid) {
             continue;
         }
 
-        /* Determine if component should be culled */
-        /* Only doing frustum culling if object has bounder(s) */
-        /* Get the center and radius of the component */
-        const std::vector<Component *> & bounders(drc->getGameObject()->getComponentsBySystem<CollisionSystem>());
-        if (bounders.size()) {
-            bool inFrustum(false);
-            for (Component * bounder_ : bounders) {
-                BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
-                if (camera->sphereInFrustum(bounder->enclosingSphere())) {
-                    inFrustum = true;
-                    break;
-                }
-            }
-            if (!inFrustum) {
-                continue;
-            }
-        }
-
         /* Model matrix */
-        loadMat4(getUniform("M"), drc->getGameObject()->getSpatial()->modelMatrix());
+        loadMat4(getUniform("M"), drc->gameObject()->getSpatial()->modelMatrix());
         /* Normal matrix */
-        loadMat3(getUniform("N"), drc->getGameObject()->getSpatial()->normalMatrix());
+        loadMat3(getUniform("N"), drc->gameObject()->getSpatial()->normalMatrix());
 
         /* Bind materials */
         loadFloat(getUniform("matAmbient"), drc->modelTexture.material.ambient);
@@ -150,5 +154,7 @@ void DiffuseShader::render(const std::vector<Component *> & components) {
 
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    }
+    }    
+
+    s_compsToRender.clear();
 }

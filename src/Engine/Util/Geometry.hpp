@@ -71,7 +71,7 @@ struct Sphere {
     {}
 
     float volume() const {
-        return 4.0f / 3.0f * float(Util::PI) * radius * radius * radius;
+        return 4.0f / 3.0f * glm::pi<float>() * radius * radius * radius;
     }
 
 };
@@ -100,7 +100,7 @@ struct Capsule {
     {}
 
     float volume() const {
-        return float(Util::PI) * radius * radius * (height + 4.0f / 3.0f * radius);
+        return glm::pi<float>() * radius * radius * (height + 4.0f / 3.0f * radius);
     }
 
 };
