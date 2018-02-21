@@ -1,33 +1,42 @@
 #include "GameObject.hpp"
+
 #include "Component/Component.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
-#include "System/Systems.hpp"
 
 GameObject::GameObject() :
     m_allComponents(),
-    m_compsBySysT(),
     m_compsByCompT(),
     m_spatialComponent(nullptr)
 {}
 
-GameObject::~GameObject() {
-
-}
-
-/* Initialize all components */
-void GameObject::init() {
-    for (Component * c : m_allComponents) {
-        c->init();
+void GameObject::addComponent(Component & component, std::type_index typeI) {
+    m_allComponents.push_back(&component);
+    m_compsByCompT[typeI].push_back(&component);
+    if (typeI == std::type_index(typeid(SpatialComponent))) {
+        m_spatialComponent = dynamic_cast<SpatialComponent *>(&component);
     }
 }
 
-/* Take in a message and pass it to all components that match the sender's 
- * desired type */
-void GameObject::sendMessage(Message & msg) {
-    for (Component * c : m_allComponents) {
-        // TODO : how does message know which component to send to?
-        // if (c != nullptr && c->type == msg->type) {
-        //     c->receiveMessage(msg);
-        // }
+void GameObject::removeComponent(Component & component, std::type_index typeI) {
+    // remove from allComponents
+    for (auto it(m_allComponents.begin()); it != m_allComponents.end(); ++it) {
+        if (*it == &component) {
+            m_allComponents.erase(it);
+            break;
+        }
+    }
+    // remove from compsByCompT in reverse order
+    auto compsIt(m_compsByCompT.find(typeI));
+    if (compsIt != m_compsByCompT.end()) {
+        auto & comps(compsIt->second);
+        for (int i(int(comps.size()) - 1); i >= 0; --i) {
+            if (comps[i] == &component) {
+                comps.erase(comps.begin() + i);
+                break;
+            }
+        }
+    }
+    if (m_spatialComponent == &component) {
+        m_spatialComponent = nullptr;
     }
 }

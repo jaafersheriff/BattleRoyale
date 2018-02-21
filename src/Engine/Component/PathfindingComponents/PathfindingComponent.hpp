@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Component/Component.hpp"
-#include "../CameraComponents/CameraComponent.hpp"
 
 #include "glm/glm.hpp"
 #include <iostream>
@@ -9,22 +8,24 @@
 class PathfindingSystem;
 
 class PathfindingComponent : public Component {
-	
-	public:
 
-		using SystemClass = PathfindingSystem;
+    friend Scene;
+    
+    protected: // only scene or friends can create component
 
-		PathfindingComponent(CameraComponent & cc, float ms) :
-			player(&cc),
-			moveSpeed(ms)
-		{
-		}
+    PathfindingComponent(GameObject & player, float ms);
 
+    virtual void init(GameObject & go) override;
 
-		void init();
-		void update(float);
+    public:
 
-	private:
-		CameraComponent *player;
-		float moveSpeed;
+    virtual SystemID systemID() const override { return SystemID::pathfinding; };
+
+    virtual void update(float) override;
+
+    private:
+
+    SpatialComponent * m_spatial;
+    GameObject * m_player;
+    float m_moveSpeed;
 };

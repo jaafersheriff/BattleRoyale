@@ -18,8 +18,10 @@ class Mouse {
         /* Denotes if mouse buttons are pressed */
         static void setButtonStatus(int, int);
         static bool isDown(int);
+        static void reset();
     private:
         static int mouseButtons[GLFW_MOUSE_BUTTON_LAST];
+        static bool s_reset;
 };
 
 #endif

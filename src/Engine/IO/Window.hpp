@@ -7,53 +7,58 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <string>
+
+#include "glm/glm.hpp"
 
 #include "Mouse.hpp"
 #include "Keyboard.hpp"
 
-#include <string>
-
 #define DEFAULT_WIDTH 1280
-#define DEFAULT_HEIGHT 960
+#define DEFAULT_HEIGHT 720
 
 class Window {
     public:
        /* Reference to GLFW window, mouse, keyboard */
-        GLFWwindow *window;
+        static GLFWwindow * window;
 
         /* Init */
-        int init(std::string);
+        static int init(const std::string &);
 
         /* Set window title */
-        void setTitle(const char *);
+        static void setTitle(const char *);
 
         /* Update */
-        void update(float);
+        static void update(float);
 
         /* Return if window should close */
-        int shouldClose();
+        static int shouldClose();
 
         /* Return running time */
-        double getTime();
+        static double getTime();
 
         /* Shut down */
-        void shutDown();
+        static void shutDown();
 
         /* Set window size */
-        static void setWidth(const int w) { width = w; }
-        static void setHeight(const int h) { height = h; }
-        static int getWidth() { return width; }
-        static int getHeight() { return height; };
-        static float getAspectRatio() { return width / (float)height; }
+        static void setSize(int w, int h);
+        static glm::ivec2 getSize();
+        static float getAspectRatio();
+
+        static void toggleVSync();
+        static bool isVSyncEnabled() { return vSyncEnabled; }
 
         /* ImGui */
         static void toggleImGui() { imGuiEnabled = !imGuiEnabled; }
         static bool isImGuiEnabled() { return imGuiEnabled; }
+
+        static void setCursorEnabled(bool enabled);
+
     private:
-        /* Window size */
-        static int width;
-        static int height;
     
+        static bool vSyncEnabled;
+        static bool cursorEnabled;
+
         /* ImGui */
         static bool imGuiEnabled;
         static float imGuiTimer;
@@ -63,6 +68,8 @@ class Window {
         static void keyCallback(GLFWwindow *, int, int, int, int);
         static void mouseButtonCallback(GLFWwindow *, int, int, int);
         static void characterCallback(GLFWwindow *, unsigned int);
+        static void framebufferSizeCallback(GLFWwindow *, int width, int height);
+        static void cursorEnterCallback(GLFWwindow * window, int entered);
 };
 
 #endif

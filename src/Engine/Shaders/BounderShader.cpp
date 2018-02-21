@@ -2,8 +2,10 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "Component/CollisionComponents/CollisionComponent.hpp"
+#include "Component/CollisionComponents/BounderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Component/CameraComponents/CameraComponent.hpp"
+#include "System/CollisionSystem.hpp"
 
 namespace {
 
@@ -37,10 +39,8 @@ glm::mat4 detCapsuleRodMat(const CapsuleBounderComponent & bounder) {
 
 
 
-BounderShader::BounderShader(const std::string & vertFile, const std::string & fragFile, const CollisionSystem & collisionSys, const CameraComponent & cam) :
+BounderShader::BounderShader(const std::string & vertFile, const std::string & fragFile) :
     Shader(vertFile, fragFile),
-    m_collisionSystem(&collisionSys),
-    m_camera(&cam),
     
     m_aabVBO(0), m_aabIBO(0), m_aabVAO(0),
     m_sphereVBO(0), m_sphereIBO(0), m_sphereVAO(0),
@@ -70,31 +70,38 @@ bool BounderShader::init() {
     return true;
 }
 
-void BounderShader::render(const std::vector<Component *> & components_) {
-    loadMat4(getUniform("u_viewMat"), m_camera->getView());
-    loadMat4(getUniform("u_projMat"), m_camera->getProj());
+void BounderShader::render(const CameraComponent * camera, const std::vector<Component *> & components_) {
+    if (!camera) {
+        return;
+    }
 
-    for (auto & comp_ : m_collisionSystem->components()) {
-        const BounderComponent & comp(*static_cast<const BounderComponent *>(comp_));
+    loadMat4(getUniform("u_viewMat"), camera->getView());
+    loadMat4(getUniform("u_projMat"), camera->getProj());
 
-        loadVec3(getUniform("u_color"), comp.m_collisionFlag ? comp.m_adjustmentFlag ? glm::vec3(1.0f, 0.0f, 0.0f) : glm::vec3(1.0f, 1.0f, 0.0f) : glm::vec3(0.0f, 1.0f, 0.0f));
+    for (auto & comp : CollisionSystem::s_bounderComponents) {
+        BounderComponent & bounder(static_cast<BounderComponent &>(*comp));
 
-        if (dynamic_cast<const AABBounderComponent *>(&comp)) {
-            const AABBounderComponent & aabbBounder(static_cast<const AABBounderComponent &>(comp));
+        bool collided(CollisionSystem::s_collided.count(&bounder));
+        bool adjusted(CollisionSystem::s_adjusted.count(&bounder));
+
+        loadVec3(getUniform("u_color"), collided ? adjusted ? glm::vec3(1.0f, 0.0f, 0.0f) : glm::vec3(1.0f, 0.5f, 0.0f) : glm::vec3(0.0f, 1.0f, 0.0f));
+
+        if (dynamic_cast<const AABBounderComponent *>(&bounder)) {
+            const AABBounderComponent & aabbBounder(static_cast<const AABBounderComponent &>(bounder));
             loadMat4(getUniform("u_modelMat"), detAABBMat(aabbBounder));
 
             glBindVertexArray(m_aabVAO);
             glDrawElements(GL_LINES, m_nAABIndices, GL_UNSIGNED_INT, nullptr);
         }
-        else if (dynamic_cast<const SphereBounderComponent *>(&comp)) {
-            const SphereBounderComponent & sphereBounder(static_cast<const SphereBounderComponent &>(comp));
+        else if (dynamic_cast<const SphereBounderComponent *>(&bounder)) {
+            const SphereBounderComponent & sphereBounder(static_cast<const SphereBounderComponent &>(bounder));
             loadMat4(getUniform("u_modelMat"), detSphereMat(sphereBounder));
 
             glBindVertexArray(m_sphereVAO);
             glDrawElements(GL_LINES, m_nSphereIndices, GL_UNSIGNED_INT, nullptr);
         }
-        else if (dynamic_cast<const CapsuleBounderComponent *>(&comp)) {
-            const CapsuleBounderComponent & capsuleBounder(static_cast<const CapsuleBounderComponent &>(comp));
+        else if (dynamic_cast<const CapsuleBounderComponent *>(&bounder)) {
+            const CapsuleBounderComponent & capsuleBounder(static_cast<const CapsuleBounderComponent &>(bounder));
 
             auto capMats(detCapsuleCapMats(capsuleBounder));
             glm::mat4 & upperCapMat(capMats.first), & lowerCapMat(capMats.second);

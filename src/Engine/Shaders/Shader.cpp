@@ -4,26 +4,16 @@
 #include <fstream>
 #include <iostream>
 
+#include "EngineApp/EngineApp.hpp"
+
 bool Shader::init() {
     GLint rc;
 
-    std::ifstream v(vShaderName.c_str());
-    std::ifstream f(fShaderName.c_str());
-    if (!v.good() || !f.good()) {
-        std::cerr << "Shader(s) don't exist" << std::endl;
-        std::cerr << "\t" << vShaderName << std::endl;
-        std::cerr << "\t" << fShaderName << std::endl;
+    if (!(vShaderId = GLSL::createShader(EngineApp::RESOURCE_DIR + vShaderName, GL_VERTEX_SHADER))) {
         return false;
     }
 
-
-    vShaderId = GLSL::createShader(vShaderName, GL_VERTEX_SHADER);
-    if (vShaderId < 0) {
-        return false;
-    }
-
-    fShaderId = GLSL::createShader(fShaderName, GL_FRAGMENT_SHADER);
-    if (fShaderId < 0) {
+    if (!(fShaderId = GLSL::createShader(EngineApp::RESOURCE_DIR + fShaderName, GL_FRAGMENT_SHADER))) {
         return false;
     }
 
