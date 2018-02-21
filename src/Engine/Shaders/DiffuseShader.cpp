@@ -54,7 +54,7 @@ void DiffuseShader::render(const CameraComponent & camera, const std::vector<Com
     /* Only doing frustum culling if object has bounder(s) */
     /* Get the center and radius of the component */
     for (Component * comp : components) {
-        const std::vector<Component *> & bounders(comp->gameObject()->getComponentsBySystem(SystemID::collision));
+        const std::vector<Component *> & bounders(comp->gameObject()->getComponentsByType<BounderComponent>());
         if (bounders.size()) {
             bool inFrustum(false);
             for (Component * bounder_ : bounders) {

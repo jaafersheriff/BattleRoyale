@@ -37,17 +37,15 @@ class GameObject {
     template <typename CompT> void addComponent(CompT & component);
     void addComponent(Component & component, std::type_index typeI);
 
+    void removeComponent(Component & component, std::type_index typeI);
+
     public:
 
     // get all components;
     const std::vector<Component *> & getComponents() const { return m_allComponents; }
-    // get all components belonging to a system
-    const std::vector<Component *> & getComponentsBySystem(SystemID sysID) const;
     // get all components of a specific type
     template <typename CompT> const std::vector<Component *> & getComponentsByType() const;
 
-    // get first component belonging to a system
-    Component * getComponentBySystem(SystemID sysID) const;
     // get first component of a specific type
     template <typename CompT> CompT * getComponentByType() const;
 
@@ -57,7 +55,6 @@ class GameObject {
     private:
 
     std::vector<Component *> m_allComponents;
-    std::unordered_map<SystemID, std::vector<Component *>> m_compsBySysT;
     std::unordered_map<std::type_index, std::vector<Component *>> m_compsByCompT;
     SpatialComponent * m_spatialComponent;
     std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> m_receivers;

@@ -30,15 +30,19 @@ class System {
 
     public:
 
+    // setup system
     static void init();
 
+    // update system
     static void update(float dt) = 0;
 
     private:
 
-    static void add(Component & component);
+    // scene notifying system that a component was added
+    static void added(Component & component);
 
-    static void remove(Component & component);
+    // scene notifying system that a component was removed
+    static void removed(Component & component);
 
 };
 */

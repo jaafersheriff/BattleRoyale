@@ -8,7 +8,7 @@
 
 
 
-std::vector<DiffuseRenderComponent *> RenderSystem::s_diffuseComponents;
+const std::vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 std::unordered_map<std::type_index, std::unique_ptr<Shader>> RenderSystem::s_shaders;
 float RenderSystem::s_near = k_defNear, RenderSystem::s_far = k_defFar;
 const CameraComponent * RenderSystem::s_camera = nullptr;
@@ -42,7 +42,7 @@ void RenderSystem::update(float dt) {
 
             // this reinterpret_cast business works because unique_ptr's data is
             // guaranteed is the same as a pointer
-            shader.second->render(*s_camera, reinterpret_cast<std::vector<Component *> &>(s_diffuseComponents));
+            shader.second->render(*s_camera, reinterpret_cast<const std::vector<Component *> &>(s_diffuseComponents));
             shader.second->unbind();
         }
     }
@@ -50,24 +50,6 @@ void RenderSystem::update(float dt) {
     /* ImGui */
     if (Window::isImGuiEnabled()) {
         ImGui::Render();
-    }
-}
-
-void RenderSystem::add(Component & component) {
-    if (dynamic_cast<DiffuseRenderComponent *>(&component))
-        s_diffuseComponents.emplace_back(static_cast<DiffuseRenderComponent *>(&component));
-    else
-        assert(false);
-}
-
-void RenderSystem::remove(Component & component) {
-    if (dynamic_cast<DiffuseRenderComponent *>(&component)) {
-        for (auto it(s_diffuseComponents.begin()); it != s_diffuseComponents.end(); ++it) {
-            if (*it == &component) {
-                s_diffuseComponents.erase(it);
-                break;
-            }
-        }
     }
 }
 

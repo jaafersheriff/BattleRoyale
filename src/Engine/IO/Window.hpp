@@ -23,7 +23,7 @@ class Window {
         static GLFWwindow * window;
 
         /* Init */
-        static int init(std::string);
+        static int init(const std::string &);
 
         /* Set window title */
         static void setTitle(const char *);

@@ -5,34 +5,38 @@
 
 GameObject::GameObject() :
     m_allComponents(),
-    m_compsBySysT(),
     m_compsByCompT(),
     m_spatialComponent(nullptr)
 {}
 
 void GameObject::addComponent(Component & component, std::type_index typeI) {
     m_allComponents.push_back(&component);
-    m_compsBySysT[component.systemID()].push_back(&component);
     m_compsByCompT[typeI].push_back(&component);
     if (typeI == std::type_index(typeid(SpatialComponent))) {
         m_spatialComponent = dynamic_cast<SpatialComponent *>(&component);
     }
 }
 
-const std::vector<Component *> & GameObject::getComponentsBySystem(SystemID sysID) const {
-    static const std::vector<Component *> s_emptyList;
-
-    auto it(m_compsBySysT.find(sysID));
-    if (it != m_compsBySysT.end()) {
-        return it->second;
+void GameObject::removeComponent(Component & component, std::type_index typeI) {
+    // remove from allComponents
+    for (auto it(m_allComponents.begin()); it != m_allComponents.end(); ++it) {
+        if (*it == &component) {
+            m_allComponents.erase(it);
+            break;
+        }
     }
-    return s_emptyList;
-}
-
-Component * GameObject::getComponentBySystem(SystemID sysID) const {
-    auto it(m_compsBySysT.find(sysID));
-    if (it != m_compsBySysT.end() && it->second.size()) {
-        return it->second.front();
+    // remove from compsByCompT in reverse order
+    auto compsIt(m_compsByCompT.find(typeI));
+    if (compsIt != m_compsByCompT.end()) {
+        auto & comps(compsIt->second);
+        for (int i(int(comps.size()) - 1); i >= 0; --i) {
+            if (comps[i] == &component) {
+                comps.erase(comps.begin() + i);
+                break;
+            }
+        }
     }
-    return nullptr;
+    if (m_spatialComponent == &component) {
+        m_spatialComponent = nullptr;
+    }
 }

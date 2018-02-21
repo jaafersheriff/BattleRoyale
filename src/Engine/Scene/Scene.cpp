@@ -15,12 +15,12 @@
 
 
 std::vector<std::unique_ptr<GameObject>> Scene::s_gameObjects;
-std::vector<std::unique_ptr<Component>> Scene::s_components;
+std::unordered_map<std::type_index, std::unique_ptr<std::vector<std::unique_ptr<Component>>>> Scene::s_components;
 
 std::vector<std::unique_ptr<GameObject>> Scene::s_gameObjectInitQueue;
 std::vector<GameObject *> Scene::s_gameObjectKillQueue;
 std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Component>>> Scene::s_componentInitQueue;
-std::vector<Component *> Scene::s_componentKillQueue;
+std::vector<std::pair<std::type_index, Component *>> Scene::s_componentKillQueue;
 
 std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>> Scene::s_messages;
 std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> Scene::s_receivers;
@@ -37,6 +37,10 @@ void Scene::init() {
 GameObject & Scene::createGameObject() {
     s_gameObjectInitQueue.emplace_back(new GameObject());
     return *s_gameObjectInitQueue.back().get();
+}
+
+void Scene::destroyGameObject(GameObject & gameObject) {
+    s_gameObjectKillQueue.push_back(&gameObject);
 }
 
 void Scene::update(float dt) {
@@ -74,22 +78,28 @@ void Scene::doInitQueue() {
         auto & comp(std::get<2>(initE));
         go->addComponent(*comp.get(), typeI);
     }
-    // initialize components and add to systems
+    // add components to scene, initialize them, and indicate to systems that they've been added
     for (int i(0); i < s_componentInitQueue.size(); ++i) {
         auto & initE(s_componentInitQueue[i]);
         GameObject * go(std::get<0>(initE));
         std::type_index typeI(std::get<1>(initE));
         auto & comp(std::get<2>(initE));
-        comp->init(*go);
-        switch (comp->systemID()) {
-            case SystemID::    gameLogic:     GameLogicSystem::add(*comp); break;
-            case SystemID::  pathfinding:   PathfindingSystem::add(*comp); break;
-            case SystemID::      spatial:       SpatialSystem::add(*comp); break;
-            case SystemID::    collision:     CollisionSystem::add(*comp); break;
-            case SystemID::postCollision: PostCollisionSystem::add(*comp); break;
-            case SystemID::       render:        RenderSystem::add(*comp); break;
+        auto it(s_components.find(typeI));
+        if (it == s_components.end()) {
+            s_components[typeI].reset(new std::vector<std::unique_ptr<Component>>());
+            it = s_components.find(typeI);
         }
-        s_components.emplace_back(std::move(comp));
+        it->second->emplace_back(std::move(comp));
+        Component & c(*it->second->back());
+        switch (c.systemID()) {
+            case SystemID::    gameLogic:     GameLogicSystem::added(c); break;
+            case SystemID::  pathfinding:   PathfindingSystem::added(c); break;
+            case SystemID::      spatial:       SpatialSystem::added(c); break;
+            case SystemID::    collision:     CollisionSystem::added(c); break;
+            case SystemID::postCollision: PostCollisionSystem::added(c); break;
+            case SystemID::       render:        RenderSystem::added(c); break;
+        }
+        c.init(*go);
     }
     s_componentInitQueue.clear();
 }
@@ -98,21 +108,26 @@ void Scene::doKillQueue() {
     // kill game objects
     for (auto killIt(s_gameObjectKillQueue.begin()); killIt != s_gameObjectKillQueue.end(); ++killIt) {
         bool found(false);
-        // look in active game objects
-        for (auto it(s_gameObjects.begin()); it != s_gameObjects.end(); ++it) {
-            GameObject * go(it->get());
+        // look in active game objects, in reverse order
+        for (int i(int(s_gameObjects.size()) - 1); i >= 0; --i) {
+            GameObject * go(s_gameObjects[i].get());
             if (go == *killIt) {
-                s_componentKillQueue.insert(s_componentKillQueue.end(), go->getComponents().cbegin(), go->getComponents().cend());
-                s_gameObjects.erase(it);
+                // add game object's componets to kill queue
+                for (auto & compTIt(go->m_compsByCompT.begin()); compTIt != go->m_compsByCompT.end(); ++compTIt) {
+                    for (auto & comp : compTIt->second) {
+                        s_componentKillQueue.emplace_back(compTIt->first, comp);
+                    }
+                }
+                s_gameObjects.erase(s_gameObjects.begin() + i);
                 found = true;
                 break;
             }
         }
         if (!found) {
-            // look in game object initialization queue
-            for (auto initIt(s_gameObjectInitQueue.begin()); initIt != s_gameObjectInitQueue.end(); ++initIt) {
-                if (initIt->get() == *killIt) {
-                    s_gameObjectInitQueue.erase(initIt);
+            // look in game object initialization queue, in reverse order
+            for (int i(int(s_gameObjectInitQueue.size()) - 1); i >= 0; --i) {
+                if (s_gameObjectInitQueue[i].get() == *killIt) {
+                    s_gameObjectInitQueue.erase(s_gameObjectInitQueue.begin() + i);
                     break;
                 }
             }
@@ -121,32 +136,41 @@ void Scene::doKillQueue() {
     s_gameObjectKillQueue.clear();
     
     // kill components
-    for (auto & comp : s_componentKillQueue) {
+    for (auto & killE : s_componentKillQueue) {
+        std::type_index typeI(killE.first);
+        Component * comp(killE.second);
+        // remove from game object
+        if (comp->gameObject()) {
+            comp->gameObject()->removeComponent(*comp, typeI);
+        }
         bool found(false);
-        // look in active components
-        switch (comp->systemID()) {
-            case SystemID::    gameLogic:     GameLogicSystem::remove(*comp); continue;
-            case SystemID::  pathfinding:   PathfindingSystem::remove(*comp); continue;
-            case SystemID::      spatial:       SpatialSystem::remove(*comp); continue;
-            case SystemID::    collision:     CollisionSystem::remove(*comp); continue;
-            case SystemID::postCollision: PostCollisionSystem::remove(*comp); continue;
-            case SystemID::       render:        RenderSystem::remove(*comp); continue;
-        }
-        for (auto it(s_components.begin()); it != s_components.end(); ++it) {
-            if (it->get() == comp) {
-                s_components.erase(it);
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            // look in component initialization queue
-            for (auto initIt(s_componentInitQueue.begin()); initIt != s_componentInitQueue.end(); ++initIt) {
-                if (std::get<2>(*initIt).get() == comp) {
-                    s_componentInitQueue.erase(initIt);
+        // look in active components, in reverse order
+        if (s_components.count(typeI)) {
+            auto & comps(*s_components.at(typeI));
+            for (int i(int(comps.size()) - 1); i >= 0; --i) {
+                if (comps[i].get() == comp) {
+                    comps.erase(comps.begin() + i);
+                    found = true;
                     break;
                 }
             }
+        }
+        if (!found) {
+            // look in component initialization queue, in reverse order
+            for (int i(int(s_componentInitQueue.size()) - 1); i >= 0; --i) {
+                if (std::get<2>(s_componentInitQueue[i]).get() == comp) {
+                    s_componentInitQueue.erase(s_componentInitQueue.begin() + i);
+                    break;
+                }
+            }
+        }
+        switch (comp->systemID()) {
+            case SystemID::    gameLogic:     GameLogicSystem::removed(*comp); continue;
+            case SystemID::  pathfinding:   PathfindingSystem::removed(*comp); continue;
+            case SystemID::      spatial:       SpatialSystem::removed(*comp); continue;
+            case SystemID::    collision:     CollisionSystem::removed(*comp); continue;
+            case SystemID::postCollision: PostCollisionSystem::removed(*comp); continue;
+            case SystemID::       render:        RenderSystem::removed(*comp); continue;
         }
     }
     s_componentKillQueue.clear();

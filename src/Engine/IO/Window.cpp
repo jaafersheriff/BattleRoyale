@@ -59,7 +59,7 @@ void Window::cursorEnterCallback(GLFWwindow * window, int entered) {
     Mouse::reset();
 }
 
-int Window::init(std::string name) {
+int Window::init(const std::string & name) {
     /* Set error callback */
     glfwSetErrorCallback(errorCallback);
 
@@ -151,21 +151,19 @@ void Window::update(float dt) {
 
     /* Update ImGui */
     // TODO: clean up this code
-    static bool imGuiActive = false;
     static bool priorCursorState;
     imGuiTimer += dt;
     if (Keyboard::isKeyPressed(GLFW_KEY_GRAVE_ACCENT) && imGuiTimer >= 0.5) {
-        if (!imGuiActive) {
+        if (!isImGuiEnabled()) {
             priorCursorState = cursorEnabled;
             setCursorEnabled(true);
         }
 
         toggleImGui();
         imGuiTimer = 0.0;
-        imGuiActive = !imGuiActive;
         ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
 
-        if (!imGuiActive) {
+        if (!isImGuiEnabled()) {
             setCursorEnabled(priorCursorState);
         }
     }

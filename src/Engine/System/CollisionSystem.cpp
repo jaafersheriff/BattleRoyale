@@ -141,7 +141,7 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
 
 
 
-std::vector<BounderComponent *> CollisionSystem::s_bounderComponents;
+const std::vector<BounderComponent *> & CollisionSystem::s_bounderComponents(Scene::getComponents<BounderComponent>());
 std::unordered_set<BounderComponent *> CollisionSystem::s_potentials;
 std::unordered_set<BounderComponent *> CollisionSystem::s_collided;
 std::unordered_set<BounderComponent *> CollisionSystem::s_adjusted;
@@ -150,7 +150,7 @@ void CollisionSystem::init() {
     auto spatTransformCallback(
         [&](const Message & msg_) {
             const SpatialTransformTag & msg(static_cast<const SpatialTransformTag &>(msg_));
-            for (auto & bounder : msg.spatial.gameObject()->getComponentsBySystem(SystemID::collision)) {
+            for (auto & bounder : msg.spatial.gameObject()->getComponentsByType<BounderComponent>()) {
                 s_potentials.insert(static_cast<BounderComponent *>(bounder));
             }
         }
@@ -212,7 +212,7 @@ void CollisionSystem::update(float dt) {
         // set position rather than move because they are conceptually different
         // this will come into play if we do time step interpolation
         spat.setPosition(spat.position() + delta, true);
-        for (Component * comp : gameObject->getComponentsBySystem(SystemID::collision)) {
+        for (Component * comp : gameObject->getComponentsByType<BounderComponent>()) {
             BounderComponent * bounder(static_cast<BounderComponent *>(comp));
             s_potentials.insert(bounder);
             bounder->update(dt);
@@ -327,33 +327,21 @@ BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, 
     }
 
     if (allowSphere && sphereV <= boxV && sphereV <= capsuleV) {
-        return Scene::addComponent<SphereBounderComponent>(gameObject, weight, sphere);
+        return Scene::addComponentAs<SphereBounderComponent, BounderComponent>(gameObject, weight, sphere);
     }
     else if (allowAAB && boxV <= sphereV && boxV <= capsuleV) {
-        return Scene::addComponent<AABBounderComponent>(gameObject, weight, box);
+        return Scene::addComponentAs<AABBounderComponent, BounderComponent>(gameObject, weight, box);
     }
     else {
-        return Scene::addComponent<CapsuleBounderComponent>(gameObject, weight, capsule);
+        return Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(gameObject, weight, capsule);
     }
 }
 
-void CollisionSystem::add(Component & component) {
-    if (dynamic_cast<BounderComponent *>(&component)) {
-        s_bounderComponents.push_back(static_cast<BounderComponent *>(&component));
-        s_potentials.insert(s_bounderComponents.back());
-    }
-    else {
-        assert(false);
-    }
+void CollisionSystem::added(Component & component) {
+    if (dynamic_cast<BounderComponent *>(&component))
+        s_potentials.insert(static_cast<BounderComponent *>(&component));
 }
 
-void CollisionSystem::remove(Component & component) {
-    if (dynamic_cast<BounderComponent *>(&component)) {
-        for (auto it(s_bounderComponents.begin()); it != s_bounderComponents.end(); ++it) {
-            if (*it == &component) {
-                s_bounderComponents.erase(it);
-                break;
-            }
-        }
-    }
+void CollisionSystem::removed(Component & component) {
+
 }

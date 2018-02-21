@@ -148,10 +148,10 @@ int main(int argc, char **argv) {
     SpatialComponent & playerSpatComp(Scene::addComponent<SpatialComponent>(player));
     playerSpatComp.setPosition(playerPos);
     NewtonianComponent & playerNewtComp(Scene::addComponent<NewtonianComponent>(player, playerMaxSpeed));
-    GravityComponent & playerGravComp(Scene::addComponent<GravityComponent>(player));
+    GravityComponent & playerGravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(player));
     GroundComponent & playerGroundComp(Scene::addComponent<GroundComponent>(player));
     Capsule playerCap(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth);
-    CapsuleBounderComponent & playerBoundComp(Scene::addComponent<CapsuleBounderComponent>(player, 1, playerCap));
+    CapsuleBounderComponent & playerBoundComp(Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(player, 1, playerCap));
     CameraComponent & playerCamComp(Scene::addComponent<CameraComponent>(player, playerFOV));
     PlayerControllerComponent & playerContComp(Scene::addComponent<PlayerControllerComponent>(player, playerLookSpeed, playerMoveSpeed, playerJumpSpeed));
 
@@ -234,48 +234,13 @@ int main(int argc, char **argv) {
             glm::mat3() // rotation
         ));
         NewtonianComponent & bunnyNewtComp(Scene::addComponent<NewtonianComponent>(bunny, playerMaxSpeed));
-        GravityComponent & bunnyGravComp(Scene::addComponent<GravityComponent>(bunny));
+        GravityComponent & bunnyGravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(bunny));
         BounderComponent & bunnyBoundComp(CollisionSystem::addBounderFromMesh(bunny, 1, *bunnyMesh, false, true, false));
         DiffuseRenderComponent & bunnyDiffuse = Scene::addComponent<DiffuseRenderComponent>(
             bunny,
             RenderSystem::getShader<DiffuseShader>()->pid,
             *bunnyMesh,
             ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
-        /* Bunny ImGui panes */
-        /*ImGuiComponent & bIc = Scene::addComponent<ImGuiComponent>(
-            "Bunny", 
-            [&]() {
-                // Material properties
-                ImGui::SliderFloat("Ambient", &bunnyDiffuse.modelTexture.material.ambient, 0.f, 1.f);
-                ImGui::SliderFloat("Red", &bunnyDiffuse.modelTexture.material.diffuse.r, 0.f, 1.f);
-                ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
-                ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
-                // Spatial properties
-                // dont want to be setting spat props unnecessarily
-                glm::vec3 scale = bunny.getSpatial()->scale();
-                if (ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f)) {
-                    bunny.getSpatial()->setScale(scale);
-                }
-                glm::vec3 position = bunny.getSpatial()->position();
-
-                if (ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f)) {
-                    bunny.getSpatial()->setPosition(position);
-                }
-                static glm::vec3 axis; static float angle(0.0f);
-                if (
-                    ImGui::SliderFloat3("Rotation Axis", glm::value_ptr(axis), 0.0f, 1.0f) ||
-                    ImGui::SliderFloat("Rotation Angle", &angle, -glm::pi<float>(), glm::pi<float>()))
-                {
-                    if (angle != 0.0f && axis != glm::vec3()) {
-                        bunny.getSpatial()->setOrientation(glm::rotate(angle, glm::normalize(axis)));
-                    }
-                    else {
-                        bunny.getSpatial()->setOrientation(glm::mat3());
-                    }
-                }
-            }
-        );*/
-        //bunny.addComponent(bIc);
         PathfindingComponent & bunnyPathComp(Scene::addComponent<PathfindingComponent>(bunny, player, 1.0f));
     }
 

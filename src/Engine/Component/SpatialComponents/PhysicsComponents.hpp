@@ -96,6 +96,7 @@ class AcceleratorComponent : public Component {
 
 
 // accelerates the object by gravity
+// *** HAS TO BE ADDED TO SCENE AS ACCELERATORCOMPONENT ***
 class GravityComponent : public AcceleratorComponent {
 
     friend Scene;
