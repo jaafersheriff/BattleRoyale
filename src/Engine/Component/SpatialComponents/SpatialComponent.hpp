@@ -1,6 +1,10 @@
+#pragma once
+
 #include "Component/Component.hpp"
 
 #include "glm/glm.hpp"
+
+#include "Orientable.hpp"
 
 
 
@@ -8,61 +12,50 @@ class SpatialSystem;
 
 
 
-class SpatialComponent : public Component {
+class SpatialComponent : public Component, public Orientable {
 
     friend Scene;
+    friend SpatialSystem;
+
+    protected: // only scene or friends can create component
+
+    SpatialComponent();
+    SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale);
+    SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & orientation);
 
     public:
 
-    using SystemClass = SpatialSystem;
-
-    private:
-
-    glm::vec3 m_position;
-    glm::vec3 m_scale;
-    glm::mat3 m_rotation;
-    bool m_transformedFlag; // has the object been spatially modified this tick
-
-    mutable glm::mat4 m_modelMatrix;
-    mutable glm::mat3 m_normalMatrix;
-    mutable bool m_modelMatrixValid;
-    mutable bool m_normalMatrixValid;
-
-    protected: // only scene can create component
-
-    SpatialComponent();
-    SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & rotation);
+    virtual SystemID systemID() const override { return SystemID::spatial; };
 
     public:
 
     virtual void update(float dt) override;
 
     // sets the absolute position
-    void setPosition(const glm::vec3 & pos);
+    void setPosition(const glm::vec3 & pos, bool silently = false);
 
     // moves current position by delta
-    void move(const glm::vec3 & delta);
+    void move(const glm::vec3 & delta, bool silently = false);
 
     // sets the absolute scale
-    void setScale(const glm::vec3 & scale);
+    void setScale(const glm::vec3 & scale, bool silently = false);
 
     // multiplies current scale by factor
-    void scale(const glm::vec3 & factor);
+    void scale(const glm::vec3 & factor, bool silently = false);
 
     // sets the absolute rotation
-    void setRotation(const glm::mat3 & rot);
+    void setOrientation(const glm::mat3 & rot, bool silently = false);
     
     // rotates current rotation by mat
-    void rotate(const glm::mat3 & mat);
+    void rotate(const glm::mat3 & mat, bool silently = false);
+
+    // set the orthonormal basis vectors
+    void setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w, bool silently = false);
+
+    public:
 
     const glm::vec3 & position() const { return m_position; }
     const glm::vec3 & scale() const { return m_scale; }
-    const glm::mat3 & rotation() const { return m_rotation; }
-
-    bool transformedFlag() const { return m_transformedFlag; }
-    // Collision system needs this. It should be the only thing that calls this.
-    // This is not a nice solution, but it's simple and direct
-    void clearTransformedFlag() { m_transformedFlag = false; }
 
     const glm::mat4 & modelMatrix() const;
     const glm::mat3 & normalMatrix() const;
@@ -71,5 +64,15 @@ class SpatialComponent : public Component {
 
     void detModelMatrix() const;
     void detNormalMatrix() const;
+
+    private:
+
+    glm::vec3 m_position;
+    glm::vec3 m_scale;
+
+    mutable glm::mat4 m_modelMatrix;
+    mutable glm::mat3 m_normalMatrix;
+    mutable bool m_modelMatrixValid;
+    mutable bool m_normalMatrixValid;
 
 };

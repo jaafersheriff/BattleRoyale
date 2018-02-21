@@ -1,13 +1,37 @@
 #include "SpatialSystem.hpp"
 
+#include "Scene/Scene.hpp"
 
 
-SpatialSystem::SpatialSystem(const std::vector<Component *> & components) :
-    System(components)
-{}
+
+const std::vector<SpatialComponent *> & SpatialSystem::s_spatialComponents(Scene::getComponents<SpatialComponent>());
+const std::vector<NewtonianComponent *> & SpatialSystem::s_newtonianComponents(Scene::getComponents<NewtonianComponent>());
+const std::vector<AcceleratorComponent *> & SpatialSystem::s_acceleratorComponents(Scene::getComponents<AcceleratorComponent>());
+glm::vec3 SpatialSystem::s_gravityDir = glm::vec3(0.0f, -1.0f, 0.0f);
+float SpatialSystem::s_gravityMag = 10.0f;
+float SpatialSystem::s_coefficientOfFriction = 0.5f;
 
 void SpatialSystem::update(float dt) {
-    for (Component * comp : m_components) {
-        //if (dynamic_cast<)
+    for (auto & comp : s_acceleratorComponents) {
+        comp->update(dt);
     }
+    for (auto & comp : s_newtonianComponents) {
+        comp->update(dt);
+    }
+    for (auto & comp : s_spatialComponents) {
+        comp->update(dt);
+    }
+}
+
+void SpatialSystem::setGravity(const glm::vec3 & gravity) {
+    s_gravityMag = glm::length(gravity);
+    s_gravityDir = gravity / s_gravityMag;
+}
+
+void SpatialSystem::setGravityDir(const glm::vec3 & dir) {
+    s_gravityDir = dir;
+}
+
+void SpatialSystem::setGravityMag(float mag) {
+    s_gravityMag = mag;
 }

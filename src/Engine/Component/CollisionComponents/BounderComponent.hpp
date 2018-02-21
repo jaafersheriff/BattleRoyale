@@ -22,25 +22,18 @@ class BounderComponent : public Component {
 
     friend Scene;
     friend CollisionSystem;
-    friend BounderShader;
 
-    public:
+    protected: // only scene or friends can create component
 
-    using SystemClass = CollisionSystem;
+    BounderComponent(unsigned int weight);
 
-    protected:
-
-    int m_weight;
-    bool m_collisionFlag; // was there a collision this tick
-    bool m_adjustmentFlag; // was the object moved due to a collision this tick
-
-    protected: // only scene can create component
-
-    BounderComponent(int weight);
+    virtual void init(GameObject & go) override;
 
     public:
 
     virtual ~BounderComponent() override = default;
+
+    virtual SystemID systemID() const override { return SystemID::collision; };
 
     virtual void update(float dt) = 0;
 
@@ -50,22 +43,28 @@ class BounderComponent : public Component {
 
     virtual Sphere enclosingSphere() const = 0;
 
-    int weight() const { return m_weight; }
+    unsigned int weight() const { return m_weight; }
+
+    protected:
+
+    SpatialComponent * m_spatial;
+    unsigned int m_weight;
 
 };
 
 
 
+// *** HAS TO BE ADDED TO SCENE AS BOUNDERCOMPONENT ***
 class AABBounderComponent : public BounderComponent {
+    
+    friend Scene;
+    friend CollisionSystem;
 
-    private:
+    protected: // only scene or friends can create component
 
-    const AABox m_box;
-    AABox m_transBox;
+    AABBounderComponent(unsigned int weight, const AABox & box);
 
     public:
-
-    AABBounderComponent(int weight, const AABox & box);
 
     virtual void update(float dt) override;
 
@@ -78,20 +77,26 @@ class AABBounderComponent : public BounderComponent {
     const AABox & box() const { return m_box; }
     const AABox & transBox() const { return m_transBox; }
 
+    private:
+
+    const AABox m_box;
+    AABox m_transBox;
+
 };
 
 
 
+// *** HAS TO BE ADDED TO SCENE AS BOUNDERCOMPONENT ***
 class SphereBounderComponent : public BounderComponent {
+    
+    friend Scene;
+    friend CollisionSystem;
 
-    private:
+    protected: // only scene or friends can create component
 
-    const Sphere m_sphere;
-    Sphere m_transSphere;
+    SphereBounderComponent(unsigned int weight, const Sphere & sphere);
 
     public:
-
-    SphereBounderComponent(int weight, const Sphere & sphere);
 
     virtual void update(float dt) override;
 
@@ -104,20 +109,26 @@ class SphereBounderComponent : public BounderComponent {
     const Sphere & sphere() const { return m_sphere; }
     const Sphere & transSphere() const { return m_transSphere; }
 
+    private:
+
+    const Sphere m_sphere;
+    Sphere m_transSphere;
+
 };
 
 
 
+// *** HAS TO BE ADDED TO SCENE AS BOUNDERCOMPONENT ***
 class CapsuleBounderComponent : public BounderComponent {
+    
+    friend Scene;
+    friend CollisionSystem;
 
-    private:
+    protected: // only scene or friends can create component
 
-    const Capsule m_capsule;
-    Capsule m_transCapsule;
+    CapsuleBounderComponent(unsigned int weight, const Capsule & capsule);
 
     public:
-
-    CapsuleBounderComponent(int weight, const Capsule & capsule);
 
     virtual void update(float dt) override;
 
@@ -130,11 +141,9 @@ class CapsuleBounderComponent : public BounderComponent {
     const Capsule & capsule() const { return m_capsule; }
     const Capsule & transCapsule() const { return m_transCapsule; }
 
+    private:
+
+    const Capsule m_capsule;
+    Capsule m_transCapsule;
+
 };
-
-
-
-// chooses the bounder with the smallest volume from the vertex data of the given mesh
-// optionally enable/disable certain types of bounders. If all are false you are
-// dumb and it acts as if all were true
-std::unique_ptr<BounderComponent> createBounderFromMesh(int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule);

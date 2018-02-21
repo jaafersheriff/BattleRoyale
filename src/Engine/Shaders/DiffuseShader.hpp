@@ -4,16 +4,16 @@
 #define _DIFFUSE_SHADER_HPP_
 
 #include "Shader.hpp"
-#include "Component/CameraComponents/CameraComponent.hpp"
+
+class CameraComonent;
 
 class DiffuseShader : public Shader {
     public:
-        DiffuseShader(const std::string & vertFile, const std::string & fragFile, const CameraComponent & cam, const glm::vec3 & light);
+        DiffuseShader(const std::string & vertFile, const std::string & fragFile, const glm::vec3 & light);
 
         bool init();
-        void render(const std::vector<Component *> &);
+        virtual void render(const CameraComponent * camera, const std::vector<Component *> &) override;
 
-        const CameraComponent * camera;
         const glm::vec3 * lightPos;
 
         bool isWireFrame() const { return showWireFrame; }

@@ -33,8 +33,8 @@ namespace GLSL {
     void printProgramInfoLog(GLuint program);
     void printShaderInfoLog(GLuint shader);
     void checkVersion();
+    bool textFileRead(const std::string & filepath, std::string & r_dst);
     int textFileWrite(const char *filename, char *s);
-    char *textFileRead(const char *filename);
     GLuint createShader(const std::string &, GLenum type);
 }
 
