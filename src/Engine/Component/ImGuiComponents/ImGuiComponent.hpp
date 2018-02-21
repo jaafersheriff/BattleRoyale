@@ -11,7 +11,7 @@
 #include <map>
 #include <functional>
 
-class GameLogicSystem;
+class RenderSystem;
 
 class ImGuiComponent : public Component {
 

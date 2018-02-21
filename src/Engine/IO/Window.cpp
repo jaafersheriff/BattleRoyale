@@ -11,7 +11,7 @@ GLFWwindow * Window::window = nullptr;
 bool Window::vSyncEnabled = true;
 bool Window::cursorEnabled = true;
 bool Window::imGuiEnabled = false;
-float Window::imGuiTimer = 1.0;
+float Window::imGuiTimer = 1.f;
 
 void Window::errorCallback(int error, const char *desc) {
     std::cerr << "Error " << error << ": " << desc << std::endl;
@@ -22,31 +22,37 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, true);
     }
 
-    /* ImGui callback if it is active */
+#ifdef DEBUG_MODE
     if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
         ImGui_ImplGlfwGL3_KeyCallback(window, key, scancode, action, mods);
     }
-    else {
+    else
+#endif
+    {
         Keyboard::setKeyStatus(key, action);
         Scene::sendMessage<KeyMessage>(nullptr, key, action, mods);
     }
 }
 
 void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
-    /* ImGui callback if it is active */
+#ifdef DEBUG_MODE
     if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
         ImGui_ImplGlfwGL3_MouseButtonCallback(window, button, action, mods);
     }
-    else {
+    else 
+#endif
+    {
         Mouse::setButtonStatus(button, action);
         Scene::sendMessage<MouseMessage>(nullptr, button, action, mods);
     }
 }
 
 void Window::characterCallback(GLFWwindow *window, unsigned int c) {
+#ifdef DEBUG_MODE
     if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
         ImGui_ImplGlfwGL3_CharCallback(window, c);
     }
+#endif
 }
 
 void Window::framebufferSizeCallback(GLFWwindow * window, int width, int height) {
@@ -149,6 +155,7 @@ void Window::update(float dt) {
     glfwGetCursorPos(window, &x, &y);
     Mouse::update(x, y);
 
+#ifdef DEBUG_MODE
     /* Update ImGui */
     // TODO: clean up this code
     static bool priorCursorState;
@@ -170,6 +177,7 @@ void Window::update(float dt) {
     else {
         ImGui_ImplGlfwGL3_NewFrame(isImGuiEnabled());
     }
+#endif
     
     glfwSwapBuffers(window);
     glfwPollEvents();

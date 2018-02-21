@@ -4,6 +4,7 @@
 
 #include "IO/Window.hpp"
 #include "ThirdParty/imgui/imgui.h"
+#include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
 #include "Scene/Scene.hpp"
 
 
@@ -22,6 +23,9 @@ void RenderSystem::init() {
 }
 
 void RenderSystem::update(float dt) {
+    /* Update components */
+    System::update(dt);
+
     /* Reset rendering display */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
@@ -48,9 +52,11 @@ void RenderSystem::update(float dt) {
     }
 
     /* ImGui */
+#ifdef DEBUG_MODE
     if (Window::isImGuiEnabled()) {
         ImGui::Render();
     }
+#endif
 }
 
 void RenderSystem::setNearFar(float near, float far) {
