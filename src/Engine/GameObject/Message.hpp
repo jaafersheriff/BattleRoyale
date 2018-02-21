@@ -63,7 +63,9 @@ class CameraComponent;
 
 
 
-struct Message {};
+struct Message {
+    virtual ~Message() = default;
+};
 
 
 

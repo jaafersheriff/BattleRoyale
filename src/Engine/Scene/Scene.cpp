@@ -177,27 +177,34 @@ void Scene::doKillQueue() {
 }
 
 void Scene::relayMessages() {
-    for (auto & message : s_messages) {
-        GameObject * gameObject(std::get<0>(message));
-        std::type_index msgTypeI(std::get<1>(message));
-        auto & msg(std::get<2>(message));
+    static std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>> s_messagesBuffer;
 
-        // send object-level message
-        if (gameObject) {
-            auto receivers(gameObject->m_receivers.find(msgTypeI));
-            if (receivers != gameObject->m_receivers.end()) {
+    while (s_messages.size()) {
+        // this keeps things from breaking if messages are sent from receivers
+        std::swap(s_messages, s_messagesBuffer);
+
+        for (auto & message : s_messagesBuffer) {
+            GameObject * gameObject(std::get<0>(message));
+            std::type_index msgTypeI(std::get<1>(message));
+            auto & msg(std::get<2>(message));
+
+            // send object-level message
+            if (gameObject) {
+                auto receivers(gameObject->m_receivers.find(msgTypeI));
+                if (receivers != gameObject->m_receivers.end()) {
+                    for (auto & receiver : receivers->second) {
+                        receiver(*msg);
+                    }
+                }
+            }
+            // send scene-level message
+            auto receivers(s_receivers.find(msgTypeI));
+            if (receivers != s_receivers.end()) {
                 for (auto & receiver : receivers->second) {
                     receiver(*msg);
                 }
             }
         }
-        // send scene-level message
-        auto receivers(s_receivers.find(msgTypeI));
-        if (receivers != s_receivers.end()) {
-            for (auto & receiver : receivers->second) {
-                receiver(*msg);
-            }
-        }
+        s_messagesBuffer.clear();
     }
-    s_messages.clear();
 }

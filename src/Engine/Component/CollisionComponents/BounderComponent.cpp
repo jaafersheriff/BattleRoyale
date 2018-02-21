@@ -124,7 +124,7 @@ void CapsuleBounderComponent::update(float dt) {
     m_transCapsule.center = m_spatial->modelMatrix() * glm::vec4(m_capsule.center, 1.0f);
     const glm::vec3 & scale(m_spatial->scale());
     m_transCapsule.radius = glm::max(scale.x, scale.z) * m_capsule.radius;
-    m_transCapsule.height = glm::max(0.0f, scale.y * (m_capsule.height + 2.0f * m_capsule.radius) - 2.0f * m_transCapsule.radius);
+    m_transCapsule.height = glm::max(0.0f, scale.y * (m_capsule.height + 2.0f * m_capsule.radius) - 2.0f * m_capsule.radius);
 }
 
 bool CapsuleBounderComponent::collide(const BounderComponent & o, glm::vec3 * delta) const {
