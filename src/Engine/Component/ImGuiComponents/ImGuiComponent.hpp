@@ -11,13 +11,17 @@
 #include <map>
 #include <functional>
 
-class GameLogicSystem;
+class RenderSystem;
 
 class ImGuiComponent : public Component {
 
     friend Scene;
 
-    protected: // only scene or friends can create component
+    public:
+
+    using SystemClass = RenderSystem;
+
+    protected:
 
         ImGuiComponent(std::string name, std::function<void()> fun) :
             name(name),
@@ -25,8 +29,6 @@ class ImGuiComponent : public Component {
         {}
 
     public:
-
-        virtual SystemID systemID() const override { return SystemID::gameLogic; };
 
         void update(float);
 
