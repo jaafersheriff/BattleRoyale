@@ -101,7 +101,7 @@ CompT & Scene::addComponentAs(GameObject & gameObject, Args &&... args) {
 }
 
 template <typename CompT>
-static void Scene::removeComponent(CompT & component) {
+void Scene::removeComponent(CompT & component) {
     static_assert(!std::is_same<CompT, Component>::value, "CompT must be the derived component type");
     s_componentKillQueue.emplace_back(typeid(CompT), &component);
 }

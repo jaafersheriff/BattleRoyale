@@ -69,7 +69,7 @@ class GameObject {
 
 template <typename CompT>
 void GameObject::addComponent(CompT & component) {
-    addComponent(component, std::type_index(typeof(CompT)));
+    addComponent(component, std::type_index(typeid(CompT)));
 }
 
 template <typename CompT>

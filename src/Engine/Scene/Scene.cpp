@@ -113,7 +113,7 @@ void Scene::doKillQueue() {
             GameObject * go(s_gameObjects[i].get());
             if (go == *killIt) {
                 // add game object's componets to kill queue
-                for (auto & compTIt(go->m_compsByCompT.begin()); compTIt != go->m_compsByCompT.end(); ++compTIt) {
+                for (auto compTIt(go->m_compsByCompT.begin()); compTIt != go->m_compsByCompT.end(); ++compTIt) {
                     for (auto & comp : compTIt->second) {
                         s_componentKillQueue.emplace_back(compTIt->first, comp);
                     }
