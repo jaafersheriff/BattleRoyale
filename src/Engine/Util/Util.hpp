@@ -3,7 +3,6 @@
 #ifndef _UTIL_HPP_
 #define _UTIL_HPP_
 
-#include <string>
 #include <iostream>
 #include <sstream>
 #include <fstream>

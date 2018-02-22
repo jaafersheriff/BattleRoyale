@@ -2,7 +2,6 @@
 #ifndef _FILE_READER_HPP_
 #define _FILE_READER_HPP_
 #include <fstream>
-#include <string>
 
 #include "ThirdParty/rapidjson/document.h"
 #include "ThirdParty/rapidjson/filereadstream.h"

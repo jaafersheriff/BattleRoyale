@@ -5,8 +5,6 @@
 #include "Model/Mesh.hpp"
 #include "Model/Texture.hpp"
 
-#include <string>
-#include <unordered_map>
 class Library {
     public:
         static UnorderedMap<String, Mesh *> meshes;

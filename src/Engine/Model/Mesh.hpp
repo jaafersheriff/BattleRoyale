@@ -4,8 +4,6 @@
 #ifndef _MESH_HPP_
 #define _MESH_HPP_
 
-#include <vector>   /* vector */
-
 #include "glm/glm.hpp"
 
 #include "Util/Memory.hpp"

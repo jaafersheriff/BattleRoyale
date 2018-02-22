@@ -7,8 +7,6 @@
 #include "ThirdParty/imgui/imgui.h"
 #include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
 
-#include <string>
-#include <map>
 #include <functional>
 
 class RenderSystem;

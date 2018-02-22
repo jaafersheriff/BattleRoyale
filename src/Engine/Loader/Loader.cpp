@@ -6,7 +6,6 @@
 #include "ThirdParty/stb_image.h"
 
 #include <iostream>
-#include <vector>
 
 #include "Util/Memory.hpp"
 

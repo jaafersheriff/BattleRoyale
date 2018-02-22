@@ -1,7 +1,5 @@
 #include "CollisionSystem.hpp"
 
-#include <unordered_set>
-#include <unordered_map>
 #include <algorithm>
 
 #include "glm/gtx/component_wise.hpp"

@@ -4,8 +4,6 @@
 #ifndef _GAME_OBJECT_HPP_
 #define _GAME_OBJECT_HPP_
 
-#include <vector>
-#include <unordered_map>
 #include <type_traits>
 #include <typeindex>
 #include <functional>

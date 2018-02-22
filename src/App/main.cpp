@@ -6,7 +6,6 @@ extern "C" {
 }
 #endif
 
-#include <string>
 #include <iostream>
 
 #include "glm/gtx/transform.hpp"

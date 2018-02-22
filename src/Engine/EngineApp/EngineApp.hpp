@@ -6,8 +6,6 @@
 #include "Loader/Loader.hpp"
 #include "Scene/Scene.hpp"
 
-#include <string>
-
 // static class
 class EngineApp {
 
