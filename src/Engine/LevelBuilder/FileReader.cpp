@@ -79,7 +79,8 @@ void FileReader::initGameObject(std::string filePath, std::string texturePath, g
         gameObject,
         RenderSystem::getShader<DiffuseShader>()->pid,
         *Loader::getMesh(filePath),
-        ModelTexture(Loader::getTexture(texturePath), 0.4f, glm::vec3(0.f), glm::vec3(0.f))
+        ModelTexture(Loader::getTexture(texturePath), 0.4f, glm::vec3(0.f), glm::vec3(0.f)), 
+        false
     ));
 
     BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(gameObject, UINT_MAX, *Loader::getMesh(filePath), true, true, true));
