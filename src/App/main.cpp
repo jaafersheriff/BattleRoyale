@@ -100,9 +100,9 @@ int main(int argc, char **argv) {
                 ImGui::SliderFloat("Silhouette Angle", &angle, 0.f, 1.f);
                 RenderSystem::getShader<DiffuseShader>()->setSilAngle(angle);
                 
-                int cells = RenderSystem::getShader<DiffuseShader>()->getCells();
+                int cells = int(RenderSystem::getShader<DiffuseShader>()->getCells());
                 ImGui::SliderInt("Cells", &cells, 0, 15);
-                RenderSystem::getShader<DiffuseShader>()->setCells(cells);
+                RenderSystem::getShader<DiffuseShader>()->setCells(float(cells));
             }
         }
     );
