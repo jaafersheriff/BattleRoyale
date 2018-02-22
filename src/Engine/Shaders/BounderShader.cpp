@@ -168,7 +168,7 @@ bool BounderShader::initSphereMesh() {
     constexpr int arcLOD = 16;
     int nCircleVerts(arcLOD * 4);
     int nVerts(3 * nCircleVerts);
-    std::unique_ptr<glm::vec3[]> locs(new glm::vec3[nVerts]);
+    std::vector<glm::vec3> locs(nVerts);
 
     float dTheta(2.0f * glm::pi<float>() / nCircleVerts);
     for (int i(0); i < nCircleVerts; ++i) {
@@ -180,7 +180,7 @@ bool BounderShader::initSphereMesh() {
     }
 
     int nIndices(2 * nVerts);
-    std::unique_ptr<int[]> indices(new int[nIndices]);
+    std::vector<int> indices(nIndices);
     for (int i(0); i < nCircleVerts; ++i) {
         indices[(0 * nCircleVerts + i) * 2 + 0] = 0 * int(nCircleVerts) + i + 0;
         indices[(0 * nCircleVerts + i) * 2 + 1] = 0 * int(nCircleVerts) + i + 1;
@@ -198,11 +198,11 @@ bool BounderShader::initSphereMesh() {
 
     glGenBuffers(1, &m_sphereVBO);
     glBindBuffer(GL_ARRAY_BUFFER, m_sphereVBO);
-    glBufferData(GL_ARRAY_BUFFER, nVerts * sizeof(glm::vec3), locs.get(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, nVerts * sizeof(glm::vec3), locs.data(), GL_STATIC_DRAW);
 
     glGenBuffers(1, &m_sphereIBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_sphereIBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(unsigned int), indices.get(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
@@ -221,7 +221,7 @@ bool BounderShader::initCapMesh() {
     constexpr int arcLOD = 16;
     int nCircleVerts(arcLOD * 4);
     int nVerts(2 * nCircleVerts + 2);
-    std::unique_ptr<glm::vec3[]> locs(new glm::vec3[nVerts]);
+    std::vector<glm::vec3> locs(nVerts);
 
     float dTheta(2.0f * glm::pi<float>() / nCircleVerts);
     int vi(0);
@@ -237,7 +237,7 @@ bool BounderShader::initCapMesh() {
     }
     
     int nIndices(4 * nCircleVerts);
-    std::unique_ptr<int[]> indices(new int[nIndices]);
+    std::vector<int> indices(nIndices);
     int ii(0); vi = 0;
     for (int i(0); i < nCircleVerts; ++i) {
         indices[ii++] = vi;
@@ -262,11 +262,11 @@ bool BounderShader::initCapMesh() {
 
     glGenBuffers(1, &m_capVBO);
     glBindBuffer(GL_ARRAY_BUFFER, m_capVBO);
-    glBufferData(GL_ARRAY_BUFFER, nVerts * sizeof(glm::vec3), locs.get(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, nVerts * sizeof(glm::vec3), locs.data(), GL_STATIC_DRAW);
 
     glGenBuffers(1, &m_capIBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_capIBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(unsigned int), indices.get(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
@@ -285,7 +285,7 @@ bool BounderShader::initRodMesh() {
     constexpr int arcLOD = 16;
     int nCircleVerts(arcLOD * 4);
     int nVerts(nCircleVerts + 8);
-    std::unique_ptr<glm::vec3[]> locs(new glm::vec3[nVerts]);
+    std::vector<glm::vec3> locs(nVerts);
 
     float dTheta(2.0f * glm::pi<float>() / nCircleVerts);
     for (int i(0); i < nCircleVerts; ++i) {
@@ -302,7 +302,7 @@ bool BounderShader::initRodMesh() {
     locs[nCircleVerts + 7] = glm::vec3( 0.0f,  1.0f, -1.0f);
     
     int nIndices(2 * nCircleVerts + 8);
-    std::unique_ptr<int[]> indices(new int[nIndices]);
+    std::vector<int> indices(nIndices);
     for (int i(0); i < nCircleVerts; ++i) {
         indices[2 * i + 0] = i + 0;
         indices[2 * i + 1] = i + 1;
@@ -317,11 +317,11 @@ bool BounderShader::initRodMesh() {
 
     glGenBuffers(1, &m_rodVBO);
     glBindBuffer(GL_ARRAY_BUFFER, m_rodVBO);
-    glBufferData(GL_ARRAY_BUFFER, nVerts * sizeof(glm::vec3), locs.get(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, nVerts * sizeof(glm::vec3), locs.data(), GL_STATIC_DRAW);
 
     glGenBuffers(1, &m_rodIBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rodIBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(unsigned int), indices.get(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);

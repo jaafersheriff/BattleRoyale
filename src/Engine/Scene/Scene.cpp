@@ -14,12 +14,12 @@
 
 
 
-std::vector<std::unique_ptr<GameObject>> Scene::s_gameObjects;
-std::unordered_map<std::type_index, std::unique_ptr<std::vector<std::unique_ptr<Component>>>> Scene::s_components;
+std::vector<UniquePtr<GameObject>> Scene::s_gameObjects;
+std::unordered_map<std::type_index, UniquePtr<std::vector<UniquePtr<Component>>>> Scene::s_components;
 
-std::vector<std::unique_ptr<GameObject>> Scene::s_gameObjectInitQueue;
+std::vector<UniquePtr<GameObject>> Scene::s_gameObjectInitQueue;
 std::vector<GameObject *> Scene::s_gameObjectKillQueue;
-std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Component>>> Scene::s_componentInitQueue;
+std::vector<std::tuple<GameObject *, std::type_index, UniquePtr<Component>>> Scene::s_componentInitQueue;
 std::vector<std::pair<std::type_index, Component *>> Scene::s_componentKillQueue;
 
 std::vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_messages;
@@ -35,7 +35,7 @@ void Scene::init() {
 }
 
 GameObject & Scene::createGameObject() {
-    s_gameObjectInitQueue.emplace_back(new GameObject());
+    s_gameObjectInitQueue.emplace_back(UniquePtr<GameObject>::make(GameObject()));
     return *s_gameObjectInitQueue.back().get();
 }
 
@@ -66,7 +66,7 @@ void Scene::update(float dt) {
 
 void Scene::doInitQueue() {
     for (auto & o : s_gameObjectInitQueue) {
-        s_gameObjects.emplace_back(o.release());
+        s_gameObjects.emplace_back(std::move(o));
     }
     s_gameObjectInitQueue.clear();
     
@@ -86,7 +86,7 @@ void Scene::doInitQueue() {
         auto & comp(std::get<2>(initE));
         auto it(s_components.find(typeI));
         if (it == s_components.end()) {
-            s_components[typeI].reset(new std::vector<std::unique_ptr<Component>>());
+            s_components.emplace(typeI, UniquePtr<std::vector<UniquePtr<Component>>>::make());
             it = s_components.find(typeI);
         }
         it->second->emplace_back(std::move(comp));

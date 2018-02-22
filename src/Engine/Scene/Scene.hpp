@@ -8,7 +8,6 @@
 
 #include <unordered_map>
 #include <vector>
-#include <memory>
 #include <typeinfo>
 #include <typeindex>
 
@@ -70,12 +69,12 @@ class Scene {
 
   private:
 
-    static std::vector<std::unique_ptr<GameObject>> s_gameObjects;
-    static std::unordered_map<std::type_index, std::unique_ptr<std::vector<std::unique_ptr<Component>>>> s_components;
+    static std::vector<UniquePtr<GameObject>> s_gameObjects;
+    static std::unordered_map<std::type_index, UniquePtr<std::vector<UniquePtr<Component>>>> s_components;
 
-    static std::vector<std::unique_ptr<GameObject>> s_gameObjectInitQueue;
+    static std::vector<UniquePtr<GameObject>> s_gameObjectInitQueue;
     static std::vector<GameObject *> s_gameObjectKillQueue;
-    static std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Component>>> s_componentInitQueue;
+    static std::vector<std::tuple<GameObject *, std::type_index, UniquePtr<Component>>> s_componentInitQueue;
     static std::vector<std::pair<std::type_index, Component *>> s_componentKillQueue;
 
     static std::vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messages;
@@ -96,9 +95,8 @@ CompT & Scene::addComponent(GameObject & gameObject, Args &&... args) {
 
 template <typename CompT, typename SuperT, typename... Args>
 CompT & Scene::addComponentAs(GameObject & gameObject, Args &&... args) {
-    CompT * comp(new CompT(std::forward<Args>(args)...));
-    s_componentInitQueue.emplace_back(&gameObject, typeid(SuperT), std::unique_ptr<CompT>(comp));
-    return *comp;
+    s_componentInitQueue.emplace_back(&gameObject, typeid(SuperT), UniquePtr<CompT>::make(CompT(std::forward<Args>(args)...)));
+    return static_cast<CompT &>(*std::get<2>(s_componentInitQueue.back()));
 }
 
 template <typename CompT>
@@ -127,7 +125,7 @@ const std::vector<CompT *> & Scene::getComponents() {
     std::type_index typeI(typeid(CompT));
     auto it(s_components.find(typeI));
     if (it == s_components.end()) {
-        s_components[typeI].reset(new std::vector<std::unique_ptr<Component>>());
+        s_components.emplace(typeI, UniquePtr<std::vector<UniquePtr<Component>>>::make());
         it = s_components.find(typeI);
     }
     // this is valid because unique_ptr<T> is exactly the same data as T *

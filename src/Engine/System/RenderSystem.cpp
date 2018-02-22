@@ -10,7 +10,7 @@
 
 
 const std::vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
-std::unordered_map<std::type_index, std::unique_ptr<Shader>> RenderSystem::s_shaders;
+std::unordered_map<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
 const CameraComponent * RenderSystem::s_camera = nullptr;
 
 void RenderSystem::init() {

@@ -24,9 +24,12 @@ class GameObject {
     private: // only scene or friends can create game object
 
     GameObject();
-    
-    // TODO: potentially add move support
+
+    public:
+
     GameObject(const GameObject & other) = delete; // doesn't make sense to copy a GameObject
+    GameObject(GameObject && other) = default;
+
     GameObject & operator=(const GameObject & other) = delete;
 
     public:

@@ -41,7 +41,7 @@ class RenderSystem {
     template<typename ShaderT, typename... Args> static bool createShader(Args &&... args);
 
     // takes possession of shader and initializes it
-    template <typename ShaderT> static bool addShader(std::unique_ptr<ShaderT> shader);
+    template <typename ShaderT> static bool addShader(UniquePtr<ShaderT> shader);
 
     // get shader of the specified type
     template <typename ShaderT> static ShaderT * getShader();
@@ -57,7 +57,7 @@ class RenderSystem {
     private:
 
     static const std::vector<DiffuseRenderComponent *> & s_diffuseComponents;
-    static std::unordered_map<std::type_index, std::unique_ptr<Shader>> s_shaders;
+    static std::unordered_map<std::type_index, UniquePtr<Shader>> s_shaders;
     static const CameraComponent * s_camera;
 
 };
@@ -68,12 +68,9 @@ class RenderSystem {
 
 template<typename ShaderT, typename... Args>
 bool RenderSystem::createShader(Args &&... args) {
-    return addShader(std::unique_ptr<ShaderT>(new ShaderT(std::forward<Args>(args)...)));
-}
-
-template <typename ShaderT>
-bool RenderSystem::addShader(std::unique_ptr<ShaderT> shader) {
+    auto shader(UniquePtr<ShaderT>::make(std::forward<Args>(args)...));
     std::type_index typeI(typeid(ShaderT));
+
     auto it(s_shaders.find(typeI));
     if (it != s_shaders.end()) {
         return true;

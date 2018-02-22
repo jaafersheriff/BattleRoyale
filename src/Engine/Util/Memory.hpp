@@ -25,9 +25,27 @@ inline void coherent_rpmalloc::rpmalloc_deallocate_memory_external(void * ptr) {
 
 
 
-inline void initializeMemory() {
-    coherent_rpmalloc::rpmalloc_initialize();
+// trick to call memory initialization functions before static evaluations
+namespace detail {
+
+struct InitializeMemory {
+
+    InitializeMemory() {
+        if (!initialized++) {
+            coherent_rpmalloc::rpmalloc_initialize();
+            //coherent_rpmalloc::rpmalloc_thread_initialize();
+        }
+    }
+
+    static int initialized;
+
+};
+
+static InitializeMemory f_initializeMemory;
+
 }
+
+
 
 inline void * allocate(size_t size) {
     return coherent_rpmalloc::rpmalloc(size);
@@ -89,9 +107,21 @@ template <typename K, typename V> using UnorderedMap = std::unordered_map<K, V, 
 
 
 
+inline String convert(const std::string & string) {
+    return String(string.c_str());
+}
+
+inline std::string convert(const String & string) {
+    return std::string(string.c_str());
+}
+
+
+
 // std::unique_ptr variant using custom memory allocator
 template <typename T>
 class UniquePtr {
+
+    template <typename U> friend class UniquePtr;
 
     public:
 
@@ -103,7 +133,8 @@ class UniquePtr {
 
     UniquePtr();
     UniquePtr(const UniquePtr<T> & other) = delete;
-    UniquePtr(UniquePtr<T> && other);
+    template <typename U, typename std::enable_if<std::is_base_of<T, U>::value, int>::type = 0>
+    UniquePtr(UniquePtr<U> && other);
 
     ~UniquePtr();
 
@@ -154,7 +185,8 @@ UniquePtr<T>::UniquePtr() :
 {}
 
 template <typename T>
-UniquePtr<T>::UniquePtr(UniquePtr<T> && other) :
+template <typename U, typename std::enable_if<std::is_base_of<T, U>::value, int>::type>
+UniquePtr<T>::UniquePtr(UniquePtr<U> && other) :
     m_v(other.m_v)
 {
     other.m_v = nullptr;
@@ -171,6 +203,7 @@ template <typename T>
 UniquePtr<T> & UniquePtr<T>::operator=(UniquePtr<T> && other) {
     m_v = other.m_v;
     other.m_v = nullptr;
+    return *this;
 }
 
 template <typename T>
