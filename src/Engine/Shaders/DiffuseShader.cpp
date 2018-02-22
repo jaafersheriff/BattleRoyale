@@ -29,11 +29,18 @@ bool DiffuseShader::init() {
     addUniform("N");
 
     addUniform("lightPos");
+    addUniform("camPos");
 
     addUniform("matAmbient");
     addUniform("matDiffuse");
+    addUniform("matSpecular");
+    addUniform("shine");
     addUniform("textureImage");
     addUniform("usesTexture");
+
+    addUniform("isToon");
+    addUniform("silAngle");
+    addUniform("cells");
 
     return true;
 }
@@ -53,6 +60,9 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     loadMat4(getUniform("P"), camera->getProj());
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
+    loadVec3(getUniform("camPos"), camera->gameObject()->getSpatial()->position());
+    loadFloat(getUniform("silAngle"), silAngle);
+    loadFloat(getUniform("cells"), numCells);
 
     /* Determine if component should be culled */
     /* Only doing frustum culling if object has bounder(s) */
@@ -84,6 +94,14 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
             continue;
         }
 
+        /* Toon shading */
+        if (showToon && drc->isToon) {
+            loadBool(getUniform("isToon"), true);
+        }
+        else {
+            loadBool(getUniform("isToon"), false);
+        }
+
         /* Model matrix */
         loadMat4(getUniform("M"), drc->gameObject()->getSpatial()->modelMatrix());
         /* Normal matrix */
@@ -92,6 +110,8 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
         /* Bind materials */
         loadFloat(getUniform("matAmbient"), drc->modelTexture.material.ambient);
         loadVec3(getUniform("matDiffuse"), drc->modelTexture.material.diffuse);
+        loadVec3(getUniform("matSpecular"), drc->modelTexture.material.specular);
+        loadFloat(getUniform("shine"), drc->modelTexture.material.shineDamper);
    
         /* Load texture */
         if(drc->modelTexture.texture && drc->modelTexture.texture->textureId != 0) {

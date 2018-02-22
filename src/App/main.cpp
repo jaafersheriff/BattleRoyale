@@ -92,6 +92,18 @@ int main(int argc, char **argv) {
             if (ImGui::Button("Wireframe")) {
                 RenderSystem::getShader<DiffuseShader>()->toggleWireFrame();
             }
+            if (ImGui::Button("Toon")) {
+                RenderSystem::getShader<DiffuseShader>()->toggleToon();
+            }
+            if (RenderSystem::getShader<DiffuseShader>()->isToon()) {
+                float angle = RenderSystem::getShader<DiffuseShader>()->getSilAngle();
+                ImGui::SliderFloat("Silhouette Angle", &angle, 0.f, 1.f);
+                RenderSystem::getShader<DiffuseShader>()->setSilAngle(angle);
+                
+                int cells = RenderSystem::getShader<DiffuseShader>()->getCells();
+                ImGui::SliderInt("Cells", &cells, 0, 15);
+                RenderSystem::getShader<DiffuseShader>()->setCells(cells);
+            }
         }
     );
 
@@ -217,7 +229,8 @@ int main(int argc, char **argv) {
             bunny,
             RenderSystem::getShader<DiffuseShader>()->pid,
             *bunnyMesh,
-            ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
+            ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)), 
+            true);
         PathfindingComponent & bunnyPathComp(Scene::addComponent<PathfindingComponent>(bunny, player, 1.0f));
     }
 
