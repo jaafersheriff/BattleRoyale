@@ -18,6 +18,7 @@ PlayerControllerComponent::PlayerControllerComponent(float lookSpeed, float move
     m_lookSpeed(lookSpeed),
     m_moveSpeed(moveSpeed),
     m_jumpSpeed(jumpSpeed),
+    m_jumping(false),
     m_enabled(true)
 {}
 
@@ -31,9 +32,6 @@ void PlayerControllerComponent::init(GameObject & go) {
 
 void PlayerControllerComponent::update(float dt) {
     if (!m_enabled) {
-        return;
-    }
-    if (Window::isImGuiEnabled()) {
         return;
     }
 
@@ -74,8 +72,16 @@ void PlayerControllerComponent::update(float dt) {
     }
 
     // jump
-    if(Keyboard::isKeyPressed(GLFW_KEY_SPACE)) {
-        if (m_ground->onGround()) gameObject()->getComponentByType<NewtonianComponent>()->addVelocity(-m_jumpSpeed * glm::normalize(SpatialSystem::gravity()));
+    if (!m_jumping) {
+        if (Keyboard::isKeyPressed(GLFW_KEY_SPACE) && m_ground->onGround()) {
+            gameObject()->getComponentByType<NewtonianComponent>()->addVelocity(-m_jumpSpeed * glm::normalize(SpatialSystem::gravity()));
+            m_jumping = true;
+        }
+    }
+    else {
+        if (!Keyboard::isKeyPressed(GLFW_KEY_SPACE)) {
+            m_jumping = false;
+        }
     }
 }
 

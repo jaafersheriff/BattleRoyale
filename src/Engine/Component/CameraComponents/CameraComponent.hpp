@@ -29,7 +29,7 @@ class CameraComponent : public Component, public Orientable {
 
     protected: // only scene or friends can create component
 
-        CameraComponent(float fov);
+        CameraComponent(float fov, float near, float far);
 
         virtual void init(GameObject & go) override;
 
@@ -57,10 +57,14 @@ class CameraComponent : public Component, public Orientable {
 
         void setFOV(float fov);
 
+        void setNearFar(float near, float far);
+
         const bool sphereInFrustum(const Sphere & sphere) const;
         float theta() const { return m_theta; }
         float phi() const { return m_phi; }
         float fov() const { return m_fov; }
+        float near() const { return m_near; }
+        float far() const { return m_far; }
 
         glm::vec3 getLookDir() const;
         
@@ -82,6 +86,7 @@ class CameraComponent : public Component, public Orientable {
         SpatialComponent * m_spatial;
         float m_theta, m_phi; // rotation of camera relative to base
         float m_fov; // field of view
+        float m_near, m_far; // distance to near and far planes
 
         // DONT USE THESE DIRECTLY, CALL GETVIEW OR GETPROJ
         mutable glm::mat4 m_viewMat;

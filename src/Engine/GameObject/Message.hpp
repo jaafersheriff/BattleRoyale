@@ -63,7 +63,9 @@ class CameraComponent;
 
 
 
-struct Message {};
+struct Message {
+    virtual ~Message() = default;
+};
 
 
 
@@ -144,14 +146,6 @@ struct CollisionAdjustMessage : public Message {
 struct WindowSizeMessage : public Message {
     int width, height;
     WindowSizeMessage(int width, int height) : width(width), height(height) {}
-};
-
-
-
-// the near/far planes were changed
-struct NearFarMessage : public Message {
-    float near, far;
-    NearFarMessage(float near, float far) : near(near), far(far) {}
 };
 
 

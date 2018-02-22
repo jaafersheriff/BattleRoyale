@@ -5,35 +5,56 @@
 
 #include <iostream> /* cout, cerr */
 
-int Window::width = DEFAULT_WIDTH;
-int Window::height = DEFAULT_HEIGHT;
+#include "Scene/Scene.hpp"
+
+GLFWwindow * Window::window = nullptr;
+bool Window::vSyncEnabled = true;
+bool Window::cursorEnabled = true;
 bool Window::imGuiEnabled = false;
-float Window::imGuiTimer = 1.f;
 
 void Window::errorCallback(int error, const char *desc) {
     std::cerr << "Error " << error << ": " << desc << std::endl;
 }
 
-void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mode) {
+void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
+        return;
     }
 
 #ifdef DEBUG_MODE
-    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) 
-        ImGui_ImplGlfwGL3_KeyCallback(window, key, scancode, action, mode);
-    else 
+    if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
+        toggleImGui();
+    }
+    else if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
+        ImGui_ImplGlfwGL3_KeyCallback(window, key, scancode, action, mods);
+    }
+    else
 #endif
-        Keyboard::setKeyStatus(key, action);
+    {
+        if (!cursorEnabled) {
+            Keyboard::setKeyStatus(key, action);
+            Scene::sendMessage<KeyMessage>(nullptr, key, action, mods);
+        }
+    }
 }
 
 void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
 #ifdef DEBUG_MODE
-    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) 
+    if (button == GLFW_MOUSE_BUTTON_3 && action == GLFW_PRESS && isImGuiEnabled()) {
+        toggleCursorEnabled();
+    }
+    else if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
         ImGui_ImplGlfwGL3_MouseButtonCallback(window, button, action, mods);
+    }
     else 
 #endif
-        Mouse::setButtonStatus(button, action);
+    {
+        if (!cursorEnabled) {
+            Mouse::setButtonStatus(button, action);
+            Scene::sendMessage<MouseMessage>(nullptr, button, action, mods);
+        }
+    }
 }
 
 void Window::characterCallback(GLFWwindow *window, unsigned int c) {
@@ -44,7 +65,17 @@ void Window::characterCallback(GLFWwindow *window, unsigned int c) {
 #endif
 }
 
-int Window::init(std::string name) {
+void Window::framebufferSizeCallback(GLFWwindow * window, int width, int height) {
+    /* Set viewport to window size */
+    glViewport(0, 0, width, height);
+    Scene::sendMessage<WindowSizeMessage>(nullptr, width, height);
+}
+
+void Window::cursorEnterCallback(GLFWwindow * window, int entered) {
+    Mouse::reset();
+}
+
+int Window::init(const std::string & name) {
     /* Set error callback */
     glfwSetErrorCallback(errorCallback);
 
@@ -61,7 +92,7 @@ int Window::init(std::string name) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
     /* Create GLFW window */
-    window = glfwCreateWindow(this->width, this->height, name.c_str(), NULL, NULL);
+    window = glfwCreateWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, name.c_str(), NULL, NULL);
     if (!window) {
         std::cerr << "Failed to create window" << std::endl;
         glfwTerminate();
@@ -70,12 +101,14 @@ int Window::init(std::string name) {
     glfwMakeContextCurrent(window);
 
     /* Init ImGui */
-    ImGui_ImplGlfwGL3_Init(this->window, false);
+    ImGui_ImplGlfwGL3_Init(window, false);
 
     /* Set callbacks */
     glfwSetKeyCallback(window, keyCallback);
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
     glfwSetCharCallback(window, characterCallback);
+    glfwSetWindowSizeCallback(window, framebufferSizeCallback);
+    glfwSetCursorEnterCallback(window, cursorEnterCallback);
 
     /* Init GLEW */
     glewExperimental = GL_FALSE;
@@ -92,7 +125,7 @@ int Window::init(std::string name) {
     glGetError();
 
     /* Vsync */
-    glfwSwapInterval(1);
+    glfwSwapInterval(vSyncEnabled);
 
     return 0;
 }
@@ -101,37 +134,49 @@ void Window::setTitle(const char *name) {
     glfwSetWindowTitle(window, name);
 }
 
-void Window::update(float dt) { 
-    /* Set viewport to window size */
-    glfwGetFramebufferSize(window, &width, &height);
-    glViewport(0, 0, width, height);
+void Window::setSize(int w, int h) {
+    glfwSetWindowSize(window, w, h);
+}
 
+glm::ivec2 Window::getSize() {
+    glm::ivec2 size;
+    glfwGetFramebufferSize(window, &size.x, &size.y);
+    return size;
+}
+
+float Window::getAspectRatio() {
+    glm::ivec2 size(getSize());
+    return float(size.x) / float(size.y);
+}
+
+void Window::toggleVSync() {
+    vSyncEnabled = !vSyncEnabled;
+    glfwSwapInterval(vSyncEnabled);
+}
+
+void Window::update(float dt) {
     /* Don't update display if window is minimized */
-    if (!width && !height) {
+    if (glfwGetWindowAttrib(window, GLFW_ICONIFIED)) {
         return;
     }
 
+    glfwPollEvents();
+
     /* Update mouse */
-    double x, y;
-    glfwGetCursorPos(window, &x, &y);
-    Mouse::update(x, y);
+    if (!cursorEnabled) {
+        double x, y;
+        glfwGetCursorPos(window, &x, &y);
+        Mouse::update(x, y);
+    }
 
 #ifdef DEBUG_MODE
     /* Update ImGui */
-    imGuiTimer += dt;
-    if (Keyboard::isKeyPressed(GLFW_KEY_GRAVE_ACCENT) && 
-       (Keyboard::isKeyPressed(GLFW_KEY_LEFT_SHIFT) || Keyboard::isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) &&
-        imGuiTimer >= 0.5) {
-        toggleImGui();
-        imGuiTimer = 0.0;
-    }
     if (isImGuiEnabled()) {
-        ImGui_ImplGlfwGL3_NewFrame(true);
+        ImGui_ImplGlfwGL3_NewFrame(cursorEnabled);
     }
 #endif
- 
+    
     glfwSwapBuffers(window);
-    glfwPollEvents();
 }
 
 int Window::shouldClose() { 
@@ -146,4 +191,24 @@ void Window::shutDown() {
     /* Clean up GLFW */
     glfwDestroyWindow(window);
     glfwTerminate();
+}
+
+void Window::toggleImGui() {
+    imGuiEnabled = !imGuiEnabled;
+    if (!imGuiEnabled) {
+        setCursorEnabled(false);
+    }
+}
+
+void Window::setCursorEnabled(bool enabled) {
+    cursorEnabled = enabled;
+    glfwSetInputMode(window, GLFW_CURSOR, cursorEnabled ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+    if (enabled) {
+        Mouse::reset();
+        Keyboard::reset();
+    }
+}
+
+void Window::toggleCursorEnabled() {
+    setCursorEnabled(!cursorEnabled);
 }

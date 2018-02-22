@@ -54,6 +54,7 @@ class BounderComponent : public Component {
 
 
 
+// *** HAS TO BE ADDED TO SCENE AS BOUNDERCOMPONENT ***
 class AABBounderComponent : public BounderComponent {
     
     friend Scene;
@@ -85,6 +86,7 @@ class AABBounderComponent : public BounderComponent {
 
 
 
+// *** HAS TO BE ADDED TO SCENE AS BOUNDERCOMPONENT ***
 class SphereBounderComponent : public BounderComponent {
     
     friend Scene;
@@ -116,6 +118,7 @@ class SphereBounderComponent : public BounderComponent {
 
 
 
+// *** HAS TO BE ADDED TO SCENE AS BOUNDERCOMPONENT ***
 class CapsuleBounderComponent : public BounderComponent {
     
     friend Scene;

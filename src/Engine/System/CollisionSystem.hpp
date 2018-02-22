@@ -38,13 +38,13 @@ class CollisionSystem {
 
     private:
     
-    static void add(Component & component);
+    static void added(Component & component);
 
-    static void remove(Component & component);
+    static void removed(Component & component);
 
     private:
 
-    static std::vector<BounderComponent *> s_bounderComponents;
+    static const std::vector<BounderComponent *> & s_bounderComponents;
     static std::unordered_set<BounderComponent *> s_potentials;
     static std::unordered_set<BounderComponent *> s_collided;
     static std::unordered_set<BounderComponent *> s_adjusted;

@@ -44,6 +44,7 @@ class PlayerControllerComponent : public Component {
     float m_lookSpeed;
     float m_moveSpeed;
     float m_jumpSpeed;
+    bool m_jumping;
     bool m_enabled; // TODO: make a way to enable/disable any object or component
 
 };

@@ -38,28 +38,32 @@ bool DiffuseShader::init() {
     return true;
 }
 
-void DiffuseShader::render(const CameraComponent & camera, const std::vector<Component *> & components) {
+void DiffuseShader::render(const CameraComponent * camera, const std::vector<Component *> & components) {
     static std::vector<Component *> s_compsToRender;
+
+    if (!camera) {
+        return;
+    }
 
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     /* Bind uniforms */
-    loadMat4(getUniform("P"), camera.getProj());
-    loadMat4(getUniform("V"), camera.getView());
+    loadMat4(getUniform("P"), camera->getProj());
+    loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
 
     /* Determine if component should be culled */
     /* Only doing frustum culling if object has bounder(s) */
     /* Get the center and radius of the component */
     for (Component * comp : components) {
-        const std::vector<Component *> & bounders(comp->gameObject()->getComponentsBySystem(SystemID::collision));
+        const std::vector<Component *> & bounders(comp->gameObject()->getComponentsByType<BounderComponent>());
         if (bounders.size()) {
             bool inFrustum(false);
             for (Component * bounder_ : bounders) {
                 BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
-                if (camera.sphereInFrustum(bounder->enclosingSphere())) {
+                if (camera->sphereInFrustum(bounder->enclosingSphere())) {
                     inFrustum = true;
                     break;
                 }

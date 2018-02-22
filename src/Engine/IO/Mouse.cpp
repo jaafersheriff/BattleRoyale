@@ -36,4 +36,5 @@ void Mouse::setButtonStatus(int button, int action) {
 
 void Mouse::reset() {
     s_reset = true;
+    dx = dy = 0;
 }

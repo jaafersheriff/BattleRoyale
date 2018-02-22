@@ -11,13 +11,15 @@
 
 
 
-CameraComponent::CameraComponent(float fov) :
+CameraComponent::CameraComponent(float fov, float near, float far) :
     Component(),
     Orientable(),
     m_spatial(nullptr),
     m_theta(0.0f),
     m_phi(glm::pi<float>() * 0.5f),
     m_fov(fov),
+    m_near(near),
+    m_far(far),
     m_viewMat(),
     m_projMat(),
     m_viewMatValid(false),
@@ -57,12 +59,6 @@ void CameraComponent::init(GameObject & go) {
         m_frustumValid = false;
     });
     Scene::addReceiver<WindowSizeMessage>(nullptr, windowSizeCallback);
-
-    auto nearFarCallback([&] (const Message & msg_) {
-        m_projMatValid = false;
-        m_frustumValid = false;
-    });
-    Scene::addReceiver<NearFarMessage>(nullptr, nearFarCallback);
 }
 
 void CameraComponent::update(float dt) {
@@ -106,6 +102,13 @@ void CameraComponent::angle(float theta, float phi, bool relative, bool silently
 
 void CameraComponent::setFOV(float fov) {
     m_fov = fov;
+    m_projMatValid = false;
+    m_frustumValid = false;
+}
+
+void CameraComponent::setNearFar(float near, float far) {
+    m_near = near;
+    m_far = far;
     m_projMatValid = false;
     m_frustumValid = false;
 }
@@ -163,7 +166,7 @@ void CameraComponent::detView() const {
 }
 
 void CameraComponent::detProj() const {
-    m_projMat = glm::perspective(m_fov, Window::getAspectRatio(), RenderSystem::near(), RenderSystem::far());
+    m_projMat = glm::perspective(m_fov, Window::getAspectRatio(), m_near, m_far);
     m_projMatValid = true;
 }
 

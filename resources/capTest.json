@@ -1,0 +1,40 @@
+{
+"object0":{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "position": [
+        0.0,
+        0.0,
+        10.430000305175782
+    ],
+    "scale": [
+        1.0,
+        2.444258213043213,
+        1.5419611930847169
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        0.0
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.0,
+        0.0,
+        1.0
+    ],
+    "jsonCapsule": {
+        "hasCapsule": true,
+        "center": [
+            1.1128339767456055,
+            7.8087968826293949,
+            0.0
+        ],
+        "radius": 7.75173282623291,
+        "height": 15.356060028076172
+    }
+}}

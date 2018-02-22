@@ -28,8 +28,6 @@ class RenderSystem {
 
     static constexpr SystemID ID = SystemID::render;
 
-    static constexpr float k_defNear = 0.01f, k_defFar = 500.0f;
-
     public:
 
     static void init();
@@ -48,24 +46,18 @@ class RenderSystem {
     // get shader of the specified type
     template <typename ShaderT> static ShaderT * getShader();
 
-    static void setNearFar(float near, float far);
-
-    static float near() { return s_near; }
-    static float far() { return s_far; }
-
     static void setCamera(const CameraComponent * camera);
 
     private:
     
-    static void add(Component & component);
+    static void added(Component & component) {};
 
-    static void remove(Component & component);
+    static void removed(Component & component) {};
     
     private:
 
-    static std::vector<DiffuseRenderComponent *> s_diffuseComponents;
+    static const std::vector<DiffuseRenderComponent *> & s_diffuseComponents;
     static std::unordered_map<std::type_index, std::unique_ptr<Shader>> s_shaders;
-    static float s_near, s_far;
     static const CameraComponent * s_camera;
 
 };

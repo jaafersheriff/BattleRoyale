@@ -12,11 +12,6 @@ extern "C" {
 #include "glm/gtx/transform.hpp"
 
 #include "EngineApp/EngineApp.hpp"
-#include "System/GameLogicSystem.hpp"
-#include "System/SpatialSystem.hpp"
-#include "System/PathfindingSystem.hpp"
-#include "System/CollisionSystem.hpp"
-#include "System/RenderSystem.hpp"
 #include "LevelBuilder/FileReader.hpp"
 
 void printUsage() {
@@ -77,11 +72,10 @@ int main(int argc, char **argv) {
 
     /* Create diffuse shader */
     glm::vec3 lightPos(100.f, 100.f, 100.f);
-    // TODO : user shouldn't need to specify resource dir here
     if (!RenderSystem::createShader<DiffuseShader>(
-            EngineApp::RESOURCE_DIR + "diffuse_vert.glsl",    /* Vertex shader file       */
-            EngineApp::RESOURCE_DIR + "diffuse_frag.glsl",    /* Fragment shader file     */
-            lightPos                                      /* Shader-specific uniforms */
+            "diffuse_vert.glsl",    /* Vertex shader file       */
+            "diffuse_frag.glsl",    /* Fragment shader file     */
+            lightPos                /* Shader-specific uniforms */
         )) {
         std::cerr << "Failed to add diffuse shader" << std::endl;
         std::cin.get(); // don't immediately close the console
@@ -125,35 +119,39 @@ int main(int argc, char **argv) {
     /* Set Gravity */
     SpatialSystem::setGravity(glm::vec3(0.0f, -10.0f, 0.0f));
 
-    /* Setup Camera */
-    float freeCamFOV(45.0f);
-    float freeCamLookSpeed(0.2f);
-    float freeCamMoveSpeed(5.0f);
-    GameObject & freeCam(Scene::createGameObject());
-    SpatialComponent & freeCamSpatComp(Scene::addComponent<SpatialComponent>(freeCam));
-    CameraComponent & freeCamCamComp(Scene::addComponent<CameraComponent>(freeCam, freeCamFOV));
-    CameraControllerComponent & freeCamContComp(Scene::addComponent<CameraControllerComponent>(freeCam, freeCamLookSpeed, freeCamMoveSpeed));
-    freeCamContComp.setEnabled(false);
-
     /* Setup Player */
+    float playerFOV(45.0f);
+    float playerNear(0.1f);
+    float playerFar(300.0f);
     float playerHeight(1.75f);
     float playerWidth(playerHeight / 4.0f);
     glm::vec3 playerPos(0.0f, 6.0f, 0.0f);
-    float playerFOV(freeCamFOV);
-    float playerLookSpeed(freeCamLookSpeed);
-    float playerMoveSpeed(freeCamMoveSpeed);
+    float playerLookSpeed(0.2f);
+    float playerMoveSpeed(5.0f);
     float playerJumpSpeed(5.0f);
     float playerMaxSpeed(50.0f); // terminal velocity
     GameObject & player(Scene::createGameObject());
     SpatialComponent & playerSpatComp(Scene::addComponent<SpatialComponent>(player));
     playerSpatComp.setPosition(playerPos);
     NewtonianComponent & playerNewtComp(Scene::addComponent<NewtonianComponent>(player, playerMaxSpeed));
-    //GravityComponent & playerGravComp(Scene::addComponent<GravityComponent>(player));
+    GravityComponent & playerGravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(player));
     GroundComponent & playerGroundComp(Scene::addComponent<GroundComponent>(player));
     Capsule playerCap(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth);
-    CapsuleBounderComponent & playerBoundComp(Scene::addComponent<CapsuleBounderComponent>(player, 1, playerCap));
-    CameraComponent & playerCamComp(Scene::addComponent<CameraComponent>(player, playerFOV));
+    CapsuleBounderComponent & playerBoundComp(Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(player, 1, playerCap));
+    CameraComponent & playerCamComp(Scene::addComponent<CameraComponent>(player, playerFOV, playerNear, playerFar));
     PlayerControllerComponent & playerContComp(Scene::addComponent<PlayerControllerComponent>(player, playerLookSpeed, playerMoveSpeed, playerJumpSpeed));
+
+    /* Setup Camera */
+    float freeCamFOV(playerFOV);
+    float freeCamNear(playerNear);
+    float freeCamFar(playerFar);
+    float freeCamLookSpeed(playerLookSpeed);
+    float freeCamMoveSpeed(playerMoveSpeed);
+    GameObject & freeCam(Scene::createGameObject());
+    SpatialComponent & freeCamSpatComp(Scene::addComponent<SpatialComponent>(freeCam));
+    CameraComponent & freeCamCamComp(Scene::addComponent<CameraComponent>(freeCam, freeCamFOV, freeCamNear, freeCamFar));
+    CameraControllerComponent & freeCamContComp(Scene::addComponent<CameraControllerComponent>(freeCam, freeCamLookSpeed, freeCamMoveSpeed));
+    freeCamContComp.setEnabled(false);
 
     RenderSystem::setCamera(&playerCamComp);
 
@@ -186,6 +184,53 @@ int main(int argc, char **argv) {
     });
     Scene::addReceiver<KeyMessage>(nullptr, camSwitchCallback);
 
+    /* VSync ImGui Pane */
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO,
+        "VSync",
+        [&]() {
+            if (ImGui::Button("VSync")) {
+                Window::toggleVSync();
+            }
+        }
+    );
+
+    /*Parse and load json level*/
+    FileReader fileReader;
+    const char *levelPath = "../resources/GameLevel_02.json";
+    fileReader.loadLevel(*levelPath);
+
+    /* Create bunny */
+    Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
+    for (int i(0); i < 10; ++i) {
+        GameObject & bunny(Scene::createGameObject());
+        SpatialComponent & bunnySpatComp(Scene::addComponent<SpatialComponent>(
+            bunny,
+            glm::vec3(-10.0f, 5.0, i), // position
+            glm::vec3(0.25f, 0.25f, 0.25f), // scale
+            glm::mat3() // rotation
+        ));
+        NewtonianComponent & bunnyNewtComp(Scene::addComponent<NewtonianComponent>(bunny, playerMaxSpeed));
+        GravityComponent & bunnyGravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(bunny));
+        BounderComponent & bunnyBoundComp(CollisionSystem::addBounderFromMesh(bunny, 1, *bunnyMesh, false, true, false));
+        DiffuseRenderComponent & bunnyDiffuse = Scene::addComponent<DiffuseRenderComponent>(
+            bunny,
+            RenderSystem::getShader<DiffuseShader>()->pid,
+            *bunnyMesh,
+            ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
+        PathfindingComponent & bunnyPathComp(Scene::addComponent<PathfindingComponent>(bunny, player, 1.0f));
+    }
+
+    /* Game stats pane */
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO,
+        "Stats",
+        [&]() {
+            ImGui::Text("FPS: %d", EngineApp::fps);
+            ImGui::Text("dt: %f", EngineApp::timeStep);
+        }
+    );
+
     // Demo ray picking (click)
     auto rayPickCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
@@ -206,88 +251,6 @@ int main(int argc, char **argv) {
         }
     });
     Scene::addReceiver<KeyMessage>(nullptr, gravSwapCallback);
-
-    /* VSync ImGui Pane */
-    Scene::addComponent<ImGuiComponent>(
-        imguiGO,
-        "VSync",
-        [&]() {
-            if (ImGui::Button("VSync")) {
-                Window::toggleVSync();
-            }
-        }
-    );
-
-    /*Parse and load json level*/
-    FileReader fileReader;
-    const char *levelPath = "../resources/GameLevel_02.json";
-    fileReader.loadLevel(*levelPath);
-
-    /* Create bunny */
-    Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
-    for (int i(0); i < 0; ++i) {
-        GameObject & bunny(Scene::createGameObject());
-        SpatialComponent & bunnySpatComp(Scene::addComponent<SpatialComponent>(
-            bunny,
-            glm::vec3(-10.0f, 5.0, i), // position
-            glm::vec3(0.25f, 0.25f, 0.25f), // scale
-            glm::mat3() // rotation
-        ));
-        NewtonianComponent & bunnyNewtComp(Scene::addComponent<NewtonianComponent>(bunny, playerMaxSpeed));
-        GravityComponent & bunnyGravComp(Scene::addComponent<GravityComponent>(bunny));
-        BounderComponent & bunnyBoundComp(CollisionSystem::addBounderFromMesh(bunny, 1, *bunnyMesh, false, true, false));
-        DiffuseRenderComponent & bunnyDiffuse = Scene::addComponent<DiffuseRenderComponent>(
-            bunny,
-            RenderSystem::getShader<DiffuseShader>()->pid,
-            *bunnyMesh,
-            ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)));
-        /* Bunny ImGui panes */
-        /*ImGuiComponent & bIc = Scene::addComponent<ImGuiComponent>(
-            "Bunny", 
-            [&]() {
-                // Material properties
-                ImGui::SliderFloat("Ambient", &bunnyDiffuse.modelTexture.material.ambient, 0.f, 1.f);
-                ImGui::SliderFloat("Red", &bunnyDiffuse.modelTexture.material.diffuse.r, 0.f, 1.f);
-                ImGui::SliderFloat("Green", &bunnyDiffuse.modelTexture.material.diffuse.g, 0.f, 1.f);
-                ImGui::SliderFloat("Blue", &bunnyDiffuse.modelTexture.material.diffuse.b, 0.f, 1.f);
-                // Spatial properties
-                // dont want to be setting spat props unnecessarily
-                glm::vec3 scale = bunny.getSpatial()->scale();
-                if (ImGui::SliderFloat3("Scale", glm::value_ptr(scale), 1.f, 10.f)) {
-                    bunny.getSpatial()->setScale(scale);
-                }
-                glm::vec3 position = bunny.getSpatial()->position();
-
-                if (ImGui::SliderFloat3("Position", glm::value_ptr(position), 0.f, 10.f)) {
-                    bunny.getSpatial()->setPosition(position);
-                }
-                static glm::vec3 axis; static float angle(0.0f);
-                if (
-                    ImGui::SliderFloat3("Rotation Axis", glm::value_ptr(axis), 0.0f, 1.0f) ||
-                    ImGui::SliderFloat("Rotation Angle", &angle, -glm::pi<float>(), glm::pi<float>()))
-                {
-                    if (angle != 0.0f && axis != glm::vec3()) {
-                        bunny.getSpatial()->setOrientation(glm::rotate(angle, glm::normalize(axis)));
-                    }
-                    else {
-                        bunny.getSpatial()->setOrientation(glm::mat3());
-                    }
-                }
-            }
-        );*/
-        //bunny.addComponent(bIc);
-        PathfindingComponent & bunnyPathComp(Scene::addComponent<PathfindingComponent>(bunny, player, 1.0f));
-    }
-
-    /* Game stats pane */
-    Scene::addComponent<ImGuiComponent>(
-        imguiGO,
-        "Stats",
-        [&]() {
-            ImGui::Text("FPS: %d", EngineApp::fps);
-            ImGui::Text("dt: %f", EngineApp::timeStep);
-        }
-    );
 
     /* Main loop */
     EngineApp::run();
