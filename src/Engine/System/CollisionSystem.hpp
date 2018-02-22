@@ -45,8 +45,8 @@ class CollisionSystem {
     private:
 
     static const Vector<BounderComponent *> & s_bounderComponents;
-    static std::unordered_set<BounderComponent *> s_potentials;
-    static std::unordered_set<BounderComponent *> s_collided;
-    static std::unordered_set<BounderComponent *> s_adjusted;
+    static UnorderedSet<BounderComponent *> s_potentials;
+    static UnorderedSet<BounderComponent *> s_collided;
+    static UnorderedSet<BounderComponent *> s_adjusted;
 
 };

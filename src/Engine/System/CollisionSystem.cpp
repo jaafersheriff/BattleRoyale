@@ -142,9 +142,9 @@ glm::vec3 detNetDelta(Vector<std::pair<int, glm::vec3>> & weightDeltas) {
 
 
 const Vector<BounderComponent *> & CollisionSystem::s_bounderComponents(Scene::getComponents<BounderComponent>());
-std::unordered_set<BounderComponent *> CollisionSystem::s_potentials;
-std::unordered_set<BounderComponent *> CollisionSystem::s_collided;
-std::unordered_set<BounderComponent *> CollisionSystem::s_adjusted;
+UnorderedSet<BounderComponent *> CollisionSystem::s_potentials;
+UnorderedSet<BounderComponent *> CollisionSystem::s_collided;
+UnorderedSet<BounderComponent *> CollisionSystem::s_adjusted;
 
 void CollisionSystem::init() {
     auto spatTransformCallback(
@@ -165,7 +165,7 @@ void CollisionSystem::init() {
 
 void CollisionSystem::update(float dt) {
     static UnorderedMap<BounderComponent *, Vector<std::pair<int, glm::vec3>>> s_collisions;
-    static std::unordered_set<BounderComponent *> s_checked;
+    static UnorderedSet<BounderComponent *> s_checked;
     static UnorderedMap<GameObject *, glm::vec3> s_gameObjectDeltas;
 
     s_collided.clear();
