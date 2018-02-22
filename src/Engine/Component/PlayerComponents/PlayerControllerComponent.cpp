@@ -34,9 +34,6 @@ void PlayerControllerComponent::update(float dt) {
     if (!m_enabled) {
         return;
     }
-    if (Window::isImGuiEnabled()) {
-        return;
-    }
 
     // rotate camera
     if (Mouse::dx || Mouse::dy) {

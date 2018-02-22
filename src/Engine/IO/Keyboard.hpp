@@ -13,6 +13,8 @@ class Keyboard {
 
         static void setKeyStatus(int, int);
 
+        static void reset();
+
     private:
         static int keyStatus[NUM_KEYS];
 };

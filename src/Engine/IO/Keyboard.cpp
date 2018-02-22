@@ -11,3 +11,9 @@ bool Keyboard::isKeyPressed(int key) {
 void Keyboard::setKeyStatus(int key, int action) {
     keyStatus[key] = action;
 }
+
+void Keyboard::reset() {
+    for (int key(0); key < NUM_KEYS; ++key) {
+        keyStatus[key] = GLFW_RELEASE;
+    }
+}
