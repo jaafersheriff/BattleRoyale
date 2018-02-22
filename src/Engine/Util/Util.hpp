@@ -143,6 +143,29 @@ struct Util {
         return v + glm::min(-dot, amount) * norm;
     }
 
+    inline static glm::vec2 safeNorm(const glm::vec2 & v) {
+        if (v != glm::vec2()) {
+            return glm::normalize(v);
+        }
+        return glm::vec2();
+    }
+
+    inline static glm::vec3 safeNorm(const glm::vec3 & v) {
+        if (v != glm::vec3()) {
+            return glm::normalize(v);
+        }
+        return glm::vec3();
+    }
+
+    inline static glm::vec4 safeNorm(const glm::vec4 & v) {
+        if (v != glm::vec4()) {
+            return glm::normalize(v);
+        }
+        return glm::vec4();
+    }
+
 };
+
+
 
 #endif

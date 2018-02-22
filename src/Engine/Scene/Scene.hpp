@@ -20,6 +20,7 @@
 #include "GameObject/GameObject.hpp"
 #include "GameObject/Message.hpp"
 #include "Component/Components.hpp"
+#include "Util/Memory.hpp"
 
 
 
@@ -77,7 +78,7 @@ class Scene {
     static std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Component>>> s_componentInitQueue;
     static std::vector<std::pair<std::type_index, Component *>> s_componentKillQueue;
 
-    static std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>> s_messages;
+    static std::vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messages;
     static std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> s_receivers;
 
 };
@@ -108,7 +109,7 @@ void Scene::removeComponent(CompT & component) {
 
 template<typename MsgT, typename... Args>
 void Scene::sendMessage(GameObject * gameObject, Args &&... args) {
-    s_messages.emplace_back(gameObject, typeid(MsgT), new MsgT(std::forward<Args>(args)...));
+    s_messages.emplace_back(gameObject, typeid(MsgT), UniquePtr<Message>::makeAs<MsgT>(std::forward<Args>(args)...));
 }
 
 template <typename MsgT>

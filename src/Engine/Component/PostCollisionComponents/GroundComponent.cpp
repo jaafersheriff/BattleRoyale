@@ -23,7 +23,7 @@ void GroundComponent::init(GameObject & go) {
 }
 
 void GroundComponent::update(float dt) {
-    m_groundNorm = m_potentialGroundNorm == glm::vec3() ? glm::vec3() : glm::normalize(m_potentialGroundNorm);
+    m_groundNorm = Util::safeNorm(m_potentialGroundNorm);
     m_potentialGroundNorm = glm::vec3();
 }
 

@@ -24,5 +24,5 @@ void PathfindingComponent::update(float dt) {
         return;
     }
     
-    gameObject()->getSpatial()->move(glm::normalize(dir) * m_moveSpeed * dt);
+    gameObject()->getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
 }

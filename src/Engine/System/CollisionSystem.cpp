@@ -126,7 +126,7 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
         for (; i < weightDeltas.size() && weightDeltas[i].first == weight; ++i) {
             const glm::vec3 & delta(weightDeltas[i].second);
             weightDelta = compositeDeltas(weightDelta, delta);
-            net = Util::removeAllAgainst(net, glm::normalize(delta));
+            net = Util::removeAllAgainst(net, Util::safeNorm(delta));
         }
         net = compositeDeltas(net, weightDelta);
         weightI = i;
@@ -197,7 +197,7 @@ void CollisionSystem::update(float dt) {
         // there was an adjustment
         if (weightDeltas.size()) {
             for (auto & weightDelta : weightDeltas) { // send norm messages
-                Scene::sendMessage<CollisionNormMessage>(bounder.gameObject(), bounder, glm::normalize(weightDelta.second));
+                Scene::sendMessage<CollisionNormMessage>(bounder.gameObject(), bounder, Util::safeNorm(weightDelta.second));
             }
             glm::vec3 & gameObjectDelta(s_gameObjectDeltas[bounder.gameObject()]);
             gameObjectDelta = compositeDeltas(gameObjectDelta, detNetDelta(weightDeltas));

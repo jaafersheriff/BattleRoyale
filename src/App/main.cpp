@@ -61,6 +61,8 @@ int parseArgs(int argc, char **argv) {
 }
 
 int main(int argc, char **argv) {
+    initializeMemory();
+
     if (parseArgs(argc, argv) || EngineApp::init()) {
         std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
@@ -228,6 +230,7 @@ int main(int argc, char **argv) {
         [&]() {
             ImGui::Text("FPS: %d", EngineApp::fps);
             ImGui::Text("dt: %f", EngineApp::timeStep);
+            ImGui::Text("Player Pos: %f %f %f", playerSpatComp.position().x, playerSpatComp.position().y, playerSpatComp.position().z);
         }
     );
 
