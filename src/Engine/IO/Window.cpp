@@ -75,7 +75,7 @@ void Window::cursorEnterCallback(GLFWwindow * window, int entered) {
     Mouse::reset();
 }
 
-int Window::init(const std::string & name) {
+int Window::init(const String & name) {
     /* Set error callback */
     glfwSetErrorCallback(errorCallback);
 

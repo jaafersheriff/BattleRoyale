@@ -11,6 +11,7 @@
 
 #include "glm/glm.hpp"
 
+#include "Util/Memory.hpp"
 #include "Mouse.hpp"
 #include "Keyboard.hpp"
 
@@ -23,7 +24,7 @@ class Window {
         static GLFWwindow * window;
 
         /* Init */
-        static int init(const std::string &);
+        static int init(const String &);
 
         /* Set window title */
         static void setTitle(const char *);

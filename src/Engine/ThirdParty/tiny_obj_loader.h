@@ -40,8 +40,6 @@
 #include <vector>
 #include <map>
 
-#include "Util/Memory.hpp"
-
 namespace tinyobj {
 
 typedef struct {
@@ -67,15 +65,15 @@ typedef struct {
   std::string bump_texname;               // map_bump, bump
   std::string displacement_texname;       // disp
   std::string alpha_texname;              // map_d
-  Map<std::string, std::string> unknown_parameter;
+  std::map<std::string, std::string> unknown_parameter;
 } material_t;
 
 typedef struct {
-  Vector<float> positions;
-  Vector<float> normals;
-  Vector<float> texcoords;
-  Vector<unsigned int> indices;
-  Vector<int> material_ids; // per-mesh material ID
+  std::vector<float> positions;
+  std::vector<float> normals;
+  std::vector<float> texcoords;
+  std::vector<unsigned int> indices;
+  std::vector<int> material_ids; // per-mesh material ID
 } mesh_t;
 
 typedef struct {
@@ -89,8 +87,8 @@ public:
   virtual ~MaterialReader();
 
   virtual bool operator()(const std::string &matId,
-                          Vector<material_t> &materials,
-                          Map<std::string, int> &matMap,
+                          std::vector<material_t> &materials,
+                          std::map<std::string, int> &matMap,
                           std::string &err) = 0;
 };
 
@@ -100,8 +98,8 @@ public:
       : m_mtlBasePath(mtl_basepath) {}
   virtual ~MaterialFileReader() {}
   virtual bool operator()(const std::string &matId,
-                                Vector<material_t> &materials,
-                                Map<std::string, int> &matMap,
+                                std::vector<material_t> &materials,
+                                std::map<std::string, int> &matMap,
                                 std::string &err);
 
 private:
@@ -114,8 +112,8 @@ private:
 /// Returns true when loading .obj become success.
 /// Returns warning and error message into `err`
 /// 'mtl_basepath' is optional, and used for base path for .mtl file.
-bool LoadObj(Vector<shape_t> &shapes,       // [output]
-             Vector<material_t> &materials, // [output]
+bool LoadObj(std::vector<shape_t> &shapes,       // [output]
+             std::vector<material_t> &materials, // [output]
              std::string& err,                   // [output]
              const char *filename, const char *mtl_basepath = NULL);
 
@@ -123,14 +121,14 @@ bool LoadObj(Vector<shape_t> &shapes,       // [output]
 /// std::istream for materials.
 /// Returns true when loading .obj become success.
 /// Returns warning and error message into `err`
-bool LoadObj(Vector<shape_t> &shapes,       // [output]
-             Vector<material_t> &materials, // [output]
+bool LoadObj(std::vector<shape_t> &shapes,       // [output]
+             std::vector<material_t> &materials, // [output]
              std::string& err,                   // [output]
              std::istream &inStream, MaterialReader &readMatFn);
 
 /// Loads materials into std::map
-void LoadMtl(Map<std::string, int> &material_map, // [output]
-             Vector<material_t> &materials,       // [output]
+void LoadMtl(std::map<std::string, int> &material_map, // [output]
+             std::vector<material_t> &materials,       // [output]
              std::istream &inStream);
 }
 
@@ -176,9 +174,9 @@ static inline bool operator<(const vertex_index &a, const vertex_index &b) {
 }
 
 struct obj_shape {
-  Vector<float> v;
-  Vector<float> vn;
-  Vector<float> vt;
+  std::vector<float> v;
+  std::vector<float> vn;
+  std::vector<float> vt;
 };
 
 static inline bool isSpace(const char c) { return (c == ' ') || (c == '\t'); }
@@ -416,13 +414,13 @@ static vertex_index parseTriple(const char *&token, int vsize, int vnsize,
 }
 
 static unsigned int
-updateVertex(Map<vertex_index, unsigned int> &vertexCache,
-             Vector<float> &positions, Vector<float> &normals,
-             Vector<float> &texcoords,
-             const Vector<float> &in_positions,
-             const Vector<float> &in_normals,
-             const Vector<float> &in_texcoords, const vertex_index &i) {
-  const Map<vertex_index, unsigned int>::iterator it = vertexCache.find(i);
+updateVertex(std::map<vertex_index, unsigned int> &vertexCache,
+             std::vector<float> &positions, std::vector<float> &normals,
+             std::vector<float> &texcoords,
+             const std::vector<float> &in_positions,
+             const std::vector<float> &in_normals,
+             const std::vector<float> &in_texcoords, const vertex_index &i) {
+  const std::map<vertex_index, unsigned int>::iterator it = vertexCache.find(i);
 
   if (it != vertexCache.end()) {
     // found cache
@@ -476,11 +474,11 @@ static void InitMaterial(material_t &material) {
 }
 
 static bool exportFaceGroupToShape(
-    shape_t &shape, Map<vertex_index, unsigned int> vertexCache,
-    const Vector<float> &in_positions,
-    const Vector<float> &in_normals,
-    const Vector<float> &in_texcoords,
-    const Vector<Vector<vertex_index> > &faceGroup,
+    shape_t &shape, std::map<vertex_index, unsigned int> vertexCache,
+    const std::vector<float> &in_positions,
+    const std::vector<float> &in_normals,
+    const std::vector<float> &in_texcoords,
+    const std::vector<std::vector<vertex_index> > &faceGroup,
     const int material_id, const std::string &name, bool clearCache) {
   if (faceGroup.empty()) {
     return false;
@@ -488,7 +486,7 @@ static bool exportFaceGroupToShape(
 
   // Flatten vertices and indices
   for (size_t i = 0; i < faceGroup.size(); i++) {
-    const Vector<vertex_index> &face = faceGroup[i];
+    const std::vector<vertex_index> &face = faceGroup[i];
 
     vertex_index i0 = face[0];
     vertex_index i1(-1);
@@ -527,8 +525,8 @@ static bool exportFaceGroupToShape(
   return true;
 }
 
-void LoadMtl(Map<std::string, int> &material_map,
-             Vector<material_t> &materials,
+void LoadMtl(std::map<std::string, int> &material_map,
+             std::vector<material_t> &materials,
              std::istream &inStream) {
 
   // Create a default material anyway.
@@ -536,7 +534,7 @@ void LoadMtl(Map<std::string, int> &material_map,
   InitMaterial(material);
 
   size_t maxchars = 8192;             // Alloc enough size.
-  Vector<char> buf(maxchars); // Alloc enough size.
+  std::vector<char> buf(maxchars); // Alloc enough size.
   while (inStream.peek() != -1) {
     inStream.getline(&buf[0], static_cast<std::streamsize>(maxchars));
 
@@ -757,8 +755,8 @@ void LoadMtl(Map<std::string, int> &material_map,
 }
 
 bool MaterialFileReader::operator()(const std::string &matId,
-                                    Vector<material_t> &materials,
-                                    Map<std::string, int> &matMap,
+                                    std::vector<material_t> &materials,
+                                    std::map<std::string, int> &matMap,
                                     std::string& err) {
   std::string filepath;
 
@@ -778,8 +776,8 @@ bool MaterialFileReader::operator()(const std::string &matId,
   return true;
 }
 
-bool LoadObj(Vector<shape_t> &shapes, // [output]
-             Vector<material_t> &materials, // [output]
+bool LoadObj(std::vector<shape_t> &shapes, // [output]
+             std::vector<material_t> &materials, // [output]
              std::string &err,
              const char *filename, const char *mtl_basepath) {
 
@@ -803,27 +801,27 @@ bool LoadObj(Vector<shape_t> &shapes, // [output]
   return LoadObj(shapes, materials, err, ifs, matFileReader);
 }
 
-bool LoadObj(Vector<shape_t> &shapes, // [output]
-             Vector<material_t> &materials, // [output]
+bool LoadObj(std::vector<shape_t> &shapes, // [output]
+             std::vector<material_t> &materials, // [output]
              std::string& err,
              std::istream &inStream, MaterialReader &readMatFn) {
   std::stringstream errss;
 
-  Vector<float> v;
-  Vector<float> vn;
-  Vector<float> vt;
-  Vector<Vector<vertex_index> > faceGroup;
+  std::vector<float> v;
+  std::vector<float> vn;
+  std::vector<float> vt;
+  std::vector<std::vector<vertex_index> > faceGroup;
   std::string name;
 
   // material
-  Map<std::string, int> material_map;
-  Map<vertex_index, unsigned int> vertexCache;
+  std::map<std::string, int> material_map;
+  std::map<vertex_index, unsigned int> vertexCache;
   int material = -1;
 
   shape_t shape;
 
   int maxchars = 8192;             // Alloc enough size.
-  Vector<char> buf(static_cast<size_t>(maxchars)); // Alloc enough size.
+  std::vector<char> buf(static_cast<size_t>(maxchars)); // Alloc enough size.
   while (inStream.peek() != -1) {
     inStream.getline(&buf[0], maxchars);
 
@@ -892,7 +890,7 @@ bool LoadObj(Vector<shape_t> &shapes, // [output]
       token += 2;
       token += strspn(token, " \t");
 
-      Vector<vertex_index> face;
+      std::vector<vertex_index> face;
       while (!isNewLine(token[0])) {
         vertex_index vi =
             parseTriple(token, static_cast<int>(v.size() / 3), static_cast<int>(vn.size() / 3), static_cast<int>(vt.size() / 2));
@@ -972,7 +970,7 @@ bool LoadObj(Vector<shape_t> &shapes, // [output]
       // material = -1;
       faceGroup.clear();
 
-      Vector<std::string> names;
+      std::vector<std::string> names;
       while (!isNewLine(token[0])) {
         std::string str = parseString(token);
         names.push_back(str);

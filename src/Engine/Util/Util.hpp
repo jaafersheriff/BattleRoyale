@@ -5,6 +5,8 @@
 
 #include <string>
 #include <iostream>
+#include <sstream>
+#include <fstream>
 
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -14,7 +16,7 @@ struct Util {
 
     static constexpr float infinity = std::numeric_limits<float>::infinity();
 
-    static inline void printVector(const std::string & name, const glm::vec3 & vec) {
+    static inline void printVector(const String & name, const glm::vec3 & vec) {
         std::cout << name << ": <" <<
             vec.x << ", " << vec.y << " " << vec.z << ">" << std::endl;
     }
@@ -112,8 +114,8 @@ struct Util {
         return glm::mat3(x, y, z);
     }
 
-    static std::string toString(const glm::vec3 & v) {
-        return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ")";
+    static String toString(const glm::vec3 & v) {
+        return convert("(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ")");
     }
 
     // project v onto plane defined by unit vector norm
@@ -162,6 +164,20 @@ struct Util {
             return glm::normalize(v);
         }
         return glm::vec4();
+    }    
+
+    inline bool readTextFile(const String & filepath, String & dst) {
+        std::ifstream ifs(filepath.c_str());
+        if (!ifs.good()) {
+            return false;
+        }
+        
+        std::basic_stringstream<char, std::char_traits<char>, ScopedAllocator<char>> ss;
+        ss << ifs.rdbuf();
+        ifs.close();
+        dst = ss.str();
+
+        return true;
     }
 
 };

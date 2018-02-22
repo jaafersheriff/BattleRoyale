@@ -15,7 +15,7 @@ class BounderShader : public Shader {
 
     public:
 
-    BounderShader(const std::string & vertFile, const std::string & fragFile);
+    BounderShader(const String & vertFile, const String & fragFile);
 
     bool init() override;
 

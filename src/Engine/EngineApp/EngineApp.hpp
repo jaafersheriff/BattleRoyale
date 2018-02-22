@@ -17,8 +17,8 @@ class EngineApp {
         static void run();
         static void terminate();
 
-        static std::string RESOURCE_DIR;   /* Static resource directory */
-        static std::string APP_NAME;       /* Name of application */
+        static String RESOURCE_DIR;   /* Static resource directory */
+        static String APP_NAME;       /* Name of application */
         static int fps;                    /* Frames per second */
         static double timeStep;            /* Delta time */
         static bool verbose;               /* Log things or not */

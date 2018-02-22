@@ -11,6 +11,7 @@
 #include <typeinfo>
 #include <typeindex>
 
+#include "Util/Memory.hpp"
 #include "System/GameLogicSystem.hpp"
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"
@@ -19,7 +20,6 @@
 #include "GameObject/GameObject.hpp"
 #include "GameObject/Message.hpp"
 #include "Component/Components.hpp"
-#include "Util/Memory.hpp"
 
 
 

@@ -101,29 +101,36 @@ template <typename T> using ScopedAllocator = std::scoped_allocator_adaptor<Allo
 
 // Standard containers using custom memory allocator
 
+// std::string equivalent
 using String = std::basic_string<char, std::char_traits<char>, ScopedAllocator<char>>;
 
-template <typename T> using Vector = std::vector<T, ScopedAllocator<T>>;
+// convert String to std::string
+inline std::string convert(const String & string) {
+    return std::string(string.c_str());
+}
 
-template <typename T> using List = std::list<T, ScopedAllocator<T>>;
-
-template <typename K> using Set = std::set<K, std::less<K>, ScopedAllocator<K>>;
-
-template <typename K> using UnorderedSet = std::unordered_set<K, std::hash<K>, std::equal_to<K>, ScopedAllocator<K>>;
-
-template <typename K, typename V> using Map = std::map<K, V, std::less<K>, ScopedAllocator<std::pair<K, V>>>;
-
-template <typename K, typename V> using UnorderedMap = std::unordered_map<K, V, std::hash<K>, std::equal_to<K>, ScopedAllocator<std::pair<K, V>>>;
-
-
-
+// convert std::string to String
 inline String convert(const std::string & string) {
     return String(string.c_str());
 }
 
-inline std::string convert(const String & string) {
-    return std::string(string.c_str());
-}
+// std::vector equivalent
+template <typename T> using Vector = std::vector<T, ScopedAllocator<T>>;
+
+// std::list equivalent
+template <typename T> using List = std::list<T, ScopedAllocator<T>>;
+
+// std::set equivalent
+template <typename K> using Set = std::set<K, std::less<K>, ScopedAllocator<K>>;
+
+// std::unordered_set equivalent
+template <typename K> using UnorderedSet = std::unordered_set<K, std::hash<K>, std::equal_to<K>, ScopedAllocator<K>>;
+
+// std::map equivalent
+template <typename K, typename V> using Map = std::map<K, V, std::less<K>, ScopedAllocator<std::pair<K, V>>>;
+
+// std::unordered_map equivalent
+template <typename K, typename V> using UnorderedMap = std::unordered_map<K, V, std::hash<K>, std::equal_to<K>, ScopedAllocator<std::pair<K, V>>>;
 
 
 

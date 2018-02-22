@@ -8,7 +8,7 @@
 #include "System/CollisionSystem.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 
-DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & fragFile, const glm::vec3 & light) :
+DiffuseShader::DiffuseShader(const String & vertFile, const String & fragFile, const glm::vec3 & light) :
     Shader(vertFile, fragFile),
     lightPos(&light)
 {}

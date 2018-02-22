@@ -9,11 +9,11 @@
 bool Shader::init() {
     GLint rc;
 
-    if (!(vShaderId = GLSL::createShader(EngineApp::RESOURCE_DIR + vShaderName, GL_VERTEX_SHADER))) {
+    if (!(vShaderId = GLSL::createShader(convert(EngineApp::RESOURCE_DIR + vShaderName), GL_VERTEX_SHADER))) {
         return false;
     }
 
-    if (!(fShaderId = GLSL::createShader(EngineApp::RESOURCE_DIR + fShaderName, GL_FRAGMENT_SHADER))) {
+    if (!(fShaderId = GLSL::createShader(convert(EngineApp::RESOURCE_DIR + fShaderName), GL_FRAGMENT_SHADER))) {
         return false;
     }
 
@@ -40,7 +40,7 @@ void Shader::unbind() {
     glUseProgram(0);
 }
 
-void Shader::addAttribute(const std::string &name) {
+void Shader::addAttribute(const String &name) {
     GLint r = glGetAttribLocation(pid, name.c_str());
     if (r < 0) {
         std::cerr << "WARN: " << name << " cannot be bound (it either doesn't exist or has been optimized away). safe_glAttrib calls will silently ignore it\n" << std::endl;
@@ -48,7 +48,7 @@ void Shader::addAttribute(const std::string &name) {
     attributes[name] = r;
 }
 
-void Shader::addUniform(const std::string &name) {
+void Shader::addUniform(const String &name) {
     GLint r = glGetUniformLocation(pid, name.c_str());
     if (r < 0) {
         std::cerr << "WARN: " << name << " cannot be bound (it either doesn't exist or has been optimized away). safe_glAttrib calls will silently ignore it\n" << std::endl;
@@ -56,8 +56,8 @@ void Shader::addUniform(const std::string &name) {
     uniforms[name] = r;
 }
 
-GLint Shader::getAttribute(const std::string &name) { 
-    UnorderedMap<std::string, GLint>::const_iterator attribute = attributes.find(name.c_str());
+GLint Shader::getAttribute(const String &name) { 
+    UnorderedMap<String, GLint>::const_iterator attribute = attributes.find(name.c_str());
     if (attribute == attributes.end()) {
         std::cerr << name << " is not an attribute variable" << std::endl;
         return -1;
@@ -65,8 +65,8 @@ GLint Shader::getAttribute(const std::string &name) {
     return attribute->second;
 }
 
-GLint Shader::getUniform(const std::string &name) { 
-    UnorderedMap<std::string, GLint>::const_iterator uniform = uniforms.find(name.c_str());
+GLint Shader::getUniform(const String &name) { 
+    UnorderedMap<String, GLint>::const_iterator uniform = uniforms.find(name.c_str());
     if (uniform == uniforms.end()) {
         std::cerr << name << " is not an uniform variable" << std::endl;
         return -1;

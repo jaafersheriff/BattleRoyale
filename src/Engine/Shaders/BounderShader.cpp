@@ -39,7 +39,7 @@ glm::mat4 detCapsuleRodMat(const CapsuleBounderComponent & bounder) {
 
 
 
-BounderShader::BounderShader(const std::string & vertFile, const std::string & fragFile) :
+BounderShader::BounderShader(const String & vertFile, const String & fragFile) :
     Shader(vertFile, fragFile),
     
     m_aabVBO(0), m_aabIBO(0), m_aabVAO(0),

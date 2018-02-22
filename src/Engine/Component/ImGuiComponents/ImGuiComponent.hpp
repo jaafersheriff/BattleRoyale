@@ -19,7 +19,7 @@ class ImGuiComponent : public Component {
 
     protected: // only scene or friends can create component
 
-        ImGuiComponent(std::string name, std::function<void()> fun) :
+        ImGuiComponent(String name, std::function<void()> fun) :
             name(name),
             panes(fun)
         {}
@@ -33,7 +33,7 @@ class ImGuiComponent : public Component {
         void update(float);
 
     private:
-        std::string name;
+        String name;
         std::function<void()> panes;
 };
 
