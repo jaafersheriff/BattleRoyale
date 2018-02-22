@@ -9,7 +9,7 @@
 
 
 
-const std::vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
+const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 std::unordered_map<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
 const CameraComponent * RenderSystem::s_camera = nullptr;
 
@@ -42,7 +42,7 @@ void RenderSystem::update(float dt) {
 
             // this reinterpret_cast business works because unique_ptr's data is
             // guaranteed is the same as a pointer
-            shader.second->render(s_camera, reinterpret_cast<const std::vector<Component *> &>(s_diffuseComponents));
+            shader.second->render(s_camera, reinterpret_cast<const Vector<Component *> &>(s_diffuseComponents));
             shader.second->unbind();
         }
     }

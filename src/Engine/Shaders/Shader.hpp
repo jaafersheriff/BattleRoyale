@@ -13,6 +13,8 @@
 #include <string>
 #include <vector>
 
+#include "Util/Memory.hpp"
+
 class Component;
 class CameraComponent;
 
@@ -39,7 +41,7 @@ class Shader {
         void unloadTexture(int);
 
         /* Render functions */
-        virtual void render(const CameraComponent * camera, const std::vector<Component *> & components) = 0;
+        virtual void render(const CameraComponent * camera, const Vector<Component *> & components) = 0;
 
         /* Parent load functions */
         void loadBool(const int, const bool) const;

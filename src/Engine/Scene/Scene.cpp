@@ -14,16 +14,16 @@
 
 
 
-std::vector<UniquePtr<GameObject>> Scene::s_gameObjects;
-std::unordered_map<std::type_index, UniquePtr<std::vector<UniquePtr<Component>>>> Scene::s_components;
+Vector<UniquePtr<GameObject>> Scene::s_gameObjects;
+std::unordered_map<std::type_index, UniquePtr<Vector<UniquePtr<Component>>>> Scene::s_components;
 
-std::vector<UniquePtr<GameObject>> Scene::s_gameObjectInitQueue;
-std::vector<GameObject *> Scene::s_gameObjectKillQueue;
-std::vector<std::tuple<GameObject *, std::type_index, UniquePtr<Component>>> Scene::s_componentInitQueue;
-std::vector<std::pair<std::type_index, Component *>> Scene::s_componentKillQueue;
+Vector<UniquePtr<GameObject>> Scene::s_gameObjectInitQueue;
+Vector<GameObject *> Scene::s_gameObjectKillQueue;
+Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Component>>> Scene::s_componentInitQueue;
+Vector<std::pair<std::type_index, Component *>> Scene::s_componentKillQueue;
 
-std::vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_messages;
-std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> Scene::s_receivers;
+Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_messages;
+std::unordered_map<std::type_index, Vector<std::function<void (const Message &)>>> Scene::s_receivers;
 
 void Scene::init() {
     GameLogicSystem::init();
@@ -86,7 +86,7 @@ void Scene::doInitQueue() {
         auto & comp(std::get<2>(initE));
         auto it(s_components.find(typeI));
         if (it == s_components.end()) {
-            s_components.emplace(typeI, UniquePtr<std::vector<UniquePtr<Component>>>::make());
+            s_components.emplace(typeI, UniquePtr<Vector<UniquePtr<Component>>>::make());
             it = s_components.find(typeI);
         }
         it->second->emplace_back(std::move(comp));
@@ -177,7 +177,7 @@ void Scene::doKillQueue() {
 }
 
 void Scene::relayMessages() {
-    static std::vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messagesBuffer;
+    static Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messagesBuffer;
 
     while (s_messages.size()) {
         // this keeps things from breaking if messages are sent from receivers

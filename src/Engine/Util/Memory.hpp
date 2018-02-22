@@ -85,6 +85,16 @@ struct Allocator {
 
 };
 
+template <typename T1, typename T2>
+bool operator==(const Allocator<T1> & a1, const Allocator<T2> & a2) {
+    return true;
+}
+
+template <typename T1, typename T2>
+bool operator!=(const Allocator<T1> & a1, const Allocator<T2> & a2) {
+    return false;
+}
+
 template <typename T> using ScopedAllocator = std::scoped_allocator_adaptor<Allocator<T>>;
 
 

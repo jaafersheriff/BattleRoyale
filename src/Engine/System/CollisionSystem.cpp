@@ -35,7 +35,7 @@ struct Collision {
 
 
 
-bool collide(BounderComponent & b1, BounderComponent & b2, std::unordered_map<BounderComponent *, std::vector<std::pair<int, glm::vec3>>> * collisions) {
+bool collide(BounderComponent & b1, BounderComponent & b2, std::unordered_map<BounderComponent *, Vector<std::pair<int, glm::vec3>>> * collisions) {
     if (b1.weight() == UINT_MAX && b2.weight() == UINT_MAX) {
         return false;
     }
@@ -103,7 +103,7 @@ bool compWeightDelta(const std::pair<int, glm::vec3> & d1, const std::pair<int, 
 // weight takes precidence. But this doesn't mean you ignore the lower weight
 // delta. Rather, you "hemispherically clamp" the net lower weight delta
 // onto each higher weight delta, and repeat this process, moving up in weight.
-glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
+glm::vec3 detNetDelta(Vector<std::pair<int, glm::vec3>> & weightDeltas) {
     if (weightDeltas.size() == 0) {
         return glm::vec3();
     }
@@ -141,7 +141,7 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
 
 
 
-const std::vector<BounderComponent *> & CollisionSystem::s_bounderComponents(Scene::getComponents<BounderComponent>());
+const Vector<BounderComponent *> & CollisionSystem::s_bounderComponents(Scene::getComponents<BounderComponent>());
 std::unordered_set<BounderComponent *> CollisionSystem::s_potentials;
 std::unordered_set<BounderComponent *> CollisionSystem::s_collided;
 std::unordered_set<BounderComponent *> CollisionSystem::s_adjusted;
@@ -164,7 +164,7 @@ void CollisionSystem::init() {
 }
 
 void CollisionSystem::update(float dt) {
-    static std::unordered_map<BounderComponent *, std::vector<std::pair<int, glm::vec3>>> s_collisions;
+    static std::unordered_map<BounderComponent *, Vector<std::pair<int, glm::vec3>>> s_collisions;
     static std::unordered_set<BounderComponent *> s_checked;
     static std::unordered_map<GameObject *, glm::vec3> s_gameObjectDeltas;
 

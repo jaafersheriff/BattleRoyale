@@ -8,13 +8,15 @@
 
 #include "glm/glm.hpp"
 
+#include "Util/Memory.hpp"
+
 class Mesh {
     public:
         struct MeshBuffers {
-            std::vector<float> vertBuf;
-            std::vector<float> norBuf;
-            std::vector<float> texBuf;
-            std::vector<unsigned int> eleBuf;
+            Vector<float> vertBuf;
+            Vector<float> norBuf;
+            Vector<float> texBuf;
+            Vector<unsigned int> eleBuf;
         };
         /* Constructor */
         Mesh() :

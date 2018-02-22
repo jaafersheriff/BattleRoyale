@@ -4,9 +4,9 @@
 
 
 
-const std::vector<SpatialComponent *> & SpatialSystem::s_spatialComponents(Scene::getComponents<SpatialComponent>());
-const std::vector<NewtonianComponent *> & SpatialSystem::s_newtonianComponents(Scene::getComponents<NewtonianComponent>());
-const std::vector<AcceleratorComponent *> & SpatialSystem::s_acceleratorComponents(Scene::getComponents<AcceleratorComponent>());
+const Vector<SpatialComponent *> & SpatialSystem::s_spatialComponents(Scene::getComponents<SpatialComponent>());
+const Vector<NewtonianComponent *> & SpatialSystem::s_newtonianComponents(Scene::getComponents<NewtonianComponent>());
+const Vector<AcceleratorComponent *> & SpatialSystem::s_acceleratorComponents(Scene::getComponents<AcceleratorComponent>());
 glm::vec3 SpatialSystem::s_gravityDir = glm::vec3(0.0f, -1.0f, 0.0f);
 float SpatialSystem::s_gravityMag = 10.0f;
 float SpatialSystem::s_coefficientOfFriction = 0.5f;

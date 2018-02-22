@@ -70,7 +70,7 @@ bool BounderShader::init() {
     return true;
 }
 
-void BounderShader::render(const CameraComponent * camera, const std::vector<Component *> & components_) {
+void BounderShader::render(const CameraComponent * camera, const Vector<Component *> & components_) {
     if (!camera) {
         return;
     }
@@ -168,7 +168,7 @@ bool BounderShader::initSphereMesh() {
     constexpr int arcLOD = 16;
     int nCircleVerts(arcLOD * 4);
     int nVerts(3 * nCircleVerts);
-    std::vector<glm::vec3> locs(nVerts);
+    Vector<glm::vec3> locs(nVerts);
 
     float dTheta(2.0f * glm::pi<float>() / nCircleVerts);
     for (int i(0); i < nCircleVerts; ++i) {
@@ -180,7 +180,7 @@ bool BounderShader::initSphereMesh() {
     }
 
     int nIndices(2 * nVerts);
-    std::vector<int> indices(nIndices);
+    Vector<int> indices(nIndices);
     for (int i(0); i < nCircleVerts; ++i) {
         indices[(0 * nCircleVerts + i) * 2 + 0] = 0 * int(nCircleVerts) + i + 0;
         indices[(0 * nCircleVerts + i) * 2 + 1] = 0 * int(nCircleVerts) + i + 1;
@@ -221,7 +221,7 @@ bool BounderShader::initCapMesh() {
     constexpr int arcLOD = 16;
     int nCircleVerts(arcLOD * 4);
     int nVerts(2 * nCircleVerts + 2);
-    std::vector<glm::vec3> locs(nVerts);
+    Vector<glm::vec3> locs(nVerts);
 
     float dTheta(2.0f * glm::pi<float>() / nCircleVerts);
     int vi(0);
@@ -237,7 +237,7 @@ bool BounderShader::initCapMesh() {
     }
     
     int nIndices(4 * nCircleVerts);
-    std::vector<int> indices(nIndices);
+    Vector<int> indices(nIndices);
     int ii(0); vi = 0;
     for (int i(0); i < nCircleVerts; ++i) {
         indices[ii++] = vi;
@@ -285,7 +285,7 @@ bool BounderShader::initRodMesh() {
     constexpr int arcLOD = 16;
     int nCircleVerts(arcLOD * 4);
     int nVerts(nCircleVerts + 8);
-    std::vector<glm::vec3> locs(nVerts);
+    Vector<glm::vec3> locs(nVerts);
 
     float dTheta(2.0f * glm::pi<float>() / nCircleVerts);
     for (int i(0); i < nCircleVerts; ++i) {
@@ -302,7 +302,7 @@ bool BounderShader::initRodMesh() {
     locs[nCircleVerts + 7] = glm::vec3( 0.0f,  1.0f, -1.0f);
     
     int nIndices(2 * nCircleVerts + 8);
-    std::vector<int> indices(nIndices);
+    Vector<int> indices(nIndices);
     for (int i(0); i < nCircleVerts; ++i) {
         indices[2 * i + 0] = i + 0;
         indices[2 * i + 1] = i + 1;

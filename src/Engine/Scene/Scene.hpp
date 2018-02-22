@@ -55,9 +55,9 @@ class Scene {
     // receiver will pick up only messages sent to that object
     template <typename MsgT> static void addReceiver(GameObject * gameObject, const std::function<void (const Message &)> & receiver);
 
-    static const std::vector<GameObject *> & getGameObjects() { return reinterpret_cast<const std::vector<GameObject *> &>(s_gameObjects); }
+    static const Vector<GameObject *> & getGameObjects() { return reinterpret_cast<const Vector<GameObject *> &>(s_gameObjects); }
 
-    template <typename CompT> static const std::vector<CompT *> & getComponents();
+    template <typename CompT> static const Vector<CompT *> & getComponents();
 
   private:
 
@@ -69,16 +69,16 @@ class Scene {
 
   private:
 
-    static std::vector<UniquePtr<GameObject>> s_gameObjects;
-    static std::unordered_map<std::type_index, UniquePtr<std::vector<UniquePtr<Component>>>> s_components;
+    static Vector<UniquePtr<GameObject>> s_gameObjects;
+    static std::unordered_map<std::type_index, UniquePtr<Vector<UniquePtr<Component>>>> s_components;
 
-    static std::vector<UniquePtr<GameObject>> s_gameObjectInitQueue;
-    static std::vector<GameObject *> s_gameObjectKillQueue;
-    static std::vector<std::tuple<GameObject *, std::type_index, UniquePtr<Component>>> s_componentInitQueue;
-    static std::vector<std::pair<std::type_index, Component *>> s_componentKillQueue;
+    static Vector<UniquePtr<GameObject>> s_gameObjectInitQueue;
+    static Vector<GameObject *> s_gameObjectKillQueue;
+    static Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Component>>> s_componentInitQueue;
+    static Vector<std::pair<std::type_index, Component *>> s_componentKillQueue;
 
-    static std::vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messages;
-    static std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> s_receivers;
+    static Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messages;
+    static std::unordered_map<std::type_index, Vector<std::function<void (const Message &)>>> s_receivers;
 
 };
 
@@ -121,15 +121,15 @@ void Scene::addReceiver(GameObject * gameObject, const std::function<void (const
 }
 
 template <typename CompT>
-const std::vector<CompT *> & Scene::getComponents() {
+const Vector<CompT *> & Scene::getComponents() {
     std::type_index typeI(typeid(CompT));
     auto it(s_components.find(typeI));
     if (it == s_components.end()) {
-        s_components.emplace(typeI, UniquePtr<std::vector<UniquePtr<Component>>>::make());
+        s_components.emplace(typeI, UniquePtr<Vector<UniquePtr<Component>>>::make());
         it = s_components.find(typeI);
     }
     // this is valid because unique_ptr<T> is exactly the same data as T *
-    return reinterpret_cast<const std::vector<CompT *> &>(*(it->second));
+    return reinterpret_cast<const Vector<CompT *> &>(*(it->second));
 }
 
 

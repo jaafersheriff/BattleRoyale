@@ -8,6 +8,8 @@
 #include <iostream>
 #include <vector>
 
+#include "Util/Memory.hpp"
+
 bool Loader::verbose = false;
 std::string Loader::RESOURCE_DIR = "../resources/";
 
@@ -22,8 +24,8 @@ Mesh* Loader::getMesh(const std::string & name) {
         return mesh;
     }
 
-    std::vector<tinyobj::shape_t> shapes;
-    std::vector<tinyobj::material_t> objMaterials;
+    Vector<tinyobj::shape_t> shapes;
+    Vector<tinyobj::material_t> objMaterials;
     std::string errString;
     bool rc = tinyobj::LoadObj(shapes, objMaterials, errString, (RESOURCE_DIR + name).c_str());
     if (!rc) {

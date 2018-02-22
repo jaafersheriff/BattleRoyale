@@ -45,9 +45,9 @@ class GameObject {
     public:
 
     // get all components;
-    const std::vector<Component *> & getComponents() const { return m_allComponents; }
+    const Vector<Component *> & getComponents() const { return m_allComponents; }
     // get all components of a specific type
-    template <typename CompT> const std::vector<Component *> & getComponentsByType() const;
+    template <typename CompT> const Vector<Component *> & getComponentsByType() const;
 
     // get first component of a specific type
     template <typename CompT> CompT * getComponentByType() const;
@@ -57,10 +57,10 @@ class GameObject {
 
     private:
 
-    std::vector<Component *> m_allComponents;
-    std::unordered_map<std::type_index, std::vector<Component *>> m_compsByCompT;
+    Vector<Component *> m_allComponents;
+    std::unordered_map<std::type_index, Vector<Component *>> m_compsByCompT;
     SpatialComponent * m_spatialComponent;
-    std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> m_receivers;
+    std::unordered_map<std::type_index, Vector<std::function<void (const Message &)>>> m_receivers;
 
 };
 
@@ -76,8 +76,8 @@ void GameObject::addComponent(CompT & component) {
 }
 
 template <typename CompT>
-const std::vector<Component *> & GameObject::getComponentsByType() const {
-    static const std::vector<Component *> s_emptyList;
+const Vector<Component *> & GameObject::getComponentsByType() const {
+    static const Vector<Component *> s_emptyList;
 
     auto it(m_compsByCompT.find(std::type_index(typeid(CompT))));
     if (it != m_compsByCompT.end()) {
