@@ -15,10 +15,11 @@ class DiffuseRenderComponent : public Component {
 
     protected: // only scene or friends can create component
 
-        DiffuseRenderComponent(int pid, Mesh & mesh, ModelTexture texture) :
+        DiffuseRenderComponent(int pid, Mesh & mesh, ModelTexture texture, bool t) :
             pid(pid),
             mesh(&mesh),
-            modelTexture(texture)
+            modelTexture(texture),
+            isToon(t)
         {}
 
     public:
@@ -30,6 +31,7 @@ class DiffuseRenderComponent : public Component {
         int pid = -1;
         Mesh * mesh;
         ModelTexture modelTexture;
+        bool isToon = false;
 };
 
 #endif

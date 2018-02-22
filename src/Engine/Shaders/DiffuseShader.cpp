@@ -61,7 +61,6 @@ void DiffuseShader::render(const CameraComponent * camera, const std::vector<Com
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
     loadVec3(getUniform("camPos"), camera->gameObject()->getSpatial()->position());
-    loadBool(getUniform("isToon"), showToon);
     loadFloat(getUniform("silAngle"), silAngle);
     loadFloat(getUniform("cells"), numCells);
 
@@ -93,6 +92,14 @@ void DiffuseShader::render(const CameraComponent * camera, const std::vector<Com
         DiffuseRenderComponent *drc;
         if (!(drc = dynamic_cast<DiffuseRenderComponent *>(cp)) || drc->pid != this->pid) {
             continue;
+        }
+
+        /* Toon shading */
+        if (showToon && drc->isToon) {
+            loadBool(getUniform("isToon"), true);
+        }
+        else {
+            loadBool(getUniform("isToon"), false);
         }
 
         /* Model matrix */
