@@ -2,7 +2,7 @@
 
 
 
-//#define USE_RPMALLOC
+#define USE_RPMALLOC
 
 
 
@@ -22,16 +22,6 @@
 
 
 #include "ThirdParty/CoherentLabs_rpmalloc/rpmalloc.h"
-
-
-
-inline void * coherent_rpmalloc::rpmalloc_allocate_memory_external(size_t size) {
-    return std::malloc(size);
-}
-
-inline void coherent_rpmalloc::rpmalloc_deallocate_memory_external(void * ptr) {
-    return std::free(ptr);
-}
 
 
 
