@@ -6,6 +6,8 @@ in vec2 texCoords;
 
 uniform float matAmbient;
 uniform vec3 matDiffuse;
+uniform vec3 matSpecular;
+uniform float shine;
 
 uniform vec3 camPos;
 uniform vec3 lightPos;
@@ -38,7 +40,11 @@ void main() {
         diffuseColor = vec3(texture(textureImage, texCoords));
     }
 
-    color = vec4(diffuseColor*diffuseContrib, 1.0f);
+    /* Specular using Blinn-Phong */
+    vec3 H = (L + V) / 2.0;
+    float specularContrib = pow(max(dot(H, N), 0.0), shine);
+
+    color = vec4(diffuseColor*diffuseContrib + matSpecular*specularContrib, 1.0);
 
     /* Silhouettes */
     if (isToon) {

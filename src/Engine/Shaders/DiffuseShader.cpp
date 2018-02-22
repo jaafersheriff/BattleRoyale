@@ -33,6 +33,8 @@ bool DiffuseShader::init() {
 
     addUniform("matAmbient");
     addUniform("matDiffuse");
+    addUniform("matSpecular");
+    addUniform("shine");
     addUniform("textureImage");
     addUniform("usesTexture");
 
@@ -101,6 +103,8 @@ void DiffuseShader::render(const CameraComponent * camera, const std::vector<Com
         /* Bind materials */
         loadFloat(getUniform("matAmbient"), drc->modelTexture.material.ambient);
         loadVec3(getUniform("matDiffuse"), drc->modelTexture.material.diffuse);
+        loadVec3(getUniform("matSpecular"), drc->modelTexture.material.specular);
+        loadFloat(getUniform("shine"), drc->modelTexture.material.shineDamper);
    
         /* Load texture */
         if(drc->modelTexture.texture && drc->modelTexture.texture->textureId != 0) {
