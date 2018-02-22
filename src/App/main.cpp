@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
                 RenderSystem::getShader<DiffuseShader>()->setSilAngle(angle);
                 
                 int cells = RenderSystem::getShader<DiffuseShader>()->getCells();
-                ImGui::SliderInt("Cells", &cells, 0, 10);
+                ImGui::SliderInt("Cells", &cells, 0, 15);
                 RenderSystem::getShader<DiffuseShader>()->setCells(cells);
             }
         }
