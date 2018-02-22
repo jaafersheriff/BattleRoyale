@@ -24,9 +24,6 @@ void CameraControllerComponent::update(float dt) {
     if (!m_enabled) {
         return;
     }
-    if (Window::isImGuiEnabled()) {
-        return;
-    }
 
     if (Mouse::dx || Mouse::dy) {
         // orient camera relative to base

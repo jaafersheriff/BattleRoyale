@@ -184,27 +184,6 @@ int main(int argc, char **argv) {
     });
     Scene::addReceiver<KeyMessage>(nullptr, camSwitchCallback);
 
-    // Demo ray picking (click)
-    auto rayPickCallback([&](const Message & msg_) {
-        const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
-        if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
-            auto pair(CollisionSystem::pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir())));
-            if (pair.first && pair.first->weight() < UINT_MAX) {
-                pair.first->gameObject()->getSpatial()->scale(glm::vec3(1.1f));
-            }
-        }
-    });
-    Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);
-
-    // Swap gravity (ctrl-g)
-    auto gravSwapCallback([&](const Message & msg_) {
-        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
-        if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_CONTROL) {
-            SpatialSystem::setGravity(-SpatialSystem::gravity());
-        }
-    });
-    Scene::addReceiver<KeyMessage>(nullptr, gravSwapCallback);
-
     /* VSync ImGui Pane */
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
@@ -251,6 +230,27 @@ int main(int argc, char **argv) {
             ImGui::Text("dt: %f", EngineApp::timeStep);
         }
     );
+
+    // Demo ray picking (click)
+    auto rayPickCallback([&](const Message & msg_) {
+        const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
+        if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
+            auto pair(CollisionSystem::pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir())));
+            if (pair.first && pair.first->weight() < UINT_MAX) {
+                pair.first->gameObject()->getSpatial()->scale(glm::vec3(1.1f));
+            }
+        }
+    });
+    Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);
+
+    // Swap gravity (ctrl-g)
+    auto gravSwapCallback([&](const Message & msg_) {
+        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
+        if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_CONTROL) {
+            SpatialSystem::setGravity(-SpatialSystem::gravity());
+        }
+    });
+    Scene::addReceiver<KeyMessage>(nullptr, gravSwapCallback);
 
     /* Main loop */
     EngineApp::run();
