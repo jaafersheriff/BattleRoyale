@@ -70,7 +70,7 @@ class Scene {
   private:
 
     static Vector<UniquePtr<GameObject>> s_gameObjects;
-    static std::unordered_map<std::type_index, UniquePtr<Vector<UniquePtr<Component>>>> s_components;
+    static UnorderedMap<std::type_index, UniquePtr<Vector<UniquePtr<Component>>>> s_components;
 
     static Vector<UniquePtr<GameObject>> s_gameObjectInitQueue;
     static Vector<GameObject *> s_gameObjectKillQueue;
@@ -78,7 +78,7 @@ class Scene {
     static Vector<std::pair<std::type_index, Component *>> s_componentKillQueue;
 
     static Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messages;
-    static std::unordered_map<std::type_index, Vector<std::function<void (const Message &)>>> s_receivers;
+    static UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> s_receivers;
 
 };
 

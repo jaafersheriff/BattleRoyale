@@ -15,7 +15,7 @@
 
 
 Vector<UniquePtr<GameObject>> Scene::s_gameObjects;
-std::unordered_map<std::type_index, UniquePtr<Vector<UniquePtr<Component>>>> Scene::s_components;
+UnorderedMap<std::type_index, UniquePtr<Vector<UniquePtr<Component>>>> Scene::s_components;
 
 Vector<UniquePtr<GameObject>> Scene::s_gameObjectInitQueue;
 Vector<GameObject *> Scene::s_gameObjectKillQueue;
@@ -23,7 +23,7 @@ Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Component>>> Scene::s
 Vector<std::pair<std::type_index, Component *>> Scene::s_componentKillQueue;
 
 Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_messages;
-std::unordered_map<std::type_index, Vector<std::function<void (const Message &)>>> Scene::s_receivers;
+UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> Scene::s_receivers;
 
 void Scene::init() {
     GameLogicSystem::init();

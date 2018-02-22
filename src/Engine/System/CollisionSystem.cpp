@@ -35,7 +35,7 @@ struct Collision {
 
 
 
-bool collide(BounderComponent & b1, BounderComponent & b2, std::unordered_map<BounderComponent *, Vector<std::pair<int, glm::vec3>>> * collisions) {
+bool collide(BounderComponent & b1, BounderComponent & b2, UnorderedMap<BounderComponent *, Vector<std::pair<int, glm::vec3>>> * collisions) {
     if (b1.weight() == UINT_MAX && b2.weight() == UINT_MAX) {
         return false;
     }
@@ -164,9 +164,9 @@ void CollisionSystem::init() {
 }
 
 void CollisionSystem::update(float dt) {
-    static std::unordered_map<BounderComponent *, Vector<std::pair<int, glm::vec3>>> s_collisions;
+    static UnorderedMap<BounderComponent *, Vector<std::pair<int, glm::vec3>>> s_collisions;
     static std::unordered_set<BounderComponent *> s_checked;
-    static std::unordered_map<GameObject *, glm::vec3> s_gameObjectDeltas;
+    static UnorderedMap<GameObject *, glm::vec3> s_gameObjectDeltas;
 
     s_collided.clear();
     s_adjusted.clear();

@@ -57,7 +57,7 @@ class RenderSystem {
     private:
 
     static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
-    static std::unordered_map<std::type_index, UniquePtr<Shader>> s_shaders;
+    static UnorderedMap<std::type_index, UniquePtr<Shader>> s_shaders;
     static const CameraComponent * s_camera;
 
 };

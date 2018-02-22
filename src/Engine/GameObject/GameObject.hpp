@@ -58,9 +58,9 @@ class GameObject {
     private:
 
     Vector<Component *> m_allComponents;
-    std::unordered_map<std::type_index, Vector<Component *>> m_compsByCompT;
+    UnorderedMap<std::type_index, Vector<Component *>> m_compsByCompT;
     SpatialComponent * m_spatialComponent;
-    std::unordered_map<std::type_index, Vector<std::function<void (const Message &)>>> m_receivers;
+    UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> m_receivers;
 
 };
 

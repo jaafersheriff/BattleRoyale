@@ -1,4 +1,4 @@
 #include "Library.hpp"
 
-std::unordered_map<std::string, Mesh *> Library::meshes;
-std::unordered_map<std::string, Texture *> Library::textures;
+UnorderedMap<std::string, Mesh *> Library::meshes;
+UnorderedMap<std::string, Texture *> Library::textures;

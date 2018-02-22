@@ -9,8 +9,8 @@
 #include <unordered_map>
 class Library {
     public:
-        static std::unordered_map<std::string, Mesh *> meshes;
-        static std::unordered_map<std::string, Texture *> textures;
+        static UnorderedMap<std::string, Mesh *> meshes;
+        static UnorderedMap<std::string, Texture *> textures;
 
         static Mesh* getMesh(const std::string & name) {
             auto it = Library::meshes.find(name);
