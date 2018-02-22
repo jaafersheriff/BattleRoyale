@@ -28,11 +28,11 @@ void main() {
 
     /* Diffuse */
     float diffuseContrib = clamp(dot(L, N), matAmbient, 1.0);
+    /* Cell shading */
     if (isToon) {
         float level = floor(diffuseContrib * cells);
         diffuseContrib = level / cells;
     }
-
     vec3 diffuseColor = matDiffuse;
     if (usesTexture) {
         diffuseColor = vec3(texture(textureImage, texCoords));
@@ -40,6 +40,7 @@ void main() {
 
     color = vec4(diffuseColor*diffuseContrib, 1.0f);
 
+    /* Silhouettes */
     if (isToon) {
         float angle = dot(N, V);
         if(angle > 0 && angle < silAngle) {
