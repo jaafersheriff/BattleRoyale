@@ -29,7 +29,7 @@ void main() {
     /* Diffuse */
     float diffuseContrib = clamp(dot(L, N), matAmbient, 1.0);
     if (isToon) {
-        float level = ceil(diffuseContrib * cells);
+        float level = floor(diffuseContrib * cells);
         diffuseContrib = level / cells;
     }
 
@@ -41,8 +41,8 @@ void main() {
     color = vec4(diffuseColor*diffuseContrib, 1.0f);
 
     if (isToon) {
-        float angle = clamp(dot(N, V), 0.0, 1.0);
-        if(angle < silAngle) {
+        float angle = dot(N, V);
+        if(angle > 0 && angle < silAngle) {
             color = vec4(0, 0, 0, 1);
         }
     }
