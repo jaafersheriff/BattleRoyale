@@ -74,8 +74,8 @@ class Shader {
         /* GLSL shader attributes */
         GLint vShaderId;
         GLint fShaderId;
-        std::map<std::string, GLint> attributes;
-        std::map<std::string, GLint> uniforms;
+        std::unordered_map<std::string, GLint> attributes;
+        std::unordered_map<std::string, GLint> uniforms;
 };
 
 #endif

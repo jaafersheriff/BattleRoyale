@@ -57,7 +57,7 @@ void Shader::addUniform(const std::string &name) {
 }
 
 GLint Shader::getAttribute(const std::string &name) { 
-    std::map<std::string, GLint>::const_iterator attribute = attributes.find(name.c_str());
+    std::unordered_map<std::string, GLint>::const_iterator attribute = attributes.find(name.c_str());
     if (attribute == attributes.end()) {
         std::cerr << name << " is not an attribute variable" << std::endl;
         return -1;
@@ -66,7 +66,7 @@ GLint Shader::getAttribute(const std::string &name) {
 }
 
 GLint Shader::getUniform(const std::string &name) { 
-    std::map<std::string, GLint>::const_iterator uniform = uniforms.find(name.c_str());
+    std::unordered_map<std::string, GLint>::const_iterator uniform = uniforms.find(name.c_str());
     if (uniform == uniforms.end()) {
         std::cerr << name << " is not an uniform variable" << std::endl;
         return -1;
