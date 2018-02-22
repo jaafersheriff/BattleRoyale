@@ -29,11 +29,16 @@ bool DiffuseShader::init() {
     addUniform("N");
 
     addUniform("lightPos");
+    addUniform("camPos");
 
     addUniform("matAmbient");
     addUniform("matDiffuse");
     addUniform("textureImage");
     addUniform("usesTexture");
+
+    addUniform("isToon");
+    addUniform("silAngle");
+    addUniform("cells");
 
     return true;
 }
@@ -53,6 +58,10 @@ void DiffuseShader::render(const CameraComponent * camera, const std::vector<Com
     loadMat4(getUniform("P"), camera->getProj());
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
+    loadVec3(getUniform("camPos"), camera->gameObject()->getSpatial()->position());
+    loadBool(getUniform("isToon"), showToon);
+    loadFloat(getUniform("silAngle"), silAngle);
+    loadFloat(getUniform("cells"), numCells);
 
     /* Determine if component should be culled */
     /* Only doing frustum culling if object has bounder(s) */
