@@ -60,7 +60,16 @@ int parseArgs(int argc, char **argv) {
     return 0;
 }
 
+#include <chrono>
 int main(int argc, char **argv) {
+    auto start(std::chrono::high_resolution_clock::now());
+    for (volatile int i = 0; i < 50000000; ++i) {
+        allocate(16);
+    }
+    std::cout << (std::chrono::high_resolution_clock::now() - start).count() * 1.0e-9;
+    std::cin.get();
+    return 0;
+
     if (parseArgs(argc, argv) || EngineApp::init()) {
         std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
@@ -117,7 +126,7 @@ int main(int argc, char **argv) {
     );
 
     /* Set Gravity */
-    SpatialSystem::setGravity(glm::vec3(0.0f, -10.0f, 0.0f));
+    SpatialSystem::setGravity(glm::vec3(0.0f, -0.0f, 0.0f));
 
     /* Setup Player */
     float playerFOV(45.0f);

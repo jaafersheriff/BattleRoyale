@@ -24,8 +24,14 @@ void SpatialSystem::update(float dt) {
 }
 
 void SpatialSystem::setGravity(const glm::vec3 & gravity) {
-    s_gravityMag = glm::length(gravity);
-    s_gravityDir = gravity / s_gravityMag;
+    if (gravity == glm::vec3()) {
+        s_gravityDir = glm::vec3();
+        s_gravityMag = 0.0f;
+    }
+    else {
+        s_gravityMag = glm::length(gravity);
+        s_gravityDir = gravity / s_gravityMag;
+    }
 }
 
 void SpatialSystem::setGravityDir(const glm::vec3 & dir) {

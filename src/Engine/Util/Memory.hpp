@@ -2,6 +2,10 @@
 
 
 
+//#define USE_RPMALLOC
+
+
+
 #include <scoped_allocator>
 #include <string>
 #include <vector>
@@ -10,6 +14,12 @@
 #include <unordered_set>
 #include <map>
 #include <unordered_map>
+
+
+
+#ifdef USE_RPMALLOC
+
+
 
 #include "ThirdParty/CoherentLabs_rpmalloc/rpmalloc.h"
 
@@ -33,7 +43,6 @@ struct InitializeMemory {
     InitializeMemory() {
         if (!initialized++) {
             coherent_rpmalloc::rpmalloc_initialize();
-            //coherent_rpmalloc::rpmalloc_thread_initialize();
         }
     }
 
@@ -47,12 +56,24 @@ static InitializeMemory f_initializeMemory;
 
 
 
+#endif
+
+
+
 inline void * allocate(size_t size) {
+#ifdef USE_RPMALLOC
     return coherent_rpmalloc::rpmalloc(size);
+#else
+    return std::malloc(size);
+#endif
 }
 
 inline void deallocate(void * ptr) {
+#ifdef USE_RPMALLOC
     return coherent_rpmalloc::rpfree(ptr);
+#else
+    return std::free(ptr);
+#endif
 }
 
 
