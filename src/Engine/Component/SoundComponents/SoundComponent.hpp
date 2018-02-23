@@ -6,11 +6,7 @@
 
 #include "Component/Component.hpp"
 
-#ifndef HAVE_FMOD_LIBRARY
-#define HAVE_FMOD_LIBRARY false
-#endif
-
-#if HAVE_FMOD_LIBRARY
+#ifdef HAVE_FMOD_LIBRARY
 #include "ThirdParty/fmod/fmod.hpp"
 #include "ThirdParty/fmod/fmod_studio.hpp"
 #endif
@@ -26,7 +22,7 @@ class SoundComponent : public Component{
         using SystemClass = SoundSystem;
 
     private:
-    #if HAVE_FMOD_LIBRARY
+    #ifdef HAVE_FMOD_LIBRARY
         FMOD::System *m_system;
     #endif
 
@@ -34,7 +30,7 @@ class SoundComponent : public Component{
 
         /* Constructors */
         SoundComponent();
-    #if HAVE_FMOD_LIBRARY
+    #ifdef HAVE_FMOD_LIBRARY
 	    SoundComponent(FMOD::System *m_system);	
     #endif
 };

@@ -3,9 +3,9 @@
 #define _SOUND_SYSTEM_HPP_
 
 // Set whether you have fmod library or not. Must be done manually!
-#ifndef HAVE_FMOD_LIBRARY
+/*#ifndef HAVE_FMOD_LIBRARY
 #define HAVE_FMOD_LIBRARY true
-#endif
+#endif*/
 
 #include "System.hpp"
 #include "Component/SoundComponents/SoundComponent.hpp"
@@ -14,7 +14,7 @@
 //#include <vector>
 //#include <map>
 
-#if HAVE_FMOD_LIBRARY 
+#ifdef HAVE_FMOD_LIBRARY 
 #include "ThirdParty/fmod/fmod.hpp"
 #include "ThirdParty/fmod/fmod_studio.hpp"
 #endif
@@ -31,14 +31,14 @@ class SoundSystem {
     /* Attributes */
     public:
         static Vector<String> soundfiles;
-    #if HAVE_FMOD_LIBRARY
+    #ifdef HAVE_FMOD_LIBRARY
         static FMOD::System* m_system; // = NULL;
     #endif
 
     private:
         static String SOUND_DIR;
         static const Vector<SoundComponent *> & s_soundComponents;
-    #if HAVE_FMOD_LIBRARY
+    #ifdef HAVE_FMOD_LIBRARY
         static Map<String, FMOD::Sound*> soundLibrary;
     #endif
 
@@ -49,7 +49,7 @@ class SoundSystem {
     /* Functions */
         static void update(float dt);
 
-    #if HAVE_FMOD_LIBRARY
+    #ifdef HAVE_FMOD_LIBRARY
         
         static void  playSound(String name);
     #endif
@@ -58,7 +58,7 @@ class SoundSystem {
         static void added(Component & component) {};
         static void removed(Component & component) {};
     
-    #if HAVE_FMOD_LIBRARY
+    #ifdef HAVE_FMOD_LIBRARY
         static FMOD::Sound* createSound(String soundfilename);
         static void initSoundLibrary();
     #endif

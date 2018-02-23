@@ -7,11 +7,13 @@ Vector<String> SoundSystem::soundfiles = {
     "doorbump.wav",
     "softbump.wav"
 };
+#ifdef HAVE_FMOD_LIBRARY
 FMOD::System* SoundSystem::m_system = NULL;
 Map<String, FMOD::Sound*> SoundSystem::soundLibrary = Map<String, FMOD::Sound*>();
+#endif
 void SoundSystem::init() {
 
-#if HAVE_FMOD_LIBRARY
+#ifdef HAVE_FMOD_LIBRARY
     FMOD_RESULT result;
 
     result = FMOD::System_Create(&m_system);
@@ -27,17 +29,17 @@ void SoundSystem::init() {
 
     initSoundLibrary();
 #endif
-    playSound("drill.wav");
+    
 }
 
 void SoundSystem::update(float dt) 
 {
-#if HAVE_FMOD_LIBRARY
+#ifdef HAVE_FMOD_LIBRARY
     m_system->update();
 #endif
 }
 
-#if HAVE_FMOD_LIBRARY
+#ifdef HAVE_FMOD_LIBRARY
 void SoundSystem::initSoundLibrary()
 {
     for (auto s : soundfiles) {
