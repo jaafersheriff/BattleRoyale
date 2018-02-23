@@ -32,6 +32,6 @@ class PostCollisionSystem {
 
     private:
 
-    static const std::vector<GroundComponent *> & s_groundComponents;
+    static const Vector<GroundComponent *> & s_groundComponents;
 
 };

@@ -5,32 +5,30 @@
 #include "Model/Mesh.hpp"
 #include "Model/Texture.hpp"
 
-#include <string>
-#include <unordered_map>
 class Library {
     public:
-        static std::unordered_map<std::string, Mesh *> meshes;
-        static std::unordered_map<std::string, Texture *> textures;
+        static UnorderedMap<String, Mesh *> meshes;
+        static UnorderedMap<String, Texture *> textures;
 
-        static Mesh* getMesh(const std::string & name) {
+        static Mesh* getMesh(const String & name) {
             auto it = Library::meshes.find(name);
             if (it != meshes.end()) {
                 return it->second;
             }
             return nullptr;
         }
-        static void addMesh(const std::string & name, Mesh & mesh) {
+        static void addMesh(const String & name, Mesh & mesh) {
             meshes.insert({ name, &mesh });
         }
 
-        static Texture* getTexture(const std::string & name) {
+        static Texture* getTexture(const String & name) {
             auto it = textures.find(name);
             if (it != textures.end()) {
                 return it->second;
             }
             return nullptr;
         }
-        static void addTexture(const std::string & name, Texture *texture) {
+        static void addTexture(const String & name, Texture *texture) {
             textures.insert({ name, texture });
         }
 };

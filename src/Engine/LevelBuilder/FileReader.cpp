@@ -141,7 +141,7 @@ int FileReader::loadLevel(const char & filePath) {
         const rapidjson::Value& jsonObject = document[m.name.GetString()];
         const rapidjson::Value& jsonTransform = jsonObject["transform"];
         GameObject & gameObject(Scene::createGameObject());
-
+      
         numberOfColliders = 0;
 
         //Parse filepath
@@ -157,7 +157,6 @@ int FileReader::loadLevel(const char & filePath) {
         numberOfColliders += FileReader::addCapsuleColliderComponents(gameObject, jsonObject);
         numberOfColliders += FileReader::addSphereColliderComponents(gameObject, jsonObject);
         numberOfColliders += FileReader::addBoxColliderComponents(gameObject, jsonObject);
-
 
         const rapidjson::Value& allowColliders = jsonTransform["allowColliders"];
         //Create a bounder if none have been created the the json allows colliders on the mesh

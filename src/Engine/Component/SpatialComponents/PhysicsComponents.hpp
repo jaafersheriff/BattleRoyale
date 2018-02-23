@@ -28,6 +28,8 @@ class NewtonianComponent : public Component {
 
   public:
 
+    NewtonianComponent(NewtonianComponent && other) = default;
+
     virtual ~NewtonianComponent() = default;
 
   protected:
@@ -66,15 +68,13 @@ class AcceleratorComponent : public Component {
 
     friend Scene;
 
-  public:
-
-    virtual SystemID systemID() const override { return SystemID::spatial; };
-
   protected: // only scene or friends can create component
 
     AcceleratorComponent(const glm::vec3 & acceleration);
 
   public:
+
+    AcceleratorComponent(AcceleratorComponent && other) = default;
 
     virtual ~AcceleratorComponent() = default;
 
@@ -83,6 +83,8 @@ class AcceleratorComponent : public Component {
     virtual void init(GameObject & go) override;
 
   public:
+
+    virtual SystemID systemID() const override { return SystemID::spatial; };
 
     virtual void update(float dt) override;
 
@@ -106,6 +108,8 @@ class GravityComponent : public AcceleratorComponent {
     GravityComponent();
 
   public:
+
+    GravityComponent(GravityComponent && other) = default;
 
     virtual ~GravityComponent() = default;
 

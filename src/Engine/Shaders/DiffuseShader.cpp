@@ -8,7 +8,7 @@
 #include "System/CollisionSystem.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 
-DiffuseShader::DiffuseShader(const std::string & vertFile, const std::string & fragFile, const glm::vec3 & light) :
+DiffuseShader::DiffuseShader(const String & vertFile, const String & fragFile, const glm::vec3 & light) :
     Shader(vertFile, fragFile),
     lightPos(&light)
 {}
@@ -45,8 +45,8 @@ bool DiffuseShader::init() {
     return true;
 }
 
-void DiffuseShader::render(const CameraComponent * camera, const std::vector<Component *> & components) {
-    static std::vector<Component *> s_compsToRender;
+void DiffuseShader::render(const CameraComponent * camera, const Vector<Component *> & components) {
+    static Vector<Component *> s_compsToRender;
 
     if (!camera) {
         return;
@@ -68,7 +68,7 @@ void DiffuseShader::render(const CameraComponent * camera, const std::vector<Com
     /* Only doing frustum culling if object has bounder(s) */
     /* Get the center and radius of the component */
     for (Component * comp : components) {
-        const std::vector<Component *> & bounders(comp->gameObject()->getComponentsByType<BounderComponent>());
+        const Vector<Component *> & bounders(comp->gameObject()->getComponentsByType<BounderComponent>());
         if (bounders.size()) {
             bool inFrustum(false);
             for (Component * bounder_ : bounders) {
