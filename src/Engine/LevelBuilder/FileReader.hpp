@@ -11,7 +11,7 @@ class FileReader {
 public:
     int loadLevel(const char & file);
     void addSpatialComponent(GameObject & gameObject, const rapidjson::Value& jsonTransform);
-    void addRenderComponent(GameObject & gameObject, const rapidjson::Value& jsonTransform, const std::string filePath);
+    void addRenderComponent(GameObject & gameObject, const rapidjson::Value& jsonTransform, const String filePath);
     int addCapsuleColliderComponents(GameObject & gameObject, const rapidjson::Value& jsonObject);
     int addSphereColliderComponents(GameObject & gameObject, const rapidjson::Value& jsonObject);
     int addBoxColliderComponents(GameObject & gameObject, const rapidjson::Value& jsonObject);

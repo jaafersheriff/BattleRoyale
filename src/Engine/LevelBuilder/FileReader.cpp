@@ -39,11 +39,11 @@ void FileReader::addSpatialComponent(GameObject & gameObject, const rapidjson::V
         );
 }
 
-void FileReader::addRenderComponent(GameObject & gameObject, const rapidjson::Value& jsonTransform, const std::string filePath) {
+void FileReader::addRenderComponent(GameObject & gameObject, const rapidjson::Value& jsonTransform, const String filePath) {
 
     //Get full filepath of texture file
     assert(jsonTransform["objTexture"].IsString());
-    std::string texturePath = jsonTransform["objTexture"].GetString();
+    String texturePath = jsonTransform["objTexture"].GetString();
     std::size_t textureOffset = texturePath.find_last_of("/\\");
     texturePath = texturePath.substr(textureOffset + 1);
 
@@ -146,7 +146,7 @@ int FileReader::loadLevel(const char & filePath) {
 
         //Parse filepath
         assert(jsonTransform["objName"].IsString());
-        std::string filePath = jsonTransform["objName"].GetString();
+        String filePath = jsonTransform["objName"].GetString();
         std::size_t fileOffset = filePath.find_last_of("/\\");
         filePath = filePath.substr(fileOffset + 1);
 
