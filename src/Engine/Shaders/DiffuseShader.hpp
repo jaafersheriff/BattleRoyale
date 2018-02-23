@@ -5,8 +5,6 @@
 
 #include "Shader.hpp"
 
-class CameraComonent;
-
 class DiffuseShader : public Shader {
     public:
         DiffuseShader(const String & vertFile, const String & fragFile, const glm::vec3 & light);

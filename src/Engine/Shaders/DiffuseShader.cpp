@@ -46,8 +46,6 @@ bool DiffuseShader::init() {
 }
 
 void DiffuseShader::render(const CameraComponent * camera, const Vector<Component *> & components) {
-    static Vector<Component *> s_compsToRender;
-
     if (!camera) {
         return;
     }
