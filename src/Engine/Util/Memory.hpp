@@ -141,7 +141,7 @@ template <typename K> using UnorderedSet = std::unordered_set<K, std::hash<K>, s
 template <typename K, typename V> using Map = std::map<K, V, std::less<K>, ScopedAllocator<std::pair<K, V>>>;
 
 // std::unordered_map equivalent
-template <typename K, typename V> using UnorderedMap = std::unordered_map<K, V, std::hash<K>, std::equal_to<K>, ScopedAllocator<std::pair<K, V>>>;
+template <typename K, typename V> using UnorderedMap = std::unordered_map<K, V, std::hash<K>, std::equal_to<K>, ScopedAllocator<std::pair<const K, V>>>;
 
 
 
