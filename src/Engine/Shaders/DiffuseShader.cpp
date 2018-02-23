@@ -154,6 +154,4 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }    
-
-    s_compsToRender.clear();
 }
