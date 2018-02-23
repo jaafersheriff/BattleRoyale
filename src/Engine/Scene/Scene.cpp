@@ -14,16 +14,16 @@
 
 
 
-std::vector<std::unique_ptr<GameObject>> Scene::s_gameObjects;
-std::unordered_map<std::type_index, std::unique_ptr<std::vector<std::unique_ptr<Component>>>> Scene::s_components;
+Vector<UniquePtr<GameObject>> Scene::s_gameObjects;
+UnorderedMap<std::type_index, UniquePtr<Vector<UniquePtr<Component>>>> Scene::s_components;
 
-std::vector<std::unique_ptr<GameObject>> Scene::s_gameObjectInitQueue;
-std::vector<GameObject *> Scene::s_gameObjectKillQueue;
-std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Component>>> Scene::s_componentInitQueue;
-std::vector<std::pair<std::type_index, Component *>> Scene::s_componentKillQueue;
+Vector<UniquePtr<GameObject>> Scene::s_gameObjectInitQueue;
+Vector<GameObject *> Scene::s_gameObjectKillQueue;
+Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Component>>> Scene::s_componentInitQueue;
+Vector<std::pair<std::type_index, Component *>> Scene::s_componentKillQueue;
 
-std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>> Scene::s_messages;
-std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> Scene::s_receivers;
+Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_messages;
+UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> Scene::s_receivers;
 
 void Scene::init() {
     GameLogicSystem::init();
@@ -35,7 +35,7 @@ void Scene::init() {
 }
 
 GameObject & Scene::createGameObject() {
-    s_gameObjectInitQueue.emplace_back(new GameObject());
+    s_gameObjectInitQueue.emplace_back(UniquePtr<GameObject>::make(GameObject()));
     return *s_gameObjectInitQueue.back().get();
 }
 
@@ -66,7 +66,7 @@ void Scene::update(float dt) {
 
 void Scene::doInitQueue() {
     for (auto & o : s_gameObjectInitQueue) {
-        s_gameObjects.emplace_back(o.release());
+        s_gameObjects.emplace_back(std::move(o));
     }
     s_gameObjectInitQueue.clear();
     
@@ -86,7 +86,7 @@ void Scene::doInitQueue() {
         auto & comp(std::get<2>(initE));
         auto it(s_components.find(typeI));
         if (it == s_components.end()) {
-            s_components[typeI].reset(new std::vector<std::unique_ptr<Component>>());
+            s_components.emplace(typeI, UniquePtr<Vector<UniquePtr<Component>>>::make());
             it = s_components.find(typeI);
         }
         it->second->emplace_back(std::move(comp));
@@ -113,7 +113,7 @@ void Scene::doKillQueue() {
             GameObject * go(s_gameObjects[i].get());
             if (go == *killIt) {
                 // add game object's componets to kill queue
-                for (auto & compTIt(go->m_compsByCompT.begin()); compTIt != go->m_compsByCompT.end(); ++compTIt) {
+                for (auto compTIt(go->m_compsByCompT.begin()); compTIt != go->m_compsByCompT.end(); ++compTIt) {
                     for (auto & comp : compTIt->second) {
                         s_componentKillQueue.emplace_back(compTIt->first, comp);
                     }
@@ -177,7 +177,7 @@ void Scene::doKillQueue() {
 }
 
 void Scene::relayMessages() {
-    static std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>> s_messagesBuffer;
+    static Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messagesBuffer;
 
     while (s_messages.size()) {
         // this keeps things from breaking if messages are sent from receivers

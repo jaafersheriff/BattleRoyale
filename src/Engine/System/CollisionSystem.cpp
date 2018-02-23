@@ -1,7 +1,5 @@
 #include "CollisionSystem.hpp"
 
-#include <unordered_set>
-#include <unordered_map>
 #include <algorithm>
 
 #include "glm/gtx/component_wise.hpp"
@@ -35,7 +33,7 @@ struct Collision {
 
 
 
-bool collide(BounderComponent & b1, BounderComponent & b2, std::unordered_map<BounderComponent *, std::vector<std::pair<int, glm::vec3>>> * collisions) {
+bool collide(BounderComponent & b1, BounderComponent & b2, UnorderedMap<BounderComponent *, Vector<std::pair<int, glm::vec3>>> * collisions) {
     if (b1.weight() == UINT_MAX && b2.weight() == UINT_MAX) {
         return false;
     }
@@ -103,7 +101,7 @@ bool compWeightDelta(const std::pair<int, glm::vec3> & d1, const std::pair<int, 
 // weight takes precidence. But this doesn't mean you ignore the lower weight
 // delta. Rather, you "hemispherically clamp" the net lower weight delta
 // onto each higher weight delta, and repeat this process, moving up in weight.
-glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
+glm::vec3 detNetDelta(Vector<std::pair<int, glm::vec3>> & weightDeltas) {
     if (weightDeltas.size() == 0) {
         return glm::vec3();
     }
@@ -126,7 +124,7 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
         for (; i < weightDeltas.size() && weightDeltas[i].first == weight; ++i) {
             const glm::vec3 & delta(weightDeltas[i].second);
             weightDelta = compositeDeltas(weightDelta, delta);
-            net = Util::removeAllAgainst(net, glm::normalize(delta));
+            net = Util::removeAllAgainst(net, Util::safeNorm(delta));
         }
         net = compositeDeltas(net, weightDelta);
         weightI = i;
@@ -141,10 +139,10 @@ glm::vec3 detNetDelta(std::vector<std::pair<int, glm::vec3>> & weightDeltas) {
 
 
 
-const std::vector<BounderComponent *> & CollisionSystem::s_bounderComponents(Scene::getComponents<BounderComponent>());
-std::unordered_set<BounderComponent *> CollisionSystem::s_potentials;
-std::unordered_set<BounderComponent *> CollisionSystem::s_collided;
-std::unordered_set<BounderComponent *> CollisionSystem::s_adjusted;
+const Vector<BounderComponent *> & CollisionSystem::s_bounderComponents(Scene::getComponents<BounderComponent>());
+UnorderedSet<BounderComponent *> CollisionSystem::s_potentials;
+UnorderedSet<BounderComponent *> CollisionSystem::s_collided;
+UnorderedSet<BounderComponent *> CollisionSystem::s_adjusted;
 
 void CollisionSystem::init() {
     auto spatTransformCallback(
@@ -164,9 +162,9 @@ void CollisionSystem::init() {
 }
 
 void CollisionSystem::update(float dt) {
-    static std::unordered_map<BounderComponent *, std::vector<std::pair<int, glm::vec3>>> s_collisions;
-    static std::unordered_set<BounderComponent *> s_checked;
-    static std::unordered_map<GameObject *, glm::vec3> s_gameObjectDeltas;
+    static UnorderedMap<BounderComponent *, Vector<std::pair<int, glm::vec3>>> s_collisions;
+    static UnorderedSet<BounderComponent *> s_checked;
+    static UnorderedMap<GameObject *, glm::vec3> s_gameObjectDeltas;
 
     s_collided.clear();
     s_adjusted.clear();
@@ -197,7 +195,7 @@ void CollisionSystem::update(float dt) {
         // there was an adjustment
         if (weightDeltas.size()) {
             for (auto & weightDelta : weightDeltas) { // send norm messages
-                Scene::sendMessage<CollisionNormMessage>(bounder.gameObject(), bounder, glm::normalize(weightDelta.second));
+                Scene::sendMessage<CollisionNormMessage>(bounder.gameObject(), bounder, Util::safeNorm(weightDelta.second));
             }
             glm::vec3 & gameObjectDelta(s_gameObjectDeltas[bounder.gameObject()]);
             gameObjectDelta = compositeDeltas(gameObjectDelta, detNetDelta(weightDeltas));

@@ -25,6 +25,8 @@ class SpatialComponent : public Component, public Orientable {
 
     public:
 
+    SpatialComponent(SpatialComponent && other) = default;
+
     virtual SystemID systemID() const override { return SystemID::spatial; };
 
     public:

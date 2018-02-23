@@ -2,8 +2,6 @@
 
 
 
-#include <memory>
-
 #include "Component/Component.hpp"
 #include "Util/Geometry.hpp"
 
@@ -27,11 +25,17 @@ class BounderComponent : public Component {
 
     BounderComponent(unsigned int weight);
 
+    public:
+
+    BounderComponent(BounderComponent && other) = default;
+
+    virtual ~BounderComponent() override = default;
+
+    protected:
+
     virtual void init(GameObject & go) override;
 
     public:
-
-    virtual ~BounderComponent() override = default;
 
     virtual SystemID systemID() const override { return SystemID::collision; };
 
@@ -66,6 +70,8 @@ class AABBounderComponent : public BounderComponent {
 
     public:
 
+    AABBounderComponent(AABBounderComponent && other) = default;
+
     virtual void update(float dt) override;
 
     virtual bool collide(const BounderComponent & o, glm::vec3 * delta) const override;
@@ -98,6 +104,8 @@ class SphereBounderComponent : public BounderComponent {
 
     public:
 
+    SphereBounderComponent(SphereBounderComponent && other) = default;
+
     virtual void update(float dt) override;
 
     virtual bool collide(const BounderComponent & o, glm::vec3 * delta) const override;
@@ -129,6 +137,8 @@ class CapsuleBounderComponent : public BounderComponent {
     CapsuleBounderComponent(unsigned int weight, const Capsule & capsule);
 
     public:
+
+    CapsuleBounderComponent(CapsuleBounderComponent && other) = default;
 
     virtual void update(float dt) override;
 

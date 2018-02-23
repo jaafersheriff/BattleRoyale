@@ -15,6 +15,12 @@ class PathfindingComponent : public Component {
 
     PathfindingComponent(GameObject & player, float ms);
 
+    public:
+
+    PathfindingComponent(PathfindingComponent && other) = default;
+
+    protected:
+
     virtual void init(GameObject & go) override;
 
     public:

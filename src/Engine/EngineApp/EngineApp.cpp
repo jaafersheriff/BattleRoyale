@@ -4,8 +4,8 @@
 #include <iostream>
 
 
-std::string EngineApp::RESOURCE_DIR = "../resources/";
-std::string EngineApp::APP_NAME = "Battle Royale with Cheese";
+String EngineApp::RESOURCE_DIR = "../resources/";
+String EngineApp::APP_NAME = "Battle Royale with Cheese";
 int EngineApp::fps = 0;
 double EngineApp::timeStep = 0.0;
 bool EngineApp::verbose = false;

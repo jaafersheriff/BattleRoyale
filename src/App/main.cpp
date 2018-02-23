@@ -6,7 +6,6 @@ extern "C" {
 }
 #endif
 
-#include <string>
 #include <iostream>
 
 #include "glm/gtx/transform.hpp"
@@ -100,19 +99,19 @@ int main(int argc, char **argv) {
                 ImGui::SliderFloat("Silhouette Angle", &angle, 0.f, 1.f);
                 RenderSystem::getShader<DiffuseShader>()->setSilAngle(angle);
                 
-                int cells = RenderSystem::getShader<DiffuseShader>()->getCells();
+                int cells = int(RenderSystem::getShader<DiffuseShader>()->getCells());
                 ImGui::SliderInt("Cells", &cells, 0, 15);
-                RenderSystem::getShader<DiffuseShader>()->setCells(cells);
+                RenderSystem::getShader<DiffuseShader>()->setCells(float(cells));
             }
         }
     );
 
     // Create collider
     // alternate method using unique_ptr and new
-    if (!RenderSystem::addShader(std::unique_ptr<BounderShader>(new BounderShader(
+    if (!RenderSystem::createShader<BounderShader>(
             EngineApp::RESOURCE_DIR + "bounder_vert.glsl",
             EngineApp::RESOURCE_DIR + "bounder_frag.glsl"
-        )))) {
+    )) {
         std::cerr << "Failed to add collider shader" << std::endl;
         std::cin.get(); //don't immediately close the console
         return EXIT_FAILURE;
@@ -196,27 +195,6 @@ int main(int argc, char **argv) {
     });
     Scene::addReceiver<KeyMessage>(nullptr, camSwitchCallback);
 
-    // Demo ray picking (click)
-    auto rayPickCallback([&](const Message & msg_) {
-        const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
-        if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
-            auto pair(CollisionSystem::pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir())));
-            if (pair.first && pair.first->weight() < UINT_MAX) {
-                pair.first->gameObject()->getSpatial()->scale(glm::vec3(1.1f));
-            }
-        }
-    });
-    Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);
-
-    // Swap gravity (ctrl-g)
-    auto gravSwapCallback([&](const Message & msg_) {
-        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
-        if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_CONTROL) {
-            SpatialSystem::setGravity(-SpatialSystem::gravity());
-        }
-    });
-    Scene::addReceiver<KeyMessage>(nullptr, gravSwapCallback);
-
     /* VSync ImGui Pane */
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
@@ -262,8 +240,30 @@ int main(int argc, char **argv) {
         [&]() {
             ImGui::Text("FPS: %d", EngineApp::fps);
             ImGui::Text("dt: %f", EngineApp::timeStep);
+            ImGui::Text("Player Pos: %f %f %f", playerSpatComp.position().x, playerSpatComp.position().y, playerSpatComp.position().z);
         }
     );
+
+    // Demo ray picking (click)
+    auto rayPickCallback([&](const Message & msg_) {
+        const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
+        if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
+            auto pair(CollisionSystem::pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir())));
+            if (pair.first && pair.first->weight() < UINT_MAX) {
+                pair.first->gameObject()->getSpatial()->scale(glm::vec3(1.1f));
+            }
+        }
+    });
+    Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);
+
+    // Swap gravity (ctrl-g)
+    auto gravSwapCallback([&](const Message & msg_) {
+        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
+        if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_CONTROL) {
+            SpatialSystem::setGravity(-SpatialSystem::gravity());
+        }
+    });
+    Scene::addReceiver<KeyMessage>(nullptr, gravSwapCallback);
 
     /* Main loop */
     EngineApp::run();

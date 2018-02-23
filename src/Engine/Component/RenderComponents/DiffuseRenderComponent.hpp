@@ -24,7 +24,9 @@ class DiffuseRenderComponent : public Component {
 
     public:
 
-    virtual SystemID systemID() const override { return SystemID::render; };
+        DiffuseRenderComponent(DiffuseRenderComponent && other) = default;
+
+        virtual SystemID systemID() const override { return SystemID::render; };
 
     public:
 

@@ -6,12 +6,10 @@
 
 
 
-#include <unordered_map>
-#include <vector>
-#include <memory>
 #include <typeinfo>
 #include <typeindex>
 
+#include "Util/Memory.hpp"
 #include "System/GameLogicSystem.hpp"
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"
@@ -55,9 +53,9 @@ class Scene {
     // receiver will pick up only messages sent to that object
     template <typename MsgT> static void addReceiver(GameObject * gameObject, const std::function<void (const Message &)> & receiver);
 
-    static const std::vector<GameObject *> & getGameObjects() { return reinterpret_cast<const std::vector<GameObject *> &>(s_gameObjects); }
+    static const Vector<GameObject *> & getGameObjects() { return reinterpret_cast<const Vector<GameObject *> &>(s_gameObjects); }
 
-    template <typename CompT> static const std::vector<CompT *> & getComponents();
+    template <typename CompT> static const Vector<CompT *> & getComponents();
 
   private:
 
@@ -69,16 +67,16 @@ class Scene {
 
   private:
 
-    static std::vector<std::unique_ptr<GameObject>> s_gameObjects;
-    static std::unordered_map<std::type_index, std::unique_ptr<std::vector<std::unique_ptr<Component>>>> s_components;
+    static Vector<UniquePtr<GameObject>> s_gameObjects;
+    static UnorderedMap<std::type_index, UniquePtr<Vector<UniquePtr<Component>>>> s_components;
 
-    static std::vector<std::unique_ptr<GameObject>> s_gameObjectInitQueue;
-    static std::vector<GameObject *> s_gameObjectKillQueue;
-    static std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Component>>> s_componentInitQueue;
-    static std::vector<std::pair<std::type_index, Component *>> s_componentKillQueue;
+    static Vector<UniquePtr<GameObject>> s_gameObjectInitQueue;
+    static Vector<GameObject *> s_gameObjectKillQueue;
+    static Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Component>>> s_componentInitQueue;
+    static Vector<std::pair<std::type_index, Component *>> s_componentKillQueue;
 
-    static std::vector<std::tuple<GameObject *, std::type_index, std::unique_ptr<Message>>> s_messages;
-    static std::unordered_map<std::type_index, std::vector<std::function<void (const Message &)>>> s_receivers;
+    static Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messages;
+    static UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> s_receivers;
 
 };
 
@@ -95,20 +93,19 @@ CompT & Scene::addComponent(GameObject & gameObject, Args &&... args) {
 
 template <typename CompT, typename SuperT, typename... Args>
 CompT & Scene::addComponentAs(GameObject & gameObject, Args &&... args) {
-    CompT * comp(new CompT(std::forward<Args>(args)...));
-    s_componentInitQueue.emplace_back(&gameObject, typeid(SuperT), std::unique_ptr<CompT>(comp));
-    return *comp;
+    s_componentInitQueue.emplace_back(&gameObject, typeid(SuperT), UniquePtr<CompT>::make(CompT(std::forward<Args>(args)...)));
+    return static_cast<CompT &>(*std::get<2>(s_componentInitQueue.back()));
 }
 
 template <typename CompT>
-static void Scene::removeComponent(CompT & component) {
+void Scene::removeComponent(CompT & component) {
     static_assert(!std::is_same<CompT, Component>::value, "CompT must be the derived component type");
     s_componentKillQueue.emplace_back(typeid(CompT), &component);
 }
 
 template<typename MsgT, typename... Args>
 void Scene::sendMessage(GameObject * gameObject, Args &&... args) {
-    s_messages.emplace_back(gameObject, typeid(MsgT), new MsgT(std::forward<Args>(args)...));
+    s_messages.emplace_back(gameObject, typeid(MsgT), UniquePtr<Message>::makeAs<MsgT>(std::forward<Args>(args)...));
 }
 
 template <typename MsgT>
@@ -122,15 +119,15 @@ void Scene::addReceiver(GameObject * gameObject, const std::function<void (const
 }
 
 template <typename CompT>
-const std::vector<CompT *> & Scene::getComponents() {
+const Vector<CompT *> & Scene::getComponents() {
     std::type_index typeI(typeid(CompT));
     auto it(s_components.find(typeI));
     if (it == s_components.end()) {
-        s_components[typeI].reset(new std::vector<std::unique_ptr<Component>>());
+        s_components.emplace(typeI, UniquePtr<Vector<UniquePtr<Component>>>::make());
         it = s_components.find(typeI);
     }
     // this is valid because unique_ptr<T> is exactly the same data as T *
-    return reinterpret_cast<const std::vector<CompT *> &>(*(it->second));
+    return reinterpret_cast<const Vector<CompT *> &>(*(it->second));
 }
 
 

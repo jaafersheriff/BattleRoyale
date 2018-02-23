@@ -26,6 +26,6 @@ class PathfindingSystem {
 
     private:
 
-    static const std::vector<PathfindingComponent *> & s_pathfindingComponents;
+    static const Vector<PathfindingComponent *> & s_pathfindingComponents;
 
 };

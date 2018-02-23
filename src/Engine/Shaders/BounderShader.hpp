@@ -15,11 +15,11 @@ class BounderShader : public Shader {
 
     public:
 
-    BounderShader(const std::string & vertFile, const std::string & fragFile);
+    BounderShader(const String & vertFile, const String & fragFile);
 
     bool init() override;
 
-    virtual void render(const CameraComponent * camera, const std::vector<Component *> &) override;
+    virtual void render(const CameraComponent * camera, const Vector<Component *> &) override;
 
     private:
 

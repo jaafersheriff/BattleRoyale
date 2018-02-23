@@ -34,9 +34,6 @@ void PlayerControllerComponent::update(float dt) {
     if (!m_enabled) {
         return;
     }
-    if (Window::isImGuiEnabled()) {
-        return;
-    }
 
     // rotate camera
     if (Mouse::dx || Mouse::dy) {
@@ -59,7 +56,7 @@ void PlayerControllerComponent::update(float dt) {
         float(backward - forward)
     );
     if (xzDir != glm::vec2()) {
-        xzDir = glm::normalize(xzDir);
+        xzDir = Util::safeNorm(xzDir);
         // would-be direction of movement on the xz plane
         glm::vec3 dir = xzDir.x * m_spatial->u() + xzDir.y * m_spatial->w();
         // take into account slope of ground
@@ -67,7 +64,7 @@ void PlayerControllerComponent::update(float dt) {
         // on the ground when the ground is >= 90 degrees off the xz plane, this
         // will not work
         if (m_ground->onGround()) {
-            dir = glm::normalize(Util::projectOnto(dir, m_ground->groundNorm()));
+            dir = Util::safeNorm(Util::projectOnto(dir, m_ground->groundNorm()));
         }
         m_spatial->move(dir * m_moveSpeed * dt);
         // remove some velocity against direction of movement
@@ -77,7 +74,7 @@ void PlayerControllerComponent::update(float dt) {
     // jump
     if (!m_jumping) {
         if (Keyboard::isKeyPressed(GLFW_KEY_SPACE) && m_ground->onGround()) {
-            gameObject()->getComponentByType<NewtonianComponent>()->addVelocity(-m_jumpSpeed * glm::normalize(SpatialSystem::gravity()));
+            gameObject()->getComponentByType<NewtonianComponent>()->addVelocity(-m_jumpSpeed * Util::safeNorm(SpatialSystem::gravity()));
             m_jumping = true;
         }
     }

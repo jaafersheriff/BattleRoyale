@@ -42,9 +42,9 @@ class SpatialSystem {
 
     private:
 
-    const static std::vector<SpatialComponent *> & s_spatialComponents;
-    const static std::vector<NewtonianComponent *> & s_newtonianComponents;
-    const static std::vector<AcceleratorComponent *> & s_acceleratorComponents;
+    const static Vector<SpatialComponent *> & s_spatialComponents;
+    const static Vector<NewtonianComponent *> & s_newtonianComponents;
+    const static Vector<AcceleratorComponent *> & s_acceleratorComponents;
     static glm::vec3 s_gravityDir;
     static float s_gravityMag;
     static float s_coefficientOfFriction;
