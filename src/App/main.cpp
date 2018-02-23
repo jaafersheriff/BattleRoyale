@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
     );
 
     /* Set Gravity */
-    SpatialSystem::setGravity(glm::vec3(0.0f, -10.0f, 0.0f));
+    SpatialSystem::setGravity(glm::vec3(0.0f, -0.0f, 0.0f));
 
     /* Setup Player */
     float playerFOV(45.0f);
@@ -210,28 +210,28 @@ int main(int argc, char **argv) {
     /*Parse and load json level*/
     FileReader fileReader;
     const char *levelPath = "../resources/GameLevel_02.json";
-    fileReader.loadLevel(*levelPath);
+    //fileReader.loadLevel(*levelPath);
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
-    for (int i(0); i < 10; ++i) {
+    for (int i(0); i < 1; ++i) {
         GameObject & bunny(Scene::createGameObject());
         SpatialComponent & bunnySpatComp(Scene::addComponent<SpatialComponent>(
             bunny,
             glm::vec3(-10.0f, 5.0, i), // position
-            glm::vec3(0.25f, 0.25f, 0.25f), // scale
+            glm::vec3(0.25f, 0.5f, 0.25f), // scale
             glm::mat3() // rotation
         ));
         NewtonianComponent & bunnyNewtComp(Scene::addComponent<NewtonianComponent>(bunny, playerMaxSpeed));
         GravityComponent & bunnyGravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(bunny));
-        BounderComponent & bunnyBoundComp(CollisionSystem::addBounderFromMesh(bunny, 1, *bunnyMesh, false, true, false));
+        BounderComponent & bunnyBoundComp(CollisionSystem::addBounderFromMesh(bunny, 1, *bunnyMesh, false, false, true));
         DiffuseRenderComponent & bunnyDiffuse = Scene::addComponent<DiffuseRenderComponent>(
             bunny,
             RenderSystem::getShader<DiffuseShader>()->pid,
             *bunnyMesh,
             ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)), 
             true);
-        PathfindingComponent & bunnyPathComp(Scene::addComponent<PathfindingComponent>(bunny, player, 1.0f));
+        //PathfindingComponent & bunnyPathComp(Scene::addComponent<PathfindingComponent>(bunny, player, 1.0f));
     }
 
     /* Game stats pane */
@@ -249,9 +249,9 @@ int main(int argc, char **argv) {
     auto rayPickCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
-            auto pair(CollisionSystem::pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir())));
-            if (pair.first && pair.first->weight() < UINT_MAX) {
-                pair.first->gameObject()->getSpatial()->scale(glm::vec3(1.1f));
+            auto pair(CollisionSystem::pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir()), &player));
+            if (pair.first && pair.first->gameObject() != &player && pair.first->weight() < UINT_MAX) {
+                pair.first->gameObject()->getSpatial()->scale(glm::vec3(1.5f));
             }
         }
     });
