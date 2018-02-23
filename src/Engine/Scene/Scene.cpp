@@ -11,6 +11,8 @@
 #include "System/CollisionSystem.hpp"
 #include "System/PostCollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
+#include "System/SoundSystem.hpp"
+#include "GameObject/GameObject.hpp"
 
 
 
@@ -32,6 +34,7 @@ void Scene::init() {
     CollisionSystem::init();
     PostCollisionSystem::init();
     RenderSystem::init();
+    SoundSystem::init();
 }
 
 GameObject & Scene::createGameObject() {
@@ -49,6 +52,8 @@ void Scene::update(float dt) {
     /* Update systems */
     relayMessages();
     GameLogicSystem::update(dt);
+    relayMessages();
+    SoundSystem::update(dt);
     relayMessages();
     PathfindingSystem::update(dt);
     relayMessages();
@@ -166,6 +171,7 @@ void Scene::doKillQueue() {
         }
         switch (comp->systemID()) {
             case SystemID::    gameLogic:     GameLogicSystem::removed(*comp); continue;
+            case SystemID::        sound:         SoundSystem::removed(*comp); continue;
             case SystemID::  pathfinding:   PathfindingSystem::removed(*comp); continue;
             case SystemID::      spatial:       SpatialSystem::removed(*comp); continue;
             case SystemID::    collision:     CollisionSystem::removed(*comp); continue;

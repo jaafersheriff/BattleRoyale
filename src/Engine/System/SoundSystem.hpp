@@ -9,6 +9,7 @@
 
 #include "System.hpp"
 #include "Component/SoundComponents/SoundComponent.hpp"
+#include "Scene/Scene.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -20,42 +21,38 @@
 
 class SoundComponent;
 
-class SoundSystem : public System {
+class SoundSystem {
 
-    friend Scene;
     /* Attributes */
     public:
-        std::vector<std::string> soundfiles = {
-            "drill.wav",
-            "doorbump.wav",
-            "softbump.wav"
-        };
+        static std::vector<std::string> soundfiles;
     #if HAVE_FMOD_LIBRARY
-        FMOD::System *m_system = NULL;
+        static FMOD::System *m_system; // = NULL;
     #endif
 
     private:
-        std::string SOUND_DIR;
+        static std::string SOUND_DIR;
     #if HAVE_FMOD_LIBRARY
-        std::map<std::string, FMOD::Sound*> soundLibrary;
+        static std::map<std::string, FMOD::Sound*> soundLibrary;
     #endif
 
     /* Constructor */
     public:
-        SoundSystem(const std::vector<Component *> & components);
+        static void init();
 
     /* Functions */
-        void update(float dt);
+        static void update(float dt);
+
     #if HAVE_FMOD_LIBRARY
         
-        void playSound(std::string name);
+        static void  playSound(std::string name);
     #endif
 
 	private:
-        void setupSoundComponent(SoundComponent *c);
+    static const std::vector<SoundComponent *> & s_SoundComponents;
     #if HAVE_FMOD_LIBRARY
-        FMOD::Sound* createSound(std::string soundfilename);
-        void initSoundLibrary();
+        static FMOD::Sound* createSound(std::string soundfilename);
+        static void initSoundLibrary();
     #endif
 };
 #endif

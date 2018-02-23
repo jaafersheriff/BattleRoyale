@@ -13,6 +13,7 @@
 #include <typeindex>
 
 #include "System/GameLogicSystem.hpp"
+#include "System/SoundSystem.hpp"
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"
 #include "System/CollisionSystem.hpp"

@@ -1,21 +1,26 @@
 #include "SoundSystem.hpp"
 
-SoundSystem::SoundSystem(const std::vector<Component *> & components) :
-    System(components)
-{
+const std::vector<SoundComponent *> & SoundSystem::s_SoundComponents(Scene::getComponents<SoundComponent>());
+
+void SoundSystem::init() {
     SOUND_DIR = "../resources/soundeffects/";
+    soundfiles = {
+        "drill.wav",
+        "doorbump.wav",
+        "softbump.wav"
+    };
 #if HAVE_FMOD_LIBRARY
     FMOD_RESULT result;
-    
+
     result = FMOD::System_Create(&m_system);
     if (result != FMOD_OK)
     {
         printf("failed to create system");
     }
-    
+
     result = m_system->init(36, FMOD_INIT_NORMAL, NULL);
-    if (result != FMOD_OK){
-    	printf("failed to initialize system\n");
+    if (result != FMOD_OK) {
+        printf("failed to initialize system\n");
     }
 
     initSoundLibrary();
@@ -53,7 +58,7 @@ FMOD::Sound* SoundSystem::createSound(std::string soundfilename)
 }
 
 //play sound from resources/soundeffects by filename
-void SoundSystem::playSound(std::string fileName) {
+void  SoundSystem::playSound(std::string fileName) {
     FMOD::Sound *sound;
     if (soundLibrary.count(fileName)) {
         sound = soundLibrary[fileName];
@@ -65,5 +70,6 @@ void SoundSystem::playSound(std::string fileName) {
     if (result != FMOD_OK) {
         printf("playSound() done goofed!\n");
     }
+    
 }
 #endif

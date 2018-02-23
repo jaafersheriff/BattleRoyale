@@ -19,7 +19,6 @@ struct Message;
 
 class GameObject {
 
-    friend Scene;
 
     private: // only scene or friends can create game object
 

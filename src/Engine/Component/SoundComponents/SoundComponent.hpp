@@ -3,7 +3,7 @@
 #define _SOUND_COMPONENT_HPP_
 
 #include "glm/glm.hpp"
-#include "System/SoundSystem.hpp"
+
 #include "Component/Component.hpp"
 
 #ifndef HAVE_FMOD_LIBRARY
@@ -14,8 +14,6 @@
 #include "ThirdParty/fmod/fmod.hpp"
 #include "ThirdParty/fmod/fmod_studio.hpp"
 #endif
-
-
 
 class SoundSystem;
 
