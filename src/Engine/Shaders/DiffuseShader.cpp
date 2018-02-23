@@ -64,33 +64,10 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     loadFloat(getUniform("silAngle"), silAngle);
     loadFloat(getUniform("cells"), numCells);
 
-    /* Determine if component should be culled */
-    /* Only doing frustum culling if object has bounder(s) */
-    /* Get the center and radius of the component */
     for (Component * comp : components) {
-        const Vector<Component *> & bounders(comp->gameObject()->getComponentsByType<BounderComponent>());
-        if (bounders.size()) {
-            bool inFrustum(false);
-            for (Component * bounder_ : bounders) {
-                BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
-                if (camera->sphereInFrustum(bounder->enclosingSphere())) {
-                    inFrustum = true;
-                    break;
-                }
-            }
-            if (inFrustum) {
-                s_compsToRender.push_back(comp);
-            }
-        }
-        else {
-            s_compsToRender.push_back(comp);
-        }
-    }
-
-    for (Component * cp : s_compsToRender) {
         // TODO : component list should be passed in as diffuserendercomponent
         DiffuseRenderComponent *drc;
-        if (!(drc = dynamic_cast<DiffuseRenderComponent *>(cp)) || drc->pid != this->pid) {
+        if (!(drc = dynamic_cast<DiffuseRenderComponent *>(comp)) || drc->pid != this->pid) {
             continue;
         }
 

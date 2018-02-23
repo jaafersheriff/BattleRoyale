@@ -21,6 +21,11 @@ void RenderSystem::init() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
+///////////////////////////  TODO  ///////////////////////////
+// pass a list of render components that are specific       //
+// to this shader -- right now we are passing the entire    //
+// list and expecting each shader to filter through         //
+//////////////////////////////////////////////////////////////
 void RenderSystem::update(float dt) {
     /* Reset rendering display */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -33,17 +38,35 @@ void RenderSystem::update(float dt) {
                 continue;
             }
 
-            shader.second->bind();
-            ///////////////////////////  TODO  ///////////////////////////
-            // pass a list of render components that are specific       //
-            // to this shader -- right now we are passing the entire    //
-            // list and expecting each shader to filter through         //
-            //////////////////////////////////////////////////////////////
+            /* Frustum culling */
+            static Vector<Component *> s_compsToRender;
+            for (auto comp : s_diffuseComponents) {
+                const Vector<Component *> & bounders(comp->gameObject()->getComponentsByType<BounderComponent>());
+                if (bounders.size()) {
+                    bool inFrustum(false);
+                    for (Component * bounder_ : bounders) {
+                        BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
+                        if (s_camera->sphereInFrustum(bounder->enclosingSphere())) {
+                            inFrustum = true;
+                            break;
+                        }
+                    }
+                    if (inFrustum) {
+                        s_compsToRender.push_back(comp);
+                    }
+                }
+                else {
+                    s_compsToRender.push_back(comp);
+                }
+            }
 
+            shader.second->bind();
             // this reinterpret_cast business works because unique_ptr's data is
             // guaranteed is the same as a pointer
-            shader.second->render(s_camera, reinterpret_cast<const Vector<Component *> &>(s_diffuseComponents));
+            shader.second->render(s_camera, reinterpret_cast<const Vector<Component *> &>(s_compsToRender));
             shader.second->unbind();
+
+            s_compsToRender.clear();
         }
     }
 
