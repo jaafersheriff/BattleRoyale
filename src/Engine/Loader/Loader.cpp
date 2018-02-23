@@ -6,17 +6,18 @@
 #include "ThirdParty/stb_image.h"
 
 #include <iostream>
-#include <vector>
+
+#include "Util/Memory.hpp"
 
 bool Loader::verbose = false;
-std::string Loader::RESOURCE_DIR = "../resources/";
+String Loader::RESOURCE_DIR = "../resources/";
 
-void Loader::init(bool verbose, const std::string & res) {
+void Loader::init(bool verbose, const String & res) {
     verbose = verbose;
     RESOURCE_DIR = res;
 }
 
-Mesh* Loader::getMesh(const std::string & name) {
+Mesh* Loader::getMesh(const String & name) {
     Mesh* mesh = Library::getMesh(name);
     if (mesh) {
         return mesh;
@@ -24,8 +25,8 @@ Mesh* Loader::getMesh(const std::string & name) {
 
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> objMaterials;
-    std::string errString;
-    bool rc = tinyobj::LoadObj(shapes, objMaterials, errString, (RESOURCE_DIR + name).c_str());
+    String errString;
+    bool rc = tinyobj::LoadObj(shapes, objMaterials, convert(errString), (RESOURCE_DIR + name).c_str());
     if (!rc) {
         std::cerr << errString << std::endl;
         exit(1);
@@ -72,7 +73,7 @@ Mesh* Loader::getMesh(const std::string & name) {
     return mesh;
 }
 
-uint8_t* Loader::loadTextureData(const std::string & fileName, const bool flip, int *width, int *height, int *comp) {
+uint8_t* Loader::loadTextureData(const String & fileName, const bool flip, int *width, int *height, int *comp) {
     uint8_t *data;
 
     stbi_set_flip_vertically_on_load(flip);
@@ -90,7 +91,7 @@ uint8_t* Loader::loadTextureData(const std::string & fileName, const bool flip, 
 }
 
 
-Texture* Loader::getTexture(const std::string & name, GLenum mode, bool flip) {
+Texture* Loader::getTexture(const String & name, GLenum mode, bool flip) {
     Texture *texture = Library::getTexture(name);
     if (texture) {
         return texture;
@@ -108,7 +109,7 @@ Texture* Loader::getTexture(const std::string & name, GLenum mode, bool flip) {
     return texture;
 }
 
-Texture* Loader::getTexture(const std::string & name) {
+Texture* Loader::getTexture(const String & name) {
     return getTexture(name, GL_REPEAT, true);
 }
 

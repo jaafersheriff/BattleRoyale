@@ -2,8 +2,6 @@
 
 
 
-#include <unordered_set>
-
 #include "System.hpp"
 #include "Component/CollisionComponents/BounderComponent.hpp"
 
@@ -44,9 +42,9 @@ class CollisionSystem {
 
     private:
 
-    static const std::vector<BounderComponent *> & s_bounderComponents;
-    static std::unordered_set<BounderComponent *> s_potentials;
-    static std::unordered_set<BounderComponent *> s_collided;
-    static std::unordered_set<BounderComponent *> s_adjusted;
+    static const Vector<BounderComponent *> & s_bounderComponents;
+    static UnorderedSet<BounderComponent *> s_potentials;
+    static UnorderedSet<BounderComponent *> s_collided;
+    static UnorderedSet<BounderComponent *> s_adjusted;
 
 };

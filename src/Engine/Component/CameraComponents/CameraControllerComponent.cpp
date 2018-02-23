@@ -47,7 +47,7 @@ void CameraControllerComponent::update(float dt) {
         float(backward - forward)
     );
     if (dir != glm::vec3()) {
-        dir = glm::normalize(dir);
+        dir = Util::safeNorm(dir);
         glm::vec2 xzDir(dir.x, dir.z);
         dir = m_spatial->u() * xzDir.x + glm::vec3(0.0f, 1.0f, 0.0f) * dir.y +  m_spatial->w() * xzDir.y; // WoW controls
         m_spatial->move(dir * m_moveSpeed * dt);

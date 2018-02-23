@@ -9,10 +9,10 @@ class CameraComonent;
 
 class DiffuseShader : public Shader {
     public:
-        DiffuseShader(const std::string & vertFile, const std::string & fragFile, const glm::vec3 & light);
+        DiffuseShader(const String & vertFile, const String & fragFile, const glm::vec3 & light);
 
         bool init();
-        virtual void render(const CameraComponent * camera, const std::vector<Component *> &) override;
+        virtual void render(const CameraComponent * camera, const Vector<Component *> &) override;
 
         const glm::vec3 * lightPos;
 

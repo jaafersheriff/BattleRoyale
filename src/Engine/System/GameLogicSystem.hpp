@@ -35,10 +35,10 @@ class GameLogicSystem {
 
     private:
 
-    static const std::vector<CameraComponent *> & s_cameraComponents;
-    static const std::vector<CameraControllerComponent *> & s_cameraControllerComponents;
-    static const std::vector<PlayerControllerComponent *> & s_playerControllers;
-    static const std::vector<ImGuiComponent *> & s_imguiComponents;
+    static const Vector<CameraComponent *> & s_cameraComponents;
+    static const Vector<CameraControllerComponent *> & s_cameraControllerComponents;
+    static const Vector<PlayerControllerComponent *> & s_playerControllers;
+    static const Vector<ImGuiComponent *> & s_imguiComponents;
 
 };
 

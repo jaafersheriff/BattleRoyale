@@ -31,6 +31,12 @@ class CameraComponent : public Component, public Orientable {
 
         CameraComponent(float fov, float near, float far);
 
+    public:
+
+        CameraComponent(CameraComponent && other) = default;
+
+    protected:
+
         virtual void init(GameObject & go) override;
 
     public:
