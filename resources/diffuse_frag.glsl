@@ -30,7 +30,7 @@ void main() {
 
     /* Diffuse */
     float diffuseContrib = clamp(dot(L, N), matAmbient, 1.0);
-   vec3 diffuseColor = matDiffuse;
+    vec3 diffuseColor = matDiffuse;
     if (usesTexture) {
         diffuseColor = vec3(texture(textureImage, texCoords));
     }
@@ -50,7 +50,7 @@ void main() {
     /* Silhouettes */
     if (isToon) {
         float angle = dot(N, V);
-        if(angle > 0 && angle < silAngle) {
+        if(angle < silAngle) {
             color = vec4(0, 0, 0, 1);
         }
     }
