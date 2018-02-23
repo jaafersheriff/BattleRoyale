@@ -31,6 +31,8 @@ void RenderSystem::update(float dt) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
 
+    glm::vec2 size = Window::getSize();
+    glViewport(0, 0, size.x, size.y);
     if (s_camera) {
         /* Loop through active shaders */
         for (auto &shader : s_shaders) {
