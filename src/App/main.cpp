@@ -69,18 +69,27 @@ int main(int argc, char **argv) {
 
     GameObject & imguiGO(Scene::createGameObject());
 
+    /* Directional light */
+    glm::vec3 lightDir(0.2f, 0.2f, 0.2f);
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO,
+        "Light",
+        [&]() {
+            ImGui::SliderFloat3("LightDir", glm::value_ptr(lightDir), -1.f, 1.f);
+        }
+    );
+
+
     /* Create diffuse shader */
-    glm::vec3 lightPos(100.f, 100.f, 100.f);
     if (!RenderSystem::createShader<DiffuseShader>(
             "diffuse_vert.glsl",    /* Vertex shader file       */
             "diffuse_frag.glsl",    /* Fragment shader file     */
-            lightPos                /* Shader-specific uniforms */
+            lightDir                /* Shader-specific uniforms */
         )) {
         std::cerr << "Failed to add diffuse shader" << std::endl;
         std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
     }
-    /* Diffuse Shader ImGui Pane */
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
         "Diffuse Shader",

@@ -14,7 +14,7 @@ class DiffuseShader : public Shader {
         bool init();
         virtual void render(const CameraComponent * camera, const Vector<Component *> &) override;
 
-        const glm::vec3 * lightPos;
+        const glm::vec3 * lightDir;
 
         /* Wire frame */
         bool isWireFrame() const { return showWireFrame; }

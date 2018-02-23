@@ -10,7 +10,7 @@ uniform vec3 matSpecular;
 uniform float shine;
 
 uniform vec3 camPos;
-uniform vec3 lightPos;
+uniform vec3 lightDir;
 
 uniform sampler2D textureImage;
 uniform bool usesTexture;
@@ -22,7 +22,6 @@ uniform float cells;
 out vec4 color;
 
 void main() {
-    vec3 lightDir = lightPos - worldPos;
     vec3 viewDir = camPos - worldPos;
     vec3 L = normalize(lightDir);
     vec3 V = normalize(viewDir);

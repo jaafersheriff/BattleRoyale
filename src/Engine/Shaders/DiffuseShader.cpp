@@ -10,7 +10,7 @@
 
 DiffuseShader::DiffuseShader(const String & vertFile, const String & fragFile, const glm::vec3 & light) :
     Shader(vertFile, fragFile),
-    lightPos(&light)
+    lightDir(&light)
 {}
 
 bool DiffuseShader::init() {
@@ -28,7 +28,7 @@ bool DiffuseShader::init() {
     addUniform("M");
     addUniform("N");
 
-    addUniform("lightPos");
+    addUniform("lightDir");
     addUniform("camPos");
 
     addUniform("matAmbient");
@@ -59,7 +59,7 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     /* Bind uniforms */
     loadMat4(getUniform("P"), camera->getProj());
     loadMat4(getUniform("V"), camera->getView());
-    loadVec3(getUniform("lightPos"), *lightPos);
+    loadVec3(getUniform("lightDir"), *lightDir);
     loadVec3(getUniform("camPos"), camera->gameObject()->getSpatial()->position());
     loadFloat(getUniform("silAngle"), silAngle);
     loadFloat(getUniform("cells"), numCells);
