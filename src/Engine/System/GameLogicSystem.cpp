@@ -4,10 +4,10 @@
 
 
 
-const std::vector<CameraComponent *> & GameLogicSystem::s_cameraComponents(Scene::getComponents<CameraComponent>());
-const std::vector<CameraControllerComponent *> & GameLogicSystem::s_cameraControllerComponents(Scene::getComponents<CameraControllerComponent>());
-const std::vector<PlayerControllerComponent *> & GameLogicSystem::s_playerControllers(Scene::getComponents<PlayerControllerComponent>());
-const std::vector<ImGuiComponent *> & GameLogicSystem::s_imguiComponents(Scene::getComponents<ImGuiComponent>());
+const Vector<CameraComponent *> & GameLogicSystem::s_cameraComponents(Scene::getComponents<CameraComponent>());
+const Vector<CameraControllerComponent *> & GameLogicSystem::s_cameraControllerComponents(Scene::getComponents<CameraControllerComponent>());
+const Vector<PlayerControllerComponent *> & GameLogicSystem::s_playerControllers(Scene::getComponents<PlayerControllerComponent>());
+const Vector<ImGuiComponent *> & GameLogicSystem::s_imguiComponents(Scene::getComponents<ImGuiComponent>());
 
 void GameLogicSystem::update(float dt) {
     for (auto & comp : s_imguiComponents) {

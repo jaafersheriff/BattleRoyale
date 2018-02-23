@@ -25,13 +25,13 @@ int FileReader::loadLevel(const char & filePath) {
 
         //Get full filepath of object file
         assert(gameObject["objName"].IsString());
-        std::string filePath = gameObject["objName"].GetString();
+        String filePath = gameObject["objName"].GetString();
         std::size_t fileOffset = filePath.find_last_of("/\\");
         filePath = filePath.substr(fileOffset + 1);
 
         //Get full filepath of texture file
         assert(gameObject["objTexture"].IsString());
-        std::string texturePath = gameObject["objTexture"].GetString();
+        String texturePath = gameObject["objTexture"].GetString();
         std::size_t textureOffset = texturePath.find_last_of("/\\");
         texturePath = texturePath.substr(textureOffset + 1);
 
@@ -65,7 +65,7 @@ int FileReader::loadLevel(const char & filePath) {
     return 0;
 }
 
-void FileReader::initGameObject(std::string filePath, std::string texturePath, glm::vec3 position, glm::vec3 scale, glm::mat3 rotation) {
+void FileReader::initGameObject(String filePath, String texturePath, glm::vec3 position, glm::vec3 scale, glm::mat3 rotation) {
 
     GameObject & gameObject(Scene::createGameObject());
     SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(
@@ -79,7 +79,8 @@ void FileReader::initGameObject(std::string filePath, std::string texturePath, g
         gameObject,
         RenderSystem::getShader<DiffuseShader>()->pid,
         *Loader::getMesh(filePath),
-        ModelTexture(Loader::getTexture(texturePath), 0.4f, glm::vec3(0.f), glm::vec3(0.f))
+        ModelTexture(Loader::getTexture(texturePath), 0.4f, glm::vec3(0.f), glm::vec3(0.f)), 
+        false
     ));
 
     BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(gameObject, UINT_MAX, *Loader::getMesh(filePath), true, true, true));

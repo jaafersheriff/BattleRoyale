@@ -18,10 +18,6 @@ class GroundComponent : public Component {
 
   public:
 
-    virtual SystemID systemID() const override { return SystemID::postCollision; };
-
-  public:
-
     static constexpr float k_defCriticalAngle = glm::pi<float>() * 0.25f; // 45 degrees
 
   protected: // only scene or friends can create component
@@ -30,6 +26,8 @@ class GroundComponent : public Component {
 
   public:
 
+    GroundComponent(GroundComponent && other) = default;
+
     virtual ~GroundComponent() = default;
 
   protected:
@@ -37,6 +35,8 @@ class GroundComponent : public Component {
     virtual void init(GameObject & go) override;
 
   public:
+
+    virtual SystemID systemID() const override { return SystemID::postCollision; };
 
     virtual void update(float dt) override;
 

@@ -9,9 +9,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include <map>
-#include <string>
-#include <vector>
+#include "Util/Memory.hpp"
 
 class Component;
 class CameraComponent;
@@ -21,7 +19,7 @@ class Shader {
     public:
         /* Empty constructor
          * Only used to set GLSL shader names */
-        Shader(const std::string & v = "", const std::string & f = "") : 
+        Shader(const String & v = "", const String & f = "") : 
             vShaderName(v), 
             fShaderName(f),
             m_isEnabled(false)
@@ -39,7 +37,7 @@ class Shader {
         void unloadTexture(int);
 
         /* Render functions */
-        virtual void render(const CameraComponent * camera, const std::vector<Component *> & components) = 0;
+        virtual void render(const CameraComponent * camera, const Vector<Component *> & components) = 0;
 
         /* Parent load functions */
         void loadBool(const int, const bool) const;
@@ -51,8 +49,8 @@ class Shader {
         void loadMat4(const int, const glm::mat4 &) const;
 
         /* Get shader location */
-        GLint getAttribute(const std::string &);
-        GLint getUniform(const std::string &);
+        GLint getAttribute(const String &);
+        GLint getUniform(const String &);
 
         GLuint pid = 0;
 
@@ -60,20 +58,20 @@ class Shader {
         void toggleEnabled() { m_isEnabled = !m_isEnabled; } 
     protected:
         /* GLSL shader names */
-        const std::string vShaderName;
-        const std::string fShaderName;
+        const String vShaderName;
+        const String fShaderName;
 
         bool m_isEnabled;
 
         /* Shared GLSL utility functions */
-        void addAttribute(const std::string &);
-        void addUniform(const std::string &);
+        void addAttribute(const String &);
+        void addUniform(const String &);
     private:    
         /* GLSL shader attributes */
         GLint vShaderId;
         GLint fShaderId;
-        std::map<std::string, GLint> attributes;
-        std::map<std::string, GLint> uniforms;
+        UnorderedMap<String, GLint> attributes;
+        UnorderedMap<String, GLint> uniforms;
 };
 
 #endif

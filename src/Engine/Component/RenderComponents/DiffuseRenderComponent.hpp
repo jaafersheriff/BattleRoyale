@@ -15,21 +15,25 @@ class DiffuseRenderComponent : public Component {
 
     protected: // only scene or friends can create component
 
-        DiffuseRenderComponent(int pid, Mesh & mesh, ModelTexture texture) :
+        DiffuseRenderComponent(int pid, Mesh & mesh, ModelTexture texture, bool toon) :
             pid(pid),
             mesh(&mesh),
-            modelTexture(texture)
+            modelTexture(texture),
+            isToon(toon)
         {}
 
     public:
 
-    virtual SystemID systemID() const override { return SystemID::render; };
+        DiffuseRenderComponent(DiffuseRenderComponent && other) = default;
+
+        virtual SystemID systemID() const override { return SystemID::render; };
 
     public:
 
-        int pid = -1;
+        int pid;
         Mesh * mesh;
         ModelTexture modelTexture;
+        bool isToon;
 };
 
 #endif

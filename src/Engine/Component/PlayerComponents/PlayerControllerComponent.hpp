@@ -23,6 +23,12 @@ class PlayerControllerComponent : public Component {
 
     PlayerControllerComponent(float lookSpeed, float moveSpeed, float jumpSpeed);
 
+    public:
+
+    PlayerControllerComponent(PlayerControllerComponent && other) = default;
+
+    protected:
+
     virtual void init(GameObject & go) override;
 
     public:

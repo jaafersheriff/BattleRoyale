@@ -7,10 +7,10 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <string>
 
 #include "glm/glm.hpp"
 
+#include "Util/Memory.hpp"
 #include "Mouse.hpp"
 #include "Keyboard.hpp"
 
@@ -23,7 +23,7 @@ class Window {
         static GLFWwindow * window;
 
         /* Init */
-        static int init(const std::string &);
+        static int init(const String &);
 
         /* Set window title */
         static void setTitle(const char *);
@@ -49,10 +49,11 @@ class Window {
         static bool isVSyncEnabled() { return vSyncEnabled; }
 
         /* ImGui */
-        static void toggleImGui() { imGuiEnabled = !imGuiEnabled; }
+        static void toggleImGui();
         static bool isImGuiEnabled() { return imGuiEnabled; }
 
         static void setCursorEnabled(bool enabled);
+        static void toggleCursorEnabled();
 
     private:
     
@@ -61,7 +62,6 @@ class Window {
 
         /* ImGui */
         static bool imGuiEnabled;
-        static float imGuiTimer;
 
         /* Callback functions */
         static void errorCallback(int, const char *);

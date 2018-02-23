@@ -21,6 +21,12 @@ class CameraControllerComponent : public Component {
 
         CameraControllerComponent(float ls, float ms);
 
+    public:
+
+        CameraControllerComponent(CameraControllerComponent && other) = default;
+
+    protected:
+
         virtual void init(GameObject & go) override;
 
     public:

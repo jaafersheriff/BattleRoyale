@@ -11,13 +11,20 @@ class Component {
 
     protected: // only scene or friends can create components
 
-        Component() :
-            m_gameObject(nullptr)
-        {};
+        Component() : m_gameObject(nullptr) {};
 
-        // TODO: potentially add move support
-        Component(const Component & other) = default;
-        Component & operator=(const Component & other) = default;
+    public:
+
+        Component(const Component & other) = delete;
+        Component(Component && other) = default;
+
+        Component & operator=(const Component & other) = delete;
+        Component & operator=(Component && other) = default;
+
+        /* virtual destructor necessary for polymorphic destruction */
+        virtual ~Component() = default;
+
+    protected:
 
         // assigns component to game object and initializes it
         // Init takes a game object because many components' initializations depend
@@ -27,9 +34,6 @@ class Component {
         virtual void init(GameObject & go) { m_gameObject = &go; };
 
     public:
-
-        /* virtual destructor necessary for polymorphic destruction */
-        virtual ~Component() = default;
 
         virtual SystemID systemID() const = 0;
         
