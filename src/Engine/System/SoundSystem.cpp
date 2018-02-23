@@ -1,14 +1,16 @@
 #include "SoundSystem.hpp"
 
-const std::vector<SoundComponent *> & SoundSystem::s_SoundComponents(Scene::getComponents<SoundComponent>());
-
+const Vector<SoundComponent *> & SoundSystem::s_soundComponents(Scene::getComponents<SoundComponent>());
+String SoundSystem::SOUND_DIR = "../resources/soundeffects/";
+Vector<String> SoundSystem::soundfiles = {
+    "drill.wav",
+    "doorbump.wav",
+    "softbump.wav"
+};
+FMOD::System* SoundSystem::m_system = NULL;
+Map<String, FMOD::Sound*> SoundSystem::soundLibrary = Map<String, FMOD::Sound*>();
 void SoundSystem::init() {
-    SOUND_DIR = "../resources/soundeffects/";
-    soundfiles = {
-        "drill.wav",
-        "doorbump.wav",
-        "softbump.wav"
-    };
+
 #if HAVE_FMOD_LIBRARY
     FMOD_RESULT result;
 
@@ -25,6 +27,7 @@ void SoundSystem::init() {
 
     initSoundLibrary();
 #endif
+    playSound("drill.wav");
 }
 
 void SoundSystem::update(float dt) 
@@ -43,9 +46,9 @@ void SoundSystem::initSoundLibrary()
     }
 }
 
-FMOD::Sound* SoundSystem::createSound(std::string soundfilename) 
+FMOD::Sound* SoundSystem::createSound(String soundfilename) 
 {
-    std::string fullpath = SOUND_DIR + soundfilename;
+    String fullpath = SOUND_DIR + soundfilename;
     const char* path = fullpath.c_str();	
 
     FMOD::Sound *sound;
@@ -58,7 +61,7 @@ FMOD::Sound* SoundSystem::createSound(std::string soundfilename)
 }
 
 //play sound from resources/soundeffects by filename
-void  SoundSystem::playSound(std::string fileName) {
+void  SoundSystem::playSound(String fileName) {
     FMOD::Sound *sound;
     if (soundLibrary.count(fileName)) {
         sound = soundLibrary[fileName];

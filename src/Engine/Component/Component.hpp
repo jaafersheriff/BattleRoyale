@@ -8,6 +8,7 @@ class Scene;
 
 class Component {
 
+    friend Scene;
 
     protected: // only scene or friends can create components
 

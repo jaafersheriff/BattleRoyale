@@ -10,9 +10,9 @@
 #include "System.hpp"
 #include "Component/SoundComponents/SoundComponent.hpp"
 #include "Scene/Scene.hpp"
-#include <string>
-#include <vector>
-#include <map>
+//#include <string>
+//#include <vector>
+//#include <map>
 
 #if HAVE_FMOD_LIBRARY 
 #include "ThirdParty/fmod/fmod.hpp"
@@ -23,17 +23,23 @@ class SoundComponent;
 
 class SoundSystem {
 
+    friend Scene;
+
+    public:
+        static constexpr SystemID ID = SystemID::sound;
+
     /* Attributes */
     public:
-        static std::vector<std::string> soundfiles;
+        static Vector<String> soundfiles;
     #if HAVE_FMOD_LIBRARY
-        static FMOD::System *m_system; // = NULL;
+        static FMOD::System* m_system; // = NULL;
     #endif
 
     private:
-        static std::string SOUND_DIR;
+        static String SOUND_DIR;
+        static const Vector<SoundComponent *> & s_soundComponents;
     #if HAVE_FMOD_LIBRARY
-        static std::map<std::string, FMOD::Sound*> soundLibrary;
+        static Map<String, FMOD::Sound*> soundLibrary;
     #endif
 
     /* Constructor */
@@ -45,14 +51,18 @@ class SoundSystem {
 
     #if HAVE_FMOD_LIBRARY
         
-        static void  playSound(std::string name);
+        static void  playSound(String name);
     #endif
 
 	private:
-    static const std::vector<SoundComponent *> & s_SoundComponents;
+        static void added(Component & component) {};
+        static void removed(Component & component) {};
+    
     #if HAVE_FMOD_LIBRARY
-        static FMOD::Sound* createSound(std::string soundfilename);
+        static FMOD::Sound* createSound(String soundfilename);
         static void initSoundLibrary();
     #endif
-};
+};  
 #endif
+
+
