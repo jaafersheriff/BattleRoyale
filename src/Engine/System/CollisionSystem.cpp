@@ -230,7 +230,7 @@ std::pair<BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray, 
     for (const auto & b : s_bounderComponents) {
         if (b->gameObject() == ignore) continue;
         Intersect potential(b->intersect(ray));
-        if (potential.dist < inter.dist && potential.face) {
+        if (potential.dist < inter.dist) {
             bounder = b;
             inter = potential;
         }

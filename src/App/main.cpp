@@ -109,10 +109,7 @@ int main(int argc, char **argv) {
 
     // Create collider
     // alternate method using unique_ptr and new
-    if (!RenderSystem::createShader<BounderShader>(
-            EngineApp::RESOURCE_DIR + "bounder_vert.glsl",
-            EngineApp::RESOURCE_DIR + "bounder_frag.glsl"
-    )) {
+    if (!RenderSystem::createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
         std::cerr << "Failed to add collider shader" << std::endl;
         std::cin.get(); //don't immediately close the console
         return EXIT_FAILURE;
@@ -127,9 +124,26 @@ int main(int argc, char **argv) {
             }
         }
     );
+    
+    // Ray shader (for testing)
+    if (!RenderSystem::createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) {
+        std::cerr << "Failed to add ray shader" << std::endl;
+        std::cin.get();
+        return EXIT_FAILURE;
+    }
+    // Ray shader toggle
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO,
+        "Ray Shader",
+        [&]() {
+            if (ImGui::Button("Active")) {
+                RenderSystem::getShader<RayShader>()->toggleEnabled();
+            }
+        }
+    );
 
     /* Set Gravity */
-    SpatialSystem::setGravity(glm::vec3(0.0f, -0.0f, 0.0f));
+    SpatialSystem::setGravity(glm::vec3(0.0f, -10.0f, 0.0f));
 
     /* Setup Player */
     float playerFOV(45.0f);
@@ -210,16 +224,16 @@ int main(int argc, char **argv) {
     /*Parse and load json level*/
     FileReader fileReader;
     const char *levelPath = "../resources/GameLevel_02.json";
-    //fileReader.loadLevel(*levelPath);
+    fileReader.loadLevel(*levelPath);
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
-    for (int i(0); i < 1; ++i) {
+    for (int i(0); i < 10; ++i) {
         GameObject & bunny(Scene::createGameObject());
         SpatialComponent & bunnySpatComp(Scene::addComponent<SpatialComponent>(
             bunny,
             glm::vec3(-10.0f, 5.0, i), // position
-            glm::vec3(0.25f, 0.5f, 0.25f), // scale
+            glm::vec3(0.25f), // scale
             glm::mat3() // rotation
         ));
         NewtonianComponent & bunnyNewtComp(Scene::addComponent<NewtonianComponent>(bunny, playerMaxSpeed));
@@ -231,7 +245,7 @@ int main(int argc, char **argv) {
             *bunnyMesh,
             ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)), 
             true);
-        //PathfindingComponent & bunnyPathComp(Scene::addComponent<PathfindingComponent>(bunny, player, 1.0f));
+        PathfindingComponent & bunnyPathComp(Scene::addComponent<PathfindingComponent>(bunny, player, 1.0f));
     }
 
     /* Game stats pane */
@@ -249,10 +263,11 @@ int main(int argc, char **argv) {
     auto rayPickCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
-            auto pair(CollisionSystem::pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir()), &player));
-            if (pair.first && pair.first->gameObject() != &player && pair.first->weight() < UINT_MAX) {
+            auto pair(CollisionSystem::pick(Ray(player.getSpatial()->position(), playerCamComp.getLookDir()), &player));
+            if (pair.first && pair.first->weight() < UINT_MAX) {
                 pair.first->gameObject()->getSpatial()->scale(glm::vec3(1.5f));
             }
+            RenderSystem::getShader<RayShader>()->setRay(Ray(pair.second.pos, pair.second.norm));
         }
     });
     Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);

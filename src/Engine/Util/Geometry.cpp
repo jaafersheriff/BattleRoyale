@@ -379,7 +379,7 @@ Intersect intersectCylinderRelative(const Ray & ray, float r) {
             return Intersect();
         }
     }
-    float b(2.0f * ray.dir.x * ray.pos.x + ray.dir.z * ray.pos.z);
+    float b(2.0f * (ray.dir.x * ray.pos.x + ray.dir.z * ray.pos.z));
 
     float t1, t2;
     // missed cylinder entirely
@@ -398,7 +398,7 @@ Intersect intersectCylinderRelative(const Ray & ray, float r) {
     }
 
     glm::vec3 p(ray.pos + ray.dir * t);
-    return Intersect(t, p, p / r, face);
+    return Intersect(t, p, glm::vec3(p.x, 0.0f, p.z) / r, face);
 }
 
 Intersect intersectCylinder(const Ray & ray, const glm::vec3 & center, float r) {
