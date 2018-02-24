@@ -10,7 +10,11 @@
 class FileReader {
 public:
     int loadLevel(const char & file);
-    void initGameObject(String filePath, String texturePath, glm::vec3 position, glm::vec3 scale, glm::mat3 rotation);
+    void addSpatialComponent(GameObject & gameObject, const rapidjson::Value& jsonTransform);
+    void addRenderComponent(GameObject & gameObject, const rapidjson::Value& jsonTransform, const String filePath);
+    int addCapsuleColliderComponents(GameObject & gameObject, const rapidjson::Value& jsonObject);
+    int addSphereColliderComponents(GameObject & gameObject, const rapidjson::Value& jsonObject);
+    int addBoxColliderComponents(GameObject & gameObject, const rapidjson::Value& jsonObject);
 };
 
 #endif

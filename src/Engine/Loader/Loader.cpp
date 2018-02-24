@@ -25,8 +25,8 @@ Mesh* Loader::getMesh(const String & name) {
 
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> objMaterials;
-    String errString;
-    bool rc = tinyobj::LoadObj(shapes, objMaterials, convert(errString), (RESOURCE_DIR + name).c_str());
+    std::string errString;
+    bool rc = tinyobj::LoadObj(shapes, objMaterials, errString, (RESOURCE_DIR + name).c_str());
     if (!rc) {
         std::cerr << errString << std::endl;
         exit(1);

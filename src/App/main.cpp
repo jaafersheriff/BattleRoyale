@@ -59,7 +59,6 @@ int parseArgs(int argc, char **argv) {
     return 0;
 }
 
-#include <chrono>
 int main(int argc, char **argv) {
     if (parseArgs(argc, argv) || EngineApp::init()) {
         std::cin.get(); // don't immediately close the console
