@@ -10,6 +10,7 @@
 #include "glm/gtc/type_ptr.hpp"
 
 #include "Util/Memory.hpp"
+#include "GLSL.hpp"
 
 class Component;
 class CameraComponent;

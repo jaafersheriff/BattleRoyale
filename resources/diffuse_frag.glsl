@@ -17,7 +17,9 @@ uniform bool usesTexture;
 
 uniform bool isToon;
 uniform float silAngle;
-uniform float cells;
+uniform float numCells;
+uniform sampler1D cellIntensities;
+uniform sampler1D cellScales;
 
 out vec4 color;
 
@@ -26,9 +28,10 @@ void main() {
     vec3 L = normalize(lightDir);
     vec3 V = normalize(viewDir);
     vec3 N = normalize(fragNor);
+    float lambert = clamp(dot(L, N), 0.0, 1.0);
 
     /* Diffuse */
-    float diffuseContrib = clamp(dot(L, N), matAmbient, 1.0);
+    float diffuseContrib = clamp(lambert, matAmbient, 1.0);
     vec3 diffuseColor = matDiffuse;
     if (usesTexture) {
         diffuseColor = vec3(texture(textureImage, texCoords));
@@ -40,17 +43,20 @@ void main() {
 
     /* Cell shading */
     if (isToon) {
-        diffuseContrib = floor(diffuseContrib * cells) / cells;
-        specularContrib = floor(specularContrib * cells) / cells;
-    }
+        for(int i = 0; i < numCells; i++) {
+            if(lambert > texelFetch(cellIntensities, i, 0).r) {
+                float scale = texelFetch(cellScales, i, 0).r;
+                diffuseContrib *= scale;
+                specularContrib *= scale;
+                break;
+            }
+        }
+   }
  
-    color = vec4(diffuseColor*diffuseContrib + matSpecular*specularContrib, 1.0);
+    vec3 pColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib);
 
     /* Silhouettes */
-    if (isToon) {
-        float angle = dot(N, V);
-        if(angle < silAngle) {
-            color = vec4(0, 0, 0, 1);
-        }
-    }
+    float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;
+
+    color = vec4(edge * pColor, 1.0);
 }

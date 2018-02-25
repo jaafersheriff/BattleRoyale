@@ -110,7 +110,21 @@ int main(int argc, char **argv) {
                 int cells = RenderSystem::getShader<DiffuseShader>()->getCells();
                 ImGui::SliderInt("Cells", &cells, 0, 15);
                 RenderSystem::getShader<DiffuseShader>()->setCells(cells);
-           }
+
+                /* Make a new pane to define cell values */
+                ImGui::End();
+                ImGui::Begin("Cell Shading");
+                for (int i = 0; i < cells; i++) {
+                    float vals[2];
+                    vals[0] = RenderSystem::getShader<DiffuseShader>()->getCellIntensity(i);
+                    vals[1] = RenderSystem::getShader<DiffuseShader>()->getCellScale(i);
+                    ImGui::SliderFloat2(
+                        ("Cell " + std::to_string(i)).c_str(),
+                        vals, 0.f, 1.f);
+                    RenderSystem::getShader<DiffuseShader>()->setCellIntensity(i, vals[0]);
+                    RenderSystem::getShader<DiffuseShader>()->setCellScale(i, vals[1]);
+                }
+            }
         }
     );
 
@@ -246,7 +260,7 @@ int main(int argc, char **argv) {
             *bunnyMesh,
             ModelTexture(0.3f, glm::vec3(0.f, 0.f, 1.f), glm::vec3(1.f)), 
             true);
-        PathfindingComponent & bunnyPathComp(Scene::addComponent<PathfindingComponent>(bunny, player, 1.0f));
+         PathfindingComponent & bunnyPathComp(Scene::addComponent<PathfindingComponent>(bunny, player, 1.0f));
     }
 
     /* Game stats pane */

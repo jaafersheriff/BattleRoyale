@@ -40,7 +40,25 @@ bool DiffuseShader::init() {
 
     addUniform("isToon");
     addUniform("silAngle");
-    addUniform("cells");
+    addUniform("numCells");
+    addUniform("cellIntensities");
+    addUniform("cellScales");
+    
+    /* Generate 1D Textures with initial size of 16 floats */
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &cellIntensitiesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellIntensitiesTexture);
+    glTexStorage1D(GL_TEXTURE_1D, 1, GL_R32F, 16*4);
+    GLSL::checkError();
+
+    glGenTextures(1, &cellScalesTexture);
+    glActiveTexture(GL_TEXTURE0 + cellScalesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellScalesTexture);
+    glTexStorage1D(GL_TEXTURE_1D, 1, GL_R32F, 16*4);
+    GLSL::checkError();
+
+    glBindTexture(GL_TEXTURE_1D, 0);
+    assert(glGetError() == GL_NO_ERROR);
 
     return true;
 }
@@ -59,8 +77,18 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightDir"), *lightDir);
     loadVec3(getUniform("camPos"), camera->gameObject()->getSpatial()->position());
+
+    /* Toon shading */
     loadFloat(getUniform("silAngle"), silAngle);
-    loadFloat(getUniform("cells"), numCells);
+    loadFloat(getUniform("numCells"), (float)numCells);
+    loadInt(getUniform("cellIntensities"), cellIntensitiesTexture);
+    glActiveTexture(GL_TEXTURE0 + cellIntensitiesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellIntensitiesTexture);
+    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, cellIntensities.size(), GL_RED, GL_FLOAT, cellIntensities.data());
+    loadInt(getUniform("cellScales"), cellScalesTexture);
+    glActiveTexture(GL_TEXTURE0 + cellScalesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellScalesTexture);
+    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, cellScales.size(), GL_RED, GL_FLOAT, cellScales.data());
 
     for (Component * comp : components) {
         // TODO : component list should be passed in as diffuserendercomponent
@@ -140,6 +168,7 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
         if (pos != -1) {
             glDisableVertexAttribArray(pos);
         }
+        glBindTexture(GL_TEXTURE_1D, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -154,4 +183,19 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }    
+}
+
+void DiffuseShader::setCells(unsigned int in) {
+    numCells = glm::min(in, (unsigned int)16);
+    cellIntensities.resize(numCells, 1.f);
+    cellScales.resize(numCells, 0.f);
+}
+
+void DiffuseShader::setCellIntensity(unsigned int i, float f) {
+    if (i == 0) {
+        cellIntensities[i] = f;
+    }
+    else {
+        cellIntensities[i] = glm::min(cellIntensities[i - 1], f);
+    }
 }
