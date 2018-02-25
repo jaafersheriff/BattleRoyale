@@ -28,7 +28,7 @@ void main() {
     vec3 L = normalize(lightDir);
     vec3 V = normalize(viewDir);
     vec3 N = normalize(fragNor);
-    float lambert = clamp(dot(L, N), 0.0, 1.0);
+    float lambert = dot(L, N);
 
     /* Diffuse */
     float diffuseContrib = clamp(lambert, matAmbient, 1.0);

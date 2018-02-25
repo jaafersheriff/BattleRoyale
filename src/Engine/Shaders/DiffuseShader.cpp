@@ -188,14 +188,13 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
 void DiffuseShader::setCells(unsigned int in) {
     numCells = glm::min(in, (unsigned int)16);
     cellIntensities.resize(numCells, 1.f);
-    cellScales.resize(numCells, 0.f);
+    cellScales.resize(numCells, 1.f);
 }
 
 void DiffuseShader::setCellIntensity(unsigned int i, float f) {
-    if (i == 0) {
-        cellIntensities[i] = f;
-    }
-    else {
-        cellIntensities[i] = glm::min(cellIntensities[i - 1], f);
-    }
+    cellIntensities[i] = (i == 0) ? f : glm::min(cellIntensities[i - 1], f);
+}
+
+void DiffuseShader::setCellScale(unsigned int i, float f) {
+    cellScales[i] = (i == 0) ? f : glm::min(cellScales[i - 1], f);
 }

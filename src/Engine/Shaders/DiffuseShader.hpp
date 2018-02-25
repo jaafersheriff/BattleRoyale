@@ -28,7 +28,7 @@ class DiffuseShader : public Shader {
         float getCellIntensity(unsigned int i) { return cellIntensities[i]; }
         void setCellIntensity(unsigned int i, float f);
         float getCellScale(unsigned int i) { return cellScales[i]; }
-        void setCellScale(unsigned int i, float f) { cellScales[i] = f; }
+        void setCellScale(unsigned int i, float f);
 
     private:
         /* Wire frame */
