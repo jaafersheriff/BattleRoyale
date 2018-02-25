@@ -85,8 +85,6 @@ int main(int argc, char **argv) {
             "diffuse_frag.glsl",    /* Fragment shader file     */
             lightDir                /* Shader-specific uniforms */
         )) {
-        std::cerr << "Failed to add diffuse shader" << std::endl;
-        std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
     }
 
@@ -109,9 +107,9 @@ int main(int argc, char **argv) {
                 ImGui::SliderFloat("Silhouette Angle", &angle, 0.f, 1.f);
                 RenderSystem::getShader<DiffuseShader>()->setSilAngle(angle);
                 
-                int cells = int(RenderSystem::getShader<DiffuseShader>()->getCells());
+                int cells = RenderSystem::getShader<DiffuseShader>()->getCells();
                 ImGui::SliderInt("Cells", &cells, 0, 15);
-                RenderSystem::getShader<DiffuseShader>()->setCells(float(cells));
+                RenderSystem::getShader<DiffuseShader>()->setCells(cells);
            }
         }
     );
@@ -119,8 +117,6 @@ int main(int argc, char **argv) {
     // Create collider
     // alternate method using unique_ptr and new
     if (!RenderSystem::createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
-        std::cerr << "Failed to add collider shader" << std::endl;
-        std::cin.get(); //don't immediately close the console
         return EXIT_FAILURE;
     }
     /* Collider ImGui pane */
@@ -136,8 +132,6 @@ int main(int argc, char **argv) {
     
     // Ray shader (for testing)
     if (!RenderSystem::createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) {
-        std::cerr << "Failed to add ray shader" << std::endl;
-        std::cin.get();
         return EXIT_FAILURE;
     }
     // Ray shader toggle
