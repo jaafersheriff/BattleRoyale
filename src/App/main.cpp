@@ -11,7 +11,6 @@ extern "C" {
 #include "glm/gtx/transform.hpp"
 
 #include "EngineApp/EngineApp.hpp"
-#include "LevelBuilder/FileReader.hpp"
 
 void printUsage() {
     std::cout << "Valid arguments: " << std::endl;
@@ -90,6 +89,8 @@ int main(int argc, char **argv) {
         std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
     }
+
+    /* Toon shading */
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
         "Diffuse Shader",
@@ -111,7 +112,7 @@ int main(int argc, char **argv) {
                 int cells = int(RenderSystem::getShader<DiffuseShader>()->getCells());
                 ImGui::SliderInt("Cells", &cells, 0, 15);
                 RenderSystem::getShader<DiffuseShader>()->setCells(float(cells));
-            }
+           }
         }
     );
 
@@ -230,9 +231,7 @@ int main(int argc, char **argv) {
     );
 
     /*Parse and load json level*/
-    FileReader fileReader;
-    const char *levelPath = "../resources/GameLevel_02.json";
-    fileReader.loadLevel(*levelPath);
+    Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_02.json");
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
