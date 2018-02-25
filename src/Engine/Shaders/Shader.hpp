@@ -55,6 +55,7 @@ class Shader {
         GLuint pid = 0;
 
         bool isEnabled() const { return m_isEnabled; }
+        void setEnabled(bool enabled) { m_isEnabled = enabled; }
         void toggleEnabled() { m_isEnabled = !m_isEnabled; } 
     protected:
         /* GLSL shader names */
