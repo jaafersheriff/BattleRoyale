@@ -205,6 +205,9 @@ void Loader::loadTexture(Texture *texture, uint8_t *data, GLenum mode) {
 
     /* Unbind */
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    /* Error check */
+    assert(glGetError() == GL_NO_ERROR);
 }
 
 void Loader::loadMesh(Mesh & mesh) {
