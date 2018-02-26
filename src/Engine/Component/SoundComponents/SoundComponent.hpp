@@ -7,8 +7,8 @@
 #include "Component/Component.hpp"
 
 #ifdef HAVE_FMOD_LIBRARY
-#include "ThirdParty/fmod/fmod.hpp"
-#include "ThirdParty/fmod/fmod_studio.hpp"
+#include <fmod.hpp>
+#include <fmod_studio.hpp>
 #endif
 
 class SoundSystem;
