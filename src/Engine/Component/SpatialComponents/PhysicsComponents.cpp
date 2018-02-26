@@ -8,16 +8,15 @@
 
 
 
-NewtonianComponent::NewtonianComponent() :
-    Component(),
+NewtonianComponent::NewtonianComponent(GameObject & gameObject) :
+    Component(gameObject),
     m_spatial(nullptr),
     m_velocity(),
     m_acceleration()
 {}
 
-void NewtonianComponent::init(GameObject & go) {
-    Component::init(go);
-    if (!(m_spatial = gameObject()->getSpatial())) assert(false);
+void NewtonianComponent::init() {
+    if (!(m_spatial = gameObject().getSpatial())) assert(false);
 
     auto collisionCallback([&](const Message & msg_) {
         const CollisionNormMessage & msg(static_cast<const CollisionNormMessage &>(msg_));
@@ -40,7 +39,7 @@ void NewtonianComponent::init(GameObject & go) {
         }
         m_velocity = v * (1.0f - factor);
     });
-    Scene::addReceiver<CollisionNormMessage>(gameObject(), collisionCallback);
+    Scene::addReceiver<CollisionNormMessage>(&gameObject(), collisionCallback);
 }
 
 void NewtonianComponent::update(float dt) {
@@ -75,15 +74,14 @@ void NewtonianComponent::removeSomeVelocityAgainstDir(const glm::vec3 & dir, flo
 
 
 
-AcceleratorComponent::AcceleratorComponent(const glm::vec3 & acceleration) :
-    Component(),
+AcceleratorComponent::AcceleratorComponent(GameObject & gameObject, const glm::vec3 & acceleration) :
+    Component(gameObject),
     m_newtonian(nullptr),
     m_acceleration(acceleration)
 {}
 
-void AcceleratorComponent::init(GameObject & go) {
-    Component::init(go);
-    if (!(m_newtonian = gameObject()->getComponentByType<NewtonianComponent>())) assert(false);
+void AcceleratorComponent::init() {
+    if (!(m_newtonian = gameObject().getComponentByType<NewtonianComponent>())) assert(false);
 }
 
 void AcceleratorComponent::update(float dt) {
@@ -92,8 +90,8 @@ void AcceleratorComponent::update(float dt) {
 
 
 
-GravityComponent::GravityComponent() :
-    AcceleratorComponent(SpatialSystem::gravity())
+GravityComponent::GravityComponent(GameObject & gameObject) :
+    AcceleratorComponent(gameObject, SpatialSystem::gravity())
 {}
 
 void GravityComponent::update(float dt) {

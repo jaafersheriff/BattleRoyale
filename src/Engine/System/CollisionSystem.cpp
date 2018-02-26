@@ -145,10 +145,30 @@ UnorderedSet<BounderComponent *> CollisionSystem::s_collided;
 UnorderedSet<BounderComponent *> CollisionSystem::s_adjusted;
 
 void CollisionSystem::init() {
+    auto compAddedCallback(
+        [&] (const Message & msg_) {
+            const auto & msg(static_cast<const SystemComponentAddedMessage<CollisionSystem> &>(msg_));            
+            if (dynamic_cast<BounderComponent *>(&msg.comp)) {
+                s_potentials.insert(static_cast<BounderComponent *>(&msg.comp));
+            }
+        }
+    );
+    Scene::addReceiver<SystemComponentAddedMessage<CollisionSystem>>(nullptr, compAddedCallback);
+
+    auto compRemovedCallback(
+        [&] (const Message & msg_) {
+            const auto & msg(static_cast<const SystemComponentRemovedMessage<CollisionSystem> &>(msg_));            
+            if (msg.typeI == typeid(BounderComponent)) {
+                s_potentials.erase(const_cast<BounderComponent *>(static_cast<const BounderComponent *>(msg.address)));
+            }
+        }
+    );
+    Scene::addReceiver<SystemComponentRemovedMessage<CollisionSystem>>(nullptr, compRemovedCallback);
+
     auto spatTransformCallback(
         [&](const Message & msg_) {
             const SpatialTransformTag & msg(static_cast<const SpatialTransformTag &>(msg_));
-            for (auto & bounder : msg.spatial.gameObject()->getComponentsByType<BounderComponent>()) {
+            for (auto & bounder : msg.spatial.gameObject().getComponentsByType<BounderComponent>()) {
                 s_potentials.insert(static_cast<BounderComponent *>(bounder));
             }
         }
@@ -174,12 +194,12 @@ void CollisionSystem::update(float dt) {
         bounder->update(dt);
         s_checked.insert(bounder);
         for (auto & other : s_bounderComponents) {
-            if (s_checked.count(other) || other->gameObject() == bounder->gameObject()) {
+            if (s_checked.count(other) || &other->gameObject() == &bounder->gameObject()) {
                 continue;
             }
             if (collide(*bounder, *other, &s_collisions)) {
-                Scene::sendMessage<CollisionMessage>(bounder->gameObject(), *bounder, *other);
-                Scene::sendMessage<CollisionMessage>(other->gameObject(), *other, *bounder);
+                Scene::sendMessage<CollisionMessage>(&bounder->gameObject(), *bounder, *other);
+                Scene::sendMessage<CollisionMessage>(&other->gameObject(), *other, *bounder);
             }
         }
     }
@@ -195,9 +215,9 @@ void CollisionSystem::update(float dt) {
         // there was an adjustment
         if (weightDeltas.size()) {
             for (auto & weightDelta : weightDeltas) { // send norm messages
-                Scene::sendMessage<CollisionNormMessage>(bounder.gameObject(), bounder, Util::safeNorm(weightDelta.second));
+                Scene::sendMessage<CollisionNormMessage>(&bounder.gameObject(), bounder, Util::safeNorm(weightDelta.second));
             }
-            glm::vec3 & gameObjectDelta(s_gameObjectDeltas[bounder.gameObject()]);
+            glm::vec3 & gameObjectDelta(s_gameObjectDeltas[&bounder.gameObject()]);
             gameObjectDelta = compositeDeltas(gameObjectDelta, detNetDelta(weightDeltas));
         }
     }
@@ -228,7 +248,7 @@ std::pair<BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray, 
     BounderComponent * bounder(nullptr);
     Intersect inter;
     for (const auto & b : s_bounderComponents) {
-        if (b->gameObject() == ignore) continue;
+        if (&b->gameObject() == ignore) continue;
         Intersect potential(b->intersect(ray));
         if (potential.dist < inter.dist) {
             bounder = b;
@@ -334,13 +354,4 @@ BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, 
     else {
         return Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(gameObject, weight, capsule);
     }
-}
-
-void CollisionSystem::added(Component & component) {
-    if (dynamic_cast<BounderComponent *>(&component))
-        s_potentials.insert(static_cast<BounderComponent *>(&component));
-}
-
-void CollisionSystem::removed(Component & component) {
-
 }

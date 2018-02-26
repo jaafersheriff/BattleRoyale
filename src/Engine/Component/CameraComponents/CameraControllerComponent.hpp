@@ -19,7 +19,7 @@ class CameraControllerComponent : public Component {
 
     protected: // only scene or friends can create component
 
-        CameraControllerComponent(float ls, float ms);
+        CameraControllerComponent(GameObject & gameObject, float ls, float ms);
 
     public:
 
@@ -27,7 +27,7 @@ class CameraControllerComponent : public Component {
 
     protected:
 
-        virtual void init(GameObject & go) override;
+        virtual void init() override;
 
     public:
 

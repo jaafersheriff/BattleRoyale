@@ -5,15 +5,15 @@
 #include "System/PathfindingSystem.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
-PathfindingComponent::PathfindingComponent(GameObject & player, float ms) :
+PathfindingComponent::PathfindingComponent(GameObject & gameObject, GameObject & player, float ms) :
+    Component(gameObject),
     m_spatial(nullptr),
     m_player(&player),
     m_moveSpeed(ms)
 {}
 
-void PathfindingComponent::init(GameObject & go) {
-    Component::init(go);
-    if (!(m_spatial = gameObject()->getSpatial())) assert(false);
+void PathfindingComponent::init() {
+    if (!(m_spatial = gameObject().getSpatial())) assert(false);
 }
 
 void PathfindingComponent::update(float dt) {
@@ -24,5 +24,5 @@ void PathfindingComponent::update(float dt) {
         return;
     }
     
-    gameObject()->getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
+    gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
 }

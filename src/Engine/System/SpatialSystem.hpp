@@ -37,12 +37,6 @@ class SpatialSystem {
 
     private:
 
-    static void added(Component & component) {};
-
-    static void removed(Component & component) {};
-
-    private:
-
     static const Vector<SpatialComponent *> & s_spatialComponents;
     static const Vector<NewtonianComponent *> & s_newtonianComponents;
     static const Vector<AcceleratorComponent *> & s_acceleratorComponents;

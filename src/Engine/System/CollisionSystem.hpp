@@ -38,8 +38,6 @@ class CollisionSystem {
     
     static void added(Component & component);
 
-    static void removed(Component & component);
-
     private:
 
     static const Vector<BounderComponent *> & s_bounderComponents;

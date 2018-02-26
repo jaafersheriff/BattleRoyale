@@ -46,12 +46,6 @@ class RenderSystem {
     template <typename ShaderT> static ShaderT * getShader();
 
     static void setCamera(const CameraComponent * camera);
-
-    private:
-    
-    static void added(Component & component) {};
-
-    static void removed(Component & component) {};
     
     private:
 

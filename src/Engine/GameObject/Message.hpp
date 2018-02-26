@@ -164,4 +164,21 @@ struct MouseMessage : public Message {
 
 
 
+// component of system SysT added 
+template <typename SysT>
+struct SystemComponentAddedMessage : public Message {
+    Component & comp;
+    SystemComponentAddedMessage(Component & comp) : comp(comp) {}
+};
+
+// component of system SysT removed
+template <typename SysT>
+struct SystemComponentRemovedMessage : public Message {
+    const void * address;
+    std::type_index typeI;
+    SystemComponentRemovedMessage(const void * address, std::type_index typeI) : address(address), typeI(typeI) {}
+};
+
+
+
 #endif

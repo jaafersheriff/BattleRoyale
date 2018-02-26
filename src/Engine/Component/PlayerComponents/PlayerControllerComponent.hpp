@@ -21,7 +21,7 @@ class PlayerControllerComponent : public Component {
 
     protected: // only scene or friends can create component
 
-    PlayerControllerComponent(float lookSpeed, float moveSpeed, float jumpSpeed);
+    PlayerControllerComponent(GameObject & gameObject, float lookSpeed, float moveSpeed, float jumpSpeed);
 
     public:
 
@@ -29,7 +29,7 @@ class PlayerControllerComponent : public Component {
 
     protected:
 
-    virtual void init(GameObject & go) override;
+    virtual void init() override;
 
     public:
 

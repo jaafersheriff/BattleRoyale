@@ -23,7 +23,7 @@ class BounderComponent : public Component {
 
     protected: // only scene or friends can create component
 
-    BounderComponent(unsigned int weight);
+    BounderComponent(GameObject & gameObject, unsigned int weight);
 
     public:
 
@@ -33,7 +33,7 @@ class BounderComponent : public Component {
 
     protected:
 
-    virtual void init(GameObject & go) override;
+    virtual void init() override;
 
     public:
 
@@ -46,8 +46,6 @@ class BounderComponent : public Component {
     virtual Intersect intersect(const Ray & ray) const = 0;
 
     virtual Sphere enclosingSphere() const = 0;
-
-    virtual float distToSurfaceInDir(const glm::vec3 & dir) const = 0;
 
     unsigned int weight() const { return m_weight; }
 
@@ -68,7 +66,7 @@ class AABBounderComponent : public BounderComponent {
 
     protected: // only scene or friends can create component
 
-    AABBounderComponent(unsigned int weight, const AABox & box);
+    AABBounderComponent(GameObject & gameObject, unsigned int weight, const AABox & box);
 
     public:
 
@@ -81,8 +79,6 @@ class AABBounderComponent : public BounderComponent {
     virtual Intersect intersect(const Ray & ray) const override;
 
     virtual Sphere enclosingSphere() const override;
-
-    virtual float distToSurfaceInDir(const glm::vec3 & dir) const override;
 
     const AABox & box() const { return m_box; }
     const AABox & transBox() const { return m_transBox; }
@@ -104,7 +100,7 @@ class SphereBounderComponent : public BounderComponent {
 
     protected: // only scene or friends can create component
 
-    SphereBounderComponent(unsigned int weight, const Sphere & sphere);
+    SphereBounderComponent(GameObject & gameObject, unsigned int weight, const Sphere & sphere);
 
     public:
 
@@ -117,8 +113,6 @@ class SphereBounderComponent : public BounderComponent {
     virtual Intersect intersect(const Ray & ray) const override;
 
     virtual Sphere enclosingSphere() const override;
-
-    virtual float distToSurfaceInDir(const glm::vec3 & dir) const override;
 
     const Sphere & sphere() const { return m_sphere; }
     const Sphere & transSphere() const { return m_transSphere; }
@@ -140,7 +134,7 @@ class CapsuleBounderComponent : public BounderComponent {
 
     protected: // only scene or friends can create component
 
-    CapsuleBounderComponent(unsigned int weight, const Capsule & capsule);
+    CapsuleBounderComponent(GameObject & gameObject, unsigned int weight, const Capsule & capsule);
 
     public:
 
@@ -153,8 +147,6 @@ class CapsuleBounderComponent : public BounderComponent {
     virtual Intersect intersect(const Ray & ray) const override;
 
     virtual Sphere enclosingSphere() const override;
-
-    virtual float distToSurfaceInDir(const glm::vec3 & dir) const override;
 
     const Capsule & capsule() const { return m_capsule; }
     const Capsule & transCapsule() const { return m_transCapsule; }

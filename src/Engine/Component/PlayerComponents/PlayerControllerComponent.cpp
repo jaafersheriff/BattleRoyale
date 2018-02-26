@@ -11,7 +11,8 @@
 
 
 
-PlayerControllerComponent::PlayerControllerComponent(float lookSpeed, float moveSpeed, float jumpSpeed) :
+PlayerControllerComponent::PlayerControllerComponent(GameObject & gameObject, float lookSpeed, float moveSpeed, float jumpSpeed) :
+    Component(gameObject),
     m_spatial(nullptr),
     m_newtonian(nullptr),
     m_camera(nullptr),
@@ -22,12 +23,11 @@ PlayerControllerComponent::PlayerControllerComponent(float lookSpeed, float move
     m_enabled(true)
 {}
 
-void PlayerControllerComponent::init(GameObject & go) {
-    Component::init(go);
-    if (!(m_spatial = gameObject()->getComponentByType<SpatialComponent>())) assert(false);
-    if (!(m_newtonian = gameObject()->getComponentByType<NewtonianComponent>())) assert(false);
-    if (!(m_ground = gameObject()->getComponentByType<GroundComponent>())) assert(false);
-    if (!(m_camera = gameObject()->getComponentByType<CameraComponent>())) assert(false);
+void PlayerControllerComponent::init() {
+    if (!(m_spatial = gameObject().getComponentByType<SpatialComponent>())) assert(false);
+    if (!(m_newtonian = gameObject().getComponentByType<NewtonianComponent>())) assert(false);
+    if (!(m_ground = gameObject().getComponentByType<GroundComponent>())) assert(false);
+    if (!(m_camera = gameObject().getComponentByType<CameraComponent>())) assert(false);
 }
 
 void PlayerControllerComponent::update(float dt) {
@@ -38,7 +38,7 @@ void PlayerControllerComponent::update(float dt) {
     // rotate camera
     if (Mouse::dx || Mouse::dy) {
         // angle head
-        m_camera->angle(-float(Mouse::dx) * m_lookSpeed * dt, float(Mouse::dy) * m_lookSpeed * dt, true);
+        m_camera->angle(-float(Mouse::dx) * m_lookSpeed, float(Mouse::dy) * m_lookSpeed, true);
         // set body to that angle. this also angles head more as its orientation is relative to body
         m_spatial->setUVW(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f), glm::cross(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f)), true);
         // reset head to face forward. in absolute space, this puts it back to where it was before the last line
@@ -74,7 +74,7 @@ void PlayerControllerComponent::update(float dt) {
     // jump
     if (!m_jumping) {
         if (Keyboard::isKeyPressed(GLFW_KEY_SPACE) && m_ground->onGround()) {
-            gameObject()->getComponentByType<NewtonianComponent>()->addVelocity(-m_jumpSpeed * Util::safeNorm(SpatialSystem::gravity()));
+            gameObject().getComponentByType<NewtonianComponent>()->addVelocity(-m_jumpSpeed * Util::safeNorm(SpatialSystem::gravity()));
             m_jumping = true;
         }
     }

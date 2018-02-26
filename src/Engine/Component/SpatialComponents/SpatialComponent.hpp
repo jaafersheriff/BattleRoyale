@@ -19,9 +19,9 @@ class SpatialComponent : public Component, public Orientable {
 
     protected: // only scene or friends can create component
 
-    SpatialComponent();
-    SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale);
-    SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & orientation);
+    SpatialComponent(GameObject & gameObject);
+    SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale);
+    SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & orientation);
 
     public:
 

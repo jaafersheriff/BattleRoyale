@@ -60,7 +60,7 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     loadMat4(getUniform("P"), camera->getProj());
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightPos"), *lightPos);
-    loadVec3(getUniform("camPos"), camera->gameObject()->getSpatial()->position());
+    loadVec3(getUniform("camPos"), camera->gameObject().getSpatial()->position());
     loadFloat(getUniform("silAngle"), silAngle);
     loadFloat(getUniform("cells"), numCells);
 
@@ -68,7 +68,7 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     /* Only doing frustum culling if object has bounder(s) */
     /* Get the center and radius of the component */
     for (Component * comp : components) {
-        const Vector<Component *> & bounders(comp->gameObject()->getComponentsByType<BounderComponent>());
+        const Vector<Component *> & bounders(comp->gameObject().getComponentsByType<BounderComponent>());
         if (bounders.size()) {
             bool inFrustum(false);
             for (Component * bounder_ : bounders) {
@@ -103,9 +103,9 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
         }
 
         /* Model matrix */
-        loadMat4(getUniform("M"), drc->gameObject()->getSpatial()->modelMatrix());
+        loadMat4(getUniform("M"), drc->gameObject().getSpatial()->modelMatrix());
         /* Normal matrix */
-        loadMat3(getUniform("N"), drc->gameObject()->getSpatial()->normalMatrix());
+        loadMat3(getUniform("N"), drc->gameObject().getSpatial()->normalMatrix());
 
         /* Bind materials */
         loadFloat(getUniform("matAmbient"), drc->modelTexture.material.ambient);

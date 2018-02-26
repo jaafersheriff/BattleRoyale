@@ -9,20 +9,20 @@
 
 
 
-BounderComponent::BounderComponent(unsigned int weight) :
+BounderComponent::BounderComponent(GameObject & gameObject, unsigned int weight) :
+    Component(gameObject),
     m_spatial(nullptr),
     m_weight(weight)
 {}
 
-void BounderComponent::init(GameObject & go) {
-    Component::init(go);
-    if (!(m_spatial = gameObject()->getSpatial())) assert(false);
+void BounderComponent::init() {
+    if (!(m_spatial = gameObject().getSpatial())) assert(false);
 }
 
 
 
-AABBounderComponent::AABBounderComponent(unsigned int weight, const AABox & box) :
-    BounderComponent(weight),
+AABBounderComponent::AABBounderComponent(GameObject & gameObject, unsigned int weight, const AABox & box) :
+    BounderComponent(gameObject, weight),
     m_box(box),
     m_transBox(m_box)
 {}
@@ -78,23 +78,10 @@ Sphere AABBounderComponent::enclosingSphere() const {
     return Sphere(center, radius);
 }
 
-float AABBounderComponent::distToSurfaceInDir(const glm::vec3 & dir) const {
-    glm::vec3 abs(glm::abs(dir.x), glm::abs(dir.y), glm::abs(dir.z));
-    if (abs.x > abs.y && abs.x > abs.z) {
-        return (m_transBox.max.x - m_transBox.min.x) * 0.5f;
-    }
-    else if (abs.z > abs.y) {
-        return (m_transBox.max.z - m_transBox.min.z) * 0.5f;
-    }
-    else {
-        return (m_transBox.max.y - m_transBox.min.y) * 0.5f;
-    }
-}
 
 
-
-SphereBounderComponent::SphereBounderComponent(unsigned int weight, const Sphere & sphere) :
-    BounderComponent(weight),
+SphereBounderComponent::SphereBounderComponent(GameObject & gameObject, unsigned int weight, const Sphere & sphere) :
+    BounderComponent(gameObject, weight),
     m_sphere(sphere),
     m_transSphere(m_sphere)
 {}
@@ -125,14 +112,10 @@ Sphere SphereBounderComponent::enclosingSphere() const {
     return m_transSphere;
 }
 
-float SphereBounderComponent::distToSurfaceInDir(const glm::vec3 & dir) const {
-    return m_transSphere.radius;
-}
 
 
-
-CapsuleBounderComponent::CapsuleBounderComponent(unsigned int weight, const Capsule & capsule) :
-    BounderComponent(weight),
+CapsuleBounderComponent::CapsuleBounderComponent(GameObject & gameObject, unsigned int weight, const Capsule & capsule) :
+    BounderComponent(gameObject, weight),
     m_capsule(capsule),
     m_transCapsule(m_capsule)
 {}
@@ -166,8 +149,4 @@ Intersect CapsuleBounderComponent::intersect(const Ray & ray) const {
 
 Sphere CapsuleBounderComponent::enclosingSphere() const {
     return Sphere(m_transCapsule.center, m_transCapsule.height * 0.5f + m_transCapsule.radius);
-}
-
-float CapsuleBounderComponent::distToSurfaceInDir(const glm::vec3 & dir) const {
-
 }

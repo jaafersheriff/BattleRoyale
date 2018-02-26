@@ -59,9 +59,14 @@ class Scene {
 
   private:
 
-    /* Instantiate/Kill queues */
+    /* Initialization / kill queues */
     static void doInitQueue();
     static void doKillQueue();
+
+    static void initGameObjects();
+    static void initComponents();
+    static void killGameObjects();
+    static void killComponents();
 
     static void relayMessages();
 
@@ -72,7 +77,7 @@ class Scene {
 
     static Vector<UniquePtr<GameObject>> s_gameObjectInitQueue;
     static Vector<GameObject *> s_gameObjectKillQueue;
-    static Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Component>>> s_componentInitQueue;
+    static Vector<std::pair<std::type_index, UniquePtr<Component>>> s_componentInitQueue;
     static Vector<std::pair<std::type_index, Component *>> s_componentKillQueue;
 
     static Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messages;
@@ -93,23 +98,33 @@ CompT & Scene::addComponent(GameObject & gameObject, Args &&... args) {
 
 template <typename CompT, typename SuperT, typename... Args>
 CompT & Scene::addComponentAs(GameObject & gameObject, Args &&... args) {
-    s_componentInitQueue.emplace_back(&gameObject, typeid(SuperT), UniquePtr<CompT>::make(CompT(std::forward<Args>(args)...)));
-    return static_cast<CompT &>(*std::get<2>(s_componentInitQueue.back()));
+    static_assert(std::is_base_of<Component, CompT>::value, "CompT must be a component type");
+    static_assert(std::is_base_of<SuperT, CompT>::value, "CompT must be derived from SuperT");
+    static_assert(!std::is_same<CompT, Component>::value, "CompT must be a derived component type");
+
+    s_componentInitQueue.emplace_back(typeid(SuperT), UniquePtr<CompT>::make(CompT(gameObject, std::forward<Args>(args)...)));
+    return static_cast<CompT &>(*s_componentInitQueue.back().second);
 }
 
 template <typename CompT>
 void Scene::removeComponent(CompT & component) {
-    static_assert(!std::is_same<CompT, Component>::value, "CompT must be the derived component type");
-    s_componentKillQueue.emplace_back(typeid(CompT), &component);
+    static_assert(std::is_base_of<Component, CompT>::value, "CompT must be a component type");
+    static_assert(!std::is_same<CompT, Component>::value, "CompT must be a derived component type");
+
+    s_componentKillQueue.emplace_back(typeid(CompT), static_cast<Component *>(&component));
 }
 
 template<typename MsgT, typename... Args>
 void Scene::sendMessage(GameObject * gameObject, Args &&... args) {
+    static_assert(std::is_base_of<Message, MsgT>::value, "MsgT must be a message type");
+
     s_messages.emplace_back(gameObject, typeid(MsgT), UniquePtr<Message>::makeAs<MsgT>(std::forward<Args>(args)...));
 }
 
 template <typename MsgT>
 void Scene::addReceiver(GameObject * gameObject, const std::function<void (const Message &)> & receiver) {
+    static_assert(std::is_base_of<Message, MsgT>::value, "MsgT must be a message type");
+
     if (gameObject) {
         gameObject->m_receivers[std::type_index(typeid(MsgT))].emplace_back(receiver);
     }
@@ -120,6 +135,9 @@ void Scene::addReceiver(GameObject * gameObject, const std::function<void (const
 
 template <typename CompT>
 const Vector<CompT *> & Scene::getComponents() {
+    static_assert(std::is_base_of<Component, CompT>::value, "CompT must be a component type");
+    static_assert(!std::is_same<CompT, Component>::value, "CompT must be a derived component type");
+
     std::type_index typeI(typeid(CompT));
     auto it(s_components.find(typeI));
     if (it == s_components.end()) {

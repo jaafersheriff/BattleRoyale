@@ -62,10 +62,12 @@ int parseArgs(int argc, char **argv) {
 GameObject & createProjectile(const glm::vec3 & initPos, const glm::vec3 & initVel, bool gravity) {
     GameObject & obj(Scene::createGameObject());
     SpatialComponent & spat(Scene::addComponent<SpatialComponent>(obj));
+    spat.setPosition(initPos);
     BounderComponent & bounder(Scene::addComponentAs<SphereBounderComponent, BounderComponent>(obj, 1, Sphere(glm::vec3(), 0.1f)));
     NewtonianComponent & newt(Scene::addComponent<NewtonianComponent>(obj));
-    if (gravity) Scene::addComponent<GravityComponent>(obj);
+    if (gravity) Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj);
     newt.addVelocity(initVel);
+    return obj;
 }
 
 int main(int argc, char **argv) {
@@ -160,7 +162,7 @@ int main(int argc, char **argv) {
     float playerHeight(1.75f);
     float playerWidth(playerHeight / 4.0f);
     glm::vec3 playerPos(0.0f, 6.0f, 0.0f);
-    float playerLookSpeed(0.2f);
+    float playerLookSpeed(0.005f);
     float playerMoveSpeed(5.0f);
     float playerJumpSpeed(5.0f);
     GameObject & player(Scene::createGameObject());
@@ -235,7 +237,7 @@ int main(int argc, char **argv) {
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
-    for (int i(0); i < 10; ++i) {
+    for (int i(0); i < 0; ++i) {
         GameObject & bunny(Scene::createGameObject());
         SpatialComponent & bunnySpatComp(Scene::addComponent<SpatialComponent>(
             bunny,
@@ -266,16 +268,12 @@ int main(int argc, char **argv) {
         }
     );
 
-    // Demo ray picking (click)
+    // Demo ray picking and intersection (click)
     auto rayPickCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
-            /*auto pair(CollisionSystem::pick(Ray(player.getSpatial()->position(), playerCamComp.getLookDir()), &player));
-            if (pair.first && pair.first->weight() < UINT_MAX) {
-                pair.first->gameObject()->getSpatial()->scale(glm::vec3(1.5f));
-            }
-            RenderSystem::getShader<RayShader>()->setRay(Ray(pair.second.pos, pair.second.norm));*/
-            createProjectile(playerSpatComp.position(), playerCamComp.getLookDir(), true);
+            auto pair(CollisionSystem::pick(Ray(player.getSpatial()->position(), playerCamComp.getLookDir()), &player));
+            RenderSystem::getShader<RayShader>()->setRay(Ray(pair.second.pos, pair.second.norm));
         }
     });
     Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);
@@ -288,6 +286,27 @@ int main(int argc, char **argv) {
         }
     });
     Scene::addReceiver<KeyMessage>(nullptr, gravSwapCallback);
+
+    // Fire projectile (click)
+    float projectileSpeed(10.0f);
+    Vector<GameObject *> projectiles;
+    auto fireCallback([&](const Message & msg_) {
+        const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
+        if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
+            projectiles.push_back(&createProjectile(
+                playerSpatComp.position() + playerCamComp.getLookDir() * 2.0f,
+                playerCamComp.getLookDir() * projectileSpeed,
+                true
+            ));
+        }
+        if (msg.button == GLFW_MOUSE_BUTTON_2 && msg.action == GLFW_PRESS) {
+            for (auto & proj : projectiles) {
+                Scene::destroyGameObject(*proj);
+            }
+            projectiles.clear();
+        }
+    });
+    Scene::addReceiver<MouseMessage>(nullptr, fireCallback);
 
     /* Main loop */
     EngineApp::run();

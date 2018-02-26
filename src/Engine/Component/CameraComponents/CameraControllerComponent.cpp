@@ -6,7 +6,8 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "CameraComponent.hpp"
 
-CameraControllerComponent::CameraControllerComponent(float ls, float ms) :
+CameraControllerComponent::CameraControllerComponent(GameObject & gameObject, float ls, float ms) :
+    Component(gameObject),
     m_spatial(nullptr),
     m_camera(nullptr),
     m_lookSpeed(ls),
@@ -14,10 +15,9 @@ CameraControllerComponent::CameraControllerComponent(float ls, float ms) :
     m_enabled(true)
 {}
 
-void CameraControllerComponent::init(GameObject & go) {
-    Component::init(go);
-    if (!(m_spatial = gameObject()->getSpatial())) assert(false);
-    if (!(m_camera = gameObject()->getComponentByType<CameraComponent>())) assert(false);
+void CameraControllerComponent::init() {
+    if (!(m_spatial = gameObject().getSpatial())) assert(false);
+    if (!(m_camera = gameObject().getComponentByType<CameraComponent>())) assert(false);
 }
 
 void CameraControllerComponent::update(float dt) {
@@ -27,7 +27,7 @@ void CameraControllerComponent::update(float dt) {
 
     if (Mouse::dx || Mouse::dy) {
         // orient camera relative to base
-        m_camera->angle(-float(Mouse::dx) * m_lookSpeed * dt, float(Mouse::dy) * m_lookSpeed * dt, true);
+        m_camera->angle(-float(Mouse::dx) * m_lookSpeed, float(Mouse::dy) * m_lookSpeed, true);
         // set camera base to same xz orientation
         m_spatial->setUVW(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f), glm::cross(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f)), true);
         // reset camera to face forward. in absolute space, this puts it back to where it was before the last line
