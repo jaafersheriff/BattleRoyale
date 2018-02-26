@@ -458,13 +458,13 @@ Intersect intersectLowerHemiRelative(const Ray & ray, float r) {
     return inter;
 }
 
-Intersect intersectUpperHemi(const Ray & ray, Sphere & sphere) {
+Intersect intersectUpperHemi(const Ray & ray, const Sphere & sphere) {
     Intersect inter(intersectUpperHemiRelative(Ray(ray.pos - sphere.origin, ray.dir), sphere.radius));
     if (inter.is) inter.pos += sphere.origin;
     return inter;
 }
 
-Intersect intersectLowerHemi(const Ray & ray, Sphere & sphere) {
+Intersect intersectLowerHemi(const Ray & ray, const Sphere & sphere) {
     Intersect inter(intersectLowerHemiRelative(Ray(ray.pos - sphere.origin, ray.dir), sphere.radius));
     if (inter.is) inter.pos += sphere.origin;
     return inter;
