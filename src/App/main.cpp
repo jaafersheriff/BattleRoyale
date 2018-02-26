@@ -269,11 +269,23 @@ int main(int argc, char **argv) {
     );
 
     // Demo ray picking and intersection (click)
+    int rayDepth(100);
+    Vector<glm::vec3> rayPositions;
     auto rayPickCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
-            auto pair(CollisionSystem::pick(Ray(player.getSpatial()->position(), playerCamComp.getLookDir()), &player));
-            RenderSystem::getShader<RayShader>()->setRay(Ray(pair.second.pos, pair.second.norm));
+            rayPositions.clear();
+            rayPositions.push_back(playerSpatComp.position());
+            glm::vec3 dir(playerCamComp.getLookDir());
+            for (int i(0); i < rayDepth; ++i) {
+                auto pair(CollisionSystem::pick(Ray(rayPositions.back(), dir), &player));
+                if (!pair.second.is) {
+                    break;
+                }
+                rayPositions.push_back(pair.second.pos);
+                dir = glm::reflect(dir, pair.second.norm);
+            }
+            RenderSystem::getShader<RayShader>()->setPositions(rayPositions);
         }
     });
     Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);

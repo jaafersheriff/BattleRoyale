@@ -10,11 +10,11 @@
 
 RayShader::RayShader(const String & vertFile, const String & fragFile) :
     Shader(vertFile, fragFile),    
-    m_ray(),
+    m_positions(),
     m_vbo(0),
     m_ibo(0),
     m_vao(0),
-    m_rayValid(false)
+    m_positionsValid(false)
 {}
 
 bool RayShader::init() {
@@ -29,13 +29,13 @@ bool RayShader::init() {
     /* Add uniforms */
     addUniform("u_viewMat");
     addUniform("u_projMat");
+    addUniform("u_invLength");
     
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
 
     glGenBuffers(1, &m_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(glm::vec3), nullptr, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
@@ -51,27 +51,27 @@ void RayShader::render(const CameraComponent * camera, const Vector<Component *>
     if (!camera) {
         return;
     }
-    if (m_ray.dir == glm::vec3()) {
+    if (m_positions.size() < 2) {
         return;
     }
 
-    if (!m_rayValid) {
+    if (!m_positionsValid) {
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-        glm::vec3 data[2]{ m_ray.pos, m_ray.pos + m_ray.dir };
-        glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * sizeof(glm::vec3), data);
+        glBufferData(GL_ARRAY_BUFFER, m_positions.size() * sizeof(glm::vec3), m_positions.data(), GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        m_rayValid = true;
+        loadFloat(getUniform("u_invLength"), 1.0f / (m_positions.size() - 1));
+        m_positionsValid = true;
     }
 
     loadMat4(getUniform("u_viewMat"), camera->getView());
     loadMat4(getUniform("u_projMat"), camera->getProj());
 
     glBindVertexArray(m_vao);
-    glDrawArrays(GL_LINES, 0, 2);
+    glDrawArrays(GL_LINE_STRIP, 0, m_positions.size());
     glBindVertexArray(0);
 }
 
-void RayShader::setRay(const Ray & ray) {
-    m_ray = ray;
-    m_rayValid = false;
+void RayShader::setPositions(const Vector<glm::vec3> & positions) {
+    m_positions = positions;
+    m_positionsValid = false;
 }
