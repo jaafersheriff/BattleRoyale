@@ -165,7 +165,7 @@ struct Util {
         return glm::vec4();
     }    
 
-    inline bool readTextFile(const String & filepath, String & dst) {
+    inline static bool readTextFile(const String & filepath, String & dst) {
         std::ifstream ifs(filepath.c_str());
         if (!ifs.good()) {
             return false;
@@ -176,6 +176,18 @@ struct Util {
         ifs.close();
         dst = ss.str();
 
+        return true;
+    }
+
+    inline static bool solveQuadratic(float a, float b, float c, float & r_v1, float & r_v2) {
+        float s(b * b - 4.0f * a * c);
+        if (s < 0.0f) {
+            return false;
+        }
+        s = std::sqrt(s);
+        float d(0.5f / a);
+        r_v1 = (-s - b) * d;
+        r_v2 = (s - b) * d;
         return true;
     }
 
