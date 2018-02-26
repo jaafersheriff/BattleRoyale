@@ -9,7 +9,8 @@ const Vector<NewtonianComponent *> & SpatialSystem::s_newtonianComponents(Scene:
 const Vector<AcceleratorComponent *> & SpatialSystem::s_acceleratorComponents(Scene::getComponents<AcceleratorComponent>());
 glm::vec3 SpatialSystem::s_gravityDir = glm::vec3(0.0f, -1.0f, 0.0f);
 float SpatialSystem::s_gravityMag = 10.0f;
-float SpatialSystem::s_coefficientOfFriction = 0.5f;
+const float SpatialSystem::s_coefficientOfFriction = 0.5f;
+const float SpatialSystem::s_terminalVelocity = 50.0f;
 
 void SpatialSystem::update(float dt) {
     for (auto & comp : s_acceleratorComponents) {

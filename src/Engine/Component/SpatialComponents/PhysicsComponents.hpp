@@ -24,7 +24,7 @@ class NewtonianComponent : public Component {
 
   protected: // only scene or friends can create component
 
-    NewtonianComponent(float maxSpeed);
+    NewtonianComponent();
 
   public:
 
@@ -56,7 +56,6 @@ class NewtonianComponent : public Component {
     SpatialComponent * m_spatial;
     glm::vec3 m_velocity;
     glm::vec3 m_acceleration;
-    float m_maxSpeed;
 
 
 };

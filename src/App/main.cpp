@@ -59,6 +59,15 @@ int parseArgs(int argc, char **argv) {
     return 0;
 }
 
+GameObject & createProjectile(const glm::vec3 & initPos, const glm::vec3 & initVel, bool gravity) {
+    GameObject & obj(Scene::createGameObject());
+    SpatialComponent & spat(Scene::addComponent<SpatialComponent>(obj));
+    BounderComponent & bounder(Scene::addComponentAs<SphereBounderComponent, BounderComponent>(obj, 1, Sphere(glm::vec3(), 0.1f)));
+    NewtonianComponent & newt(Scene::addComponent<NewtonianComponent>(obj));
+    if (gravity) Scene::addComponent<GravityComponent>(obj);
+    newt.addVelocity(initVel);
+}
+
 int main(int argc, char **argv) {
     if (parseArgs(argc, argv) || EngineApp::init()) {
         std::cin.get(); // don't immediately close the console
@@ -154,15 +163,14 @@ int main(int argc, char **argv) {
     float playerLookSpeed(0.2f);
     float playerMoveSpeed(5.0f);
     float playerJumpSpeed(5.0f);
-    float playerMaxSpeed(50.0f); // terminal velocity
     GameObject & player(Scene::createGameObject());
     SpatialComponent & playerSpatComp(Scene::addComponent<SpatialComponent>(player));
     playerSpatComp.setPosition(playerPos);
-    NewtonianComponent & playerNewtComp(Scene::addComponent<NewtonianComponent>(player, playerMaxSpeed));
+    NewtonianComponent & playerNewtComp(Scene::addComponent<NewtonianComponent>(player));
     GravityComponent & playerGravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(player));
     GroundComponent & playerGroundComp(Scene::addComponent<GroundComponent>(player));
     Capsule playerCap(glm::vec3(), playerHeight - 2.0f * playerWidth, playerWidth);
-    CapsuleBounderComponent & playerBoundComp(Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(player, 1, playerCap));
+    CapsuleBounderComponent & playerBoundComp(Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(player, 5, playerCap));
     CameraComponent & playerCamComp(Scene::addComponent<CameraComponent>(player, playerFOV, playerNear, playerFar));
     PlayerControllerComponent & playerContComp(Scene::addComponent<PlayerControllerComponent>(player, playerLookSpeed, playerMoveSpeed, playerJumpSpeed));
 
@@ -235,9 +243,9 @@ int main(int argc, char **argv) {
             glm::vec3(0.25f), // scale
             glm::mat3() // rotation
         ));
-        NewtonianComponent & bunnyNewtComp(Scene::addComponent<NewtonianComponent>(bunny, playerMaxSpeed));
+        NewtonianComponent & bunnyNewtComp(Scene::addComponent<NewtonianComponent>(bunny));
         GravityComponent & bunnyGravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(bunny));
-        BounderComponent & bunnyBoundComp(CollisionSystem::addBounderFromMesh(bunny, 1, *bunnyMesh, false, true, false));
+        BounderComponent & bunnyBoundComp(CollisionSystem::addBounderFromMesh(bunny, 5, *bunnyMesh, false, true, false));
         DiffuseRenderComponent & bunnyDiffuse = Scene::addComponent<DiffuseRenderComponent>(
             bunny,
             RenderSystem::getShader<DiffuseShader>()->pid,
@@ -262,11 +270,12 @@ int main(int argc, char **argv) {
     auto rayPickCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
-            auto pair(CollisionSystem::pick(Ray(player.getSpatial()->position(), playerCamComp.getLookDir()), &player));
+            /*auto pair(CollisionSystem::pick(Ray(player.getSpatial()->position(), playerCamComp.getLookDir()), &player));
             if (pair.first && pair.first->weight() < UINT_MAX) {
                 pair.first->gameObject()->getSpatial()->scale(glm::vec3(1.5f));
             }
-            RenderSystem::getShader<RayShader>()->setRay(Ray(pair.second.pos, pair.second.norm));
+            RenderSystem::getShader<RayShader>()->setRay(Ray(pair.second.pos, pair.second.norm));*/
+            createProjectile(playerSpatComp.position(), playerCamComp.getLookDir(), true);
         }
     });
     Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);

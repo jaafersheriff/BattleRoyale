@@ -47,6 +47,8 @@ class BounderComponent : public Component {
 
     virtual Sphere enclosingSphere() const = 0;
 
+    virtual float distToSurfaceInDir(const glm::vec3 & dir) const = 0;
+
     unsigned int weight() const { return m_weight; }
 
     protected:
@@ -79,6 +81,8 @@ class AABBounderComponent : public BounderComponent {
     virtual Intersect intersect(const Ray & ray) const override;
 
     virtual Sphere enclosingSphere() const override;
+
+    virtual float distToSurfaceInDir(const glm::vec3 & dir) const override;
 
     const AABox & box() const { return m_box; }
     const AABox & transBox() const { return m_transBox; }
@@ -114,6 +118,8 @@ class SphereBounderComponent : public BounderComponent {
 
     virtual Sphere enclosingSphere() const override;
 
+    virtual float distToSurfaceInDir(const glm::vec3 & dir) const override;
+
     const Sphere & sphere() const { return m_sphere; }
     const Sphere & transSphere() const { return m_transSphere; }
 
@@ -147,6 +153,8 @@ class CapsuleBounderComponent : public BounderComponent {
     virtual Intersect intersect(const Ray & ray) const override;
 
     virtual Sphere enclosingSphere() const override;
+
+    virtual float distToSurfaceInDir(const glm::vec3 & dir) const override;
 
     const Capsule & capsule() const { return m_capsule; }
     const Capsule & transCapsule() const { return m_transCapsule; }

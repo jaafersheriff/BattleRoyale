@@ -8,12 +8,11 @@
 
 
 
-NewtonianComponent::NewtonianComponent(float maxSpeed) :
+NewtonianComponent::NewtonianComponent() :
     Component(),
     m_spatial(nullptr),
     m_velocity(),
-    m_acceleration(),
-    m_maxSpeed(maxSpeed)
+    m_acceleration()
 {}
 
 void NewtonianComponent::init(GameObject & go) {
@@ -47,8 +46,8 @@ void NewtonianComponent::init(GameObject & go) {
 void NewtonianComponent::update(float dt) {
     glm::vec3 newVelocity(m_velocity + m_acceleration * dt);
     float speed2(glm::length2(newVelocity));
-    if (speed2 > m_maxSpeed * m_maxSpeed) {
-        newVelocity *= m_maxSpeed / std::sqrt(speed2);
+    if (speed2 > SpatialSystem::terminalVelocity() *  SpatialSystem::terminalVelocity()) {
+        newVelocity *= SpatialSystem::terminalVelocity() / std::sqrt(speed2);
     }
     glm::vec3 delta(0.5f * dt * (m_velocity + newVelocity));
     if (!Util::isZero(glm::length2(delta))) {

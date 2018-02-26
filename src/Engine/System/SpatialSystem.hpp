@@ -33,6 +33,7 @@ class SpatialSystem {
     static const glm::vec3 & gravityDir() { return s_gravityDir; }
     static float gravityMag() { return s_gravityMag; }
     static float coefficientOfFriction() { return s_coefficientOfFriction; }
+    static float terminalVelocity() { return s_terminalVelocity; }
 
     private:
 
@@ -42,11 +43,12 @@ class SpatialSystem {
 
     private:
 
-    const static Vector<SpatialComponent *> & s_spatialComponents;
-    const static Vector<NewtonianComponent *> & s_newtonianComponents;
-    const static Vector<AcceleratorComponent *> & s_acceleratorComponents;
+    static const Vector<SpatialComponent *> & s_spatialComponents;
+    static const Vector<NewtonianComponent *> & s_newtonianComponents;
+    static const Vector<AcceleratorComponent *> & s_acceleratorComponents;
     static glm::vec3 s_gravityDir;
     static float s_gravityMag;
-    static float s_coefficientOfFriction;
+    static const float s_coefficientOfFriction;
+    static const float s_terminalVelocity;
 
 };
