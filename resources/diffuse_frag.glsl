@@ -25,21 +25,17 @@ out vec4 color;
 
 void main() {
     vec3 viewDir = camPos - worldPos;
-    vec3 L = normalize(lightDir);
     vec3 V = normalize(viewDir);
     vec3 N = normalize(fragNor);
-    float lambert = dot(L, N);
 
-    /* Diffuse */
-    float diffuseContrib = clamp(lambert, matAmbient, 1.0);
+    /* Base color */
     vec3 diffuseColor = matDiffuse;
     if (usesTexture) {
         diffuseColor = vec3(texture(textureImage, texCoords));
     }
 
-    /* Specular using Blinn-Phong */
-    vec3 H = (L + V) / 2.0;
-    float specularContrib = pow(max(dot(H, N), 0.0), shine);
+    float lambert = dot(L, N);
+    float diffuseContrib, specularContrib;
 
     /* Cell shading */
     if (isToon) {
@@ -51,11 +47,19 @@ void main() {
             }
         }
     }
+    /* Blinn-Phong shading */
+    else {
+        vec3 L = normalize(lightDir);
+        float diffuseContrib = clamp(lambert, matAmbient, 1.0);
+        vec3 H = (L + V) / 2.0;
+        float specularContrib = pow(max(dot(H, N), 0.0), shine);
+    }
 
-    vec3 pColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib);
+    /* Base color */
+    vec3 bColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib);
 
     /* Silhouettes */
     float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;
 
-    color = vec4(edge * pColor, 1.0);
+    color = vec4(edge * bColor, 1.0);
 }
