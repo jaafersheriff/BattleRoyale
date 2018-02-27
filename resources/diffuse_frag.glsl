@@ -26,6 +26,7 @@ out vec4 color;
 void main() {
     vec3 viewDir = camPos - worldPos;
     vec3 V = normalize(viewDir);
+    vec3 L = normalize(lightDir);
     vec3 N = normalize(fragNor);
 
     /* Base color */
@@ -49,7 +50,6 @@ void main() {
     }
     /* Blinn-Phong shading */
     else {
-        vec3 L = normalize(lightDir);
         float diffuseContrib = clamp(lambert, matAmbient, 1.0);
         vec3 H = (L + V) / 2.0;
         float specularContrib = pow(max(dot(H, N), 0.0), shine);
