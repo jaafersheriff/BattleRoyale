@@ -133,7 +133,7 @@ inline String convert(const std::string & string) {
 
 #else
 
-inline String convert(const String & string) {
+inline std::string convert(const std::string & string) {
     return string;
 }
 
