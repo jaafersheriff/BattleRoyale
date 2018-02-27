@@ -29,10 +29,16 @@ SpatialComponent::SpatialComponent(GameObject & gameObject, const glm::vec3 & lo
     m_normalMatrixValid(false)
 {}
 
-SpatialComponent::SpatialComponent(GameObject & gameObject, const glm::vec3 & loc, const glm::vec3 & scale, const glm::mat3 & orientation) :
+SpatialComponent::SpatialComponent(GameObject & gameObject, const glm::vec3 & loc, const glm::vec3 & scale, const glm::mat3 & orient) :
     SpatialComponent(gameObject, loc, scale)
 {
-    setOrientation(orientation, true);
+    setOrientation(orient, true);
+}
+
+SpatialComponent::SpatialComponent(GameObject & gameObject, const glm::vec3 & loc, const glm::vec3 & scale, const glm::quat & orient) :
+    SpatialComponent(gameObject, loc, scale)
+{
+    setOrientation(orient, true);
 }
 
 void SpatialComponent::update(float dt) {
@@ -72,8 +78,22 @@ void SpatialComponent::setOrientation(const glm::mat3 & orient, bool silently) {
     if (!silently) Scene::sendMessage<SpatialOrientationSetMessage>(&gameObject(), *this);
 }
 
-void SpatialComponent::rotate(const glm::mat3 & mat, bool silently) {
-    Orientable::rotate(mat);
+void SpatialComponent::setOrientation(const glm::quat & orient, bool silently) {
+    Orientable::setOrientation(orient);
+    m_modelMatrixValid = false;
+    m_normalMatrixValid = false;
+    if (!silently) Scene::sendMessage<SpatialOrientationSetMessage>(&gameObject(), *this);
+}
+
+void SpatialComponent::rotate(const glm::mat3 & rot, bool silently) {
+    Orientable::rotate(rot);
+    m_modelMatrixValid = false;
+    m_normalMatrixValid = false;
+    if (!silently) Scene::sendMessage<SpatialRotatedMessage>(&gameObject(), *this);
+}
+
+void SpatialComponent::rotate(const glm::quat & rot, bool silently) {
+    Orientable::rotate(rot);
     m_modelMatrixValid = false;
     m_normalMatrixValid = false;
     if (!silently) Scene::sendMessage<SpatialRotatedMessage>(&gameObject(), *this);
@@ -95,12 +115,12 @@ const glm::mat3 & SpatialComponent::normalMatrix() const {
 }
 
 void SpatialComponent::detModelMatrix() const {
-    m_modelMatrix = Util::compositeTransform(m_scale, orientationMatrix(), m_position);
+    m_modelMatrix = Util::compositeTransform(m_scale, orientMatrix(), m_position);
     m_modelMatrixValid = true;
 }
 
 void SpatialComponent::detNormalMatrix() const {
     // this is valid and waaaaaaaay faster than inverting the model matrix
-    m_normalMatrix = orientationMatrix() * glm::mat3(glm::scale(glm::mat4(), 1.0f / m_scale));
+    m_normalMatrix = orientMatrix() * glm::mat3(glm::scale(glm::mat4(), 1.0f / m_scale));
     m_normalMatrixValid = true;
 }

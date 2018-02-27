@@ -155,7 +155,7 @@ void CameraComponent::detUVW() {
     glm::vec3 u(glm::cross(v, w));
 
     // adjust relative to orientation of base
-    const glm::mat3 & orient(m_spatial->orientationMatrix());
+    const glm::mat3 & orient(m_spatial->orientMatrix());
     setUVW(orient * u, orient * v, orient * w);
 }
 

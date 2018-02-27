@@ -29,7 +29,7 @@ AABBounderComponent::AABBounderComponent(GameObject & gameObject, unsigned int w
 
 void AABBounderComponent::update(float dt) {
     // no rotation
-    if (m_spatial->orientationMatrix() == glm::mat3()) {
+    if (m_spatial->orientation() == glm::quat()) {
         m_transBox.min = m_box.min * m_spatial->scale() + m_spatial->position();
         m_transBox.max = m_box.max * m_spatial->scale() + m_spatial->position();
     }

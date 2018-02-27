@@ -3,7 +3,7 @@
 #include "ThirdParty/imgui/imgui.h"
 #include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
 
-#include <iostream> /* cout, cerr */
+#include <iostream>
 
 #include "Scene/Scene.hpp"
 
@@ -41,7 +41,7 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
 
 void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
 #ifdef DEBUG_MODE
-    if (button == GLFW_MOUSE_BUTTON_3 && action == GLFW_PRESS && isImGuiEnabled()) {
+    if (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS && isImGuiEnabled()) {
         toggleCursorEnabled();
     }
     else if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {

@@ -21,7 +21,8 @@ class SpatialComponent : public Component, public Orientable {
 
     SpatialComponent(GameObject & gameObject);
     SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale);
-    SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & orientation);
+    SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & orient);
+    SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale, const glm::quat & orient);
 
     public:
 
@@ -45,11 +46,13 @@ class SpatialComponent : public Component, public Orientable {
     // multiplies current scale by factor
     void scale(const glm::vec3 & factor, bool silently = false);
 
-    // sets the absolute rotation
-    void setOrientation(const glm::mat3 & rot, bool silently = false);
+    // sets the absolute orientation
+    void setOrientation(const glm::mat3 & orient, bool silently = false);
+    void setOrientation(const glm::quat & orient, bool silently = false);
     
-    // rotates current rotation by mat
-    void rotate(const glm::mat3 & mat, bool silently = false);
+    // rotates current orientation
+    void rotate(const glm::mat3 & rot, bool silently = false);
+    void rotate(const glm::quat & rot, bool silently = false);
 
     // set the orthonormal basis vectors
     void setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w, bool silently = false);

@@ -67,7 +67,7 @@ void RayShader::render(const CameraComponent * camera, const Vector<Component *>
     loadMat4(getUniform("u_projMat"), camera->getProj());
 
     glBindVertexArray(m_vao);
-    glDrawArrays(GL_LINE_STRIP, 0, m_positions.size());
+    glDrawArrays(GL_LINE_STRIP, 0, int(m_positions.size()));
     glBindVertexArray(0);
 }
 
