@@ -31,8 +31,8 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, true);
         return;
     }
-    // toggle fullscreen
-    if (key == GLFW_KEY_F11 && action == GLFW_PRESS) {
+    // toggle fullscreen (f11 or alt+enter)
+    if ((key == GLFW_KEY_F11 || key == GLFW_KEY_ENTER && mods & GLFW_MOD_ALT) && action == GLFW_PRESS) {
         // currently fullscreen
         if (glfwGetWindowMonitor(window)) {
             s_fullscreen = false;
