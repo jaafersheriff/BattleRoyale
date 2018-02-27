@@ -10,8 +10,10 @@
 
 DiffuseShader::DiffuseShader(const String & vertFile, const String & fragFile, const glm::vec3 & light) :
     Shader(vertFile, fragFile),
-    lightDir(&light)
-{}
+    lightDir(&light) {
+    cellIntensities.resize(1, 1.f);
+    cellScales.resize(1, 1.f);
+}
 
 bool DiffuseShader::init() {
     if (!Shader::init()) {
@@ -187,8 +189,13 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
 
 void DiffuseShader::setCells(unsigned int in) {
     numCells = glm::min(in, (unsigned int)16);
-    cellIntensities.resize(numCells, 1.f);
-    cellScales.resize(numCells, 1.f);
+    cellIntensities.resize(numCells, 0.f);
+    cellScales.resize(numCells, 0.f);
+    for (int i = 0; i < numCells; i++) {
+        float scale = 1.f - i / (float)numCells;
+        cellIntensities[i] = (scale - 0.5) * 2;
+        cellScales[i] = scale;
+    }
 }
 
 void DiffuseShader::setCellIntensity(unsigned int i, float f) {

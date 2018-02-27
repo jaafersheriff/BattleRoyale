@@ -46,13 +46,12 @@ void main() {
         for(int i = 0; i < numCells; i++) {
             if(lambert > texelFetch(cellIntensities, i, 0).r) {
                 float scale = texelFetch(cellScales, i, 0).r;
-                diffuseContrib *= scale;
-                specularContrib *= scale;
+                diffuseContrib = specularContrib = scale;
                 break;
             }
         }
-   }
- 
+    }
+
     vec3 pColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib);
 
     /* Silhouettes */

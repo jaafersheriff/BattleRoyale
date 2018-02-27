@@ -108,8 +108,9 @@ int main(int argc, char **argv) {
                 RenderSystem::getShader<DiffuseShader>()->setSilAngle(angle);
                 
                 int cells = RenderSystem::getShader<DiffuseShader>()->getCells();
-                ImGui::SliderInt("Cells", &cells, 0, 15);
-                RenderSystem::getShader<DiffuseShader>()->setCells(cells);
+                if (ImGui::SliderInt("Cells", &cells, 1, 15)) {
+                    RenderSystem::getShader<DiffuseShader>()->setCells(cells);
+                }
 
                 /* Make a new pane to define cell values */
                 ImGui::End();
@@ -120,9 +121,7 @@ int main(int argc, char **argv) {
                     float maxBounds[2] = { 1.f, 1.f };
                     vals[0] = RenderSystem::getShader<DiffuseShader>()->getCellIntensity(i);
                     vals[1] = RenderSystem::getShader<DiffuseShader>()->getCellScale(i);
-
                     ImGui::SliderFloat2(("Cell " + std::to_string(i)).c_str(), vals, minBounds, maxBounds);
-
                     RenderSystem::getShader<DiffuseShader>()->setCellIntensity(i, vals[0]);
                     RenderSystem::getShader<DiffuseShader>()->setCellScale(i, vals[1]);
                 }
