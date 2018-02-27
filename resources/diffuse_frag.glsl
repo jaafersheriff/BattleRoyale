@@ -50,9 +50,9 @@ void main() {
     }
     /* Blinn-Phong shading */
     else {
-        float diffuseContrib = clamp(lambert, matAmbient, 1.0);
         vec3 H = (L + V) / 2.0;
-        float specularContrib = pow(max(dot(H, N), 0.0), shine);
+        diffuseContrib = clamp(lambert, matAmbient, 1.0);
+        specularContrib = pow(max(dot(H, N), 0.0), shine);
     }
 
     /* Base color */
