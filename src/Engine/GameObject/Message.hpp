@@ -143,9 +143,9 @@ struct CollisionAdjustMessage : public Message {
 
 
 // the window was resized
-struct WindowSizeMessage : public Message {
-    int width, height;
-    WindowSizeMessage(int width, int height) : width(width), height(height) {}
+struct WindowFrameSizeMessage : public Message {
+    glm::ivec2 frameSize;
+    WindowFrameSizeMessage(const glm::ivec2 & frameSize) : frameSize(frameSize) {}
 };
 
 

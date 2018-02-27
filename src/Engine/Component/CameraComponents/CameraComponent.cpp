@@ -57,7 +57,7 @@ void CameraComponent::init() {
         m_projMatValid = false;
         m_frustumValid = false;
     });
-    Scene::addReceiver<WindowSizeMessage>(nullptr, windowSizeCallback);
+    Scene::addReceiver<WindowFrameSizeMessage>(nullptr, windowSizeCallback);
 }
 
 void CameraComponent::update(float dt) {
