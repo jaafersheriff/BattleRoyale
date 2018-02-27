@@ -78,6 +78,12 @@ Sphere AABBounderComponent::enclosingSphere() const {
     return Sphere(center, radius);
 }
 
+bool AABBounderComponent::isMovementCritical() const {
+    glm::vec3 delta(m_spatial->position() - m_spatial->prevPosition());
+    glm::vec3 boxRadii((m_transBox.max - m_transBox.min) * 0.5f);
+    return glm::abs(delta.x) > boxRadii.x || glm::abs(delta.y) > boxRadii.y || glm::abs(delta.z) > boxRadii.z;
+}
+
 
 
 SphereBounderComponent::SphereBounderComponent(GameObject & gameObject, unsigned int weight, const Sphere & sphere) :
@@ -110,6 +116,11 @@ Intersect SphereBounderComponent::intersect(const Ray & ray) const {
 
 Sphere SphereBounderComponent::enclosingSphere() const {
     return m_transSphere;
+}
+
+bool SphereBounderComponent::isMovementCritical() const {
+    glm::vec3 delta(m_spatial->position() - m_spatial->prevPosition());
+    return glm::length2(delta) > m_transSphere.radius * m_transSphere.radius;
 }
 
 
@@ -149,4 +160,27 @@ Intersect CapsuleBounderComponent::intersect(const Ray & ray) const {
 
 Sphere CapsuleBounderComponent::enclosingSphere() const {
     return Sphere(m_transCapsule.center, m_transCapsule.height * 0.5f + m_transCapsule.radius);
+}
+
+bool CapsuleBounderComponent::isMovementCritical() const {
+    glm::vec3 delta(m_spatial->position() - m_spatial->prevPosition());
+    float dxz2(delta.x * delta.x + delta.z * delta.z);
+    float r2(m_transCapsule.radius * m_transCapsule.radius);
+    if (dxz2 > r2) {
+        return true;
+    }
+    float h_2(m_transCapsule.height * 0.5f);
+    if (delta.y > h_2) {
+        float dy(delta.y - h_2);
+        if (dxz2 + dy * dy > r2) {
+            return true;
+        }
+    }
+    else if (delta.y < h_2) {
+        float dy(delta.y + h_2);
+        if (dxz2 + dy * dy > r2) {
+            return true;
+        }
+    }
+    return false;
 }

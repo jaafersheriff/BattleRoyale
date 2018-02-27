@@ -52,11 +52,11 @@ void Scene::update(float dt) {
     relayMessages();
     PathfindingSystem::update(dt);
     relayMessages();
-    SpatialSystem::update(dt); // needs to happen before collision
+    SpatialSystem::update(dt); // needs to happen right before collision
     relayMessages();
     CollisionSystem::update(dt);
     relayMessages();
-    PostCollisionSystem::update(dt);
+    PostCollisionSystem::update(dt); // needs to happen after collision, go figure
     relayMessages();
     RenderSystem::update(dt); // rendering should be last
     relayMessages();

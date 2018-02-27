@@ -4,6 +4,7 @@
 
 #include "System/PathfindingSystem.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Util/Util.hpp"
 
 PathfindingComponent::PathfindingComponent(GameObject & gameObject, GameObject & player, float ms) :
     Component(gameObject),

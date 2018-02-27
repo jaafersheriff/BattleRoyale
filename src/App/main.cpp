@@ -268,12 +268,12 @@ int main(int argc, char **argv) {
         }
     );
 
-    // Demo ray picking and intersection (click)
+    // Demo ray picking and intersection (cntrl-click)
     int rayDepth(100);
     Vector<glm::vec3> rayPositions;
     auto rayPickCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
-        if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
+        if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.mods & GLFW_MOD_CONTROL && msg.action == GLFW_PRESS) {
             rayPositions.clear();
             rayPositions.push_back(playerSpatComp.position());
             glm::vec3 dir(playerCamComp.getLookDir());
@@ -300,11 +300,11 @@ int main(int argc, char **argv) {
     Scene::addReceiver<KeyMessage>(nullptr, gravSwapCallback);
 
     // Fire projectile (click)
-    float projectileSpeed(10.0f);
+    float projectileSpeed(50.0f);
     Vector<GameObject *> projectiles;
     auto fireCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
-        if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
+        if (msg.button == GLFW_MOUSE_BUTTON_1 && !msg.mods && msg.action == GLFW_PRESS) {
             projectiles.push_back(&createProjectile(
                 playerSpatComp.position() + playerCamComp.getLookDir() * 2.0f,
                 playerCamComp.getLookDir() * projectileSpeed,
@@ -319,6 +319,26 @@ int main(int argc, char **argv) {
         }
     });
     Scene::addReceiver<MouseMessage>(nullptr, fireCallback);
+
+    // Delete scene element (delete) or delete all but (ctrl-delete)
+    auto deleteCallback([&] (const Message & msg_) {
+        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
+        if (msg.key == GLFW_KEY_DELETE && msg.mods & GLFW_MOD_CONTROL && msg.action == GLFW_PRESS) {
+            auto pair(CollisionSystem::pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir()), &player));
+            if (pair.first) {
+                for (GameObject * obj : Scene::getGameObjects()) {
+                    if (obj != &pair.first->gameObject() && obj != &player && obj != &freeCam) {
+                        Scene::destroyGameObject(*obj);
+                    }
+                }
+            }
+        }
+        else if (msg.key == GLFW_KEY_DELETE && msg.action == GLFW_PRESS) {
+            auto pair(CollisionSystem::pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir()), &player));
+            if (pair.first) Scene::destroyGameObject(pair.first->gameObject());
+        }
+    });
+    Scene::addReceiver<KeyMessage>(nullptr, deleteCallback);
 
     /* Main loop */
     EngineApp::run();

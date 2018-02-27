@@ -60,10 +60,18 @@ class SpatialComponent : public Component, public Orientable {
     public:
 
     const glm::vec3 & position() const { return m_position; }
+    const glm::vec3 & prevPosition() const { return m_prevPosition; }
+    glm::vec3 position(float interpP) const;
+
     const glm::vec3 & scale() const { return m_scale; }
+    const glm::vec3 & prevScale() const { return m_prevScale; }
+    glm::vec3 scale(float interpP) const;
 
     const glm::mat4 & modelMatrix() const;
+    glm::mat4 modelMatrix(float interpP) const;
+
     const glm::mat3 & normalMatrix() const;
+    glm::mat3 normalMatrix(float interpP) const;
 
     private:
 
@@ -73,7 +81,11 @@ class SpatialComponent : public Component, public Orientable {
     private:
 
     glm::vec3 m_position;
+    glm::vec3 m_prevPosition;
     glm::vec3 m_scale;
+    glm::vec3 m_prevScale;
+    bool m_isPositionChange;
+    bool m_isScaleChange;
 
     mutable glm::mat4 m_modelMatrix;
     mutable glm::mat3 m_normalMatrix;

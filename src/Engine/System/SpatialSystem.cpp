@@ -19,9 +19,6 @@ void SpatialSystem::update(float dt) {
     for (auto & comp : s_newtonianComponents) {
         comp->update(dt);
     }
-    for (auto & comp : s_spatialComponents) {
-        comp->update(dt);
-    }
 }
 
 void SpatialSystem::setGravity(const glm::vec3 & gravity) {

@@ -23,8 +23,11 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
     }
 
 #ifdef DEBUG_MODE
-    if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
+    if (key == GLFW_KEY_GRAVE_ACCENT && mods & GLFW_MOD_SHIFT && action == GLFW_PRESS) {
         toggleImGui();
+    }
+    else if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS && isImGuiEnabled()) {
+        toggleCursorEnabled();
     }
     else if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
         ImGui_ImplGlfwGL3_KeyCallback(window, key, scancode, action, mods);
@@ -41,10 +44,7 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
 
 void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
 #ifdef DEBUG_MODE
-    if (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS && isImGuiEnabled()) {
-        toggleCursorEnabled();
-    }
-    else if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
+    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
         ImGui_ImplGlfwGL3_MouseButtonCallback(window, button, action, mods);
     }
     else 
