@@ -224,10 +224,11 @@ void CollisionSystem::update(float dt) {
     s_gameObjectDeltas.clear();
 }
 
-std::pair<BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray) {
+std::pair<BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray, const GameObject * ignore) {
     BounderComponent * bounder(nullptr);
     Intersect inter;
     for (const auto & b : s_bounderComponents) {
+        if (b->gameObject() == ignore) continue;
         Intersect potential(b->intersect(ray));
         if (potential.dist < inter.dist) {
             bounder = b;

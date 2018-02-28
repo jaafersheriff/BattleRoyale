@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "Util/Memory.hpp"
+#include "FileReader.hpp"
 
 bool Loader::verbose = false;
 String Loader::RESOURCE_DIR = "../resources/";
@@ -25,8 +26,8 @@ Mesh* Loader::getMesh(const String & name) {
 
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> objMaterials;
-    String errString;
-    bool rc = tinyobj::LoadObj(shapes, objMaterials, convert(errString), (RESOURCE_DIR + name).c_str());
+    std::string errString;
+    bool rc = tinyobj::LoadObj(shapes, objMaterials, errString, (RESOURCE_DIR + name).c_str());
     if (!rc) {
         std::cerr << errString << std::endl;
         exit(1);
@@ -111,6 +112,10 @@ Texture* Loader::getTexture(const String & name, GLenum mode, bool flip) {
 
 Texture* Loader::getTexture(const String & name) {
     return getTexture(name, GL_REPEAT, true);
+}
+
+int Loader::loadLevel(const String & name) {
+    return FileReader::loadLevel(*name.c_str());
 }
 
 /* Provided function to resize a mesh so all vertex positions are [0, 1.f] */
@@ -200,6 +205,9 @@ void Loader::loadTexture(Texture *texture, uint8_t *data, GLenum mode) {
 
     /* Unbind */
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    /* Error check */
+    assert(glGetError() == GL_NO_ERROR);
 }
 
 void Loader::loadMesh(Mesh & mesh) {

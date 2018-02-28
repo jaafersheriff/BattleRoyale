@@ -10,6 +10,7 @@
 #include "glm/gtc/type_ptr.hpp"
 
 #include "Util/Memory.hpp"
+#include "GLSL.hpp"
 
 class Component;
 class CameraComponent;
@@ -52,15 +53,15 @@ class Shader {
         GLint getAttribute(const String &);
         GLint getUniform(const String &);
 
+         /* GLSL shader names */
+        const String vShaderName;
+        const String fShaderName;
         GLuint pid = 0;
 
         bool isEnabled() const { return m_isEnabled; }
+        void setEnabled(bool enabled) { m_isEnabled = enabled; }
         void toggleEnabled() { m_isEnabled = !m_isEnabled; } 
     protected:
-        /* GLSL shader names */
-        const String vShaderName;
-        const String fShaderName;
-
         bool m_isEnabled;
 
         /* Shared GLSL utility functions */

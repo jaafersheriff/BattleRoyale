@@ -6754,7 +6754,41 @@ bool ImGui::SliderFloatN(const char* label, float* v, int components, float v_mi
     return value_changed;
 }
 
+// Add multiple sliders on 1 line for compact edition of multiple components
+bool ImGui::SliderFloatN(const char* label, float* v, int components, float* v_min, float* v_max, const char* display_format, float power)
+{
+    ImGuiWindow* window = GetCurrentWindow();
+    if (window->SkipItems)
+        return false;
+
+    ImGuiContext& g = *GImGui;
+    bool value_changed = false;
+    BeginGroup();
+    PushID(label);
+    PushMultiItemsWidths(components);
+    for (int i = 0; i < components; i++)
+    {
+        PushID(i);
+        value_changed |= SliderFloat("##v", &v[i], v_min[i], v_max[i], display_format, power);
+        SameLine(0, g.Style.ItemInnerSpacing.x);
+        PopID();
+        PopItemWidth();
+    }
+    PopID();
+
+    TextUnformatted(label, FindRenderedTextEnd(label));
+    EndGroup();
+
+    return value_changed;
+}
+
+
 bool ImGui::SliderFloat2(const char* label, float v[2], float v_min, float v_max, const char* display_format, float power)
+{
+    return SliderFloatN(label, v, 2, v_min, v_max, display_format, power);
+}
+
+bool ImGui::SliderFloat2(const char* label, float v[2], float v_min[2], float v_max[2], const char* display_format, float power)
 {
     return SliderFloatN(label, v, 2, v_min, v_max, display_format, power);
 }

@@ -1,0 +1,8681 @@
+{
+"object0": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Ceiling.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        0.17454349994659425,
+        -21.271392822265626,
+        -33.19000244140625
+    ],
+    "scale": [
+        3.104686975479126,
+        1.7908517122268677,
+        5.3899970054626469
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object1": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        -43.75271987915039,
+        1.200000286102295,
+        -50.48260498046875
+    ],
+    "scale": [
+        1.4340088367462159,
+        0.3487049341201782,
+        3.008573055267334
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object2": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        44.37332534790039,
+        1.1999998092651368,
+        -50.48260498046875
+    ],
+    "scale": [
+        1.4340031147003174,
+        0.34870484471321108,
+        3.0085737705230715
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object3": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        42.099998474121097,
+        1.1999998092651368,
+        -4.990002632141113
+    ],
+    "scale": [
+        1.434004306793213,
+        0.34870484471321108,
+        1.8718972206115723
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object4": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        -31.600000381469728,
+        1.1999998092651368,
+        -95.38999938964844
+    ],
+    "scale": [
+        1.4340050220489503,
+        0.34870484471321108,
+        1.4250293970108033
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object5": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        0.46545448899269106,
+        1.1999998092651368,
+        -50.684303283691409
+    ],
+    "scale": [
+        2.8702263832092287,
+        0.34870484471321108,
+        0.8581256866455078
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object6": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        -24.290000915527345,
+        3.440000057220459,
+        -50.69000244140625
+    ],
+    "scale": [
+        0.8479397296905518,
+        0.07232589274644852,
+        1.047534704208374
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object7": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        25.09000015258789,
+        3.440000057220459,
+        -50.69000244140625
+    ],
+    "scale": [
+        0.8479404449462891,
+        0.0723237469792366,
+        1.0475404262542725
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object8": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        0.46545448899269106,
+        3.4200000762939455,
+        -50.684303283691409
+    ],
+    "scale": [
+        3.726853847503662,
+        0.07303859293460846,
+        1.3086220026016236
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object9": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        -50.5,
+        -1.2000000476837159,
+        -37.69000244140625
+    ],
+    "scale": [
+        0.9300199747085571,
+        1.6393299102783204,
+        8.087300300598145
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object10": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        51.20000076293945,
+        -1.2000000476837159,
+        -37.69000244140625
+    ],
+    "scale": [
+        0.9300199747085571,
+        1.6393299102783204,
+        8.087302207946778
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object11": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        0.699999988079071,
+        -1.2000000476837159,
+        23.709997177124025
+    ],
+    "scale": [
+        0.9300199747085571,
+        1.6393299102783204,
+        6.573339939117432
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object12": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Roof.obj",
+    "objTexture": "Assets/Models/Roof_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        0.800000011920929,
+        19.299999237060548,
+        -38.4900016784668
+    ],
+    "scale": [
+        102.55850219726563,
+        51.16814041137695,
+        168.68370056152345
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object13": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Roof.obj",
+    "objTexture": "Assets/Models/Roof_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        0.800000011920929,
+        19.299999237060548,
+        -149.88999938964845
+    ],
+    "scale": [
+        78.10376739501953,
+        51.16814041137695,
+        156.5209503173828
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object14": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        25.299999237060548,
+        3.5,
+        -145.19000244140626
+    ],
+    "scale": [
+        2.251715898513794,
+        0.07231999933719635,
+        3.3477399349212648
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object15": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        -22.5,
+        3.5,
+        -145.19000244140626
+    ],
+    "scale": [
+        2.2517199516296388,
+        0.07231999933719635,
+        3.347738742828369
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object16": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        34.599998474121097,
+        1.1999998092651368,
+        -95.38999938964844
+    ],
+    "scale": [
+        1.43401038646698,
+        0.34869998693466189,
+        1.4250304698944092
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object17": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Ceiling.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        1.399999976158142,
+        -21.271392822265626,
+        -138.08999633789063
+    ],
+    "scale": [
+        1.257633090019226,
+        1.7908499240875245,
+        4.3591814041137699
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object18": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        -18.899999618530275,
+        1.200000286102295,
+        -144.19000244140626
+    ],
+    "scale": [
+        1.4340099096298218,
+        0.34869998693466189,
+        3.311417818069458
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object19": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        22.399999618530275,
+        1.200000286102295,
+        -144.19000244140626
+    ],
+    "scale": [
+        1.4340099096298218,
+        0.34869998693466189,
+        3.311417818069458
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object20": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        1.5199999809265137,
+        3.4800000190734865,
+        -92.92000579833985
+    ],
+    "scale": [
+        0.8479404449462891,
+        0.07232999801635742,
+        1.1524317264556885
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object21": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        0.699999988079071,
+        -1.2000000476837159,
+        -187.88999938964845
+    ],
+    "scale": [
+        0.9300204515457153,
+        1.6393299102783204,
+        6.573343753814697
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object22": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        48.20000076293945,
+        -1.2000000476837159,
+        -102.27999877929688
+    ],
+    "scale": [
+        0.9300204515457153,
+        1.6393299102783204,
+        1.5392650365829468
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object23": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        -45.2599983215332,
+        -1.2000000476837159,
+        -102.29000091552735
+    ],
+    "scale": [
+        0.9300204515457153,
+        1.6393299102783204,
+        1.5392708778381348
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object24": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        -33.099998474121097,
+        -1.2000000476837159,
+        -147.49000549316407
+    ],
+    "scale": [
+        0.9300199747085571,
+        1.6393299102783204,
+        5.291826248168945
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object25": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        36.0,
+        -1.2000000476837159,
+        -147.49000549316407
+    ],
+    "scale": [
+        0.9300199747085571,
+        1.6393299102783204,
+        5.291830062866211
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object26": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        15.067201614379883,
+        2.6312127113342287,
+        -184.24053955078126
+    ],
+    "scale": [
+        4.045809745788574,
+        0.06769660860300064,
+        0.08924317359924317
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object27": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        13.529999732971192,
+        2.1114559173583986,
+        -184.27000427246095
+    ],
+    "scale": [
+        4.045809745788574,
+        0.06769660860300064,
+        0.08924317359924317
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object28": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        11.979249000549317,
+        1.5897578001022339,
+        -184.27601623535157
+    ],
+    "scale": [
+        4.045809745788574,
+        0.06769660860300064,
+        0.08924317359924317
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object29": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        10.442017555236817,
+        1.0700000524520875,
+        -184.2415008544922
+    ],
+    "scale": [
+        4.045809745788574,
+        0.06769660860300064,
+        0.08924317359924317
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object30": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        2.509999990463257,
+        -0.5099999904632568,
+        -177.70001220703126
+    ],
+    "scale": [
+        8.291158676147461,
+        0.053573813289403918,
+        0.08924314379692078
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object31": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        2.5059263706207277,
+        -1.059999942779541,
+        -176.1492462158203
+    ],
+    "scale": [
+        8.291158676147461,
+        0.053573813289403918,
+        0.08924314379692078
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object32": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        2.5181453227996828,
+        -1.7414551973342896,
+        -174.612060546875
+    ],
+    "scale": [
+        8.291158676147461,
+        0.053573813289403918,
+        0.08924314379692078
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object33": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        2.4800000190734865,
+        -0.6200000047683716,
+        -186.0500030517578
+    ],
+    "scale": [
+        1.43401038646698,
+        0.251898854970932,
+        0.664169192314148
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object34": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -11.68518352508545,
+        2.6312127113342287,
+        -184.240966796875
+    ],
+    "scale": [
+        4.045815467834473,
+        0.06769999861717224,
+        0.08924008905887604
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object35": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -10.147978782653809,
+        2.1114559173583986,
+        -184.2115020751953
+    ],
+    "scale": [
+        4.045815467834473,
+        0.06769999861717224,
+        0.08924008905887604
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object36": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -8.597228050231934,
+        1.5897578001022339,
+        -184.2054901123047
+    ],
+    "scale": [
+        4.045815467834473,
+        0.06769999861717224,
+        0.08924008905887604
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object37": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -7.059999942779541,
+        1.0700000524520875,
+        -184.24000549316407
+    ],
+    "scale": [
+        4.045815467834473,
+        0.06769999861717224,
+        0.08924008905887604
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object38": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        2.509999990463257,
+        0.05999999865889549,
+        -179.2100067138672
+    ],
+    "scale": [
+        8.291159629821778,
+        0.05356999859213829,
+        0.08923999965190888
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object39": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.48237502574920657,
+        0.4974958896636963,
+        -3.5866146087646486
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529995173215869,
+        0.05751999467611313
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object40": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.5013750791549683,
+        0.16249680519104005,
+        -4.577413558959961
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529995173215869,
+        0.05751999467611313
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object41": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.5052498579025269,
+        -0.1737534999847412,
+        -5.576910018920898
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529995173215869,
+        0.05751999467611313
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object42": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.48299968242645266,
+        -0.5087525844573975,
+        -6.567693710327148
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529995173215869,
+        0.05751999467611313
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object43": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.48562514781951907,
+        -0.7687509059906006,
+        -7.559713363647461
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529995173215869,
+        0.05751999467611313
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object44": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.49737441539764407,
+        -1.1037538051605225,
+        -8.550512313842774
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529995173215869,
+        0.05751999467611313
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object45": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.5,
+        -1.440000057220459,
+        -9.550008773803711
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529995173215869,
+        0.05751999467611313
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object46": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.49212443828582766,
+        -1.7749993801116944,
+        -10.540777206420899
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529995173215869,
+        0.05751999467611313
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object47": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.48237502574920657,
+        0.8299999833106995,
+        -2.6100101470947267
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529998898506168,
+        0.05751999840140343
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object48": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.48237502574920657,
+        3.3612499237060549,
+        11.873888969421387
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529998898506168,
+        0.05751999840140343
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object49": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.5013750791549683,
+        3.0262508392333986,
+        10.883090019226075
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529998898506168,
+        0.05751999840140343
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object50": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.5052498579025269,
+        2.690000534057617,
+        9.883593559265137
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529998898506168,
+        0.05751999840140343
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object51": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.48299968242645266,
+        2.355001449584961,
+        8.892809867858887
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529998898506168,
+        0.05751999840140343
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object52": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.48562514781951907,
+        2.0950028896331789,
+        7.900790214538574
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529998898506168,
+        0.05751999840140343
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object53": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.49737441539764407,
+        1.7599999904632569,
+        6.909991264343262
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529998898506168,
+        0.05751999840140343
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object54": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.49999988079071047,
+        1.4237537384033204,
+        5.910494804382324
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529998898506168,
+        0.05751999840140343
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object55": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.49212443828582766,
+        1.088754415512085,
+        4.919727325439453
+    ],
+    "scale": [
+        7.521869659423828,
+        0.034529998898506168,
+        0.05751999840140343
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object56": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        0.41999998688697817,
+        0.8600000143051148,
+        1.1399917602539063
+    ],
+    "scale": [
+        0.7761765122413635,
+        0.04723699390888214,
+        0.5955416560173035
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object57": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        36.6199951171875,
+        1.1999998092651368,
+        13.409997940063477
+    ],
+    "scale": [
+        4.535920143127441,
+        0.34869998693466189,
+        1.2746734619140626
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object58": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        0.6000000238418579,
+        1.1999998092651368,
+        18.509998321533204
+    ],
+    "scale": [
+        1.4340004920959473,
+        0.34869998693466189,
+        1.3242965936660767
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object59": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        -41.399993896484378,
+        1.1999998092651368,
+        -4.990002632141113
+    ],
+    "scale": [
+        1.4340004920959473,
+        0.34869998693466189,
+        1.8719009160995484
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object60": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        -34.97999954223633,
+        1.1999998092651368,
+        13.409997940063477
+    ],
+    "scale": [
+        4.291311264038086,
+        0.34869998693466189,
+        1.2746700048446656
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object61": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        6.4337568283081059,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object62": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        4.421255111694336,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object63": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        2.405003547668457,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object64": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.40375232696533205,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object65": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -1.6124944686889649,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object66": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -3.624995231628418,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object67": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -5.6412458419799809,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object68": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -7.629996299743652,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object69": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -9.642497062683106,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object70": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -11.658747673034668,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object71": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -13.660000801086426,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object72": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -15.676246643066407,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object73": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        16.639999389648439,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object74": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        14.6274995803833,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object75": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        12.611248970031739,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object76": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        10.60999584197998,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object77": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        8.59375,
+        3.990000009536743,
+        -35.06000518798828
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object78": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        6.4337568283081059,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object79": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        4.421255111694336,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object80": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        2.405003547668457,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object81": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.40375232696533205,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object82": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -1.6124944686889649,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object83": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -3.624995231628418,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object84": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -5.6412458419799809,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object85": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -7.629996299743652,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object86": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -9.642497062683106,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object87": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -11.658747673034668,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object88": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -13.660000801086426,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object89": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -15.676246643066407,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object90": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        16.639999389648439,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object91": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        14.6274995803833,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object92": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        12.611248970031739,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object93": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        10.60999584197998,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object94": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        8.59375,
+        3.990000009536743,
+        -66.30000305175781
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object95": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        17.639999389648439,
+        3.990000009536743,
+        -36.1400032043457
+    ],
+    "scale": [
+        0.12500005960464478,
+        0.125,
+        0.12500005960464478
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object96": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        17.639999389648439,
+        3.990000009536743,
+        -38.15400314331055
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object97": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        17.639999389648439,
+        3.990000009536743,
+        -40.17000198364258
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object98": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        17.639999389648439,
+        3.990000009536743,
+        -42.18400192260742
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object99": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        17.639999389648439,
+        3.990000009536743,
+        -44.19600296020508
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object100": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        17.639999389648439,
+        3.990000009536743,
+        -46.21000289916992
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object101": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        17.639999389648439,
+        3.990000009536743,
+        -55.130001068115237
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object102": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        17.639999389648439,
+        3.990000009536743,
+        -57.14400100708008
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object103": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        17.639999389648439,
+        3.990000009536743,
+        -59.15999984741211
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object104": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        17.639999389648439,
+        3.990000009536743,
+        -61.17399597167969
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object105": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        17.639999389648439,
+        3.990000009536743,
+        -63.186004638671878
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object106": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        17.639999389648439,
+        3.990000009536743,
+        -65.19999694824219
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object107": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -16.649999618530275,
+        3.990000009536743,
+        -36.1400032043457
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object108": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -16.649999618530275,
+        3.990000009536743,
+        -38.15400314331055
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object109": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -16.649999618530275,
+        3.990000009536743,
+        -40.17000198364258
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object110": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -16.649999618530275,
+        3.990000009536743,
+        -42.18400192260742
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object111": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -16.649999618530275,
+        3.990000009536743,
+        -44.19600296020508
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object112": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -16.649999618530275,
+        3.990000009536743,
+        -46.21000289916992
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object113": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -16.649999618530275,
+        3.990000009536743,
+        -55.130001068115237
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object114": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -16.649999618530275,
+        3.990000009536743,
+        -57.14400100708008
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object115": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -16.649999618530275,
+        3.990000009536743,
+        -59.15999984741211
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object116": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -16.649999618530275,
+        3.990000009536743,
+        -61.17399597167969
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object117": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -16.649999618530275,
+        3.990000009536743,
+        -63.186004638671878
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object118": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -16.649999618530275,
+        3.990000009536743,
+        -65.19999694824219
+    ],
+    "scale": [
+        0.125,
+        0.125,
+        0.125
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object119": {
+"transform": 
+{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -0.3000006675720215,
+        6.159999847412109,
+        22.509998321533204
+    ],
+    "scale": [
+        0.34188881516456606,
+        0.7674081921577454,
+        0.46228405833244326
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object120": {
+"transform": 
+{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        14.699999809265137,
+        6.159999847412109,
+        22.509998321533204
+    ],
+    "scale": [
+        0.3418900966644287,
+        0.7674099802970886,
+        0.4622802138328552
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object121": {
+"transform": 
+{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        29.700000762939454,
+        6.159999847412109,
+        22.509998321533204
+    ],
+    "scale": [
+        0.3418900966644287,
+        0.7674099802970886,
+        0.4622802138328552
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object122": {
+"transform": 
+{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -15.300009727478028,
+        6.159999847412109,
+        22.509998321533204
+    ],
+    "scale": [
+        0.3418900966644287,
+        0.7674099802970886,
+        0.4622802138328552
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object123": {
+"transform": 
+{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -30.300010681152345,
+        6.159999847412109,
+        22.509998321533204
+    ],
+    "scale": [
+        0.3418900966644287,
+        0.7674099802970886,
+        0.4622802138328552
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object124": {
+"transform": 
+{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        1.4100089073181153,
+        6.159999847412109,
+        -186.83999633789063
+    ],
+    "scale": [
+        0.3418900966644287,
+        0.7674099802970886,
+        0.4622802138328552
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object125": {
+"transform": 
+{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        16.410009384155275,
+        6.159999847412109,
+        -186.83999633789063
+    ],
+    "scale": [
+        0.3418900966644287,
+        0.7674099802970886,
+        0.4622802138328552
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object126": {
+"transform": 
+{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -13.59000015258789,
+        6.159999847412109,
+        -186.83999633789063
+    ],
+    "scale": [
+        0.3418900966644287,
+        0.7674099802970886,
+        0.4622802138328552
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object127": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Wall_Block.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        1.5199999809265137,
+        3.4800000190734865,
+        -141.08999633789063
+    ],
+    "scale": [
+        0.8479404449462891,
+        0.07232999801635742,
+        1.1524304151535035
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object128": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -11.010000228881836,
+        4.450000762939453,
+        -42.99824905395508
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object129": {
+"transform": 
+{
+    "objName": "Assets/Models/Cup.obj",
+    "objTexture": "Assets/Models/Cup_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -11.131248474121094,
+        4.9237518310546879,
+        -42.872623443603519
+    ],
+    "scale": [
+        0.07898004353046417,
+        0.07897999882698059,
+        0.07898004353046417
+    ],
+    "rotMat3_0": [
+        0.26232945919036868,
+        0.0,
+        0.9649783372879028
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9649783372879028,
+        0.0,
+        0.26232945919036868
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object130": {
+"transform": 
+{
+    "objName": "Assets/Models/Tray.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -10.993886947631836,
+        4.900001525878906,
+        -42.9214973449707
+    ],
+    "scale": [
+        0.059640027582645419,
+        0.046790000051259997,
+        0.06090002879500389
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object131": {
+"transform": 
+{
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -10.914999008178711,
+        4.915000915527344,
+        -42.8952522277832
+    ],
+    "scale": [
+        0.040869999676942828,
+        0.040869999676942828,
+        0.040869999676942828
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object132": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -5.2099995613098148,
+        4.450000762939453,
+        -42.99824905395508
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object133": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -11.010000228881836,
+        4.450000762939453,
+        -48.263248443603519
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object134": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -5.2099995613098148,
+        4.450000762939453,
+        -48.263248443603519
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object135": {
+"transform": 
+{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/Plant_Pot_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -8.069999694824219,
+        4.022464752197266,
+        -56.54324722290039
+    ],
+    "scale": [
+        0.2747899889945984,
+        0.2747899889945984,
+        0.2747899889945984
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+"capsule 0": {
+    "center": [
+        -0.029999999329447748,
+        7.78000020980835,
+        -0.07085895538330078
+    ],
+    "radius": 2.5,
+    "height": 16.373586654663087
+}}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object136": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -11.010000228881836,
+        4.449999809265137,
+        -53.45000076293945
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object137": {
+"transform": 
+{
+    "objName": "Assets/Models/Cup.obj",
+    "objTexture": "Assets/Models/Cup_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -5.397362232208252,
+        4.9237518310546879,
+        -53.32437515258789
+    ],
+    "scale": [
+        0.07898004353046417,
+        0.07897999882698059,
+        0.07898004353046417
+    ],
+    "rotMat3_0": [
+        0.26232945919036868,
+        0.0,
+        0.9649783372879028
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9649783372879028,
+        0.0,
+        0.26232945919036868
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object138": {
+"transform": 
+{
+    "objName": "Assets/Models/Tray.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -5.259999752044678,
+        4.900001525878906,
+        -53.37324905395508
+    ],
+    "scale": [
+        0.059650029987096789,
+        0.046790000051259997,
+        0.06090002879500389
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object139": {
+"transform": 
+{
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -5.181112766265869,
+        4.915000915527344,
+        -53.34700012207031
+    ],
+    "scale": [
+        0.040869999676942828,
+        0.040869999676942828,
+        0.040869999676942828
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object140": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -5.2099995613098148,
+        4.450000762939453,
+        -53.45000076293945
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object141": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -11.010000228881836,
+        4.450000762939453,
+        -59.513248443603519
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object142": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -5.2099995613098148,
+        4.450000762939453,
+        -59.513248443603519
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object143": {
+"transform": 
+{
+    "objName": "Assets/Models/Ketchup.obj",
+    "objTexture": "Assets/Models/Red_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -10.565000534057618,
+        4.890499114990234,
+        -59.53824996948242
+    ],
+    "scale": [
+        0.040950000286102298,
+        0.040950000286102298,
+        0.040950000286102298
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object144": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -4.103000164031982,
+        4.040000915527344,
+        -48.263248443603519
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object145": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -4.103000164031982,
+        4.040000915527344,
+        -53.38325119018555
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object146": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -4.103000164031982,
+        4.040000915527344,
+        -42.88325119018555
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object147": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -12.020000457763672,
+        4.040000915527344,
+        -48.263248443603519
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object148": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -12.020000457763672,
+        4.040000915527344,
+        -53.38325119018555
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object149": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -12.020000457763672,
+        4.040000915527344,
+        -42.88325119018555
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object150": {
+"transform": 
+{
+    "objName": "Assets/Models/Palm_Tree.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        -8.079999923706055,
+        4.245002746582031,
+        -56.545249938964847
+    ],
+    "scale": [
+        0.23818999528884889,
+        0.23818999528884889,
+        0.23818999528884889
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object151": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        6.8899993896484379,
+        4.450000762939453,
+        -42.99824905395508
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object152": {
+"transform": 
+{
+    "objName": "Assets/Models/Cup.obj",
+    "objTexture": "Assets/Models/Cup_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        6.76875114440918,
+        4.9237518310546879,
+        -42.872623443603519
+    ],
+    "scale": [
+        0.07898004353046417,
+        0.07897999882698059,
+        0.07898004353046417
+    ],
+    "rotMat3_0": [
+        0.26232945919036868,
+        0.0,
+        0.9649783372879028
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9649783372879028,
+        0.0,
+        0.26232945919036868
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object153": {
+"transform": 
+{
+    "objName": "Assets/Models/Tray.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        6.9061126708984379,
+        4.900001525878906,
+        -42.9214973449707
+    ],
+    "scale": [
+        0.059640027582645419,
+        0.046790000051259997,
+        0.06090002879500389
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object154": {
+"transform": 
+{
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        6.9850006103515629,
+        4.915000915527344,
+        -42.8952522277832
+    ],
+    "scale": [
+        0.040869999676942828,
+        0.040869999676942828,
+        0.040869999676942828
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object155": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        12.690000534057618,
+        4.450000762939453,
+        -42.99824905395508
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object156": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        6.8899993896484379,
+        4.450000762939453,
+        -48.263248443603519
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object157": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        12.690000534057618,
+        4.450000762939453,
+        -48.263248443603519
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object158": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        6.8899993896484379,
+        4.449999809265137,
+        -53.45000076293945
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object159": {
+"transform": 
+{
+    "objName": "Assets/Models/Cup.obj",
+    "objTexture": "Assets/Models/Cup_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        12.50263786315918,
+        4.9237518310546879,
+        -53.32437515258789
+    ],
+    "scale": [
+        0.07898004353046417,
+        0.07897999882698059,
+        0.07898004353046417
+    ],
+    "rotMat3_0": [
+        0.26232945919036868,
+        0.0,
+        0.9649783372879028
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9649783372879028,
+        0.0,
+        0.26232945919036868
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object160": {
+"transform": 
+{
+    "objName": "Assets/Models/Tray.obj",
+    "objTexture": "Assets/Models/Blue_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        12.639999389648438,
+        4.900001525878906,
+        -53.37324905395508
+    ],
+    "scale": [
+        0.059650029987096789,
+        0.046790000051259997,
+        0.06090002879500389
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object161": {
+"transform": 
+{
+    "objName": "Assets/Models/Hamburger.obj",
+    "objTexture": "Assets/Models/Hamburger_BaseColor.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        12.718887329101563,
+        4.915000915527344,
+        -53.34700012207031
+    ],
+    "scale": [
+        0.040869999676942828,
+        0.040869999676942828,
+        0.040869999676942828
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object162": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        12.690000534057618,
+        4.450000762939453,
+        -53.45000076293945
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object163": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        6.8899993896484379,
+        4.450000762939453,
+        -59.513248443603519
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object164": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        12.690000534057618,
+        4.450000762939453,
+        -59.513248443603519
+    ],
+    "scale": [
+        0.12838999927043916,
+        0.12838999927043916,
+        0.12838999927043916
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object165": {
+"transform": 
+{
+    "objName": "Assets/Models/Ketchup.obj",
+    "objTexture": "Assets/Models/Red_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        7.334999084472656,
+        4.890499114990234,
+        -59.53824996948242
+    ],
+    "scale": [
+        0.040950000286102298,
+        0.040950000286102298,
+        0.040950000286102298
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object166": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        13.796998977661133,
+        4.040000915527344,
+        -48.263248443603519
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object167": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        13.796998977661133,
+        4.040000915527344,
+        -53.38325119018555
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object168": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        13.796998977661133,
+        4.040000915527344,
+        -42.88325119018555
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object169": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        5.879999160766602,
+        4.040000915527344,
+        -48.263248443603519
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object170": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        5.879999160766602,
+        4.040000915527344,
+        -53.38325119018555
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object171": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        5.879999160766602,
+        4.040000915527344,
+        -42.88325119018555
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object172": {
+"transform": 
+{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/Plant_Pot_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -8.069999694824219,
+        4.022464752197266,
+        -45.30799865722656
+    ],
+    "scale": [
+        0.2747899889945984,
+        0.2747899889945984,
+        0.2747899889945984
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+"capsule 0": {
+    "center": [
+        -0.029999999329447748,
+        7.78000020980835,
+        -0.07085895538330078
+    ],
+    "radius": 2.5,
+    "height": 16.373586654663087
+}}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object173": {
+"transform": 
+{
+    "objName": "Assets/Models/Palm_Tree.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        -8.079999923706055,
+        4.245002746582031,
+        -45.310001373291019
+    ],
+    "scale": [
+        0.23818999528884889,
+        0.23818999528884889,
+        0.23818999528884889
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object174": {
+"transform": 
+{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/Plant_Pot_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        10.250000953674317,
+        4.022464752197266,
+        -56.54324722290039
+    ],
+    "scale": [
+        0.2747899889945984,
+        0.2747899889945984,
+        0.2747899889945984
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+"capsule 0": {
+    "center": [
+        -0.029999999329447748,
+        7.78000020980835,
+        -0.07085895538330078
+    ],
+    "radius": 2.5,
+    "height": 16.373586654663087
+}}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object175": {
+"transform": 
+{
+    "objName": "Assets/Models/Palm_Tree.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        10.24000072479248,
+        4.245002746582031,
+        -56.545249938964847
+    ],
+    "scale": [
+        0.23818999528884889,
+        0.23818999528884889,
+        0.23818999528884889
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object176": {
+"transform": 
+{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/Plant_Pot_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        10.25,
+        4.022464752197266,
+        -45.30799865722656
+    ],
+    "scale": [
+        0.2747899889945984,
+        0.2747899889945984,
+        0.2747899889945984
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+"capsule 0": {
+    "center": [
+        -0.029999999329447748,
+        7.78000020980835,
+        -0.07085895538330078
+    ],
+    "radius": 2.5,
+    "height": 16.373586654663087
+}}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object177": {
+"transform": 
+{
+    "objName": "Assets/Models/Palm_Tree.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        10.24000072479248,
+        4.245002746582031,
+        -45.310001373291019
+    ],
+    "scale": [
+        0.23818999528884889,
+        0.23818999528884889,
+        0.23818999528884889
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object178": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -12.020000457763672,
+        4.040000915527344,
+        -59.454002380371097
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object179": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        13.796998977661133,
+        4.040000915527344,
+        -59.454002380371097
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object180": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -4.103000164031982,
+        4.040000915527344,
+        -59.57500076293945
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object181": {
+"transform": 
+{
+    "objName": "Assets/Models/Chair.obj",
+    "objTexture": "Assets/Models/Chair_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        5.879999160766602,
+        4.040000915527344,
+        -59.57500076293945
+    ],
+    "scale": [
+        0.1349100023508072,
+        0.1349100023508072,
+        0.1349100023508072
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        2.3399999141693117,
+        0.02966594696044922,
+        -2.1700220108032228
+    ],
+    "max": [
+        1.399999976158142,
+        9.185232162475586,
+        2.1700220108032228
+    ]
+},
+"box 1": {
+    "min": [
+        1.5800000429153443,
+        0.039999961853027347,
+        -2.1700220108032228
+    ],
+    "max": [
+        -2.0799999237060549,
+        4.800000190734863,
+        2.1700220108032228
+    ]
+}}
+}
+,
+"object182": {
+"transform": 
+{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/Plant_Pot_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.7099995017051697,
+        -1.6200000047683716,
+        -108.68799591064453
+    ],
+    "scale": [
+        0.495682954788208,
+        0.495682954788208,
+        0.495682954788208
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+"capsule 0": {
+    "center": [
+        -0.029999999329447748,
+        7.78000020980835,
+        -0.07085895538330078
+    ],
+    "radius": 2.5,
+    "height": 21.0
+}}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object183": {
+"transform": 
+{
+    "objName": "Assets/Models/Palm_Tree.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        0.699999988079071,
+        -1.4500000476837159,
+        -108.69000244140625
+    ],
+    "scale": [
+        0.6367674469947815,
+        0.6367674469947815,
+        0.6367674469947815
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object184": {
+"transform": 
+{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/Plant_Pot_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.7099995017051697,
+        -1.6200000047683716,
+        -126.28799438476563
+    ],
+    "scale": [
+        0.49567997455596926,
+        0.49567997455596926,
+        0.49567997455596926
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+"capsule 0": {
+    "center": [
+        -0.029999999329447748,
+        7.78000020980835,
+        -0.07085895538330078
+    ],
+    "radius": 2.5,
+    "height": 21.0
+}}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object185": {
+"transform": 
+{
+    "objName": "Assets/Models/Palm_Tree.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        0.699999988079071,
+        -1.4500000476837159,
+        -126.28999328613281
+    ],
+    "scale": [
+        0.6367700099945068,
+        0.6367700099945068,
+        0.6367700099945068
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object186": {
+"transform": 
+{
+    "objName": "Assets/Models/PottedPlant.obj",
+    "objTexture": "Assets/Models/Plant_Pot_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.7099995017051697,
+        -1.6200000047683716,
+        -161.38800048828126
+    ],
+    "scale": [
+        0.49567997455596926,
+        0.49567997455596926,
+        0.49567997455596926
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+"capsule 0": {
+    "center": [
+        -0.029999999329447748,
+        7.78000020980835,
+        -0.07085895538330078
+    ],
+    "radius": 2.5,
+    "height": 21.0
+}}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object187": {
+"transform": 
+{
+    "objName": "Assets/Models/Palm_Tree.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        0.699999988079071,
+        -1.4500000476837159,
+        -161.38999938964845
+    ],
+    "scale": [
+        0.6367700099945068,
+        0.6367700099945068,
+        0.6367700099945068
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object188": {
+"transform": 
+{
+    "objName": "Assets/Models/Door.obj",
+    "objTexture": "Assets/Models/Door_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -12.170000076293946,
+        -1.6299999952316285,
+        12.289997100830079
+    ],
+    "scale": [
+        0.15612000226974488,
+        0.15612000226974488,
+        0.15612000226974488
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object189": {
+"transform": 
+{
+    "objName": "Assets/Models/Door.obj",
+    "objTexture": "Assets/Models/Door_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        12.729999542236329,
+        -1.6299999952316285,
+        12.289997100830079
+    ],
+    "scale": [
+        0.15612000226974488,
+        0.15612000226974488,
+        0.15612000226974488
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object190": {
+"transform": 
+{
+    "objName": "Assets/Models/Door.obj",
+    "objTexture": "Assets/Models/Door_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.8399999737739563,
+        -1.559999942779541,
+        -38.340003967285159
+    ],
+    "scale": [
+        0.15612000226974488,
+        0.15612000226974488,
+        0.15612000226974488
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object191": {
+"transform": 
+{
+    "objName": "Assets/Models/Door.obj",
+    "objTexture": "Assets/Models/Door_Tex.png",
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        0.8399999737739563,
+        -1.559999942779541,
+        -62.93000793457031
+    ],
+    "scale": [
+        0.15612000226974488,
+        0.15612000226974488,
+        0.15612000226974488
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+}

@@ -9,16 +9,16 @@
 
 struct Ray {
 
-    glm::vec3 loc;
+    glm::vec3 pos;
     glm::vec3 dir;
 
     Ray() :
-        loc(),
+        pos(),
         dir()
     {}
 
-    Ray(const glm::vec3 & loc, const glm::vec3 & dir) :
-        loc(loc),
+    Ray(const glm::vec3 & pos, const glm::vec3 & dir) :
+        pos(pos),
         dir(dir)
     {}
 
@@ -105,32 +105,34 @@ struct Capsule {
 
 };
 
+
+
 // An intersection represents the intersection point of an object and a ray.
 struct Intersect {    
 
     bool is; // if there was an intersection
     float dist; // the distance from the ray origin to the intersection point
-    glm::vec3 loc; // the intersection point on the surface of the object
+    glm::vec3 pos; // the intersection point on the surface of the object
     glm::vec3 norm; // the normal of the surface of the object at the point of intersection
     bool face; // true if the ray hit the outside surface, false if inside surface
 
     Intersect() :
         is(false),
         dist(std::numeric_limits<float>::infinity()),
-        loc(),
+        pos(),
         norm(),
-        face(true)
+        face(true) // this needs to be true for default case
     {}
 
     Intersect(
         float dist,
-        const glm::vec3 & loc,
+        const glm::vec3 & pos,
         const glm::vec3 & norm,
         bool face
     ) :
         is(true),
         dist(dist),
-        loc(loc),
+        pos(pos),
         norm(norm),
         face(face)
     {}
@@ -153,3 +155,8 @@ bool collide(const Capsule & cap1, const Capsule & cap2, glm::vec3 * delta);
 Intersect intersect(const Ray & ray, const AABox & box);
 Intersect intersect(const Ray & ray, const Sphere & sphere);
 Intersect intersect(const Ray & ray, const Capsule & cap);
+
+// Distance between nearest points on lines defined by rays
+float distance(const Ray & r1, const Ray & r2);
+// returns the two points nearest each other on two lines defined by rays
+void nearestPoints(const Ray & r1, const Ray & r2, glm::vec3 & r_p1, glm::vec3 & r_p2);

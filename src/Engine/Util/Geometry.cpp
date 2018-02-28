@@ -281,8 +281,8 @@ bool collide(const Capsule & cap1, const Capsule & cap2, glm::vec3 * delta) {
 
 Intersect intersect(const Ray & ray, const AABox & box) {
     glm::vec3 invDir(1.0f / ray.dir);
-    glm::vec3 tsLow((box.min - ray.loc) * invDir);
-    glm::vec3 tsHigh((box.max - ray.loc) * invDir);
+    glm::vec3 tsLow((box.min - ray.pos) * invDir);
+    glm::vec3 tsHigh((box.max - ray.pos) * invDir);
     glm::vec3 tsMin(tsLow), tsMax(tsHigh);
     glm::bvec3 isLowHighsMin(false), isLowHighsMax(true);
     float tMinor, tMajor;
@@ -328,16 +328,16 @@ Intersect intersect(const Ray & ray, const AABox & box) {
 
     // exterior collision
     if (tMinor >= 0.0f) {
-        return Intersect(tMinor, ray.loc + tMinor * ray.dir, axisMinor, true);
+        return Intersect(tMinor, ray.pos + tMinor * ray.dir, axisMinor, true);
     }
     // interior collision
     else {
-        return Intersect(tMajor, ray.loc + tMajor * ray.dir, axisMajor, false);
+        return Intersect(tMajor, ray.pos + tMajor * ray.dir, axisMajor, false);
     }
 }
 
 Intersect intersect(const Ray & ray, const Sphere & sphere) {
-    glm::vec3 C(sphere.origin - ray.loc);
+    glm::vec3 C(sphere.origin - ray.pos);
     float rad2(sphere.radius * sphere.radius);
     bool face(glm::length2(C) - rad2 >= 0.0f);
 
@@ -357,10 +357,246 @@ Intersect intersect(const Ray & ray, const Sphere & sphere) {
     float h(face ? std::sqrt(rad2 - d2) : -std::sqrt(rad2 - d2));
     glm::vec3 I(P - h * ray.dir);
 
-    return Intersect(p - h, ray.loc + I, (I - C) / sphere.radius, face);
+    return Intersect(p - h, ray.pos + I, (I - C) / sphere.radius, face);
+}
+
+namespace {
+
+Intersect intersectCylinderRelative(const Ray & ray, float r) {
+    // coefficients for the quadratic intersection equation
+    float a(ray.dir.x * ray.dir.x + ray.dir.z * ray.dir.z);
+    float c(ray.pos.x * ray.pos.x + ray.pos.z * ray.pos.z - r * r);
+    // ray parallel
+    if (Util::isZero(a)) {
+        // ray inside
+        if (c < 0.0f) {
+            Intersect inter;
+            inter.face = false;
+            return inter;
+        }
+        // ray outside
+        else {
+            return Intersect();
+        }
+    }
+    float b(2.0f * (ray.dir.x * ray.pos.x + ray.dir.z * ray.pos.z));
+
+    float t1, t2;
+    // missed cylinder entirely
+    if (!Util::solveQuadratic(a, b, c, t1, t2)) {
+        return Intersect();
+    }
+    // cylinder is "behind" ray
+    if (t2 <= 0) {
+        return Intersect();
+    }
+    float t(t1);
+    bool face(true);
+    if (t <= 0) {
+        t = t2;
+        face = false;
+    }
+
+    glm::vec3 p(ray.pos + ray.dir * t);
+    return Intersect(t, p, glm::vec3(p.x, 0.0f, p.z) / r, face);
+}
+
+Intersect intersectCylinder(const Ray & ray, const glm::vec3 & center, float r) {
+    Intersect inter(intersectCylinderRelative(Ray(ray.pos - center, ray.dir), r));
+    if (inter.is) inter.pos += center;
+    return inter;
+}
+
+Intersect intersectPlane(const Ray & ray, const glm::vec3 & pos, const glm::vec3 & norm) {
+    float R_dot_N(glm::dot(ray.dir, norm));
+
+    if (Util::isZero(R_dot_N)) {
+        return Intersect();
+    }
+
+    float h(glm::dot(ray.pos - pos, norm));
+
+    if (h * R_dot_N >= 0.0f) {
+        return Intersect();
+    }
+
+    float dist(h / -R_dot_N);
+    bool face(h >= 0.0f);
+
+    return Intersect(dist, ray.pos + dist * ray.dir, norm, face);
+}
+
+Intersect intersectUpperHemiRelative(const Ray & ray, float radius) {
+    if (ray.pos.y < 0.0f) {
+        if (ray.dir.y <= 0.0f) {
+            return Intersect();
+        }
+        else {
+            // ignore lower half of sphere by casting from xz plane intersection
+            Intersect inter(intersectPlane(ray, glm::vec3(), glm::vec3(0.0f, 1.0f, 0.0f)));
+            float dist(inter.dist);
+            inter = (intersect(Ray(inter.pos, ray.dir), Sphere(glm::vec3(), radius)));
+            inter.dist += dist;
+            return inter;
+        }
+    }
+    else {
+        Intersect inter(intersect(ray, Sphere(glm::vec3(), radius)));
+        if (inter.pos.y <= 0.0f) {
+            return Intersect();
+        }
+        else {
+            return inter;
+        }
+    }
+}
+
+Intersect intersectLowerHemiRelative(const Ray & ray, float r) {
+    Intersect inter(intersectUpperHemiRelative(Ray(glm::vec3(ray.pos.x, -ray.pos.y, ray.pos.z), glm::vec3(ray.dir.x, -ray.dir.y, ray.dir.z)), r));
+    inter.norm.y = -inter.norm.y;
+    inter.pos.y = -inter.pos.y;
+    return inter;
+}
+
+Intersect intersectUpperHemi(const Ray & ray, const Sphere & sphere) {
+    Intersect inter(intersectUpperHemiRelative(Ray(ray.pos - sphere.origin, ray.dir), sphere.radius));
+    if (inter.is) inter.pos += sphere.origin;
+    return inter;
+}
+
+Intersect intersectLowerHemi(const Ray & ray, const Sphere & sphere) {
+    Intersect inter(intersectLowerHemiRelative(Ray(ray.pos - sphere.origin, ray.dir), sphere.radius));
+    if (inter.is) inter.pos += sphere.origin;
+    return inter;
+}
+
+Intersect intersectCapsuleRelative(const Ray & ray, float h, float r) {
+    Intersect inter(intersectCylinderRelative(ray, r));
+    // didn't hit enclosing cylinder
+    if (!inter.is && inter.face) {
+        return Intersect();
+    }
+
+    float h_2(h * 0.5f); // half height
+    glm::vec3 uo(0.0f, h_2, 0.0f); // upper cap origin
+    glm::vec3 lo(0.0f, -h_2, 0.0f); // lower cap origin
+
+    // ray outside cylinder
+    if (inter.face) {
+        // potential intersect in upper half
+        if (inter.pos.y >= 0.0f) {
+            // intersected rod
+            if (inter.pos.y <= h_2) {
+                return inter;
+            }
+            // may intersect lower cap
+            else {
+                return intersect(ray, Sphere(uo, r));
+            }
+        }
+        // potential intersect in lower half
+        else {
+            // intersected rod
+            if (inter.pos.y >= -h_2) {
+                return inter;
+            }
+            // may intersect bottom cap
+            else {
+                return intersect(ray, Sphere(lo, r));
+            }
+        }
+    }
+    // ray inside cylinder
+    // could intersect with zero or more of the rod, the upper cap, and the lower cap
+    // figure out which, then find minimum
+    else {
+        bool checkUpper(false), checkLower(false);
+        // edge case where ray is parallel to cylinder
+        if (!inter.is) {
+            if (ray.dir.y < 0.0f) {
+                if (ray.pos.y > -(h_2 + r)) {
+                    checkLower = true;
+                }
+                if (ray.pos.y > h_2) {
+                    checkUpper = true;
+                }
+            }
+            else {
+                if (ray.pos.y < (h_2 + r)) {
+                    checkUpper = true;
+                }
+                if (ray.pos.y < -h_2) {
+                    checkLower = true;
+                }
+            }
+        }
+        // judge by position of ray
+        if (ray.pos.y > h_2) {
+            checkUpper = true;
+        }
+        else if (ray.pos.y < -h_2) {
+            checkLower = true;
+        }
+        // judge by intersect with cylinder
+        if (inter.pos.y > h_2) {
+            inter = Intersect();
+            checkUpper = true;
+        }
+        else if (inter.pos.y < -h_2) {
+            inter = Intersect();
+            checkLower = true;
+        }
+        // sort out the nearest intersect (or no intersect)
+        if (checkUpper) {
+            Intersect upper(intersectUpperHemi(ray, Sphere(uo, r)));
+            if (upper.dist < inter.dist) inter = upper;
+        }
+        if (checkLower) {
+            Intersect lower(intersectLowerHemi(ray, Sphere(lo, r)));
+            if (lower.dist < inter.dist) inter = lower;
+        }
+        return inter;
+    }
+}
+
 }
 
 Intersect intersect(const Ray & ray, const Capsule & cap) {
-    // TODO: figure this out
-    return Intersect();
+    Intersect inter(intersectCapsuleRelative(Ray(ray.pos - cap.center, ray.dir), cap.height, cap.radius));
+    if (inter.is) inter.pos += cap.center;
+    return inter;
+}
+
+float distance(const Ray & r1, const Ray & r2) {
+    glm::vec3 n(glm::cross(r1.dir, r2.dir));    
+    // lines parallel
+    if (Util::isZero(n)) {
+        // nearest point on r2
+        glm::vec3 p2(glm::dot(r1.pos - r2.pos, r2.dir) * r2.dir + r2.pos);
+        return glm::length(r1.pos - p2);
+    }
+    // lines are askew
+    return glm::abs(glm::dot(glm::normalize(n), r1.pos - r2.pos));
+}
+
+void nearestPoints(const Ray & r1, const Ray & r2, glm::vec3 & r_p1, glm::vec3 & r_p2) {
+    glm::vec3 n(glm::cross(r1.dir, r2.dir));    
+    // lines parallel
+    if (Util::isZero(n)) {
+        r_p1 = r1.pos;
+        r_p2 = glm::dot(r1.pos - r2.pos, r2.dir) * r2.dir + r2.pos;
+    }
+    // lines are askew
+    // http://morroworks.com/Content/Docs/Rays%20closest%20point.pdf
+    glm::vec3 a(r1.dir);
+    glm::vec3 b(r2.dir);
+    glm::vec3 c(r2.pos - r1.pos);
+    float ab(glm::dot(a, b));
+    float ac(glm::dot(a, c));
+    float bc(glm::dot(b, c));
+    float denom(1.0f / (1.0f - ab * ab));
+    float d1((ac - ab * bc) * denom);
+    float d2((ab * ac - bc) * denom);
+    r_p1 = r1.pos + r1.dir * d1;
+    r_p2 = r2.pos + r2.dir * d2;
 }

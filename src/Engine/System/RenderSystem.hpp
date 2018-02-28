@@ -13,6 +13,7 @@
 #include "Shaders/Shader.hpp"
 #include "Shaders/DiffuseShader.hpp"
 #include "Shaders/BounderShader.hpp"
+#include "Shaders/RayShader.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 
 
@@ -78,7 +79,10 @@ bool RenderSystem::createShader(Args &&... args) {
         return true;
     }
     else {
-        std::cerr << "Failed to initialize shader" << std::endl;
+        std::cerr << "Failed to initialize shader:" << std::endl;
+        std::cerr << "\t" << shader->vShaderName << std::endl;
+        std::cerr << "\t" << shader->fShaderName << std::endl;
+        std::cin.get();
         return false;
     }
 }

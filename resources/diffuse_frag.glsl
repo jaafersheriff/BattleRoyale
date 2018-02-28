@@ -10,48 +10,56 @@ uniform vec3 matSpecular;
 uniform float shine;
 
 uniform vec3 camPos;
-uniform vec3 lightPos;
+uniform vec3 lightDir;
 
 uniform sampler2D textureImage;
 uniform bool usesTexture;
 
 uniform bool isToon;
 uniform float silAngle;
-uniform float cells;
+uniform float numCells;
+uniform sampler1D cellIntensities;
+uniform sampler1D cellScales;
 
 out vec4 color;
 
 void main() {
-    vec3 lightDir = lightPos - worldPos;
     vec3 viewDir = camPos - worldPos;
-    vec3 L = normalize(lightDir);
     vec3 V = normalize(viewDir);
+    vec3 L = normalize(lightDir);
     vec3 N = normalize(fragNor);
 
-    /* Diffuse */
-    float diffuseContrib = clamp(dot(L, N), matAmbient, 1.0);
-   vec3 diffuseColor = matDiffuse;
+    /* Base color */
+    vec3 diffuseColor = matDiffuse;
     if (usesTexture) {
         diffuseColor = vec3(texture(textureImage, texCoords));
     }
 
-    /* Specular using Blinn-Phong */
-    vec3 H = (L + V) / 2.0;
-    float specularContrib = pow(max(dot(H, N), 0.0), shine);
+    float lambert = dot(L, N);
+    float diffuseContrib, specularContrib;
 
     /* Cell shading */
     if (isToon) {
-        diffuseContrib = floor(diffuseContrib * cells) / cells;
-        specularContrib = floor(specularContrib * cells) / cells;
-    }
- 
-    color = vec4(diffuseColor*diffuseContrib + matSpecular*specularContrib, 1.0);
-
-    /* Silhouettes */
-    if (isToon) {
-        float angle = clamp(dot(N, V), 0.0, 1.0);
-        if(angle < silAngle) {
-            color = vec4(0, 0, 0, 1);
+        for(int i = 0; i < numCells; i++) {
+            if(lambert > texelFetch(cellIntensities, i, 0).r) {
+                float scale = texelFetch(cellScales, i, 0).r;
+                diffuseContrib = specularContrib = scale;
+                break;
+            }
         }
     }
+    /* Blinn-Phong shading */
+    else {
+        vec3 H = (L + V) / 2.0;
+        diffuseContrib = clamp(lambert, matAmbient, 1.0);
+        specularContrib = pow(max(dot(H, N), 0.0), shine);
+    }
+
+    /* Base color */
+    vec3 bColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib);
+
+    /* Silhouettes */
+    float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;
+
+    color = vec4(edge * bColor, 1.0);
 }

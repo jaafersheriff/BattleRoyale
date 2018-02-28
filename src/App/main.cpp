@@ -11,7 +11,6 @@ extern "C" {
 #include "glm/gtx/transform.hpp"
 
 #include "EngineApp/EngineApp.hpp"
-#include "LevelBuilder/FileReader.hpp"
 
 void printUsage() {
     std::cout << "Valid arguments: " << std::endl;
@@ -69,18 +68,27 @@ int main(int argc, char **argv) {
 
     GameObject & imguiGO(Scene::createGameObject());
 
+    /* Directional light */
+    glm::vec3 lightDir(0.2f, 0.2f, 0.2f);
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO,
+        "Light",
+        [&]() {
+            ImGui::SliderFloat3("LightDir", glm::value_ptr(lightDir), -1.f, 1.f);
+        }
+    );
+
+
     /* Create diffuse shader */
-    glm::vec3 lightPos(100.f, 100.f, 100.f);
     if (!RenderSystem::createShader<DiffuseShader>(
             "diffuse_vert.glsl",    /* Vertex shader file       */
             "diffuse_frag.glsl",    /* Fragment shader file     */
-            lightPos                /* Shader-specific uniforms */
+            lightDir                /* Shader-specific uniforms */
         )) {
-        std::cerr << "Failed to add diffuse shader" << std::endl;
-        std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
     }
-    /* Diffuse Shader ImGui Pane */
+
+    /* Toon shading */
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
         "Diffuse Shader",
@@ -99,21 +107,31 @@ int main(int argc, char **argv) {
                 ImGui::SliderFloat("Silhouette Angle", &angle, 0.f, 1.f);
                 RenderSystem::getShader<DiffuseShader>()->setSilAngle(angle);
                 
-                int cells = int(RenderSystem::getShader<DiffuseShader>()->getCells());
-                ImGui::SliderInt("Cells", &cells, 0, 15);
-                RenderSystem::getShader<DiffuseShader>()->setCells(float(cells));
+                int cells = RenderSystem::getShader<DiffuseShader>()->getCells();
+                if (ImGui::SliderInt("Cells", &cells, 1, 15)) {
+                    RenderSystem::getShader<DiffuseShader>()->setCells(cells);
+                }
+
+                /* Make a new pane to define cell values */
+                ImGui::End();
+                ImGui::Begin("Cell Shading");
+                for (int i = 0; i < cells; i++) {
+                    float vals[2];
+                    float minBounds[2] = { -1.f, 0.f };
+                    float maxBounds[2] = { 1.f, 1.f };
+                    vals[0] = RenderSystem::getShader<DiffuseShader>()->getCellIntensity(i);
+                    vals[1] = RenderSystem::getShader<DiffuseShader>()->getCellScale(i);
+                    ImGui::SliderFloat2(("Cell " + std::to_string(i)).c_str(), vals, minBounds, maxBounds);
+                    RenderSystem::getShader<DiffuseShader>()->setCellIntensity(i, vals[0]);
+                    RenderSystem::getShader<DiffuseShader>()->setCellScale(i, vals[1]);
+                }
             }
         }
     );
 
     // Create collider
     // alternate method using unique_ptr and new
-    if (!RenderSystem::createShader<BounderShader>(
-            EngineApp::RESOURCE_DIR + "bounder_vert.glsl",
-            EngineApp::RESOURCE_DIR + "bounder_frag.glsl"
-    )) {
-        std::cerr << "Failed to add collider shader" << std::endl;
-        std::cin.get(); //don't immediately close the console
+    if (!RenderSystem::createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
         return EXIT_FAILURE;
     }
     /* Collider ImGui pane */
@@ -123,6 +141,21 @@ int main(int argc, char **argv) {
         [&]() {
             if (ImGui::Button("Active")) {
                 RenderSystem::getShader<BounderShader>()->toggleEnabled();
+            }
+        }
+    );
+    
+    // Ray shader (for testing)
+    if (!RenderSystem::createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) {
+        return EXIT_FAILURE;
+    }
+    // Ray shader toggle
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO,
+        "Ray Shader",
+        [&]() {
+            if (ImGui::Button("Active")) {
+                RenderSystem::getShader<RayShader>()->toggleEnabled();
             }
         }
     );
@@ -138,7 +171,7 @@ int main(int argc, char **argv) {
     float playerWidth(playerHeight / 4.0f);
     glm::vec3 playerPos(0.0f, 6.0f, 0.0f);
     float playerLookSpeed(0.2f);
-    float playerMoveSpeed(5.0f);
+    float playerMoveSpeed(15.0f);
     float playerJumpSpeed(5.0f);
     float playerMaxSpeed(50.0f); // terminal velocity
     GameObject & player(Scene::createGameObject());
@@ -207,9 +240,7 @@ int main(int argc, char **argv) {
     );
 
     /*Parse and load json level*/
-    FileReader fileReader;
-    const char *levelPath = "../resources/GameLevel_02.json";
-    fileReader.loadLevel(*levelPath);
+    Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json");
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
@@ -218,7 +249,7 @@ int main(int argc, char **argv) {
         SpatialComponent & bunnySpatComp(Scene::addComponent<SpatialComponent>(
             bunny,
             glm::vec3(-10.0f, 5.0, i), // position
-            glm::vec3(0.25f, 0.25f, 0.25f), // scale
+            glm::vec3(0.25f), // scale
             glm::mat3() // rotation
         ));
         NewtonianComponent & bunnyNewtComp(Scene::addComponent<NewtonianComponent>(bunny, playerMaxSpeed));
@@ -248,10 +279,11 @@ int main(int argc, char **argv) {
     auto rayPickCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.action == GLFW_PRESS) {
-            auto pair(CollisionSystem::pick(Ray(playerSpatComp.position(), playerCamComp.getLookDir())));
+            auto pair(CollisionSystem::pick(Ray(player.getSpatial()->position(), playerCamComp.getLookDir()), &player));
             if (pair.first && pair.first->weight() < UINT_MAX) {
-                pair.first->gameObject()->getSpatial()->scale(glm::vec3(1.1f));
+                pair.first->gameObject()->getSpatial()->scale(glm::vec3(1.5f));
             }
+            RenderSystem::getShader<RayShader>()->setRay(Ray(pair.second.pos, pair.second.norm));
         }
     });
     Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);
