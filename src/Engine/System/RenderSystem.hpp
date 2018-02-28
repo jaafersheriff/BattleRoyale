@@ -46,7 +46,8 @@ public:
     static void setCamera(const CameraComponent * camera);
 
     static void setLightDir(const glm::vec3);
-    static glm::vec3 & getLightDir();
+    static glm::vec3 getLightDir();
+    static GLuint getShadowMap() { return shadowShader->getShadowMapTexture(); }
 
 private:
     static void added(Component & component) {};
@@ -56,11 +57,16 @@ private:
     static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
     static UnorderedMap<std::type_index, UniquePtr<Shader>> s_shaders;
 
-    static const CameraComponent * s_camera;
-    static glm::vec3 s_lightDir;
+    static const CameraComponent * s_playerCamera;
+
+    /* Light stuff */
+    static CameraComponent * s_lightCamera;
 
     /* Shadow shader */
     static ShadowDepthShader * shadowShader;
+
+
+    static void renderScene(const CameraComponent *, bool shadowRender);
 };
 
 

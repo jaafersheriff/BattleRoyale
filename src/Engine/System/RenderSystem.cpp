@@ -11,23 +11,27 @@
 
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 UnorderedMap<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
-const CameraComponent * RenderSystem::s_camera = nullptr;
-glm::vec3 RenderSystem::s_lightDir(0.f);
+const CameraComponent * RenderSystem::s_playerCamera = nullptr;
+CameraComponent * RenderSystem::s_lightCamera = nullptr;
 ShadowDepthShader * RenderSystem::shadowShader = nullptr;
 
 void RenderSystem::init() {
+    /* Init GL state */
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    /* Init light */
+    
+
+    /* Init shadow shader */
     shadowShader = new ShadowDepthShader(
         EngineApp::RESOURCE_DIR + "shadow_vert.glsl",
         EngineApp::RESOURCE_DIR + "shadow_frag.glsl",
         1280,
-        960,
-        s_lightDir);
+        960);
     if (!shadowShader->init()) {
         std::cerr << "Error initializing shadow shader" << std::endl;
         std::cin.get();
@@ -40,13 +44,23 @@ void RenderSystem::init() {
 // list and expecting each shader to filter through         //
 //////////////////////////////////////////////////////////////
 void RenderSystem::update(float dt) {
+    /* Render to shadow map */
+    shadowShader->prepareRender(getLightDir());
+    renderScene(s_lightCamera, true);
+    shadowShader->finishRender();
+
+    /* Regularly render scene */
+    renderScene(s_playerCamera, false);
+}
+
+void RenderSystem::renderScene(const CameraComponent *camera, bool shadowRender) {
     /* Reset rendering display */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
 
     glm::vec2 size = Window::getSize();
     glViewport(0, 0, size.x, size.y);
-    if (s_camera) {
+    if (camera) {
         /* Loop through active shaders */
         for (auto &shader : s_shaders) {
             if (!shader.second->isEnabled()) {
@@ -61,7 +75,7 @@ void RenderSystem::update(float dt) {
                     bool inFrustum(false);
                     for (Component * bounder_ : bounders) {
                         BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
-                        if (s_camera->sphereInFrustum(bounder->enclosingSphere())) {
+                        if (camera->sphereInFrustum(bounder->enclosingSphere())) {
                             inFrustum = true;
                             break;
                         }
@@ -75,11 +89,15 @@ void RenderSystem::update(float dt) {
                 }
             }
 
-            shader.second->bind();
+            if (!shadowRender) {
+                shader.second->bind();
+            }
             // this reinterpret_cast business works because unique_ptr's data is
             // guaranteed is the same as a pointer
-            shader.second->render(s_camera, reinterpret_cast<const Vector<Component *> &>(s_compsToRender));
-            shader.second->unbind();
+            shader.second->render(camera, reinterpret_cast<const Vector<Component *> &>(s_compsToRender));
+            if (!shadowRender) {
+                shader.second->unbind();
+            }
 
             s_compsToRender.clear();
         }
@@ -94,13 +112,13 @@ void RenderSystem::update(float dt) {
 }
 
 void RenderSystem::setCamera(const CameraComponent * camera) {
-    s_camera = camera;
+    s_playerCamera = camera;
 }
 
-void RenderSystem::setLightDir(const glm::vec3 l) {
-    s_lightDir = l;
+void RenderSystem::setLightDir(const glm::vec3 dir) {
+    s_lightCamera->setUVW(s_lightCamera->u(), s_lightCamera->v(), dir);
 }
 
-glm::vec3 & RenderSystem::getLightDir() {
-    return s_lightDir;
+glm::vec3 RenderSystem::getLightDir() {
+    return -s_lightCamera->getLookDir();
 }

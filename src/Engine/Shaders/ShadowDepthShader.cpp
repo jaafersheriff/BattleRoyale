@@ -2,11 +2,10 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-ShadowDepthShader::ShadowDepthShader(const String & vertName, const String & fragName, int width, int height, glm::vec3 & lightDir) :
+ShadowDepthShader::ShadowDepthShader(const String & vertName, const String & fragName, int width, int height) :
     Shader(vertName, fragName),
     mapWidth(width),
-    mapHeight(height),
-    lightDir(lightDir)
+    mapHeight(height)
 {}
 
 bool ShadowDepthShader::init() {
@@ -15,6 +14,8 @@ bool ShadowDepthShader::init() {
     }
 
     addAttribute("vertPos");
+    addAttribute("vertNor");
+    addAttribute("vertTex"); // Unnecessary but avoids shader error messages
 
     addUniform("M");
     addUniform("LP");
@@ -48,27 +49,27 @@ void ShadowDepthShader::initFBO() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ShadowDepthShader::render(const CameraComponent * camera, const Vector<Component *> & components) {
+void ShadowDepthShader::prepareRender(glm::vec3 & lightDir) {
     glViewport(0, 0, mapWidth, mapHeight);
     glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
     glClear(GL_DEPTH_BUFFER_BIT);
     glCullFace(GL_FRONT);
+
+    bind();
 
     /* Calculate L */
     glm::mat4 LP = glm::ortho(-10.f, 10.f,  /* left, right */
                               -10.f, 10.f,  /* bottom, top */
                               0.1f, 250.f); /* near, far */
     loadMat4(getUniform("LP"), LP);
-
     glm::mat4 LV = glm::lookAt(lightDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
     loadMat4(getUniform("LV"), LV);
 
+    this->L = LP * LV;
+}
 
-    // TODO : draw entire scene onto FBO
-
-    // TODO : how will other shaders get access to this?
-    L = LP * LV;
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+void ShadowDepthShader::finishRender() {
+    unbind();
     glCullFace(GL_BACK);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
