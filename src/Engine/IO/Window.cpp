@@ -59,7 +59,7 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
     else if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS && isImGuiEnabled()) {
         toggleCursorEnabled();
     }
-    else if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
+    else if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow()) && s_cursorEnabled) {
         ImGui_ImplGlfwGL3_KeyCallback(window, key, scancode, action, mods);
     }
     else
@@ -74,7 +74,7 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
 
 void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
 #ifdef DEBUG_MODE
-    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
+    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow()) && s_cursorEnabled) {
         ImGui_ImplGlfwGL3_MouseButtonCallback(window, button, action, mods);
     }
     else 
@@ -89,7 +89,7 @@ void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int
 
 void Window::scrollCallback(GLFWwindow * window, double dx, double dy) {
 #ifdef DEBUG_MODE
-    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
+    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow()) && s_cursorEnabled) {
         ImGui_ImplGlfwGL3_ScrollCallback(window, dx, dy);
     }
     else
@@ -103,7 +103,7 @@ void Window::scrollCallback(GLFWwindow * window, double dx, double dy) {
 
 void Window::characterCallback(GLFWwindow *window, unsigned int c) {
 #ifdef DEBUG_MODE
-    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
+    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow()) && s_cursorEnabled) {
         ImGui_ImplGlfwGL3_CharCallback(window, c);
     }
 #endif
