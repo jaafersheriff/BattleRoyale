@@ -171,7 +171,7 @@ int main(int argc, char **argv) {
     float playerWidth(playerHeight / 4.0f);
     glm::vec3 playerPos(0.0f, 6.0f, 0.0f);
     float playerLookSpeed(0.2f);
-    float playerMoveSpeed(5.0f);
+    float playerMoveSpeed(15.0f);
     float playerJumpSpeed(5.0f);
     float playerMaxSpeed(50.0f); // terminal velocity
     GameObject & player(Scene::createGameObject());
@@ -240,7 +240,7 @@ int main(int argc, char **argv) {
     );
 
     /*Parse and load json level*/
-    Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_02.json");
+    Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json");
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
