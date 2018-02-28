@@ -143,9 +143,9 @@ void createEnemy(const glm::vec3 & position) {
     DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
     ModelTexture modelTex(k_ambience, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f));
     bool toon(true);
-    glm::vec3 scale(0.25f);
+    glm::vec3 scale(0.75f);
     unsigned int collisionWeight(5);
-    float moveSpeed(1.0f);
+    float moveSpeed(3.0f);
 
     GameObject & obj(Scene::createGameObject());
     SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, scale));
@@ -235,7 +235,7 @@ int main(int argc, char **argv) {
     // Add Enemies
     int nEnemies(5);
     for (int i(0); i < 5; ++i) {
-        createEnemy(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, 10.0f));
+        createEnemy(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f));
     }
 
     //--------------------------------------------------------------------------
