@@ -23,11 +23,8 @@ class RenderSystem {
 
     friend Scene;
 
-    public:
-
+public:
     static constexpr SystemID ID = SystemID::render;
-
-    public:
 
     static void init();
 
@@ -47,17 +44,19 @@ class RenderSystem {
 
     static void setCamera(const CameraComponent * camera);
 
-    private:
-    
+    static void setLightDir(const glm::vec3);
+    static glm::vec3 & getLightDir();
+
+private:
     static void added(Component & component) {};
 
     static void removed(Component & component) {};
-    
-    private:
 
     static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
     static UnorderedMap<std::type_index, UniquePtr<Shader>> s_shaders;
+
     static const CameraComponent * s_camera;
+    static glm::vec3 s_lightDir;
 
 };
 

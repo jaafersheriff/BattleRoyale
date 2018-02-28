@@ -69,21 +69,21 @@ int main(int argc, char **argv) {
     GameObject & imguiGO(Scene::createGameObject());
 
     /* Directional light */
-    glm::vec3 lightDir(0.2f, 0.2f, 0.2f);
+    RenderSystem::setLightDir(glm::vec3(0.2f));
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
         "Light",
         [&]() {
-            ImGui::SliderFloat3("LightDir", glm::value_ptr(lightDir), -1.f, 1.f);
+            ImGui::SliderFloat3("LightDir", glm::value_ptr(RenderSystem::getLightDir()), -1.f, 1.f);
         }
     );
 
 
     /* Create diffuse shader */
     if (!RenderSystem::createShader<DiffuseShader>(
-            "diffuse_vert.glsl",    /* Vertex shader file       */
-            "diffuse_frag.glsl",    /* Fragment shader file     */
-            lightDir                /* Shader-specific uniforms */
+            "diffuse_vert.glsl",            /* Vertex shader file       */
+            "diffuse_frag.glsl",            /* Fragment shader file     */
+            RenderSystem::getLightDir()
         )) {
         return EXIT_FAILURE;
     }

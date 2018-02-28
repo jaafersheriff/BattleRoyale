@@ -12,6 +12,7 @@
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 UnorderedMap<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
 const CameraComponent * RenderSystem::s_camera = nullptr;
+glm::vec3 RenderSystem::s_lightDir(0.f);
 
 void RenderSystem::init() {
     glEnable(GL_DEPTH_TEST);
@@ -82,4 +83,12 @@ void RenderSystem::update(float dt) {
 
 void RenderSystem::setCamera(const CameraComponent * camera) {
     s_camera = camera;
+}
+
+void RenderSystem::setLightDir(const glm::vec3 l) {
+    s_lightDir = l;
+}
+
+glm::vec3 & RenderSystem::getLightDir() {
+    return s_lightDir;
 }
