@@ -190,28 +190,31 @@ void CollisionSystem::update(float dt) {
     s_collided.clear();
     s_adjusted.clear();
 
-    // determine all bounders with path intersections
+    // update all potential bounders
     for (BounderComponent * bounder : s_potentials) {
         bounder->update(dt);
-        if (bounder->isMovementCritical()) {
+    }
+    
+    // determine all bounders with path intersections
+    for (BounderComponent * bounder : s_potentials) {
+        if (bounder->isCritical()) {
             s_criticals.insert(bounder);
             s_gameObjectDeltas[&bounder->gameObject()];
         }
     }
     // determine path intersection corrections per game object
     for (BounderComponent * bounder : s_criticals) {
-        SpatialComponent & spat(*bounder->m_spatial);
-        glm::vec3 delta(spat.position() - spat.prevPosition());
+        glm::vec3 delta(bounder->center() - bounder->prevCenter());
         auto pair(pick(
-            Ray(spat.prevPosition(), glm::normalize(delta)),
+            Ray(bounder->prevCenter(), glm::normalize(delta)),
             [bounder](const BounderComponent & b) {
                 return &b.gameObject() != &bounder->gameObject() && !s_gameObjectDeltas.count(&const_cast<BounderComponent &>(b).gameObject());
             }
         ));
         const Intersect & inter(pair.second);
         if (inter.is && inter.dist * inter.dist < glm::length2(delta)) {
-            auto it(s_gameObjectDeltas.find(&bounder->gameObject()));
-            it->second = compositeDeltas(it->second, inter.pos - spat.position());
+            glm::vec3 & d(s_gameObjectDeltas.at(&bounder->gameObject()));
+            d = compositeDeltas(d, inter.pos - bounder->center());
         }
     }
     // apply path intersection corrections
@@ -230,7 +233,7 @@ void CollisionSystem::update(float dt) {
     }
     s_criticals.clear();
     s_gameObjectDeltas.clear();
-
+    
     // gather all collisions
     for (BounderComponent * bounder : s_potentials) {
         s_checked.insert(bounder);

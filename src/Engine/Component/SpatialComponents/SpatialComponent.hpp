@@ -4,6 +4,8 @@
 
 #include "glm/glm.hpp"
 
+#include "Positionable.hpp"
+#include "Scaleable.hpp"
 #include "Orientable.hpp"
 
 
@@ -12,7 +14,7 @@ class SpatialSystem;
 
 
 
-class SpatialComponent : public Component, public Orientable {
+class SpatialComponent : public Component, public Positionable, public Scaleable, public Orientable {
 
     friend Scene;
     friend SpatialSystem;
@@ -44,7 +46,7 @@ class SpatialComponent : public Component, public Orientable {
     void setScale(const glm::vec3 & scale, bool silently = false);
 
     // multiplies current scale by factor
-    void scale(const glm::vec3 & factor, bool silently = false);
+    void scaleBy(const glm::vec3 & factor, bool silently = false);
 
     // sets the absolute orientation
     void setOrientation(const glm::mat3 & orient, bool silently = false);
@@ -59,37 +61,25 @@ class SpatialComponent : public Component, public Orientable {
 
     public:
 
-    const glm::vec3 & position() const { return m_position; }
-    const glm::vec3 & prevPosition() const { return m_prevPosition; }
-    glm::vec3 position(float interpP) const;
-
-    const glm::vec3 & scale() const { return m_scale; }
-    const glm::vec3 & prevScale() const { return m_prevScale; }
-    glm::vec3 scale(float interpP) const;
-
     const glm::mat4 & modelMatrix() const;
+    const glm::mat4 & prevModelMatrix() const;
     glm::mat4 modelMatrix(float interpP) const;
 
     const glm::mat3 & normalMatrix() const;
+    const glm::mat3 & prevNormalMatrix() const;
     glm::mat3 normalMatrix(float interpP) const;
 
-    private:
-
-    void detModelMatrix() const;
-    void detNormalMatrix() const;
+    bool isChange() const { return Positionable::isChange() || Scaleable::isChange() || Orientable::isChange(); }
 
     private:
-
-    glm::vec3 m_position;
-    glm::vec3 m_prevPosition;
-    glm::vec3 m_scale;
-    glm::vec3 m_prevScale;
-    bool m_isPositionChange;
-    bool m_isScaleChange;
 
     mutable glm::mat4 m_modelMatrix;
+    mutable glm::mat4 m_prevModelMatrix;
     mutable glm::mat3 m_normalMatrix;
+    mutable glm::mat3 m_prevNormalMatrix;
     mutable bool m_modelMatrixValid;
+    mutable bool m_prevModelMatrixValid;
     mutable bool m_normalMatrixValid;
+    mutable bool m_prevNormalMatrixValid;
 
 };

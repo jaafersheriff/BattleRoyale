@@ -237,11 +237,12 @@ int main(int argc, char **argv) {
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
-    for (int i(0); i < 0; ++i) {
+    int nBunnies(5);
+    for (int i(0); i < nBunnies; ++i) {
         GameObject & bunny(Scene::createGameObject());
         SpatialComponent & bunnySpatComp(Scene::addComponent<SpatialComponent>(
             bunny,
-            glm::vec3(-10.0f, 5.0, i), // position
+            glm::vec3(-10.0f, 5.0, -i), // position
             glm::vec3(0.25f), // scale
             glm::mat3() // rotation
         ));

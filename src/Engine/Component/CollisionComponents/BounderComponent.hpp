@@ -47,14 +47,21 @@ class BounderComponent : public Component {
 
     virtual Sphere enclosingSphere() const = 0;
 
-    virtual bool isMovementCritical() const = 0;
+    virtual glm::vec3 center() const = 0;
+    virtual glm::vec3 prevCenter() const = 0;
+
+    // is the difference between the preset and previous bounders too great for standard collision
+    virtual bool isCritical() const = 0;
 
     unsigned int weight() const { return m_weight; }
+
+    bool isChange() const { return m_isChange; }
 
     protected:
 
     SpatialComponent * m_spatial;
     unsigned int m_weight;
+    bool m_isChange;
 
 };
 
@@ -65,6 +72,11 @@ class AABBounderComponent : public BounderComponent {
     
     friend Scene;
     friend CollisionSystem;
+
+    public:
+
+    static AABox transformAABox(const AABox & box, const glm::mat4 & transMat);
+    static AABox transformAABox(const AABox & box, const glm::vec3 & position, const glm::vec3 & scale);
 
     protected: // only scene or friends can create component
 
@@ -82,15 +94,20 @@ class AABBounderComponent : public BounderComponent {
 
     virtual Sphere enclosingSphere() const override;
 
-    virtual bool isMovementCritical() const;
+    virtual glm::vec3 center() const override { return m_transBox.center(); }
+    virtual glm::vec3 prevCenter() const override { return m_prevTransBox.center(); }
+
+    virtual bool isCritical() const override;
 
     const AABox & box() const { return m_box; }
     const AABox & transBox() const { return m_transBox; }
+    const AABox & prevTransBox() const { return m_prevTransBox; }
 
     private:
 
     const AABox m_box;
     AABox m_transBox;
+    AABox m_prevTransBox;
 
 };
 
@@ -101,6 +118,10 @@ class SphereBounderComponent : public BounderComponent {
     
     friend Scene;
     friend CollisionSystem;
+
+    public:
+
+    static Sphere transformSphere(const Sphere & sphere, const glm::mat4 & transMat, const glm::vec3 & scale);
 
     protected: // only scene or friends can create component
 
@@ -118,15 +139,20 @@ class SphereBounderComponent : public BounderComponent {
 
     virtual Sphere enclosingSphere() const override;
 
-    virtual bool isMovementCritical() const;
+    virtual glm::vec3 center() const override { return m_transSphere.origin; }
+    virtual glm::vec3 prevCenter() const override { return m_prevTransSphere.origin; }
+
+    virtual bool isCritical() const override;
 
     const Sphere & sphere() const { return m_sphere; }
     const Sphere & transSphere() const { return m_transSphere; }
+    const Sphere & prevTransSphere() const { return m_prevTransSphere; }
 
     private:
 
     const Sphere m_sphere;
     Sphere m_transSphere;
+    Sphere m_prevTransSphere;
 
 };
 
@@ -137,6 +163,10 @@ class CapsuleBounderComponent : public BounderComponent {
     
     friend Scene;
     friend CollisionSystem;
+
+    public:
+
+    static Capsule transformCapsule(const Capsule & capsule, const glm::mat4 & transMat, const glm::vec3 & scale);
 
     protected: // only scene or friends can create component
 
@@ -154,14 +184,19 @@ class CapsuleBounderComponent : public BounderComponent {
 
     virtual Sphere enclosingSphere() const override;
 
-    virtual bool isMovementCritical() const;
+    virtual glm::vec3 center() const override { return m_transCapsule.center; }
+    virtual glm::vec3 prevCenter() const override { return m_prevTransCapsule.center; }
+
+    virtual bool isCritical() const override;
 
     const Capsule & capsule() const { return m_capsule; }
     const Capsule & transCapsule() const { return m_transCapsule; }
+    const Capsule & prevTransCapsule() const { return m_prevTransCapsule; }
 
     private:
 
     const Capsule m_capsule;
     Capsule m_transCapsule;
+    Capsule m_prevTransCapsule;
 
 };

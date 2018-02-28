@@ -85,7 +85,7 @@ bool collide(const AABox & box, const Sphere & sphere, glm::vec3 * delta_) {
 
         delta = sphere.origin - p;
         glm::vec3 aDelta(glm::abs(delta));
-        glm::vec3 boxC(box.min + (box.max - box.min) * 0.5f);
+        glm::vec3 boxC(box.center());
 
         // preserve onlz minimum component and add radius
         if (aDelta.x < aDelta.z) {
@@ -140,7 +140,7 @@ bool collide(const AABox & box, const Capsule & cap, glm::vec3 * delta_) {
     }
     // rod core is at least partially inside box
     else {
-        glm::vec3 boxC(box.min + (box.max - box.min) * 0.5f);
+        glm::vec3 boxC(box.center());
 
         if (cap.center.y < boxC.y) {
             boxP.y = glm::clamp(highP.y, box.min.y, box.max.y);
