@@ -31,9 +31,6 @@ class Window {
         /* Return if window should close */
         static int shouldClose();
 
-        /* Return running time */
-        static double getTime();
-
         /* Shut down */
         static void shutDown();
 

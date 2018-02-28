@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <chrono>
 
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -207,6 +208,12 @@ struct Util {
         r_v1 = (-s - b) * d;
         r_v2 = (s - b) * d;
         return true;
+    }
+
+    static double time() {
+        using namespace std::chrono;
+        static high_resolution_clock::time_point s_start(high_resolution_clock::now());
+        return duration_cast<std::chrono::duration<double>>(high_resolution_clock::now() - s_start).count();
     }
 
 };

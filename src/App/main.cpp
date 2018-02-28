@@ -241,6 +241,8 @@ int main(int argc, char **argv) {
     //--------------------------------------------------------------------------
     // Imgui Panes
 
+#ifdef DEBUG_MODE
+
     GameObject & imguiGO(Scene::createGameObject());
     
     // Game Stats
@@ -340,6 +342,8 @@ int main(int argc, char **argv) {
             }
         }
     );
+
+#endif
 
     //--------------------------------------------------------------------------
     // Message Handling

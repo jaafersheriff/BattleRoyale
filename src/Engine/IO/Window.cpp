@@ -243,10 +243,6 @@ int Window::shouldClose() {
     return glfwWindowShouldClose(s_window);
 }
 
-double Window::getTime() {
-    return glfwGetTime();
-}
-
 void Window::shutDown() {
     /* Clean up GLFW */
     glfwDestroyWindow(s_window);
