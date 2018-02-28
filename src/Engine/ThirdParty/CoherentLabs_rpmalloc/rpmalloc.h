@@ -13,7 +13,7 @@
 
 #pragma once
 
-#ifdef _WIN32
+#ifdef USE_RPMALLOC
 
 #include <stddef.h>
 

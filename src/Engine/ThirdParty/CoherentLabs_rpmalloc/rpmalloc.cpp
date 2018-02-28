@@ -11,7 +11,7 @@
 *
 */
 
-#ifdef _WIN32
+#ifdef USE_RPMALLOC
 
 #include "rpmalloc.h"
 
