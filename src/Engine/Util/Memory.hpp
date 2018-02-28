@@ -106,7 +106,11 @@ bool operator!=(const Allocator<T1> & a1, const Allocator<T2> & a2) {
     return false;
 }
 
+#ifdef USE_RPMALLOC
 template <typename T> using ScopedAllocator = std::scoped_allocator_adaptor<Allocator<T>>;
+#else
+template <typename T> using ScopedAllocator = std::allocator<T>;
+#endif
 
 
 
@@ -114,6 +118,8 @@ template <typename T> using ScopedAllocator = std::scoped_allocator_adaptor<Allo
 
 // std::string equivalent
 using String = std::basic_string<char, std::char_traits<char>, ScopedAllocator<char>>;
+
+#ifdef USE_RPMALLOC
 
 // convert String to std::string
 inline std::string convert(const String & string) {
@@ -124,6 +130,14 @@ inline std::string convert(const String & string) {
 inline String convert(const std::string & string) {
     return String(string.c_str());
 }
+
+#else
+
+inline std::string convert(const std::string & string) {
+    return string;
+}
+
+#endif
 
 // std::vector equivalent
 template <typename T> using Vector = std::vector<T, ScopedAllocator<T>>;

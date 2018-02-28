@@ -5,8 +5,6 @@
 
 #include "Shader.hpp"
 
-class CameraComonent;
-
 class DiffuseShader : public Shader {
     public:
         DiffuseShader(const String & vertFile, const String & fragFile, const glm::vec3 & light);
@@ -14,7 +12,7 @@ class DiffuseShader : public Shader {
         bool init();
         virtual void render(const CameraComponent * camera, const Vector<Component *> &) override;
 
-        const glm::vec3 * lightPos;
+        const glm::vec3 * lightDir;
 
         /* Wire frame */
         bool isWireFrame() const { return showWireFrame; }
@@ -25,14 +23,25 @@ class DiffuseShader : public Shader {
         void toggleToon() { showToon = !showToon; }
         float getSilAngle() const { return silAngle; }
         void setSilAngle(float in) { this->silAngle = in; }
-        float getCells() const { return numCells; }
-        void setCells(float in) { this->numCells = in; }
+        unsigned int getCells() const { return numCells; }
+        void setCells(unsigned int in);
+        float getCellIntensity(unsigned int i) { return cellIntensities[i]; }
+        void setCellIntensity(unsigned int i, float f);
+        float getCellScale(unsigned int i) { return cellScales[i]; }
+        void setCellScale(unsigned int i, float f);
 
     private:
+        /* Wire frame */
         bool showWireFrame = false;
+
+        /* Toon shading */
         bool showToon = false;
         float silAngle = 0.f;
-        float numCells = 1.f;
+        unsigned int numCells = 1;
+        Vector<float> cellIntensities;
+        GLuint cellIntensitiesTexture;
+        Vector<float> cellScales;
+        GLuint cellScalesTexture;
 };
 
 #endif 

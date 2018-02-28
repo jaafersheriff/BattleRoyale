@@ -24,6 +24,9 @@ class Loader {
         static Texture *getTexture(const String &);
         static Texture *getTexture(const String &, GLenum, const bool);
 
+        /* Call file reader */
+        static int loadLevel(const String &);
+
     private:
         /* Resize mesh vertex buffers so all the vertices are [0, 1] */
         static void resize(Mesh::MeshBuffers &);
