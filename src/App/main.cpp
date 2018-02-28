@@ -70,8 +70,6 @@ int parseArgs(int argc, char **argv) {
 
 // Constants
 const float k_ambience = 0.2f;
-const glm::vec3 k_diffusivity = glm::vec3(1.0f);
-const glm::vec3 k_specularity = glm::vec3(1.0f);
 const float k_fov = 45.0f;
 const float k_near = 0.1f;
 const float k_far = 300.0f;
@@ -99,7 +97,7 @@ namespace player {
         newtonianComp = &Scene::addComponent<NewtonianComponent>(*gameObject);
         Scene::addComponentAs<GravityComponent, AcceleratorComponent>(*gameObject);
         Scene::addComponent<GroundComponent>(*gameObject);
-        Capsule playerCap(glm::vec3(), k_height - 2.0f * k_width, k_width);
+        Capsule playerCap(glm::vec3(0.0f, -k_height * 0.5f + k_width, 0.0f), k_width, k_height - 2.0f * k_width);
         bounderComp = &Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(*gameObject, 5, playerCap);
         cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, k_fov, k_near, k_far);
         controllerComp = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_lookSpeed, k_moveSpeed, k_jumpSpeed);
@@ -139,9 +137,9 @@ Vector<GameObject *> f_enemies;
 Vector<GameObject *> f_projectiles;
 
 void createEnemy(const glm::vec3 & position) {    
-    Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
+    Mesh * mesh(Loader::getMesh("bunny.obj"));
     DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
-    ModelTexture modelTex(k_ambience, k_diffusivity, k_specularity);
+    ModelTexture modelTex(k_ambience, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f));
     bool toon(true);
     glm::vec3 scale(0.25f);
     unsigned int collisionWeight(5);
@@ -151,9 +149,9 @@ void createEnemy(const glm::vec3 & position) {
     SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, scale));
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
     GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
-    BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *bunnyMesh, false, true, false));
+    BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *mesh, false, true, false));
     PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed));
-    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *bunnyMesh, modelTex, toon);   
+    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, toon);   
     EnemyComponent & enemyComp(Scene::addComponent<EnemyComponent>(obj));
     
     f_enemies.push_back(&obj);
@@ -163,7 +161,7 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     Mesh * mesh(Loader::getMesh("Hamburger.obj"));
     DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
     Texture * tex(Loader::getTexture("Hamburger_BaseColor.png"));
-    ModelTexture modelTex(tex, k_ambience, k_diffusivity, k_specularity);
+    ModelTexture modelTex(tex, k_ambience, glm::vec3(1.0f), glm::vec3(1.0f));
     bool toon(true);
     glm::vec3 scale(0.05f);
     unsigned int collisionWeight(5);
@@ -221,7 +219,7 @@ int main(int argc, char **argv) {
     SpatialSystem::setGravity(k_gravity);
 
     // Load Level
-    Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_02.json");
+    Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_02.json", k_ambience);
 
     // Setup Player
     player::setup(glm::vec3(0.0f, 6.0f, 0.0f));

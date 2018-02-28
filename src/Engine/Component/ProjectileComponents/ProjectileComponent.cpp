@@ -20,6 +20,7 @@ void ProjectileComponent::init() {
         if (&msg.bounder1 == m_bounder) {
             if (msg.bounder2.gameObject().getComponentByType<EnemyComponent>()) {
                 Scene::destroyGameObject(gameObject());
+                msg.bounder2.gameObject().getSpatial()->scaleBy(glm::vec3(1.25f));
             }
         }
     });
