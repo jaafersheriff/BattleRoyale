@@ -110,7 +110,8 @@ namespace player {
 namespace freecam {
 
     const float k_lookSpeed = player::k_lookSpeed;
-    const float k_moveSpeed = player::k_moveSpeed;
+    const float k_minMoveSpeed = player::k_moveSpeed;
+    const float k_maxMoveSpeed = 10.0f * k_minMoveSpeed;
 
     GameObject * gameObject;
     SpatialComponent * spatialComp;
@@ -121,7 +122,7 @@ namespace freecam {
         gameObject = &Scene::createGameObject();
         spatialComp = &Scene::addComponent<SpatialComponent>(*gameObject);
         cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, k_fov, k_near, k_far);
-        controllerComp = &Scene::addComponent<CameraControllerComponent>(*gameObject, k_lookSpeed, k_moveSpeed);
+        controllerComp = &Scene::addComponent<CameraControllerComponent>(*gameObject, k_lookSpeed, k_minMoveSpeed, k_maxMoveSpeed);
         controllerComp->setEnabled(false);
     }
 

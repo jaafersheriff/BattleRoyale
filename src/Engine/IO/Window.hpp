@@ -70,6 +70,7 @@ class Window {
         static void errorCallback(int, const char *);
         static void keyCallback(GLFWwindow *, int, int, int, int);
         static void mouseButtonCallback(GLFWwindow *, int, int, int);
+        static void scrollCallback(GLFWwindow *, double dx, double dy);
         static void characterCallback(GLFWwindow *, unsigned int);
         static void windowSizeCallback(GLFWwindow *, int width, int height);
         static void framebufferSizeCallback(GLFWwindow *, int width, int height);

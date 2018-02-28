@@ -162,6 +162,12 @@ struct MouseMessage : public Message {
     MouseMessage(int button, int action, int mods) : button(button), action(action), mods(mods) {}
 };
 
+// scroll input
+struct ScrollMessage : public Message {
+    float dx, dy;
+    ScrollMessage(float dx, float dy) : dx(dx), dy(dy) {}
+};
+
 
 
 // component of system SysT added 

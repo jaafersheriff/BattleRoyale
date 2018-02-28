@@ -5,19 +5,37 @@
 #include "IO/Keyboard.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "CameraComponent.hpp"
+#include "GameObject/Message.hpp"
+#include "Scene/Scene.hpp"
 
-CameraControllerComponent::CameraControllerComponent(GameObject & gameObject, float ls, float ms) :
+CameraControllerComponent::CameraControllerComponent(GameObject & gameObject, float lookSpeed, float minMoveSpeed, float maxMoveSpeed) :
     Component(gameObject),
     m_spatial(nullptr),
     m_camera(nullptr),
-    m_lookSpeed(ls),
-    m_moveSpeed(ms),
+    m_lookSpeed(lookSpeed),
+    m_minMoveSpeed(glm::max(minMoveSpeed, 0.0f)),
+    m_maxMoveSpeed(glm::max(maxMoveSpeed, m_minMoveSpeed)),
+    m_moveSpeed(glm::mix(m_minMoveSpeed, m_maxMoveSpeed, 0.5f)),
     m_enabled(true)
 {}
 
 void CameraControllerComponent::init() {
     if (!(m_spatial = gameObject().getSpatial())) assert(false);
     if (!(m_camera = gameObject().getComponentByType<CameraComponent>())) assert(false);
+
+    auto scrollCallback([&](const Message & msg_) {
+        const ScrollMessage & msg(static_cast<const ScrollMessage &>(msg_));
+        if (!m_enabled) {
+            return;
+        }
+        if (m_minMoveSpeed == m_maxMoveSpeed) {
+            return;
+        }
+        float percentage((m_moveSpeed - m_minMoveSpeed) / (m_maxMoveSpeed - m_minMoveSpeed));
+        percentage += msg.dy * 0.1f;
+        m_moveSpeed = glm::clamp(m_minMoveSpeed + (m_maxMoveSpeed - m_minMoveSpeed) * percentage, m_minMoveSpeed, m_maxMoveSpeed);
+    });
+    Scene::addReceiver<ScrollMessage>(nullptr, scrollCallback);
 }
 
 void CameraControllerComponent::update(float dt) {

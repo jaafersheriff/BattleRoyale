@@ -87,6 +87,20 @@ void Window::mouseButtonCallback(GLFWwindow *window, int button, int action, int
     }
 }
 
+void Window::scrollCallback(GLFWwindow * window, double dx, double dy) {
+#ifdef DEBUG_MODE
+    if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
+        ImGui_ImplGlfwGL3_ScrollCallback(window, dx, dy);
+    }
+    else
+#endif
+    {
+        Mouse::scrollDX += dx;
+        Mouse::scrollDY += dy;
+        Scene::sendMessage<ScrollMessage>(nullptr, float(dx), float(dy));
+    }
+}
+
 void Window::characterCallback(GLFWwindow *window, unsigned int c) {
 #ifdef DEBUG_MODE
     if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
@@ -157,6 +171,7 @@ int Window::init(const String & name) {
     /* Set callbacks */
     glfwSetKeyCallback(s_window, keyCallback);
     glfwSetMouseButtonCallback(s_window, mouseButtonCallback);
+    glfwSetScrollCallback(s_window, scrollCallback);
     glfwSetCharCallback(s_window, characterCallback);
     glfwSetWindowSizeCallback(s_window, windowSizeCallback);
     glfwSetFramebufferSizeCallback(s_window, framebufferSizeCallback);
