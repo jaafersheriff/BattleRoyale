@@ -33,7 +33,6 @@ struct InitializeMemory {
     InitializeMemory() {
         if (!initialized++) {
             coherent_rpmalloc::rpmalloc_initialize();
-            // coherent_rpmalloc::rpmalloc_thread_initialize();
         }
     }
 
