@@ -22,6 +22,7 @@ class SpatialComponent : public Component, public Positionable, public Scaleable
     protected: // only scene or friends can create component
 
     SpatialComponent(GameObject & gameObject);
+    SpatialComponent(GameObject & gameObject, const glm::vec3 & position);
     SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale);
     SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & orient);
     SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale, const glm::quat & orient);

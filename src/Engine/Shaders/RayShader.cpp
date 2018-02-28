@@ -22,8 +22,6 @@ bool RayShader::init() {
         return false;
     }
 
-    setEnabled(false);
-
     /* Add attributes */
     addAttribute("in_pos");
     /* Add uniforms */

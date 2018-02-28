@@ -22,10 +22,15 @@ SpatialComponent::SpatialComponent(GameObject & gameObject) :
     m_prevNormalMatrixValid(true)
 {}
 
-SpatialComponent::SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale) :
+SpatialComponent::SpatialComponent(GameObject & gameObject, const glm::vec3 & position) :
     SpatialComponent(gameObject)
 {
     setPosition(position, true);
+}
+
+SpatialComponent::SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale) :
+    SpatialComponent(gameObject, position)
+{
     setScale(scale, true);
 }
 
