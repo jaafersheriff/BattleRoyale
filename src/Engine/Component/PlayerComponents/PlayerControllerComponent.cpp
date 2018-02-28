@@ -11,7 +11,7 @@
 
 
 
-PlayerControllerComponent::PlayerControllerComponent(GameObject & gameObject, float lookSpeed, float moveSpeed, float jumpSpeed) :
+PlayerControllerComponent::PlayerControllerComponent(GameObject & gameObject, float lookSpeed, float moveSpeed, float jumpSpeed, float sprintSpeed) :
     Component(gameObject),
     m_spatial(nullptr),
     m_newtonian(nullptr),
@@ -19,6 +19,7 @@ PlayerControllerComponent::PlayerControllerComponent(GameObject & gameObject, fl
     m_lookSpeed(lookSpeed),
     m_moveSpeed(moveSpeed),
     m_jumpSpeed(jumpSpeed),
+    m_sprintSpeed(sprintSpeed),
     m_jumping(false),
     m_enabled(true)
 {}
@@ -49,6 +50,9 @@ void PlayerControllerComponent::update(float dt) {
     int backward(Keyboard::isKeyPressed(GLFW_KEY_S));
     int left(Keyboard::isKeyPressed(GLFW_KEY_A));
     int right(Keyboard::isKeyPressed(GLFW_KEY_D));
+    bool sprint(Keyboard::isKeyPressed(GLFW_KEY_LEFT_SHIFT));
+
+    float groundSpeed(sprint ? m_sprintSpeed : m_moveSpeed);
     
     // move player
     glm::vec2 xzDir(
@@ -66,9 +70,9 @@ void PlayerControllerComponent::update(float dt) {
         if (m_ground->onGround()) {
             dir = Util::safeNorm(Util::projectOnto(dir, m_ground->groundNorm()));
         }
-        m_spatial->move(dir * m_moveSpeed * dt);
+        m_spatial->move(dir * groundSpeed * dt);
         // remove some velocity against direction of movement
-        m_newtonian->removeSomeVelocityAgainstDir(dir, m_moveSpeed);
+        m_newtonian->removeSomeVelocityAgainstDir(dir, groundSpeed);
     }
 
     // jump

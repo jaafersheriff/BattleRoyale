@@ -82,6 +82,7 @@ namespace player {
     const float k_width = k_height / 4.0f;
     const float k_lookSpeed = 0.005f;
     const float k_moveSpeed = 5.0f;
+    const float k_sprintSpeed = 15.0f;
     const float k_jumpSpeed = 5.0f;
 
     GameObject * gameObject;
@@ -100,7 +101,7 @@ namespace player {
         Capsule playerCap(glm::vec3(0.0f, -k_height * 0.5f + k_width, 0.0f), k_width, k_height - 2.0f * k_width);
         bounderComp = &Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(*gameObject, 5, playerCap);
         cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, k_fov, k_near, k_far);
-        controllerComp = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_lookSpeed, k_moveSpeed, k_jumpSpeed);
+        controllerComp = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_lookSpeed, k_moveSpeed, k_jumpSpeed, k_sprintSpeed);
     }
 
 }
@@ -219,7 +220,7 @@ int main(int argc, char **argv) {
     SpatialSystem::setGravity(k_gravity);
 
     // Load Level
-    Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_02.json", k_ambience);
+    Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json", k_ambience);
 
     // Setup Player
     player::setup(glm::vec3(0.0f, 6.0f, 0.0f));
