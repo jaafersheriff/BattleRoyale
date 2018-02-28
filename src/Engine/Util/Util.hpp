@@ -216,6 +216,31 @@ struct Util {
         return duration_cast<std::chrono::duration<double>>(high_resolution_clock::now() - s_start).count();
     }
 
+    class Stopwatch {
+
+        public:
+
+        Stopwatch() :
+            initT(time()),
+            lapT(initT)
+        {}
+
+        double lap() {
+            double last(lapT);
+            lapT = time();
+            return lapT - last;
+        }
+
+        double total() const {
+            return time() - initT;
+        }
+
+        private:
+
+        double initT, lapT;
+
+    };
+
 };
 
 

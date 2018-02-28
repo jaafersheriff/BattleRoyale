@@ -25,6 +25,20 @@ Vector<std::pair<std::type_index, Component *>> Scene::s_componentKillQueue;
 Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_messages;
 UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> Scene::s_receivers;
 
+float Scene::totalDT;
+float Scene::gameLogicDT;
+float Scene::spatialDT;
+float Scene::pathfindingDT;
+float Scene::collisionDT;
+float Scene::postCollisionDT;
+float Scene::renderDT;
+float Scene::gameLogicMessagingDT;
+float Scene::spatialMessagingDT;
+float Scene::pathfindingMessagingDT;
+float Scene::collisionMessagingDT;
+float Scene::postCollisionMessagingDT;
+float Scene::renderMessagingDT;
+
 void Scene::init() {
     GameLogicSystem::init();
     PathfindingSystem::init();
@@ -44,24 +58,45 @@ void Scene::destroyGameObject(GameObject & gameObject) {
 }
 
 void Scene::update(float dt) {
-    doInitQueue();
+    Util::Stopwatch watch;
 
-    /* Update systems */
+    doInitQueue();
     relayMessages();
+    watch.lap();
+
     GameLogicSystem::update(dt);
+    gameLogicDT = float(watch.lap());
     relayMessages();
+    gameLogicMessagingDT = float(watch.lap());
+
     PathfindingSystem::update(dt);
+    pathfindingDT = float(watch.lap());
     relayMessages();
+    pathfindingMessagingDT = float(watch.lap());
+
     SpatialSystem::update(dt); // needs to happen right before collision
+    spatialDT = float(watch.lap());
     relayMessages();
+    spatialMessagingDT = float(watch.lap());
+
     CollisionSystem::update(dt);
+    collisionDT = float(watch.lap());
     relayMessages();
+    collisionMessagingDT = float(watch.lap());
+
     PostCollisionSystem::update(dt); // needs to happen after collision, go figure
+    postCollisionDT = float(watch.lap());
     relayMessages();
+    postCollisionMessagingDT = float(watch.lap());
+
     RenderSystem::update(dt); // rendering should be last
+    renderDT = float(watch.lap());
     relayMessages();
+    renderMessagingDT = float (watch.lap());
 
     doKillQueue();
+
+    totalDT = float(watch.total());
 }
 
 void Scene::doInitQueue() {

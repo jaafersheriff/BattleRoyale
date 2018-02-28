@@ -14,6 +14,7 @@
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"
 #include "System/CollisionSystem.hpp"
+#include "System/PostCollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
 #include "GameObject/GameObject.hpp"
 #include "GameObject/Message.hpp"
@@ -82,6 +83,22 @@ class Scene {
 
     static Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messages;
     static UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> s_receivers;
+
+  public:
+
+    static float totalDT;
+    static float gameLogicDT;
+    static float spatialDT;
+    static float pathfindingDT;
+    static float collisionDT;
+    static float postCollisionDT;
+    static float renderDT;
+    static float gameLogicMessagingDT;
+    static float spatialMessagingDT;
+    static float pathfindingMessagingDT;
+    static float collisionMessagingDT;
+    static float postCollisionMessagingDT;
+    static float renderMessagingDT;
 
 };
 

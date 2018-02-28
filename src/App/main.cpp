@@ -250,8 +250,35 @@ int main(int argc, char **argv) {
         imguiGO,
         "Stats",
         [&]() {
-            ImGui::Text("FPS: %d", EngineApp::fps);
-            ImGui::Text("dt: %f", EngineApp::timeStep);
+            ImGui::Text("FPS: %d, dt: %f", EngineApp::fps, EngineApp::timeStep);
+            ImGui::NewLine();
+            ImGui::Text("Workload by System (Update, Messaging)");
+            float factor(100.0f / Scene::totalDT);
+            ImGui::Text("    Game Logic: %3d%%, %3d%%",
+                int(std::round(Scene::gameLogicDT * factor)),
+                int(std::round(Scene::gameLogicMessagingDT * factor))
+            );
+            ImGui::Text("   Pathfinding: %3d%%, %3d%%",
+                int(std::round(Scene::pathfindingDT * factor)),
+                int(std::round(Scene::pathfindingMessagingDT * factor))
+            );
+            ImGui::Text("       Spatial: %3d%%, %3d%%",
+                int(std::round(Scene::spatialDT * factor)),
+                int(std::round(Scene::spatialMessagingDT * factor))
+            );
+            ImGui::Text("     Collision: %3d%%, %3d%%",
+                int(std::round(Scene::collisionDT * factor)),
+                int(std::round(Scene::collisionMessagingDT * factor))
+            );
+            ImGui::Text("Post Collision: %3d%%, %3d%%",
+                int(std::round(Scene::postCollisionDT * factor)),
+                int(std::round(Scene::postCollisionMessagingDT * factor))
+            );
+            ImGui::Text("        Render: %3d%%, %3d%%",
+                int(std::round(Scene::renderDT * factor)),
+                int(std::round(Scene::renderMessagingDT * factor))
+            );
+            ImGui::NewLine();
             ImGui::Text("Player Pos:\n%f %f %f",
                 player::spatialComp->position().x,
                 player::spatialComp->position().y,
