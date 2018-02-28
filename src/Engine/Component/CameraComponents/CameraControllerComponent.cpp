@@ -66,8 +66,7 @@ void CameraControllerComponent::update(float dt) {
     );
     if (dir != glm::vec3()) {
         dir = Util::safeNorm(dir);
-        glm::vec2 xzDir(dir.x, dir.z);
-        dir = m_spatial->u() * xzDir.x + glm::vec3(0.0f, 1.0f, 0.0f) * dir.y +  m_spatial->w() * xzDir.y; // WoW controls
+        dir = Util::safeNorm(m_camera->u() * dir.x + glm::vec3(0.0f, 1.0f, 0.0f) * dir.y + m_camera->w() * dir.z); // WoW controls
         m_spatial->move(dir * m_moveSpeed * dt);
     }
 }
