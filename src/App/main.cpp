@@ -233,8 +233,9 @@ int main(int argc, char **argv) {
     RenderSystem::setCamera(player::cameraComp);
 
     // Add Enemies
+    int nEnemies(5);
     for (int i(0); i < 5; ++i) {
-        createEnemy(glm::vec3(-10.0f, 5.0f, float(-i)));
+        createEnemy(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, 10.0f));
     }
 
     //--------------------------------------------------------------------------
