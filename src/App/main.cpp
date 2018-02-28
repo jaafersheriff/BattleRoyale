@@ -58,14 +58,22 @@ int parseArgs(int argc, char **argv) {
     return 0;
 }
 
+// This is only a starting point for projectiles
 GameObject & createProjectile(const glm::vec3 & initPos, const glm::vec3 & initVel, bool gravity) {
+    Mesh * mesh(Loader::getMesh("Hamburger.obj"));
     GameObject & obj(Scene::createGameObject());
-    SpatialComponent & spat(Scene::addComponent<SpatialComponent>(obj));
-    spat.setPosition(initPos);
-    BounderComponent & bounder(Scene::addComponentAs<SphereBounderComponent, BounderComponent>(obj, 1, Sphere(glm::vec3(), 0.1f)));
+    SpatialComponent & spat(Scene::addComponent<SpatialComponent>(obj, initPos, glm::vec3(0.05f)));
+    BounderComponent & bounder(CollisionSystem::addBounderFromMesh(obj, 1, *mesh, false, true, false));
     NewtonianComponent & newt(Scene::addComponent<NewtonianComponent>(obj));
     if (gravity) Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj);
     newt.addVelocity(initVel);
+    DiffuseRenderComponent & diffuse(Scene::addComponent<DiffuseRenderComponent>(
+        obj,
+        RenderSystem::getShader<DiffuseShader>()->pid,
+        *mesh,
+        ModelTexture(Loader::getTexture("Hamburger_BaseColor.png"), 0.0f, glm::vec3(1.0f), glm::vec3(1.0f)),
+        true
+    ));
     return obj;
 }
 
