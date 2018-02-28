@@ -11,7 +11,6 @@ extern "C" {
 #include "glm/gtx/transform.hpp"
 
 #include "EngineApp/EngineApp.hpp"
-#include "ThirdParty/CoherentLabs_rpmalloc/rpmalloc.h"
 
 void printUsage() {
     std::cout << "Valid arguments: " << std::endl;
