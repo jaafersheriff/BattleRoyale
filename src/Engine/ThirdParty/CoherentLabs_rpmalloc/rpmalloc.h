@@ -13,6 +13,8 @@
 
 #pragma once
 
+#ifdef _WIN32
+
 #include <stddef.h>
 
 namespace coherent_rpmalloc
@@ -113,3 +115,5 @@ extern void* rpmalloc_allocate_memory_external(size_t bytes);
 extern void rpmalloc_deallocate_memory_external(void* ptr);
 
 }
+
+#endif

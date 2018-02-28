@@ -11,6 +11,8 @@
 *
 */
 
+#ifdef _WIN32
+
 #include "rpmalloc.h"
 
 #ifndef ATOMIC_HEADER_INCLUDED
@@ -1880,3 +1882,5 @@ rpmalloc_global_statistics(rpmalloc_global_statistics_t* stats) {
 }
 
 }
+
+#endif

@@ -14,7 +14,7 @@
 #include <unordered_set>
 #include <map>
 #include <unordered_map>
-
+#include <stdlib.h>
 
 
 #ifdef USE_RPMALLOC
@@ -33,6 +33,7 @@ struct InitializeMemory {
     InitializeMemory() {
         if (!initialized++) {
             coherent_rpmalloc::rpmalloc_initialize();
+            // coherent_rpmalloc::rpmalloc_thread_initialize();
         }
     }
 
@@ -54,7 +55,7 @@ inline void * allocate(size_t size) {
 #ifdef USE_RPMALLOC
     return coherent_rpmalloc::rpmalloc(size);
 #else
-    return std::malloc(size);
+    return malloc(size);
 #endif
 }
 
@@ -62,7 +63,7 @@ inline void deallocate(void * ptr) {
 #ifdef USE_RPMALLOC
     return coherent_rpmalloc::rpfree(ptr);
 #else
-    return std::free(ptr);
+    return free(ptr);
 #endif
 }
 
