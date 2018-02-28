@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
         imguiGO,
         "Light",
         [&]() {
-            ImGui::SliderFloat3("LightDir", glm::value_ptr(RenderSystem::getLightDir()), -1.f, 1.f);
+            ImGui::SliderFloat3("Direction", glm::value_ptr(RenderSystem::getLightDir()), -1.f, 1.f);
         }
     );
 
@@ -157,6 +157,15 @@ int main(int argc, char **argv) {
             if (ImGui::Button("Active")) {
                 RenderSystem::getShader<RayShader>()->toggleEnabled();
             }
+        }
+    );
+
+    /* Shadow map shader */
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO,
+        "Shadow Map",
+        [&]() {
+            ImGui::Image((ImTextureID)RenderSystem::getShadowMap(), ImVec2(256, 256));
         }
     );
 
