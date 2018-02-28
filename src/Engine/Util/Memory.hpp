@@ -1,9 +1,9 @@
 #pragma once
 
 
-
-// #define USE_RPMALLOC
-
+#ifdef _WIN32
+#define USE_RPMALLOC
+#endif
 
 
 #include <scoped_allocator>
