@@ -26,6 +26,9 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
     if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
         toggleImGui();
     }
+    else if (key == GLFW_KEY_F && action == GLFW_PRESS && isImGuiEnabled()) {
+        toggleCursorEnabled();
+    }
     else if (isImGuiEnabled() && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())) {
         ImGui_ImplGlfwGL3_KeyCallback(window, key, scancode, action, mods);
     }

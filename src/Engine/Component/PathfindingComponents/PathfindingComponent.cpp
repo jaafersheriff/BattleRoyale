@@ -23,6 +23,11 @@ void PathfindingComponent::update(float dt) {
     if (glm::length2(dir) < 0.001f) {
         return;
     }
-    
+
+
+    const int xdir[] = {1, 1, 0, -1, -1, -1, 0, 1};
+    const int zdir[] = {0, 1, 1, 1, 0, -1, -1, -1};
+
+
     gameObject()->getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
 }
