@@ -6,13 +6,14 @@
 #include "ThirdParty/imgui/imgui.h"
 #include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
 #include "Scene/Scene.hpp"
-
+#include "EngineApp/EngineApp.hpp"
 
 
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 UnorderedMap<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
 const CameraComponent * RenderSystem::s_camera = nullptr;
 glm::vec3 RenderSystem::s_lightDir(0.f);
+ShadowDepthShader * RenderSystem::shadowShader = nullptr;
 
 void RenderSystem::init() {
     glEnable(GL_DEPTH_TEST);
@@ -20,6 +21,17 @@ void RenderSystem::init() {
     glCullFace(GL_BACK);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    shadowShader = new ShadowDepthShader(
+        EngineApp::RESOURCE_DIR + "shadow_vert.glsl",
+        EngineApp::RESOURCE_DIR + "shadow_frag.glsl",
+        1280,
+        960,
+        s_lightDir);
+    if (!shadowShader->init()) {
+        std::cerr << "Error initializing shadow shader" << std::endl;
+        std::cin.get();
+    }
 }
 
 ///////////////////////////  TODO  ///////////////////////////

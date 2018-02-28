@@ -14,6 +14,7 @@
 #include "Shaders/DiffuseShader.hpp"
 #include "Shaders/BounderShader.hpp"
 #include "Shaders/RayShader.hpp"
+#include "Shaders/ShadowDepthShader.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 
 
@@ -58,6 +59,8 @@ private:
     static const CameraComponent * s_camera;
     static glm::vec3 s_lightDir;
 
+    /* Shadow shader */
+    static ShadowDepthShader * shadowShader;
 };
 
 
