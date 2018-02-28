@@ -73,7 +73,10 @@ bool RenderSystem::createShader(Args &&... args) {
         return true;
     }
     else {
-        std::cerr << "Failed to initialize shader" << std::endl;
+        std::cerr << "Failed to initialize shader:" << std::endl;
+        std::cerr << "\t" << shader->vShaderName << std::endl;
+        std::cerr << "\t" << shader->fShaderName << std::endl;
+        std::cin.get();
         return false;
     }
 }
