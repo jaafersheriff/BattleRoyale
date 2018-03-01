@@ -6,9 +6,10 @@ String SoundSystem::s_SOUND_DIR = EngineApp::RESOURCE_DIR + "/soundeffects/";
 #ifdef HAVE_FMOD_LIBRARY
 FMOD::System* SoundSystem::s_system = NULL;
 Map<String, FMOD::Sound*> SoundSystem::s_soundLibrary = Map<String, FMOD::Sound*>();
-Listener SoundSystem::s_player = Listener();
-CameraComponent* SoundSystem::s_currentCamera = NULL;
+CameraComponent* SoundSystem::s_camera = NULL;
 #endif
+
+float count = 0.f;
 
 void SoundSystem::init() {
 #ifdef HAVE_FMOD_LIBRARY
@@ -59,8 +60,8 @@ void SoundSystem::initSoundLibrary()
     }
 }
 
-void SoundSystem::setCurrentCamera(CameraComponent *c) {
-    s_currentCamera = c;
+void SoundSystem::setCamera(CameraComponent *camera) {
+    s_camera = camera;
 }
 
 Vector<String> SoundSystem::getSoundFilenames(String listname) {
@@ -89,20 +90,23 @@ Vector<String> SoundSystem::getSoundFilenames(String listname) {
 }
 
 void SoundSystem::updateListener() {
-    if (s_currentCamera != NULL) {
-        SpatialComponent* s = s_currentCamera->gameObject.getSpatial();
-        s_player.id = 0;
-        setFVec(s_player.pos, s->position());
-        setFVec(s_player.vel, glm::vec3(0.f, 0.f, 0.f));
-        setFVec(s_player.forward, s_currentCamera->getLookDir());
-        setFVec(s_player.up, s_currentCamera->v());
+    if (s_camera != NULL) {
+        SpatialComponent* s = s_camera->gameObject().getSpatial();
+        s_system->set3DListenerAttributes(0,
+            fVec(s->position()), 
+            NULL, 
+            fVec(s_camera->getLookDir()), 
+            fVec(s_camera->v())
+        );
     }
 }
 
-void SoundSystem::setFVec(FMOD_VECTOR *v, glm::vec3 g) {
-    v->x = g.x;
-    v->y = g.y;
-    v->z = g.z;
+FMOD_VECTOR* SoundSystem::fVec(glm::vec3 v) {
+    FMOD_VECTOR *fv =  new FMOD_VECTOR();
+    fv->x = v.x;
+    fv->y = v.y;
+    fv->z = v.z;
+    return fv;
 }
 
 FMOD::Sound* SoundSystem::createSound(String soundfilename, FMOD_MODE m) 
@@ -111,7 +115,7 @@ FMOD::Sound* SoundSystem::createSound(String soundfilename, FMOD_MODE m)
     const char* path = fullpath.c_str();	
 
     FMOD::Sound *sound;
-    FMOD_RESULT result = s_system->createSound(path, FMOD_DEFAULT, 0, &sound);
+    FMOD_RESULT result = s_system->createSound(path, m, 0, &sound);
     if (result != FMOD_OK) {
 	    printf("Failed to create sound.\n");
     }
@@ -137,7 +141,7 @@ void  SoundSystem::playSound(String fileName) {
 void SoundSystem::playSound3D(String fileName, glm::vec3 pos) {
     FMOD::Sound *sound;
     FMOD::Channel *newChannel;
-    FMOD_VECTOR fPos;
+    FMOD_VECTOR *fPos;
 
     if (s_soundLibrary.count(fileName + "3D")) {
         sound = s_soundLibrary[fileName + "3D"];
@@ -146,10 +150,9 @@ void SoundSystem::playSound3D(String fileName, glm::vec3 pos) {
         sound = createSound(fileName + "3D", FMOD_3D);
     }
 
-    setFVec(&fPos, pos);
-    FMOD_RESULT result = s_system->playSound(sound, NULL, false, &newChannel);
-    newChannel->setPaused(true);
-    newChannel->set3DAttributes(&fPos, NULL, NULL);
+    fPos = fVec(pos);
+    FMOD_RESULT result = s_system->playSound(sound, NULL, true, &newChannel);
+    newChannel->set3DAttributes(fPos, NULL, NULL);
     newChannel->setPaused(false);
     if (result != FMOD_OK) {
         printf("playSound() done goofed!\n");

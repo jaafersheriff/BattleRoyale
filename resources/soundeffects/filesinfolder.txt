@@ -1,3 +1,6 @@
+bgMetal1.mp3
+bgMexican1.mp3
+bgRock1.mp3
 burp1.wav
 burp2.wav
 burp3.wav
