@@ -30,7 +30,6 @@ class SoundSystem {
     public:
         static constexpr SystemID ID = SystemID::sound;
 
-    /* Attributes */
     public:
     #ifdef HAVE_FMOD_LIBRARY
         static FMOD::System* s_system;
@@ -45,7 +44,6 @@ class SoundSystem {
         static Map<String, FMOD::Sound*> s_soundLibrary;
     #endif
 
-    /* Constructor */
     public:
         static void init();
         static void update(float dt);

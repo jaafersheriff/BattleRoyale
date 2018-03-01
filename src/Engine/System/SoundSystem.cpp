@@ -47,6 +47,10 @@ void SoundSystem::update(float dt)
 #endif
 }
 
+void SoundSystem::setCamera(CameraComponent *camera) {
+    s_camera = camera;
+}
+
 #ifdef HAVE_FMOD_LIBRARY
 void SoundSystem::initSoundLibrary()
 {   
@@ -57,10 +61,6 @@ void SoundSystem::initSoundLibrary()
         tempSound = createSound(s, FMOD_3D);
         s_soundLibrary[s + "3D"] = tempSound;
     }
-}
-
-void SoundSystem::setCamera(CameraComponent *camera) {
-    s_camera = camera;
 }
 
 void SoundSystem::setBackgroundMusic(String name, bool loop) {
@@ -215,7 +215,6 @@ void  SoundSystem::playSound(String fileName) {
 void SoundSystem::playSound3D(String fileName, glm::vec3 pos) {
     FMOD::Sound *sound;
     FMOD::Channel *newChannel;
-    FMOD_VECTOR *fPos;
 
     if (s_soundLibrary.count(fileName + "3D")) {
         sound = s_soundLibrary[fileName + "3D"];
@@ -224,9 +223,8 @@ void SoundSystem::playSound3D(String fileName, glm::vec3 pos) {
         sound = createSound(fileName + "3D", FMOD_3D);
     }
 
-    fPos = fVec(pos);
     FMOD_RESULT result = s_system->playSound(sound, NULL, true, &newChannel);
-    newChannel->set3DAttributes(fPos, NULL, NULL);
+    newChannel->set3DAttributes(fVec(pos), NULL, NULL);
     newChannel->setPaused(false);
     if (result != FMOD_OK) {
         printf("playSound() done goofed!\n");
