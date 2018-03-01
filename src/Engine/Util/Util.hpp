@@ -14,7 +14,9 @@
 
 struct Util {
 
-    static constexpr float infinity = std::numeric_limits<float>::infinity();
+    static inline float infinity() {
+        return std::numeric_limits<float>::infinity();
+    }
 
     static constexpr float epsilon = std::numeric_limits<float>::epsilon();
 
