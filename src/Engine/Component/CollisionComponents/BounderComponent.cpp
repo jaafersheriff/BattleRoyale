@@ -87,7 +87,7 @@ Intersect AABBounderComponent::intersect(const Ray & ray) const {
 }
 
 Sphere AABBounderComponent::enclosingSphere() const {
-    glm::fvec3 center(center());
+    glm::vec3 center(this->center());
     float radius(glm::length(m_transBox.max - center));
     return Sphere(center, radius);
 }
