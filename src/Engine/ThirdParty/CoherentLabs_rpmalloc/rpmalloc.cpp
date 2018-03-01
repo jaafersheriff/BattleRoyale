@@ -11,7 +11,7 @@
 *
 */
 
-#ifdef USE_RPMALLOC
+#ifndef __GNUC__
 
 #include "rpmalloc.h"
 

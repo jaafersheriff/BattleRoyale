@@ -1,7 +1,6 @@
 #pragma once
 
-// TODO : Thread-local stage support rather than _WIN32
-#ifdef _WIN32
+#ifndef __GNUC__
 #define USE_RPMALLOC
 #endif
 
