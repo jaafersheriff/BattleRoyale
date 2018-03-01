@@ -4,6 +4,9 @@
 
 #include "System/PathfindingSystem.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Scene/Scene.hpp"
+
+#include "glm/gtx/string_cast.hpp"
 
 PathfindingComponent::PathfindingComponent(GameObject & player, float ms) :
     m_spatial(nullptr),
@@ -14,6 +17,17 @@ PathfindingComponent::PathfindingComponent(GameObject & player, float ms) :
 void PathfindingComponent::init(GameObject & go) {
     Component::init(go);
     if (!(m_spatial = gameObject()->getSpatial())) assert(false);
+
+
+    auto collisionCallback([&](const Message & msg_) {
+    	const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
+
+    	std::cout << "Had a collision"  << std::endl;
+
+    });
+
+
+    Scene::addReceiver<CollisionMessage>(gameObject(), collisionCallback);
 }
 
 void PathfindingComponent::update(float dt) {

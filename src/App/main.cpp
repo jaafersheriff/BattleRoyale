@@ -244,7 +244,7 @@ int main(int argc, char **argv) {
 
     /* Create bunny */
     Mesh * bunnyMesh(Loader::getMesh("bunny.obj"));
-    for (int i(0); i < 10; ++i) {
+    for (int i(0); i < 1; ++i) {
         GameObject & bunny(Scene::createGameObject());
         SpatialComponent & bunnySpatComp(Scene::addComponent<SpatialComponent>(
             bunny,
