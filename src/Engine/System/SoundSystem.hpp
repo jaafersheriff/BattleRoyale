@@ -4,6 +4,8 @@
 
 #include "System.hpp"
 #include "Component/SoundComponents/SoundComponent.hpp"
+#include "Component/CameraComponents/CameraComponent.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Scene/Scene.hpp"
 
 #include "EngineApp/EngineApp.hpp"
@@ -41,6 +43,7 @@ class SoundSystem {
         static const Vector<SoundComponent *> & s_soundComponents;
     #ifdef HAVE_FMOD_LIBRARY
         static Listener s_player;
+        static CameraComponent* s_currentCamera;
         static Map<String, FMOD::Sound*> s_soundLibrary;
     #endif
 
@@ -50,7 +53,7 @@ class SoundSystem {
         static void update(float dt);
 
     #ifdef HAVE_FMOD_LIBRARY
-        static void  playSound(String name);
+        static void playSound(String name);
         static void playSound3D(String name, glm::vec3 pos);
     #endif
 
@@ -60,9 +63,10 @@ class SoundSystem {
     
     #ifdef HAVE_FMOD_LIBRARY
         static Vector<String> getSoundFilenames(String listname);
+        static void setCurrentCamera(CameraComponent *camera);
         static FMOD::Sound* createSound(String soundfilename, FMOD_MODE m);
         static void initSoundLibrary();
-        static void updateListener(glm::vec3 pos, glm::vec3 vel, glm::vec3 forward, glm::vec3 up);
+        static void updateListener();
         static void setFVec(FMOD_VECTOR *v, glm::vec3 g);
     #endif
 };  

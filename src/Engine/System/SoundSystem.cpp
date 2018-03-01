@@ -2,13 +2,15 @@
 
 const Vector<SoundComponent *> & SoundSystem::s_soundComponents(Scene::getComponents<SoundComponent>());
 String SoundSystem::s_SOUND_DIR = EngineApp::RESOURCE_DIR + "/soundeffects/";
+
 #ifdef HAVE_FMOD_LIBRARY
 FMOD::System* SoundSystem::s_system = NULL;
 Map<String, FMOD::Sound*> SoundSystem::s_soundLibrary = Map<String, FMOD::Sound*>();
 Listener SoundSystem::s_player = Listener();
+CameraComponent* SoundSystem::s_currentCamera = NULL;
 #endif
-void SoundSystem::init() {
 
+void SoundSystem::init() {
 #ifdef HAVE_FMOD_LIBRARY
     FMOD_RESULT result;
 
@@ -23,7 +25,16 @@ void SoundSystem::init() {
         printf("failed to initialize system\n");
     }
 
+    float dopplescale = 1.0f;
+    float distancefactor = 1.0f;
+    float rolloffscale = 1.0f;
+    result = s_system->set3DSettings(dopplescale, distancefactor, rolloffscale);
+    if (result != FMOD_OK) {
+        printf("failed to set up 3D settings\n");
+    }
+
     initSoundLibrary();
+
 #endif
     
 }
@@ -31,6 +42,7 @@ void SoundSystem::init() {
 void SoundSystem::update(float dt) 
 {
 #ifdef HAVE_FMOD_LIBRARY
+    updateListener();
     s_system->update();
 #endif
 }
@@ -45,6 +57,10 @@ void SoundSystem::initSoundLibrary()
         tempSound = createSound(s, FMOD_3D);
         s_soundLibrary[s + "3D"] = tempSound;
     }
+}
+
+void SoundSystem::setCurrentCamera(CameraComponent *c) {
+    s_currentCamera = c;
 }
 
 Vector<String> SoundSystem::getSoundFilenames(String listname) {
@@ -63,7 +79,7 @@ Vector<String> SoundSystem::getSoundFilenames(String listname) {
             if (line.compare(line.length() - 4, 4, ext) == 0) {
                 printf((line + " loaded\n").c_str());
                 soundfilenames.push_back(line);
-                break;
+                break;  
             }
         }
 
@@ -72,12 +88,15 @@ Vector<String> SoundSystem::getSoundFilenames(String listname) {
     return soundfilenames;
 }
 
-void SoundSystem::updateListener(glm::vec3 pos, glm::vec3 vel, glm::vec3 forward, glm::vec3 up) {
-    s_player.id = 0;
-    setFVec(s_player.pos, pos);
-    setFVec(s_player.vel, vel);
-    setFVec(s_player.forward, forward);
-    setFVec(s_player.up, up);
+void SoundSystem::updateListener() {
+    if (s_currentCamera != NULL) {
+        SpatialComponent* s = s_currentCamera->gameObject.getSpatial();
+        s_player.id = 0;
+        setFVec(s_player.pos, s->position());
+        setFVec(s_player.vel, glm::vec3(0.f, 0.f, 0.f));
+        setFVec(s_player.forward, s_currentCamera->getLookDir());
+        setFVec(s_player.up, s_currentCamera->v());
+    }
 }
 
 void SoundSystem::setFVec(FMOD_VECTOR *v, glm::vec3 g) {
