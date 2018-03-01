@@ -15,12 +15,10 @@
 #include <fmod_studio.hpp>
 
 typedef struct {
-    int id;
-    FMOD_VECTOR *pos = new FMOD_VECTOR();
-    FMOD_VECTOR *vel = new FMOD_VECTOR();
-    FMOD_VECTOR *forward = new FMOD_VECTOR();
-    FMOD_VECTOR *up = new FMOD_VECTOR();
-} Listener;
+    FMOD::Sound* sound = NULL;
+    bool loop = false;
+    FMOD::Channel* channel = NULL;
+} Sound;
 #endif
 
 class SoundComponent;
@@ -43,6 +41,7 @@ class SoundSystem {
         static const Vector<SoundComponent *> & s_soundComponents;
     #ifdef HAVE_FMOD_LIBRARY
         static CameraComponent* s_camera;
+        static Sound* s_bgMusic;
         static Map<String, FMOD::Sound*> s_soundLibrary;
     #endif
 
@@ -55,6 +54,12 @@ class SoundSystem {
         static void playSound(String name);
         static void playSound3D(String name, glm::vec3 pos);
         static void setCamera(CameraComponent *camera);
+        static void setBackgroundMusic(String name, bool loop);
+        static void pauseBackgroundMusic();
+        static void unpauseBackgroundMusic();
+        static void playBackgroundMusic();
+        static void setBackgroundMusicVolume(float volume);
+        static void setBackGroundLoop(bool loop);
     #endif
 
 	private:

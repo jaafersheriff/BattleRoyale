@@ -7,6 +7,7 @@ String SoundSystem::s_SOUND_DIR = EngineApp::RESOURCE_DIR + "/soundeffects/";
 FMOD::System* SoundSystem::s_system = NULL;
 Map<String, FMOD::Sound*> SoundSystem::s_soundLibrary = Map<String, FMOD::Sound*>();
 CameraComponent* SoundSystem::s_camera = NULL;
+Sound* SoundSystem::s_bgMusic = NULL;
 #endif
 
 void SoundSystem::init() {
@@ -62,6 +63,79 @@ void SoundSystem::setCamera(CameraComponent *camera) {
     s_camera = camera;
 }
 
+void SoundSystem::setBackgroundMusic(String name, bool loop = true) {
+    FMOD::Sound* bgSound = NULL;
+    if (loop) {
+        bgSound = createSound(name, FMOD_LOOP_NORMAL);
+    }
+    else {
+        bgSound = createSound(name, FMOD_DEFAULT);
+    }
+    if (bgSound != NULL) {
+        s_bgMusic = new Sound();
+        s_bgMusic->sound = bgSound;
+        s_bgMusic->loop = loop;
+    }
+}
+
+void SoundSystem::playBackgroundMusic() {
+    if (s_bgMusic != NULL) {
+        FMOD::Channel *channel;
+        FMOD_RESULT result = s_system->playSound(s_bgMusic->sound, NULL, false, &channel);
+        s_bgMusic->channel = channel;
+        if (result != FMOD_OK) {
+            printf("playBackgroundMusic() done goofed!\n");
+        }
+    }
+}
+
+void SoundSystem::pauseBackgroundMusic() {
+    if (s_bgMusic != NULL && s_bgMusic->channel != NULL) {
+        s_bgMusic->channel->setPaused(true);
+    }
+}
+
+void SoundSystem::unpauseBackgroundMusic() {
+    if (s_bgMusic != NULL && s_bgMusic->channel != NULL) {
+        s_bgMusic->channel->setPaused(false);
+    }
+}
+
+void SoundSystem::setBackGroundLoop(bool loop) {
+    if (s_bgMusic != NULL) {
+        if (loop && !s_bgMusic) {
+            s_bgMusic->loop = true;
+            if (s_bgMusic->channel != NULL) {
+                s_bgMusic->channel->setPaused(true);
+                s_bgMusic->sound->setMode(FMOD_LOOP_NORMAL);
+                s_bgMusic->channel->setMode(FMOD_LOOP_NORMAL);
+                s_bgMusic->channel->setPaused(false);
+            }
+            else {
+                s_bgMusic->sound->setMode(FMOD_LOOP_NORMAL);
+            }
+        }
+        else if (!loop && s_bgMusic) {
+            s_bgMusic->loop = false;
+            if (s_bgMusic->channel != NULL) {
+                s_bgMusic->channel->setPaused(true);
+                s_bgMusic->sound->setMode(FMOD_DEFAULT);
+                s_bgMusic->channel->setMode(FMOD_DEFAULT);
+                s_bgMusic->channel->setPaused(false);
+            }
+            else {
+                s_bgMusic->sound->setMode(FMOD_DEFAULT);
+            }
+        }
+    }
+}
+
+void SoundSystem::setBackgroundMusicVolume(float volume) {
+    if (s_bgMusic != NULL && s_bgMusic->channel != NULL) {
+        s_bgMusic->channel->setVolume(volume);
+    }
+}
+
 Vector<String> SoundSystem::getSoundFilenames(String listname) {
     Vector<String> soundfilenames = Vector<String>();
     String line;
@@ -76,7 +150,9 @@ Vector<String> SoundSystem::getSoundFilenames(String listname) {
     while (std::getline(infile, line)) {
         for (auto ext : validextensions) {
             if (line.compare(line.length() - 4, 4, ext) == 0) {
-                printf((line + " loaded\n").c_str());
+                #ifdef DEBUG_MODE
+                    printf((line + " loaded\n").c_str());
+                #endif
                 soundfilenames.push_back(line);
                 break;  
             }
@@ -112,7 +188,7 @@ FMOD::Sound* SoundSystem::createSound(String soundfilename, FMOD_MODE m)
     String fullpath = s_SOUND_DIR + soundfilename;
     const char* path = fullpath.c_str();	
 
-    FMOD::Sound *sound;
+    FMOD::Sound *sound = NULL;
     FMOD_RESULT result = s_system->createSound(path, m, 0, &sound);
     if (result != FMOD_OK) {
 	    printf("Failed to create sound.\n");
@@ -143,7 +219,7 @@ void SoundSystem::playSound3D(String fileName, glm::vec3 pos) {
 
     if (s_soundLibrary.count(fileName + "3D")) {
         sound = s_soundLibrary[fileName + "3D"];
-    }
+    }   
     else {
         sound = createSound(fileName + "3D", FMOD_3D);
     }
