@@ -22,7 +22,7 @@ class GroundComponent : public Component {
 
   protected: // only scene or friends can create component
 
-    GroundComponent(float criticalAngle = k_defCriticalAngle);
+    GroundComponent(GameObject & gameObject, float criticalAngle = k_defCriticalAngle);
 
   public:
 
@@ -32,7 +32,7 @@ class GroundComponent : public Component {
 
   protected:
 
-    virtual void init(GameObject & go) override;
+    virtual void init() override;
 
   public:
 

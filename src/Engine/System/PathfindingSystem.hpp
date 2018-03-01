@@ -20,12 +20,6 @@ class PathfindingSystem {
 
     private:
 
-    static void added(Component & component) {};
-
-    static void removed(Component & component) {};
-
-    private:
-
     static const Vector<PathfindingComponent *> & s_pathfindingComponents;
 
 };

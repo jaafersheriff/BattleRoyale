@@ -3,7 +3,7 @@
 
 
 #include "glm/glm.hpp"
-#include "Util/Util.hpp"
+#include "glm/gtx/quaternion.hpp"
 
 
 
@@ -11,71 +11,46 @@ class Orientable {
 
     public:
 
-    Orientable() :
-        m_u(1.0f, 0.0f, 0.0f),
-        m_v(0.0f, 1.0f, 0.0f),
-        m_w(0.0f, 0.0f, 1.0f),
-        m_orientMatrix(),
-        m_orientMatrixValid(true)
-    {}
-
-    Orientable(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w) :
-        m_u(u),
-        m_v(v),
-        m_w(w),
-        m_orientMatrix(),
-        m_orientMatrixValid(false)
-    {}
+    Orientable();
+    Orientable(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w);
+    Orientable(const glm::quat & orient);
+    Orientable(const glm::mat3 & orient);
 
     virtual ~Orientable() = default;
 
-    virtual void rotate(const glm::mat3 & mat) {
-        m_orientMatrix = mat * m_orientMatrix;
-        m_orientMatrixValid = true;
-        detUVW();
-    }
+    virtual void update();
 
-    virtual void setOrientation(const glm::mat3 & orient) {
-        m_orientMatrix = orient;
-        m_orientMatrixValid = true;
-        detUVW();
-    }
+    virtual void setOrientation(const glm::quat & orient);
+    virtual void setOrientation(const glm::mat3 & orient);
 
-    virtual void setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w) {
-        m_u = u;
-        m_v = v;
-        m_w = w;
-        m_orientMatrixValid = false;
-    }
+    virtual void rotate(const glm::quat & rot);
+    virtual void rotate(const glm::mat3 & rot);
 
-    virtual const glm::vec3 & u() const { return m_u; }
-    virtual const glm::vec3 & v() const { return m_v; }
-    virtual const glm::vec3 & w() const { return m_w; }
+    virtual void setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w);
 
-    virtual const glm::mat3 & orientationMatrix() const {
-        if (!m_orientMatrixValid) detOrientMatrix();
-        return m_orientMatrix;
-    }
+    const glm::vec3 & u() const { return m_orientMatrix[0]; }
+    const glm::vec3 & v() const { return m_orientMatrix[1]; }
+    const glm::vec3 & w() const { return m_orientMatrix[2]; }
+    const glm::vec3 & prevU() const { return m_prevOrientMatrix[0]; }
+    const glm::vec3 & prevV() const { return m_prevOrientMatrix[1]; }
+    const glm::vec3 & prevW() const { return m_prevOrientMatrix[2]; }
 
-    private:
+    const glm::quat & orientation() const { return m_orientation; }
+    const glm::quat & prevOrientation() const { return m_prevOrientation; }
+    glm::quat orientation(float interpP) const;
 
-    void detOrientMatrix() const {
-        m_orientMatrix = Util::mapFrom(m_u, m_v, m_w);
-        m_orientMatrixValid = true;
-    }
+    const glm::mat3 & orientMatrix() const { return m_orientMatrix; }
+    const glm::mat3 & prevOrientMatrix() const { return m_prevOrientMatrix; }
+    glm::mat3 orientMatrix(float interpP) const;
 
-    void detUVW() {
-        glm::mat3 trans(glm::transpose(m_orientMatrix));
-        m_u = trans[0];
-        m_v = trans[1];
-        m_w = trans[2];
-    }
+    bool isChange() const { return m_isChange; }
 
     private:
-
-    glm::vec3 m_u, m_v, m_w;
-    
-    mutable glm::mat3 m_orientMatrix;
-    mutable bool m_orientMatrixValid;
+  
+    glm::quat m_orientation;
+    glm::quat m_prevOrientation;
+    glm::mat3 m_orientMatrix;
+    glm::mat3 m_prevOrientMatrix;
+    bool m_isChange;
 
 };
