@@ -63,7 +63,7 @@ void SoundSystem::setCamera(CameraComponent *camera) {
     s_camera = camera;
 }
 
-void SoundSystem::setBackgroundMusic(String name, bool loop = true) {
+void SoundSystem::setBackgroundMusic(String name, bool loop) {
     FMOD::Sound* bgSound = NULL;
     if (loop) {
         bgSound = createSound(name, FMOD_LOOP_NORMAL);
@@ -80,7 +80,7 @@ void SoundSystem::setBackgroundMusic(String name, bool loop = true) {
 
 void SoundSystem::playBackgroundMusic() {
     if (s_bgMusic != NULL) {
-        FMOD::Channel *channel;
+        FMOD::Channel *channel = NULL;
         FMOD_RESULT result = s_system->playSound(s_bgMusic->sound, NULL, false, &channel);
         s_bgMusic->channel = channel;
         if (result != FMOD_OK) {
