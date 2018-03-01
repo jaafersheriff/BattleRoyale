@@ -4,6 +4,8 @@ double Mouse::x = 0.0;
 double Mouse::y = 0.0;
 double Mouse::dx = 0.0;
 double Mouse::dy = 0.0;
+double Mouse::scrollDX = 0.0;
+double Mouse::scrollDY = 0.0;
 int Mouse::mouseButtons[GLFW_MOUSE_BUTTON_LAST] = { GLFW_RELEASE };
 bool Mouse::s_reset = true;
 
@@ -22,8 +24,6 @@ void Mouse::update(double newX, double newY) {
     // TODO: if newX > 0 and newY > 0
     x = newX;
     y = newY;
-
-    // TODO : dw = scroll whell
 }
 
 bool Mouse::isDown(int button) {
