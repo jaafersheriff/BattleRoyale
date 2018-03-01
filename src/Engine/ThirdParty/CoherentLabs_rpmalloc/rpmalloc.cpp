@@ -1,3 +1,5 @@
+#ifndef __GNUC__
+
 /* rpmalloc.h  -  Memory allocator  -  Public Domain  -  2016 Mattias Jansson / Rampant Pixels
 * Copyright 2017 Stoyan Nikolov, Coherent Labs
 *
@@ -1880,3 +1882,5 @@ rpmalloc_global_statistics(rpmalloc_global_statistics_t* stats) {
 }
 
 }
+
+#endif

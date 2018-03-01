@@ -309,7 +309,7 @@ std::pair<BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray, 
 namespace {
 
 std::pair<glm::vec3, glm::vec3> detMeshSpan(int nVerts, const glm::vec3 * positions) {    
-    glm::vec3 min(Util::infinity), max(-Util::infinity);
+    glm::vec3 min(Util::infinity()), max(-Util::infinity());
     for (int i(0); i < nVerts; ++i) {
         min = glm::min(min, positions[i]);
         max = glm::max(max, positions[i]);
@@ -335,7 +335,7 @@ std::tuple<float, float, float> detCapsuleSpecs(int n, const glm::vec3 * positio
     }
     float r(std::sqrt(maxR2));
 
-    float maxQy(-Util::infinity), minQy(Util::infinity);
+    float maxQy(-Util::infinity()), minQy(Util::infinity());
     for (int i(0); i < n; ++i) {
         float a(std::sqrt(maxR2 - glm::length2(glm::vec2(positions[i].x - center.x, positions[i].z - center.z))));
         if (positions[i].y >= center.y) {
@@ -363,7 +363,7 @@ BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, 
     }
 
     AABox box; Sphere sphere; Capsule capsule;
-    float boxV(Util::infinity), sphereV(Util::infinity), capsuleV(Util::infinity);
+    float boxV(Util::infinity()), sphereV(Util::infinity()), capsuleV(Util::infinity());
 
     int nVerts(int(mesh.buffers.vertBuf.size()) / 3);
     const glm::vec3 * positions(reinterpret_cast<const glm::vec3 *>(mesh.buffers.vertBuf.data()));
