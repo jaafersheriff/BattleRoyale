@@ -1,3 +1,5 @@
+#ifndef __GNUC__
+
 /* rpmalloc.h  -  Memory allocator  -  Public Domain  -  2016 Mattias Jansson / Rampant Pixels
 * Copyright 2017 Stoyan Nikolov, Coherent Labs
 *
@@ -10,8 +12,6 @@
 * This library is put in the public domain; you can redistribute it and/or modify it without any restrictions.
 *
 */
-
-#ifndef __GNUC__
 
 #include "rpmalloc.h"
 

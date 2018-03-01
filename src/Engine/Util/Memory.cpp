@@ -1,6 +1,7 @@
 #include "Memory.hpp"
 
 #ifdef USE_RPMALLOC
+
 #include "ThirdParty/CoherentLabs_rpmalloc/rpmalloc.h"
 
 void * coherent_rpmalloc::rpmalloc_allocate_memory_external(size_t size) {
