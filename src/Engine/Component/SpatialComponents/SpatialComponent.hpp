@@ -4,6 +4,8 @@
 
 #include "glm/glm.hpp"
 
+#include "Positionable.hpp"
+#include "Scaleable.hpp"
 #include "Orientable.hpp"
 
 
@@ -12,16 +14,18 @@ class SpatialSystem;
 
 
 
-class SpatialComponent : public Component, public Orientable {
+class SpatialComponent : public Component, public Positionable, public Scaleable, public Orientable {
 
     friend Scene;
     friend SpatialSystem;
 
     protected: // only scene or friends can create component
 
-    SpatialComponent();
-    SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale);
-    SpatialComponent(const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & orientation);
+    SpatialComponent(GameObject & gameObject);
+    SpatialComponent(GameObject & gameObject, const glm::vec3 & position);
+    SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale);
+    SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale, const glm::mat3 & orient);
+    SpatialComponent(GameObject & gameObject, const glm::vec3 & position, const glm::vec3 & scale, const glm::quat & orient);
 
     public:
 
@@ -43,38 +47,40 @@ class SpatialComponent : public Component, public Orientable {
     void setScale(const glm::vec3 & scale, bool silently = false);
 
     // multiplies current scale by factor
-    void scale(const glm::vec3 & factor, bool silently = false);
+    void scaleBy(const glm::vec3 & factor, bool silently = false);
 
-    // sets the absolute rotation
-    void setOrientation(const glm::mat3 & rot, bool silently = false);
+    // sets the absolute orientation
+    void setOrientation(const glm::mat3 & orient, bool silently = false);
+    void setOrientation(const glm::quat & orient, bool silently = false);
     
-    // rotates current rotation by mat
-    void rotate(const glm::mat3 & mat, bool silently = false);
+    // rotates current orientation
+    void rotate(const glm::mat3 & rot, bool silently = false);
+    void rotate(const glm::quat & rot, bool silently = false);
 
     // set the orthonormal basis vectors
     void setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w, bool silently = false);
 
     public:
 
-    const glm::vec3 & position() const { return m_position; }
-    const glm::vec3 & scale() const { return m_scale; }
-
     const glm::mat4 & modelMatrix() const;
+    const glm::mat4 & prevModelMatrix() const;
+    glm::mat4 modelMatrix(float interpP) const;
+
     const glm::mat3 & normalMatrix() const;
+    const glm::mat3 & prevNormalMatrix() const;
+    glm::mat3 normalMatrix(float interpP) const;
+
+    bool isChange() const { return Positionable::isChange() || Scaleable::isChange() || Orientable::isChange(); }
 
     private:
-
-    void detModelMatrix() const;
-    void detNormalMatrix() const;
-
-    private:
-
-    glm::vec3 m_position;
-    glm::vec3 m_scale;
 
     mutable glm::mat4 m_modelMatrix;
+    mutable glm::mat4 m_prevModelMatrix;
     mutable glm::mat3 m_normalMatrix;
+    mutable glm::mat3 m_prevNormalMatrix;
     mutable bool m_modelMatrixValid;
+    mutable bool m_prevModelMatrixValid;
     mutable bool m_normalMatrixValid;
+    mutable bool m_prevNormalMatrixValid;
 
 };

@@ -21,7 +21,7 @@ class PlayerControllerComponent : public Component {
 
     protected: // only scene or friends can create component
 
-    PlayerControllerComponent(float lookSpeed, float moveSpeed, float jumpSpeed);
+    PlayerControllerComponent(GameObject & gameObject, float lookSpeed, float moveSpeed, float jumpSpeed, float sprintSpeed);
 
     public:
 
@@ -29,7 +29,7 @@ class PlayerControllerComponent : public Component {
 
     protected:
 
-    virtual void init(GameObject & go) override;
+    virtual void init() override;
 
     public:
 
@@ -50,6 +50,7 @@ class PlayerControllerComponent : public Component {
     float m_lookSpeed;
     float m_moveSpeed;
     float m_jumpSpeed;
+    float m_sprintSpeed;
     bool m_jumping;
     bool m_enabled; // TODO: make a way to enable/disable any object or component
 
