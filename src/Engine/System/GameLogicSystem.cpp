@@ -10,6 +10,11 @@ const Vector<PlayerControllerComponent *> & GameLogicSystem::s_playerControllers
 const Vector<ImGuiComponent *> & GameLogicSystem::s_imguiComponents(Scene::getComponents<ImGuiComponent>());
 
 void GameLogicSystem::update(float dt) {
+    // this is here and not in SpatialSystem because this needs to happen right
+    // at the start of the game loop
+    for (auto & comp : Scene::getComponents<SpatialComponent>()) {
+        comp->update(dt);
+    }
     for (auto & comp : s_imguiComponents) {
         comp->update(dt);
     }

@@ -5,13 +5,12 @@
 
 
 
-GroundComponent::GroundComponent(float criticalAngle) :
+GroundComponent::GroundComponent(GameObject & gameObject, float criticalAngle) :
+    Component(gameObject),
     m_cosCriticalAngle(std::cos(criticalAngle))
 {}
 
-void GroundComponent::init(GameObject & go) {
-    Component::init(go);
-    
+void GroundComponent::init() {
     auto collisionCallback([&](const Message & msg_) {
         const CollisionNormMessage & msg(static_cast<const CollisionNormMessage &>(msg_));
         float dot(glm::dot(msg.norm, -SpatialSystem::gravityDir()));
@@ -19,7 +18,7 @@ void GroundComponent::init(GameObject & go) {
             m_potentialGroundNorm += msg.norm;
         }
     });
-    Scene::addReceiver<CollisionNormMessage>(gameObject(), collisionCallback);
+    Scene::addReceiver<CollisionNormMessage>(&gameObject(), collisionCallback);
 }
 
 void GroundComponent::update(float dt) {

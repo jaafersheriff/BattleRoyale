@@ -28,12 +28,6 @@ class GameLogicSystem {
     static void update(float dt);
 
     private:
-    
-    static void added(Component & component) {};
-
-    static void removed(Component & component) {};
-
-    private:
 
     static const Vector<CameraComponent *> & s_cameraComponents;
     static const Vector<CameraControllerComponent *> & s_cameraControllerComponents;

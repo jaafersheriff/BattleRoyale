@@ -39,7 +39,7 @@ void FileReader::addSpatialComponent(GameObject & gameObject, const rapidjson::V
         );
 }
 
-void FileReader::addRenderComponent(GameObject & gameObject, const rapidjson::Value& jsonTransform, const String filePath) {
+void FileReader::addRenderComponent(GameObject & gameObject, const rapidjson::Value& jsonTransform, const String filePath, float ambience) {
 
     //Get full filepath of texture file
     assert(jsonTransform["objTexture"].IsString());
@@ -56,7 +56,7 @@ void FileReader::addRenderComponent(GameObject & gameObject, const rapidjson::Va
         gameObject,
         RenderSystem::getShader<DiffuseShader>()->pid,
         *Loader::getMesh(filePath),
-        ModelTexture(Loader::getTexture(texturePath), 0.4f, glm::vec3(0.f), glm::vec3(0.f)),
+        ModelTexture(Loader::getTexture(texturePath), ambience, glm::vec3(1.0f), glm::vec3(1.0f)),
         isToon.GetBool());
 }
 
@@ -122,7 +122,7 @@ int FileReader::addBoxColliderComponents(GameObject & gameObject, const rapidjso
     return numberOfColliders;
 }
 
-int FileReader::loadLevel(const char & filePath) {
+int FileReader::loadLevel(const char & filePath, float ambience) {
     rapidjson::Document document;
     int numberOfColliders;
 
@@ -165,7 +165,7 @@ int FileReader::loadLevel(const char & filePath) {
         }
 
         //Read the texture data from the json
-        FileReader::addRenderComponent(gameObject, jsonTransform, filePath);
+        FileReader::addRenderComponent(gameObject, jsonTransform, filePath, ambience);
     }
 
     return 0;

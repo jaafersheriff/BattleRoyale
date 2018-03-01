@@ -18,7 +18,7 @@ class Library {
             return nullptr;
         }
         static void addMesh(const String & name, Mesh & mesh) {
-            meshes.insert({ name, &mesh });
+            meshes.insert(std::make_pair(name, &mesh));
         }
 
         static Texture* getTexture(const String & name) {
@@ -29,7 +29,7 @@ class Library {
             return nullptr;
         }
         static void addTexture(const String & name, Texture *texture) {
-            textures.insert({ name, texture });
+            textures.insert(std::make_pair(name, texture));
         }
 };
 

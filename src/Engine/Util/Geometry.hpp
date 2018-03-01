@@ -46,6 +46,8 @@ struct AABox {
         max(max)
     {}
 
+    glm::vec3 center() const { return (min + max) * 0.5f; }
+
     float volume() const {
         glm::vec3 size(max - min);
         return size.x * size.y * size.z;

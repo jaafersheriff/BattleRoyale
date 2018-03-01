@@ -31,7 +31,7 @@ void RenderSystem::update(float dt) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
 
-    glm::vec2 size = Window::getSize();
+    glm::ivec2 size = Window::getFrameSize();
     glViewport(0, 0, size.x, size.y);
     if (s_camera) {
         /* Loop through active shaders */
@@ -43,7 +43,7 @@ void RenderSystem::update(float dt) {
             /* Frustum culling */
             static Vector<Component *> s_compsToRender;
             for (auto comp : s_diffuseComponents) {
-                const Vector<Component *> & bounders(comp->gameObject()->getComponentsByType<BounderComponent>());
+                const Vector<Component *> & bounders(comp->gameObject().getComponentsByType<BounderComponent>());
                 if (bounders.size()) {
                     bool inFrustum(false);
                     for (Component * bounder_ : bounders) {
