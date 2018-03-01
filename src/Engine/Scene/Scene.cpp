@@ -20,11 +20,25 @@ UnorderedMap<std::type_index, UniquePtr<Vector<UniquePtr<Component>>>> Scene::s_
 
 Vector<UniquePtr<GameObject>> Scene::s_gameObjectInitQueue;
 Vector<GameObject *> Scene::s_gameObjectKillQueue;
-Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Component>>> Scene::s_componentInitQueue;
+Vector<std::pair<std::type_index, UniquePtr<Component>>> Scene::s_componentInitQueue;
 Vector<std::pair<std::type_index, Component *>> Scene::s_componentKillQueue;
 
 Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_messages;
 UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> Scene::s_receivers;
+
+float Scene::totalDT;
+float Scene::gameLogicDT;
+float Scene::spatialDT;
+float Scene::pathfindingDT;
+float Scene::collisionDT;
+float Scene::postCollisionDT;
+float Scene::renderDT;
+float Scene::gameLogicMessagingDT;
+float Scene::spatialMessagingDT;
+float Scene::pathfindingMessagingDT;
+float Scene::collisionMessagingDT;
+float Scene::postCollisionMessagingDT;
+float Scene::renderMessagingDT;
 
 void Scene::init() {
     GameLogicSystem::init();
@@ -46,48 +60,85 @@ void Scene::destroyGameObject(GameObject & gameObject) {
 }
 
 void Scene::update(float dt) {
+    Util::Stopwatch watch;
+
     doInitQueue();
-
-    /* Update systems */
     relayMessages();
+    watch.lap();
+
     GameLogicSystem::update(dt);
+    gameLogicDT = float(watch.lap());
     relayMessages();
-    SoundSystem::update(dt);
-    relayMessages();
-    PathfindingSystem::update(dt);
-    relayMessages();
-    SpatialSystem::update(dt); // needs to happen before collision
-    relayMessages();
-    CollisionSystem::update(dt);
-    relayMessages();
-    PostCollisionSystem::update(dt);
-    relayMessages();
-    RenderSystem::update(dt); // rendering should be last
-    relayMessages();
+    gameLogicMessagingDT = float(watch.lap());
 
+    PathfindingSystem::update(dt);
+    pathfindingDT = float(watch.lap());
+    relayMessages();
+    pathfindingMessagingDT = float(watch.lap());
+
+    SpatialSystem::update(dt); // needs to happen right before collision
+    spatialDT = float(watch.lap());
+    relayMessages();
+    spatialMessagingDT = float(watch.lap());
+
+    CollisionSystem::update(dt);
+    collisionDT = float(watch.lap());
+    relayMessages();
+    collisionMessagingDT = float(watch.lap());
+
+    PostCollisionSystem::update(dt); // needs to happen after collision, go figure
+    postCollisionDT = float(watch.lap());
+    relayMessages();
+    postCollisionMessagingDT = float(watch.lap());
+
+    RenderSystem::update(dt); // rendering should be last
+    renderDT = float(watch.lap());
+    relayMessages();
+    renderMessagingDT = float (watch.lap());
+  
+    // TODO: add profiling for sound system
+    SoundSystem::update(dt); // sound is also last, as it's like rendering for you ears :thinking:
+    relayMessages();    
+  
     doKillQueue();
+
+    totalDT = float(watch.total());
 }
 
 void Scene::doInitQueue() {
+    initGameObjects();
+    initComponents();
+}
+
+void Scene::doKillQueue() {
+    // remove components from game objects
+    for (auto & killC : s_componentKillQueue) {
+        killC.second->gameObject().removeComponent(*killC.second, killC.first);
+    }
+
+    killGameObjects();
+    killComponents();
+}
+
+void Scene::initGameObjects() {
     for (auto & o : s_gameObjectInitQueue) {
         s_gameObjects.emplace_back(std::move(o));
     }
     s_gameObjectInitQueue.clear();
-    
+}
+
+void Scene::initComponents() {    
     // add components to objects
     for (int i(0); i < s_componentInitQueue.size(); ++i) {
         auto & initE(s_componentInitQueue[i]);
-        GameObject * go(std::get<0>(initE));
-        std::type_index typeI(std::get<1>(initE));
-        auto & comp(std::get<2>(initE));
-        go->addComponent(*comp.get(), typeI);
+        auto & comp(initE.second);
+        comp->gameObject().addComponent(*comp.get(), initE.first);
     }
     // add components to scene, initialize them, and indicate to systems that they've been added
     for (int i(0); i < s_componentInitQueue.size(); ++i) {
         auto & initE(s_componentInitQueue[i]);
-        GameObject * go(std::get<0>(initE));
-        std::type_index typeI(std::get<1>(initE));
-        auto & comp(std::get<2>(initE));
+        std::type_index typeI(initE.first);
+        auto & comp(initE.second);
         auto it(s_components.find(typeI));
         if (it == s_components.end()) {
             s_components.emplace(typeI, UniquePtr<Vector<UniquePtr<Component>>>::make());
@@ -95,21 +146,21 @@ void Scene::doInitQueue() {
         }
         it->second->emplace_back(std::move(comp));
         Component & c(*it->second->back());
+        c.init();
         switch (c.systemID()) {
-            case SystemID::    gameLogic:     GameLogicSystem::added(c); break;
-            case SystemID::  pathfinding:   PathfindingSystem::added(c); break;
-            case SystemID::      spatial:       SpatialSystem::added(c); break;
-            case SystemID::    collision:     CollisionSystem::added(c); break;
-            case SystemID::postCollision: PostCollisionSystem::added(c); break;
-            case SystemID::       render:        RenderSystem::added(c); break;
+            case SystemID::    gameLogic: sendMessage<SystemComponentAddedMessage<    GameLogicSystem>>(nullptr, c); break;
+            case SystemID::  pathfinding: sendMessage<SystemComponentAddedMessage<  PathfindingSystem>>(nullptr, c); break;
+            case SystemID::      spatial: sendMessage<SystemComponentAddedMessage<      SpatialSystem>>(nullptr, c); break;
+            case SystemID::    collision: sendMessage<SystemComponentAddedMessage<    CollisionSystem>>(nullptr, c); break;
+            case SystemID::postCollision: sendMessage<SystemComponentAddedMessage<PostCollisionSystem>>(nullptr, c); break;
+            case SystemID::       render: sendMessage<SystemComponentAddedMessage<       RenderSystem>>(nullptr, c); break;
+            case SystemID::        sound: sendMessage<SystemComponentAddedMessage<        SoundSystem>>(nullptr, c); break;
         }
-        c.init(*go);
     }
     s_componentInitQueue.clear();
 }
 
-void Scene::doKillQueue() {
-    // kill game objects
+void Scene::killGameObjects() {
     for (auto killIt(s_gameObjectKillQueue.begin()); killIt != s_gameObjectKillQueue.end(); ++killIt) {
         bool found(false);
         // look in active game objects, in reverse order
@@ -138,15 +189,13 @@ void Scene::doKillQueue() {
         }
     }
     s_gameObjectKillQueue.clear();
-    
-    // kill components
+}
+
+void Scene::killComponents() {
     for (auto & killE : s_componentKillQueue) {
         std::type_index typeI(killE.first);
         Component * comp(killE.second);
-        // remove from game object
-        if (comp->gameObject()) {
-            comp->gameObject()->removeComponent(*comp, typeI);
-        }
+        SystemID sysID(comp->systemID());
         bool found(false);
         // look in active components, in reverse order
         if (s_components.count(typeI)) {
@@ -162,20 +211,20 @@ void Scene::doKillQueue() {
         if (!found) {
             // look in component initialization queue, in reverse order
             for (int i(int(s_componentInitQueue.size()) - 1); i >= 0; --i) {
-                if (std::get<2>(s_componentInitQueue[i]).get() == comp) {
+                if (s_componentInitQueue[i].second.get() == comp) {
                     s_componentInitQueue.erase(s_componentInitQueue.begin() + i);
                     break;
                 }
             }
         }
-        switch (comp->systemID()) {
-            case SystemID::    gameLogic:     GameLogicSystem::removed(*comp); continue;
-            case SystemID::        sound:         SoundSystem::removed(*comp); continue;
-            case SystemID::  pathfinding:   PathfindingSystem::removed(*comp); continue;
-            case SystemID::      spatial:       SpatialSystem::removed(*comp); continue;
-            case SystemID::    collision:     CollisionSystem::removed(*comp); continue;
-            case SystemID::postCollision: PostCollisionSystem::removed(*comp); continue;
-            case SystemID::       render:        RenderSystem::removed(*comp); continue;
+        switch (sysID) {
+            case SystemID::    gameLogic: sendMessage<SystemComponentRemovedMessage<    GameLogicSystem>>(nullptr, comp, typeI); break;
+            case SystemID::  pathfinding: sendMessage<SystemComponentRemovedMessage<  PathfindingSystem>>(nullptr, comp, typeI); break;
+            case SystemID::      spatial: sendMessage<SystemComponentRemovedMessage<      SpatialSystem>>(nullptr, comp, typeI); break;
+            case SystemID::    collision: sendMessage<SystemComponentRemovedMessage<    CollisionSystem>>(nullptr, comp, typeI); break;
+            case SystemID::postCollision: sendMessage<SystemComponentRemovedMessage<PostCollisionSystem>>(nullptr, comp, typeI); break;
+            case SystemID::       render: sendMessage<SystemComponentRemovedMessage<       RenderSystem>>(nullptr, comp, typeI); break;
+            case SystemID::        sound: sendMessage<SystemComponentRemovedMessage<        SoundSystem>>(nullptr, comp, typeI); break;
         }
     }
     s_componentKillQueue.clear();

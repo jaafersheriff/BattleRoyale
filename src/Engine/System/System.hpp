@@ -36,14 +36,6 @@ class System {
     // update system
     static void update(float dt) = 0;
 
-    private:
-
-    // scene notifying system that a component was added
-    static void added(Component & component);
-
-    // scene notifying system that a component was removed
-    static void removed(Component & component);
-
 };
 */
 

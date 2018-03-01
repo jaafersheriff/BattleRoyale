@@ -24,7 +24,7 @@ class NewtonianComponent : public Component {
 
   protected: // only scene or friends can create component
 
-    NewtonianComponent(float maxSpeed);
+    NewtonianComponent(GameObject & gameObject);
 
   public:
 
@@ -34,7 +34,7 @@ class NewtonianComponent : public Component {
 
   protected:
 
-    virtual void init(GameObject & go) override;
+    virtual void init() override;
 
   public:
 
@@ -56,7 +56,6 @@ class NewtonianComponent : public Component {
     SpatialComponent * m_spatial;
     glm::vec3 m_velocity;
     glm::vec3 m_acceleration;
-    float m_maxSpeed;
 
 
 };
@@ -70,7 +69,7 @@ class AcceleratorComponent : public Component {
 
   protected: // only scene or friends can create component
 
-    AcceleratorComponent(const glm::vec3 & acceleration);
+    AcceleratorComponent(GameObject & gameObject, const glm::vec3 & acceleration);
 
   public:
 
@@ -80,7 +79,7 @@ class AcceleratorComponent : public Component {
 
   protected:
 
-    virtual void init(GameObject & go) override;
+    virtual void init() override;
 
   public:
 
@@ -105,7 +104,7 @@ class GravityComponent : public AcceleratorComponent {
 
   protected: // only scene or friends can create component
 
-    GravityComponent();
+    GravityComponent(GameObject & gameObject);
 
   public:
 

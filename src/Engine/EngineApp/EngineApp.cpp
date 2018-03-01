@@ -23,7 +23,7 @@ int EngineApp::init() {
     Scene::init();
     Loader::init(verbose, RESOURCE_DIR);
 
-    lastFrameTime = runTime = Window::getTime();
+    lastFrameTime = runTime = Util::time();
    
     return 0;
 }
@@ -32,7 +32,7 @@ void EngineApp::run() {
 
     while (!Window::shouldClose()) {
         /* Update time and FPS */
-        runTime = Window::getTime();
+        runTime = Util::time();
         timeStep = glm::min((runTime - lastFrameTime), 0.25); // right now physics/collisions break when dt is too large, so this is a workaround
         lastFrameTime = runTime;
         nFrames++;

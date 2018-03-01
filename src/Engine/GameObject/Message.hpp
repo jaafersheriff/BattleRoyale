@@ -143,9 +143,9 @@ struct CollisionAdjustMessage : public Message {
 
 
 // the window was resized
-struct WindowSizeMessage : public Message {
-    int width, height;
-    WindowSizeMessage(int width, int height) : width(width), height(height) {}
+struct WindowFrameSizeMessage : public Message {
+    glm::ivec2 frameSize;
+    WindowFrameSizeMessage(const glm::ivec2 & frameSize) : frameSize(frameSize) {}
 };
 
 
@@ -160,6 +160,29 @@ struct KeyMessage : public Message {
 struct MouseMessage : public Message {
     int button, action, mods;
     MouseMessage(int button, int action, int mods) : button(button), action(action), mods(mods) {}
+};
+
+// scroll input
+struct ScrollMessage : public Message {
+    float dx, dy;
+    ScrollMessage(float dx, float dy) : dx(dx), dy(dy) {}
+};
+
+
+
+// component of system SysT added 
+template <typename SysT>
+struct SystemComponentAddedMessage : public Message {
+    Component & comp;
+    SystemComponentAddedMessage(Component & comp) : comp(comp) {}
+};
+
+// component of system SysT removed
+template <typename SysT>
+struct SystemComponentRemovedMessage : public Message {
+    const void * address;
+    std::type_index typeI;
+    SystemComponentRemovedMessage(const void * address, std::type_index typeI) : address(address), typeI(typeI) {}
 };
 
 
