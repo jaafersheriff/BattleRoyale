@@ -9,8 +9,6 @@ Map<String, FMOD::Sound*> SoundSystem::s_soundLibrary = Map<String, FMOD::Sound*
 CameraComponent* SoundSystem::s_camera = NULL;
 #endif
 
-float count = 0.f;
-
 void SoundSystem::init() {
 #ifdef HAVE_FMOD_LIBRARY
     FMOD_RESULT result;
