@@ -13,7 +13,9 @@
 
 struct Util {
 
-    static constexpr float infinity = std::numeric_limits<float>::infinity();
+    static inline float infinity() {
+        return std::numeric_limits<float>::infinity();
+    }
 
     static inline void printVector(const String & name, const glm::vec3 & vec) {
         std::cout << name << ": <" <<

@@ -14,7 +14,7 @@
 #include <unordered_set>
 #include <map>
 #include <unordered_map>
-#include <stdlib.h>
+#include <cstdlib>
 
 
 #ifdef USE_RPMALLOC
@@ -54,7 +54,7 @@ inline void * allocate(size_t size) {
 #ifdef USE_RPMALLOC
     return coherent_rpmalloc::rpmalloc(size);
 #else
-    return malloc(size);
+    return std::malloc(size);
 #endif
 }
 
@@ -62,7 +62,7 @@ inline void deallocate(void * ptr) {
 #ifdef USE_RPMALLOC
     return coherent_rpmalloc::rpfree(ptr);
 #else
-    return free(ptr);
+    return std::free(ptr);
 #endif
 }
 
