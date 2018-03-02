@@ -201,6 +201,43 @@ class UniquePtr {
 
 };
 
+// std::unique_ptr array variant using custom memory allocator
+template <typename T>
+class UniquePtr<T[]> {
+
+    public:
+
+    static UniquePtr<T[]> make(size_t size);
+
+    public:
+
+    UniquePtr();
+    UniquePtr(const UniquePtr<T[]> & other) = delete;
+    UniquePtr(UniquePtr<T[]> && other);
+
+    ~UniquePtr();
+
+    UniquePtr<T[]> & operator=(const UniquePtr<T[]> & other) = delete;
+    UniquePtr<T[]> & operator=(UniquePtr<T[]> && other);
+
+    T * get() { return m_vs; }
+    const T * get() const { return m_vs; }
+
+    T & operator[](size_t i) { return m_vs[i]; };
+
+    size_t size() const { return m_size; }
+
+    private:
+
+    UniquePtr(T * vs, size_t size);
+
+    private:
+
+    T * m_vs;
+    size_t m_size;
+
+};
+
 
 
 // TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
@@ -250,4 +287,49 @@ UniquePtr<T> & UniquePtr<T>::operator=(UniquePtr<T> && other) {
 template <typename T>
 UniquePtr<T>::UniquePtr(T * v) :
     m_v(v)
+{}
+
+
+
+template <typename T>
+UniquePtr<T[]> UniquePtr<T[]>::make(size_t size) {
+    static_assert(std::is_default_constructible<T>::value, "T must be default constructible");
+    return UniquePtr<T[]>(new (allocate(size * sizeof(T))) T[size], size);
+}
+
+template <typename T>
+UniquePtr<T[]>::UniquePtr() :
+    m_vs(nullptr),
+    m_size(0)
+{}
+
+template <typename T>
+UniquePtr<T[]>::UniquePtr(UniquePtr<T[]> && other) :
+    m_vs(other.m_vs),
+    m_size(other.m_size)
+{
+    other.m_vs = nullptr;
+    other.m_size = 0;
+}
+
+template <typename T>
+UniquePtr<T[]>::~UniquePtr() {
+    if (!m_vs) return;
+    for (size_t i(0); i < m_size; ++i) m_vs[i].~T();
+    deallocate(m_vs);
+}
+
+template <typename T>
+UniquePtr<T[]> & UniquePtr<T[]>::operator=(UniquePtr<T[]> && other) {
+    m_vs = other.m_vs;
+    m_size = other.m_size;
+    other.m_vs = nullptr;
+    other.m_size = 0;
+    return *this;
+}
+
+template <typename T>
+UniquePtr<T[]>::UniquePtr(T * vs, size_t size) :
+    m_vs(vs),
+    m_size(size)
 {}
