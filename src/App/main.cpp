@@ -150,7 +150,7 @@ void createEnemy(const glm::vec3 & position) {
     GameObject & obj(Scene::createGameObject());
     SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, scale));
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
-    GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
+    //GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
     BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *mesh, false, true, false));
     PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed));
     DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, toon);   
@@ -233,9 +233,10 @@ int main(int argc, char **argv) {
     RenderSystem::setCamera(player::cameraComp);
 
     // Add Enemies
-    int nEnemies(5);
-    for (int i(0); i < 5; ++i) {
-        createEnemy(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f));
+    int nEnemies(1);
+    for (int i(0); i < 1; ++i) {
+        //createEnemy(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f));
+        createEnemy(glm::vec3(0, -1.7f, -20.f));
     }
 
     //--------------------------------------------------------------------------

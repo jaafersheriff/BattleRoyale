@@ -53,7 +53,7 @@ void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, 
     }
 
 #ifdef DEBUG_MODE
-    if (key == GLFW_KEY_GRAVE_ACCENT && mods & GLFW_MOD_CONTROL && action == GLFW_PRESS) {
+    if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
         toggleImGui();
     }
     else if (key == GLFW_KEY_F && action == GLFW_PRESS && isImGuiEnabled()) {

@@ -6,7 +6,10 @@
 #include <iostream>
 #include <queue>
 
+#include "Loader/Loader.hpp"
+
 class PathfindingSystem;
+
 
 namespace glm {
 namespace detail {
@@ -38,6 +41,25 @@ namespace std {
 	}
 }
 
+struct customCompare {
+
+	bool operator()(const glm::vec3& lhs, const glm::vec3& rhs)
+	{
+		float radius = 5.f;
+
+		if (lhs.x < rhs.x + radius && lhs.x > rhs.x - radius) {
+			if (lhs.y < rhs.y + radius && lhs.y > rhs.y - radius) {
+				if (lhs.z < rhs.z + radius && lhs.z > rhs.z - radius) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+};
+
+
 
 class PathfindingComponent : public Component {
 
@@ -55,6 +77,8 @@ class PathfindingComponent : public Component {
 
     virtual void init() override;
 
+    void print_queue(std::queue<glm::vec3> q);
+
     public:
 
     virtual SystemID systemID() const override { return SystemID::pathfinding; };
@@ -68,13 +92,16 @@ class PathfindingComponent : public Component {
     float m_moveSpeed;
 
 
-    struct node
-    {
-    	int updateCount;
-    	glm::vec3 wPos;
-    };
+    glm::vec3 curPos;
+    bool prevCollision;
 
-    const std::queue<node> map;
-    const std::unordered_map<glm::vec3, glm::vec3[]> graph;
+    int slowTime;
+    int dirIndex;
+
+    glm::vec3 prevMove;
+    Vector<glm::vec3> curPosNeighbors;
+    std::queue<glm::vec3> pos_queue;
+    std::unordered_set<glm::vec3, std::hash<glm::vec3>, customCompare> visitedSet;
+    UnorderedMap<glm::vec3, Vector<glm::vec3>> graph;
 
 };
