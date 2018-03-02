@@ -243,6 +243,74 @@ struct Util {
 
     };
 
+    using nat = intptr_t;
+
+    template <typename T, typename std::enable_if<std::is_floating_point<T>::value, int>::type = 0>
+    constexpr static nat floor(T v) {
+        nat i = nat(v);
+        return i - (v < i);
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static T floor(T v) {
+        return v;
+    }
+
+    template <typename T, typename std::enable_if<std::is_floating_point<T>::value, int>::type = 0>
+    constexpr static nat ceil(T v) {
+        nat i = nat(v);
+        return i + (v > i);
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static T ceil(T v) {
+        return v;
+    }
+
+    template <typename T>
+    constexpr static T pow2(int v) {
+        return T(1) << v;
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static bool isPow2(T v) {
+        return (v & (v - 1)) == 0;
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static T log2Floor(T v) {
+        static_assert(sizeof(T) <= 8, "log2 function needs updated for larger integer types");
+
+        T log(0);
+
+        if (sizeof(T) >= 8)
+            if (v & 0xFFFFFFFF00000000ULL) { v >>= 32; log += 32; }
+        if (sizeof(T) >= 4)
+            if (v & 0x00000000FFFF0000ULL) { v >>= 16; log += 16; }
+        if (sizeof(T) >= 2)
+            if (v & 0x000000000000FF00ULL) { v >>=  8; log +=  8; }
+        if     (v & 0x00000000000000F0ULL) { v >>=  4; log +=  4; }
+        if     (v & 0x000000000000000CULL) { v >>=  2; log +=  2; }
+        if     (v & 0x0000000000000002ULL) {           log +=  1; }
+
+        return log;
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static T log2Ceil(T v) {
+        return log2Floor(2 * v - 1);
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static T floor2(T v) {
+        return T(1) << log2Floor(v);
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static T ceil2(T v) {
+        return T(1) << log2Ceil(v);
+    }
+
 };
 
 

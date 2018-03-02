@@ -182,6 +182,10 @@ class UniquePtr {
     UniquePtr<T> & operator=(const UniquePtr<T> & other) = delete;
     UniquePtr<T> & operator=(UniquePtr<T> && other);
 
+    explicit operator bool() const { return m_v != nullptr; }
+
+    void release();
+
     T * get() { return m_v; }
     const T * get() const { return m_v; }
 
@@ -219,6 +223,10 @@ class UniquePtr<T[]> {
 
     UniquePtr<T[]> & operator=(const UniquePtr<T[]> & other) = delete;
     UniquePtr<T[]> & operator=(UniquePtr<T[]> && other);
+
+    explicit operator bool() const { return m_vs != nullptr; }
+
+    void release();
 
     T * get() { return m_vs; }
     const T * get() const { return m_vs; }
@@ -272,9 +280,7 @@ UniquePtr<T>::UniquePtr(UniquePtr<U> && other) :
 
 template <typename T>
 UniquePtr<T>::~UniquePtr() {
-    if (!m_v) return;
-    m_v->~T();
-    deallocate(m_v);
+    release();
 }
 
 template <typename T>
@@ -282,6 +288,15 @@ UniquePtr<T> & UniquePtr<T>::operator=(UniquePtr<T> && other) {
     m_v = other.m_v;
     other.m_v = nullptr;
     return *this;
+}
+
+template <typename T>
+void UniquePtr<T>::release() {
+    if (!m_v) return;
+    m_v->~T();
+    deallocate(m_v);
+    m_v = nullptr;
+    m_size = 0;
 }
 
 template <typename T>
@@ -314,9 +329,7 @@ UniquePtr<T[]>::UniquePtr(UniquePtr<T[]> && other) :
 
 template <typename T>
 UniquePtr<T[]>::~UniquePtr() {
-    if (!m_vs) return;
-    for (size_t i(0); i < m_size; ++i) m_vs[i].~T();
-    deallocate(m_vs);
+    release();
 }
 
 template <typename T>
@@ -326,6 +339,15 @@ UniquePtr<T[]> & UniquePtr<T[]>::operator=(UniquePtr<T[]> && other) {
     other.m_vs = nullptr;
     other.m_size = 0;
     return *this;
+}
+
+template <typename T>
+void UniquePtr<T[]>::release() {
+    if (!m_vs) return;
+    for (size_t i(0); i < m_size; ++i) m_vs[i].~T();
+    deallocate(m_vs);
+    m_vs = nullptr;
+    m_size = 0;
 }
 
 template <typename T>

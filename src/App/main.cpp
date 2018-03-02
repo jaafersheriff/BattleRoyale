@@ -188,6 +188,8 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
 
 
 int main(int argc, char **argv) {
+
+    std::cout << "ok";
     if (parseArgs(argc, argv) || EngineApp::init()) {
         std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
