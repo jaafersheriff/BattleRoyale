@@ -5,10 +5,10 @@
 #include "System/PathfindingSystem.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Scene/Scene.hpp"
+#include "Util/Util.hpp"
 
-#include "glm/gtx/string_cast.hpp"
-
-PathfindingComponent::PathfindingComponent(GameObject & player, float ms) :
+PathfindingComponent::PathfindingComponent(GameObject & gameObject, GameObject & player, float ms) :
+    Component(gameObject),
     m_spatial(nullptr),
     m_player(&player),
     m_moveSpeed(ms)

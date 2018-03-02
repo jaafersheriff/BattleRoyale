@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <chrono>
 
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -13,7 +14,11 @@
 
 struct Util {
 
-    static constexpr float infinity = std::numeric_limits<float>::infinity();
+    static inline float infinity() {
+        return std::numeric_limits<float>::infinity();
+    }
+
+    static constexpr float epsilon = std::numeric_limits<float>::epsilon();
 
     static inline void printVector(const String & name, const glm::vec3 & vec) {
         std::cout << name << ": <" <<
@@ -27,12 +32,28 @@ struct Util {
         return sign ? k_posAxisVecs[axis] : k_negAxisVecs[axis];
     }
 
-    static inline bool isZero(float v) {
-        return glm::abs(v) < std::numeric_limits<float>::epsilon();
+    static inline bool isZero(float v, float e = epsilon) {
+        return glm::abs(v) < e;
     }
 
-    static inline bool isZero(const glm::vec3 & v) {
-        return isZero(v.x) && isZero(v.y) && isZero(v.z);
+    static inline bool isZero(const glm::vec3 & v, float e = epsilon) {
+        return isZero(v.x, e) && isZero(v.y, e) && isZero(v.z, e);
+    }
+
+    static inline bool isEqual(float v1, float v2, float e = epsilon) {
+        return isZero(v1 - v2, e);
+    }
+
+    static inline bool isEqual(const glm::vec3 & v1, const glm::vec3 & v2, float e = epsilon) {
+        return isZero(v1 - v2, e);
+    }
+
+    static inline bool isGreater(float v1, float v2, float e = epsilon) {
+        return v1 - v2 > -e;
+    }
+
+    static inline bool isLess(float v1, float v2, float e = epsilon) {
+        return v1 - v2 < e;
     }
 
     // for adding up a large number of floats
@@ -190,6 +211,37 @@ struct Util {
         r_v2 = (s - b) * d;
         return true;
     }
+
+    static double time() {
+        using namespace std::chrono;
+        static high_resolution_clock::time_point s_start(high_resolution_clock::now());
+        return duration_cast<std::chrono::duration<double>>(high_resolution_clock::now() - s_start).count();
+    }
+
+    class Stopwatch {
+
+        public:
+
+        Stopwatch() :
+            initT(time()),
+            lapT(initT)
+        {}
+
+        double lap() {
+            double last(lapT);
+            lapT = time();
+            return lapT - last;
+        }
+
+        double total() const {
+            return time() - initT;
+        }
+
+        private:
+
+        double initT, lapT;
+
+    };
 
 };
 

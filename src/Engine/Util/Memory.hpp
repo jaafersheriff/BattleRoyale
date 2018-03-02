@@ -1,9 +1,8 @@
 #pragma once
 
-
-
+#ifndef __GNUC__
 #define USE_RPMALLOC
-
+#endif
 
 
 #include <scoped_allocator>
@@ -14,7 +13,7 @@
 #include <unordered_set>
 #include <map>
 #include <unordered_map>
-
+#include <cstdlib>
 
 
 #ifdef USE_RPMALLOC

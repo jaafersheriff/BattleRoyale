@@ -19,7 +19,7 @@ class CameraControllerComponent : public Component {
 
     protected: // only scene or friends can create component
 
-        CameraControllerComponent(float ls, float ms);
+        CameraControllerComponent(GameObject & gameObject, float lookSpeed, float minMoveSpeed, float maxMoveSpeed);
 
     public:
 
@@ -27,7 +27,7 @@ class CameraControllerComponent : public Component {
 
     protected:
 
-        virtual void init(GameObject & go) override;
+        virtual void init() override;
 
     public:
 
@@ -43,7 +43,9 @@ class CameraControllerComponent : public Component {
 
         SpatialComponent * m_spatial;
         CameraComponent * m_camera;
-        float m_lookSpeed, m_moveSpeed;
+        float m_lookSpeed;
+        float m_minMoveSpeed, m_maxMoveSpeed;
+        float m_moveSpeed;
         bool m_enabled; // TODO: way for any component / game object to be enabled/disabled
 
 };

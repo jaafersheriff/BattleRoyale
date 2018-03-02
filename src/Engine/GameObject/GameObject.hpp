@@ -70,11 +70,17 @@ class GameObject {
 
 template <typename CompT>
 void GameObject::addComponent(CompT & component) {
+    static_assert(std::is_base_of<Component, CompT>::value, "CompT must be a component type");
+    static_assert(!std::is_same<CompT, Component>::value, "CompT must be a derived component type");
+
     addComponent(component, std::type_index(typeid(CompT)));
 }
 
 template <typename CompT>
 const Vector<Component *> & GameObject::getComponentsByType() const {
+    static_assert(std::is_base_of<Component, CompT>::value, "CompT must be a component type");
+    static_assert(!std::is_same<CompT, Component>::value, "CompT must be a derived component type");
+
     static const Vector<Component *> s_emptyList;
 
     auto it(m_compsByCompT.find(std::type_index(typeid(CompT))));
@@ -86,6 +92,9 @@ const Vector<Component *> & GameObject::getComponentsByType() const {
 
 template <typename CompT>
 CompT * GameObject::getComponentByType() const {
+    static_assert(std::is_base_of<Component, CompT>::value, "CompT must be a component type");
+    static_assert(!std::is_same<CompT, Component>::value, "CompT must be a derived component type");
+
     auto it(m_compsByCompT.find(std::type_index(typeid(CompT))));
     if (it != m_compsByCompT.end() && it->second.size()) {
         return static_cast<CompT *>(it->second.front());
