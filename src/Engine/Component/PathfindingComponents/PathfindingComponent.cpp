@@ -23,17 +23,24 @@ void PathfindingComponent::init() {
     slowTime = 0;
 
     curPosNeighbors = Vector<glm::vec3>();
-    //visitedSet = unordered_set<glm::vec3>();
+    visitedSet = Vector<glm::vec3>();
     pos_queue = std::queue<glm::vec3>();
 
+    glm::vec3 tmpPos = gameObject().getSpatial()->position();
+
     // Node for the starting pos
-    //pos_queue.push(gameObject().getSpatial()->position());
+    visitedSet.push_back(tmpPos);
+
+    // Set curPos to the objects initial pos
+    searchFromPos = tmpPos;
+
+    //drawCup(tmpPos);
 
     // Flag for if we recieved a collision message
     prevCollision = false;
 
     // Greater than 16 to start off the loop
-    dirIndex = 100;
+    dirIndex = 0;
 
     // Function called when the object collides with something
     auto collisionCallback([&](const Message & msg_) {
@@ -52,82 +59,96 @@ void PathfindingComponent::init() {
 
 void PathfindingComponent::update(float dt) {
 
-    float stepSize = 3.0f;
-    const int xdir[] = {1, 1, 0, -1, -1, -1, 0, 1};
-    const int zdir[] = {0, 1, 1, 1, 0, -1, -1, -1};
+	const int xdir[] = {1, 1, 0, -1, -1, -1, 0, 1};
+	const int zdir[] = {0, 1, 1, 1, 0, -1, -1, -1};
+	float stepSize = 1.f;
+	glm::vec3 curPos;
 
-    //if (slowTime++ > 1) {
-
-	    // sanity check
-	    // should never be have a collision at a pos that is in the visited set
-	    auto search = visitedSet.find(gameObject().getSpatial()->position());
-	    if (search != visitedSet.end() && prevCollision) {
-	    	std::cout << "Collision occured at a position in the vistiedSet: " + glm::to_string(gameObject().getSpatial()->position()) << std::endl;
-	    }
+	//if (slowTime++ > 50) {
 
 
-	    // The previous move didn't collide with anything, create of get its node and update the graph with it
-	    if (!prevCollision && visitedSet.find(gameObject().getSpatial()->position()) == visitedSet.end()) {
-	    	//std::cout << "Pushed: " + glm::to_string(gameObject().getSpatial()->position()) << std::endl;
-	    	pos_queue.push(gameObject().getSpatial()->position());
-	    	//print_queue(pos_queue);
 
-	    	auto ret = visitedSet.insert(gameObject().getSpatial()->position());
-	    	if (ret.second) {
-	    		glm::vec3 tmp = gameObject().getSpatial()->position();
-	    		std::cout << "Added " << tmp.x << ", " << tmp.y << ", " << tmp.z << " to visited" << std::endl;
+	curPos = gameObject().getSpatial()->position();
 
-	    		glm::vec3 position = gameObject().getSpatial()->position();
-			    Mesh * mesh(Loader::getMesh("Cup.obj"));
-			    DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
-			    ModelTexture modelTex(.2f, glm::vec3(.20f, 1.0f, .20f), glm::vec3(1.0f));
-			    bool toon(false);
-			    glm::vec3 scale(.1f);
-			    unsigned int collisionWeight(0);
-			    float moveSpeed(0.0f);
+	if (!prevCollision && curPos != searchFromPos) {
+		// TODO: add to searchFrom's validNeighbors
 
-			    GameObject & obj(Scene::createGameObject());
-			    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, scale));
-			    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, true));
-	    	}
-	    }
+		
+		// curPos isn't in the visitedSet
+		if (!findInVisited(curPos)) {
+			// Add curPos to the visitedSet and push it onto the queue to be searched
+			visitedSet.push_back(curPos);
+			pos_queue.push(curPos);
 
-	    // Reset the collision flag
-	    prevCollision = false;
+			//DEBUG
+			drawCup(curPos);
+		}
+	}
+	
 
-	    // while the object hasn't tried every direction
-	    if (dirIndex < 16) {
-	    	if (dirIndex % 2) {
-	    		gameObject().getSpatial()->setPosition(glm::vec3(curPos.x, curPos.y, curPos.z), false);
-	    	}
-	    	else {
-	    		//std::cout << "x: " << xdir[dirIndex / 2] << " z: " << zdir[dirIndex/2] << std::endl;
-	    		// every other tick is a move out from the center, divide by 2 to get the actual direction index
-	    		int index = dirIndex / 2;
-	    		// Cardinal directions
-	    		if (!xdir[index] || !zdir[index]) {
-	    			gameObject().getSpatial()->move(Util::safeNorm(glm::vec3(xdir[index], 0, zdir[index])) * stepSize);
-	    		}
-	    		// Diagonals, multiply by sqrt(2) to make a grid and not a circle
-	    		else {
-	    			gameObject().getSpatial()->move(Util::safeNorm(glm::vec3(xdir[index], 0, zdir[index])) * stepSize * (float)sqrt(2));
-	    		}
-	    	}
-	    	dirIndex++;
-	    }
-	    else {
-	    	// Attempted to move to every neighbor
-	    	dirIndex = 0;
-	    	curPos = pos_queue.front();
-	    	pos_queue.pop();
+	// Reset collision flag
+	prevCollision = false;
 
-	    //	std::cout << "new curPos: " + glm::to_string(curPos) << std::endl;
+	if (dirIndex < 16) {
+		if (dirIndex % 2) {
+			gameObject().getSpatial()->setPosition(searchFromPos, false);
+		}
+		else {
+			// every other ticke is a move out from the center, divide by 2 to get the correct dirIndex
+			int index = dirIndex / 2;
 
-	    }
-	    //std::cout << gameObject().getSpatial()->position().x << ", " << gameObject().getSpatial()->position().y << ", " << gameObject().getSpatial()->position().z << std::endl;
-	    //slowTime = 0;
-	//}
+			// Cardinal directions
+			if (!xdir[index] || !zdir[index]) {
+				// If the pos is in the vistitedSet then its valid and we don't need to check collisions
+				if (!findInVisited(glm::vec3(searchFromPos.x + xdir[index], searchFromPos.y, searchFromPos.z + zdir[index]))) {
+					gameObject().getSpatial()->move(Util::safeNorm(glm::vec3(xdir[index], 0, zdir[index])) * stepSize);
+				}
+			}
+			// Diagonals, multiply by sqrt(2) to make a grid and not a circle
+			else {
+				if (!findInVisited(glm::vec3(searchFromPos.x + xdir[index], searchFromPos.y, searchFromPos.z + zdir[index]))) {
+					gameObject().getSpatial()->move(Util::safeNorm(glm::vec3(xdir[index], 0, zdir[index])) *stepSize * (float)sqrt(2));
+				}
+			}
+		}
+		dirIndex++;
+	}
+	// Searched all neighbors, move to a new searchFromPos
+	else {
+		dirIndex = 0;
 
+		if (!pos_queue.empty()) {
+			searchFromPos = pos_queue.front();
+			pos_queue.pop();
+		}
+		else {
+			searchFromPos = glm::vec3(0.f);
+		}
+
+		gameObject().getSpatial()->setPosition(searchFromPos, false);
+
+	}
+
+	slowTime = 0;
+
+	//}	
+
+}
+
+bool PathfindingComponent::findInVisited(glm::vec3 vec) {
+	float epsilon = .3f;
+
+	for (glm::vec3 test : visitedSet) {
+		if (abs(test.x - vec.x) < epsilon) {
+			if (abs(test.y - vec.y) < epsilon) {
+				if (abs(test.z - vec.z) < epsilon) {
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 void PathfindingComponent::print_queue(std::queue<glm::vec3> q)
@@ -138,4 +159,18 @@ void PathfindingComponent::print_queue(std::queue<glm::vec3> q)
     q.pop();
   }
   std::cout << std::endl;
+}
+
+void PathfindingComponent::drawCup(glm::vec3 position) {
+	Mesh * mesh(Loader::getMesh("Cup.obj"));
+    DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
+    ModelTexture modelTex(.2f, glm::vec3(.20f, 1.0f, .20f), glm::vec3(1.0f));
+    bool toon(false);
+    glm::vec3 scale(.1f);
+    unsigned int collisionWeight(0);
+    float moveSpeed(0.0f);
+
+    GameObject & obj(Scene::createGameObject());
+    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, scale));
+    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, true));
 }
