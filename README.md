@@ -24,3 +24,4 @@
 
 #### Misc
 - `ctrl-left-click` fire bouncy ray
+- `F11` or `alt-enter` toggle fullscreen
