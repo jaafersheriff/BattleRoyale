@@ -69,6 +69,7 @@ void RenderSystem::renderScene(const CameraComponent *camera, bool shadowRender)
 
             /* Frustum culling */
             static Vector<Component *> s_compsToRender;
+            // TODO : call this on shader-specific component list
             for (auto comp : s_diffuseComponents) {
                 const Vector<Component *> & bounders(comp->gameObject()->getComponentsByType<BounderComponent>());
                 if (bounders.size()) {
