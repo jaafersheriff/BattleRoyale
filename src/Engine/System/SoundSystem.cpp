@@ -20,7 +20,7 @@ void SoundSystem::init() {
         printf("failed to create system");
     }
 
-    result = s_system->init(36, FMOD_INIT_NORMAL, NULL);
+    result = s_system->init(36, FMOD_INIT_3D_RIGHTHANDED, NULL);
     if (result != FMOD_OK) {
         printf("failed to initialize system\n");
     }
