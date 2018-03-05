@@ -15,8 +15,8 @@ PathfindingComponent::PathfindingComponent(GameObject & gameObject, GameObject &
     // Wander code start
     wanderCurrent = glm::vec3(0.f, 0.f, 0.f);
     
-    wanderCurrentWeight = .999f;
-    wanderWeight = .9325f;
+    wanderCurrentWeight = .9f;
+    wanderWeight = .9f;
     // Wander code end
 }
 
@@ -34,11 +34,11 @@ void PathfindingComponent::update(float dt) {
 
     // Wander code start
     glm::vec3 wanderNext;
-    wanderNext = glm::vec3(
+    wanderNext = Util::safeNorm(glm::vec3(
         (float) ((rand() % 200) - 100), 
         (float) ((rand() % 200) - 100),
         (float) ((rand() % 200) - 100)
-    );
+    ));
 
     wanderCurrent = Util::safeNorm(
         wanderCurrentWeight * wanderCurrent +
