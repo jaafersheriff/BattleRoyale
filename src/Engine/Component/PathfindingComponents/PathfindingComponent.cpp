@@ -1,10 +1,6 @@
 #include "PathfindingComponent.hpp"
 
 #include "glm/gtx/norm.hpp"
-// Wander code start
-#include "glm/glm.hpp"
-#include "glm/gtc/random.hpp"
-// Wander code end
 
 #include "System/PathfindingSystem.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
