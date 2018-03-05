@@ -5,8 +5,6 @@
 
 class ParticleComponent : Component {
 
-    // Example effects
-
     protected:
         ParticleComponent(GameObject & gameobject);
 

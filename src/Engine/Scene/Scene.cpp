@@ -11,6 +11,7 @@
 #include "System/CollisionSystem.hpp"
 #include "System/PostCollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
+#include "System/ParticleSystem.hpp"
 
 
 
@@ -46,6 +47,7 @@ void Scene::init() {
     CollisionSystem::init();
     PostCollisionSystem::init();
     RenderSystem::init();
+    ParticleSystem::init();
 }
 
 GameObject & Scene::createGameObject() {
@@ -88,6 +90,10 @@ void Scene::update(float dt) {
     postCollisionDT = float(watch.lap());
     relayMessages();
     postCollisionMessagingDT = float(watch.lap());
+
+    // TO DO: Timing
+    ParticleSystem::update(dt);
+    relayMessages();
 
     RenderSystem::update(dt); // rendering should be last
     renderDT = float(watch.lap());

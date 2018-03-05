@@ -12,9 +12,8 @@ void ParticleComponent::init() {
 
 void ParticleComponent::update(float dt) {
 
-    for (auto pe : activeEffects) {
-        //update
-        // if duration is over, remove
+    for (auto & pe : activeEffects) {
+        pe.update(dt);
     }
 }
 
