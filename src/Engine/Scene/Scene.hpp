@@ -90,12 +90,14 @@ class Scene {
     static float gameLogicDT;
     static float spatialDT;
     static float pathfindingDT;
+    static float statsDT;
     static float collisionDT;
     static float postCollisionDT;
     static float renderDT;
     static float gameLogicMessagingDT;
     static float spatialMessagingDT;
     static float pathfindingMessagingDT;
+    static float statsMessagingDT;
     static float collisionMessagingDT;
     static float postCollisionMessagingDT;
     static float renderMessagingDT;

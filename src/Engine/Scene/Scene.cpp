@@ -8,6 +8,7 @@
 #include "System/GameLogicSystem.hpp"
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"
+#include "System/StatsSystem.hpp"
 #include "System/CollisionSystem.hpp"
 #include "System/PostCollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
@@ -29,12 +30,14 @@ float Scene::totalDT;
 float Scene::gameLogicDT;
 float Scene::spatialDT;
 float Scene::pathfindingDT;
+float Scene::statsDT;
 float Scene::collisionDT;
 float Scene::postCollisionDT;
 float Scene::renderDT;
 float Scene::gameLogicMessagingDT;
 float Scene::spatialMessagingDT;
 float Scene::pathfindingMessagingDT;
+float Scene::statsMessagingDT;
 float Scene::collisionMessagingDT;
 float Scene::postCollisionMessagingDT;
 float Scene::renderMessagingDT;
@@ -42,6 +45,7 @@ float Scene::renderMessagingDT;
 void Scene::init() {
     GameLogicSystem::init();
     PathfindingSystem::init();
+    StatsSystem::init();
     SpatialSystem::init();
     CollisionSystem::init();
     PostCollisionSystem::init();
@@ -73,6 +77,11 @@ void Scene::update(float dt) {
     pathfindingDT = float(watch.lap());
     relayMessages();
     pathfindingMessagingDT = float(watch.lap());
+
+    StatsSystem::update(dt);
+    statsDT = float(watch.lap());
+    relayMessages();
+    statsMessagingDT = float(watch.lap());
 
     SpatialSystem::update(dt); // needs to happen right before collision
     spatialDT = float(watch.lap());
@@ -144,6 +153,7 @@ void Scene::initComponents() {
         switch (c.systemID()) {
             case SystemID::    gameLogic: sendMessage<SystemComponentAddedMessage<    GameLogicSystem>>(nullptr, c); break;
             case SystemID::  pathfinding: sendMessage<SystemComponentAddedMessage<  PathfindingSystem>>(nullptr, c); break;
+            case SystemID::        stats: sendMessage<SystemComponentAddedMessage<        StatsSystem>>(nullptr, c); break;
             case SystemID::      spatial: sendMessage<SystemComponentAddedMessage<      SpatialSystem>>(nullptr, c); break;
             case SystemID::    collision: sendMessage<SystemComponentAddedMessage<    CollisionSystem>>(nullptr, c); break;
             case SystemID::postCollision: sendMessage<SystemComponentAddedMessage<PostCollisionSystem>>(nullptr, c); break;
@@ -213,6 +223,7 @@ void Scene::killComponents() {
         switch (sysID) {
             case SystemID::    gameLogic: sendMessage<SystemComponentRemovedMessage<    GameLogicSystem>>(nullptr, comp, typeI); break;
             case SystemID::  pathfinding: sendMessage<SystemComponentRemovedMessage<  PathfindingSystem>>(nullptr, comp, typeI); break;
+            case SystemID::        stats: sendMessage<SystemComponentRemovedMessage<        StatsSystem>>(nullptr, comp, typeI); break;
             case SystemID::      spatial: sendMessage<SystemComponentRemovedMessage<      SpatialSystem>>(nullptr, comp, typeI); break;
             case SystemID::    collision: sendMessage<SystemComponentRemovedMessage<    CollisionSystem>>(nullptr, comp, typeI); break;
             case SystemID::postCollision: sendMessage<SystemComponentRemovedMessage<PostCollisionSystem>>(nullptr, comp, typeI); break;
