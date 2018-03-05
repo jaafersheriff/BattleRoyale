@@ -375,7 +375,7 @@ int main(int argc, char **argv) {
     });
     Scene::addReceiver<MouseMessage>(nullptr, fireCallback);
 
-    // Shoot ray (cntrl-click)
+    // Shoot ray (ctrl-click)
     int rayDepth(100);
     Vector<glm::vec3> rayPositions;
     auto rayPickCallback([&](const Message & msg_) {
