@@ -272,23 +272,26 @@ int main(int argc, char **argv) {
         }
     );
 
-    // VSync toggle
+    // Misc
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
-        "VSync",
-        []() {
+        "Misc",
+        [&]() {
+            /* Light dir */
+            ImGui::SliderFloat3("LightDir", glm::value_ptr(light::dir), -1.f, 1.f);
+            /* VSync */
             if (ImGui::Button("VSync")) {
                 Window::toggleVSync();
             }
-        }
-    );
-
-    // Light config
-    Scene::addComponent<ImGuiComponent>(
-        imguiGO,
-        "Light",
-        [&]() {
-            ImGui::SliderFloat3("LightDir", glm::value_ptr(light::dir), -1.f, 1.f);
+            /* Path finding */
+            if (ImGui::Button("Turn off Path finding")) {
+                for (auto e : f_enemies) {
+                    PathfindingComponent *p = e->getComponentByType<PathfindingComponent>();
+                    if (p) {
+                        p->setMoveSpeed(0.f);
+                    }
+                }
+            }
         }
     );
 
@@ -320,14 +323,16 @@ int main(int argc, char **argv) {
                 ImGui::End();
                 ImGui::Begin("Cell Shading");
                 for (int i = 0; i < cells; i++) {
-                    float vals[2];
-                    float minBounds[2] = { -1.f, 0.f };
-                    float maxBounds[2] = { 1.f, 1.f };
+                    float vals[3];
+                    float minBounds[3] = { -1.f,  0.f,  0.f };
+                    float maxBounds[3] = {  1.f,  1.f,  1.f };
                     vals[0] = RenderSystem::getShader<DiffuseShader>()->getCellIntensity(i);
-                    vals[1] = RenderSystem::getShader<DiffuseShader>()->getCellScale(i);
-                    ImGui::SliderFloat2(("Cell " + std::to_string(i)).c_str(), vals, minBounds, maxBounds);
+                    vals[1] = RenderSystem::getShader<DiffuseShader>()->getCellDiffuseScale(i);
+                    vals[2] = RenderSystem::getShader<DiffuseShader>()->getCellSpecularScale(i);
+                    ImGui::SliderFloat3(("Cell " + std::to_string(i)).c_str(), vals, minBounds, maxBounds);
                     RenderSystem::getShader<DiffuseShader>()->setCellIntensity(i, vals[0]);
-                    RenderSystem::getShader<DiffuseShader>()->setCellScale(i, vals[1]);
+                    RenderSystem::getShader<DiffuseShader>()->setCellDiffuseScale(i, vals[1]);
+                    RenderSystem::getShader<DiffuseShader>()->setCellSpecularScale(i, vals[2]);
                 }
             }
         }

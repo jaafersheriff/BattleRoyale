@@ -12,7 +12,8 @@ DiffuseShader::DiffuseShader(const String & vertFile, const String & fragFile, c
     Shader(vertFile, fragFile),
     lightDir(&light) {
     cellIntensities.resize(1, 1.f);
-    cellScales.resize(1, 1.f);
+    cellDiffuseScales.resize(1, 1.f);
+    cellSpecularScales.resize(1, 1.f);
 }
 
 bool DiffuseShader::init() {
@@ -44,7 +45,8 @@ bool DiffuseShader::init() {
     addUniform("silAngle");
     addUniform("numCells");
     addUniform("cellIntensities");
-    addUniform("cellScales");
+    addUniform("cellDiffuseScales");
+    addUniform("cellSpecularScales");
     
     /* Generate 1D Textures with initial size of 16 floats */
     glActiveTexture(GL_TEXTURE0);
@@ -53,14 +55,20 @@ bool DiffuseShader::init() {
     glTexStorage1D(GL_TEXTURE_1D, 1, GL_R32F, 16*4);
     GLSL::checkError();
 
-    glGenTextures(1, &cellScalesTexture);
-    glActiveTexture(GL_TEXTURE0 + cellScalesTexture);
-    glBindTexture(GL_TEXTURE_1D, cellScalesTexture);
+    glGenTextures(1, &cellDiffuseScalesTexture);
+    glActiveTexture(GL_TEXTURE0 + cellDiffuseScalesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellDiffuseScalesTexture);
+    glTexStorage1D(GL_TEXTURE_1D, 1, GL_R32F, 16*4);
+    GLSL::checkError();
+
+    glGenTextures(1, &cellSpecularScalesTexture);
+    glActiveTexture(GL_TEXTURE0 + cellSpecularScalesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellSpecularScalesTexture);
     glTexStorage1D(GL_TEXTURE_1D, 1, GL_R32F, 16*4);
     GLSL::checkError();
 
     glBindTexture(GL_TEXTURE_1D, 0);
-    assert(glGetError() == GL_NO_ERROR);
+    GLSL::checkError();
 
     return true;
 }
@@ -84,13 +92,20 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     loadFloat(getUniform("silAngle"), silAngle);
     loadFloat(getUniform("numCells"), (float)numCells);
     loadInt(getUniform("cellIntensities"), cellIntensitiesTexture);
+    loadInt(getUniform("cellDiffuseScales"), cellDiffuseScalesTexture);
+    loadInt(getUniform("cellSpecularScales"), cellSpecularScalesTexture);
+
+    // TODO : move cell intensities and scales to material and initialize it during json pass
+    // TODO : only upload this data once when the material is loaded in
     glActiveTexture(GL_TEXTURE0 + cellIntensitiesTexture);
     glBindTexture(GL_TEXTURE_1D, cellIntensitiesTexture);
     glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellIntensities.size()), GL_RED, GL_FLOAT, cellIntensities.data());
-    loadInt(getUniform("cellScales"), cellScalesTexture);
-    glActiveTexture(GL_TEXTURE0 + cellScalesTexture);
-    glBindTexture(GL_TEXTURE_1D, cellScalesTexture);
-    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellScales.size()), GL_RED, GL_FLOAT, cellScales.data());
+    glActiveTexture(GL_TEXTURE0 + cellDiffuseScalesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellDiffuseScalesTexture);
+    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellDiffuseScales.size()), GL_RED, GL_FLOAT, cellDiffuseScales.data());
+    glActiveTexture(GL_TEXTURE0 + cellSpecularScalesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellSpecularScalesTexture);
+    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellSpecularScales.size()), GL_RED, GL_FLOAT, cellSpecularScales.data());
 
     for (Component * comp : components) {
         // TODO : component list should be passed in as diffuserendercomponent
@@ -190,11 +205,13 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
 void DiffuseShader::setCells(unsigned int in) {
     numCells = glm::min(in, (unsigned int)16);
     cellIntensities.resize(numCells, 0.f);
-    cellScales.resize(numCells, 0.f);
+    cellDiffuseScales.resize(numCells, 0.f);
+    cellSpecularScales.resize(numCells, 0.f);
     for (int i = 0; i < int(numCells); i++) {
         float scale = 1.f - i / (float)numCells;
         cellIntensities[i] = (scale - 0.5f) * 2.0f;
-        cellScales[i] = scale;
+        cellDiffuseScales[i] = scale;
+        cellSpecularScales[i] = scale;
     }
 }
 
@@ -202,6 +219,9 @@ void DiffuseShader::setCellIntensity(unsigned int i, float f) {
     cellIntensities[i] = (i == 0) ? f : glm::min(cellIntensities[i - 1], f);
 }
 
-void DiffuseShader::setCellScale(unsigned int i, float f) {
-    cellScales[i] = (i == 0) ? f : glm::min(cellScales[i - 1], f);
+void DiffuseShader::setCellDiffuseScale(unsigned int i, float f) {
+    cellDiffuseScales[i] = (i == 0) ? f : glm::min(cellDiffuseScales[i - 1], f);
+}
+void DiffuseShader::setCellSpecularScale(unsigned int i, float f) {
+    cellSpecularScales[i] = (i == 0) ? f : glm::min(cellSpecularScales[i - 1], f);
 }
