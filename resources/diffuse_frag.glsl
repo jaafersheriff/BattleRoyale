@@ -43,7 +43,6 @@ void main() {
     if (isToon) {
         for(int i = 0; i < numCells; i++) {
             if(lambert > texelFetch(cellIntensities, i, 0).r) {
-                diffuseContrib = specularContrib = texelFetch(cellIntensities, i, 0).r;
                 diffuseContrib = texelFetch(cellDiffuseScales, i, 0).r;
                 specularContrib = pow(texelFetch(cellSpecularScales, i, 0).r, shine);
                 break;
