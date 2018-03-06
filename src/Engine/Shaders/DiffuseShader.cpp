@@ -5,12 +5,13 @@
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/BounderComponent.hpp"
-#include "System/CollisionSystem.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 
-DiffuseShader::DiffuseShader(const String & vertFile, const String & fragFile, const glm::vec3 & light) :
-    Shader(vertFile, fragFile),
-    lightDir(&light) {
+#include "System/CollisionSystem.hpp"
+#include "System/RenderSystem.hpp"
+
+DiffuseShader::DiffuseShader(const String & vertFile, const String & fragFile) :
+    Shader(vertFile, fragFile) {
     cellIntensities.resize(1, 1.f);
     cellDiffuseScales.resize(1, 1.f);
     cellSpecularScales.resize(1, 1.f);
@@ -85,7 +86,7 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     /* Bind uniforms */
     loadMat4(getUniform("P"), camera->getProj());
     loadMat4(getUniform("V"), camera->getView());
-    loadVec3(getUniform("lightDir"), *lightDir);
+    loadVec3(getUniform("lightDir"), RenderSystem::getLightDir());
     loadVec3(getUniform("camPos"), camera->gameObject().getSpatial()->position());
 
     /* Toon shading */

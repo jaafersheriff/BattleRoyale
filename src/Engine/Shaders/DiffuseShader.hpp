@@ -7,12 +7,10 @@
 
 class DiffuseShader : public Shader {
     public:
-        DiffuseShader(const String & vertFile, const String & fragFile, const glm::vec3 & light);
+        DiffuseShader(const String & vertFile, const String & fragFile);
 
         bool init();
         virtual void render(const CameraComponent * camera, const Vector<Component *> &) override;
-
-        const glm::vec3 * lightDir;
 
         /* Wire frame */
         bool isWireFrame() const { return showWireFrame; }
