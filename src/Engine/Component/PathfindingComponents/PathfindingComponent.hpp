@@ -37,4 +37,9 @@ class PathfindingComponent : public Component {
     SpatialComponent * m_spatial;
     GameObject * m_player;
     float m_moveSpeed;
+    // Wander code start
+    glm::vec3 wanderCurrent;
+    float wanderCurrentWeight;
+    float wanderWeight;
+    // Wander code end
 };

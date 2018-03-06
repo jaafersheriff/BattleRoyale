@@ -11,7 +11,14 @@ PathfindingComponent::PathfindingComponent(GameObject & gameObject, GameObject &
     m_spatial(nullptr),
     m_player(&player),
     m_moveSpeed(ms)
-{}
+{
+    // Wander code start
+    wanderCurrent = glm::vec3(0.f, 0.f, 0.f);
+    
+    wanderCurrentWeight = .9f;
+    wanderWeight = .9f;
+    // Wander code end
+}
 
 void PathfindingComponent::init() {
     if (!(m_spatial = gameObject().getSpatial())) assert(false);
@@ -24,6 +31,22 @@ void PathfindingComponent::update(float dt) {
     if (glm::length2(dir) < 0.001f) {
         return;
     }
-    
+
+    // Wander code start
+    glm::vec3 wanderNext;
+    wanderNext = Util::safeNorm(glm::vec3(
+        (float) ((rand() % 200) - 100), 
+        (float) ((rand() % 200) - 100),
+        (float) ((rand() % 200) - 100)
+    ));
+
+    wanderCurrent = Util::safeNorm(
+        wanderCurrentWeight * wanderCurrent +
+        (1.f - wanderCurrentWeight) * wanderNext
+    );
+
+    dir = dir * (1.f - wanderWeight) + wanderCurrent * wanderWeight;
+    // Wander code end
+
     gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
 }
