@@ -12,7 +12,6 @@
 enum class SystemID {
     gameLogic,
     pathfinding,
-    enemy,
     spatial,
     collision,
     postCollision,
