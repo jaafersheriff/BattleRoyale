@@ -27,8 +27,10 @@ class DiffuseShader : public Shader {
         void setCells(unsigned int in);
         float getCellIntensity(unsigned int i) { return cellIntensities[i]; }
         void setCellIntensity(unsigned int i, float f);
-        float getCellScale(unsigned int i) { return cellScales[i]; }
-        void setCellScale(unsigned int i, float f);
+        float getCellDiffuseScale(unsigned int i) { return cellDiffuseScales[i]; }
+        void setCellDiffuseScale(unsigned int i, float f);
+        float getCellSpecularScale(unsigned int i) { return cellSpecularScales[i]; }
+        void setCellSpecularScale(unsigned int i, float f);
 
     private:
         /* Wire frame */
@@ -39,9 +41,11 @@ class DiffuseShader : public Shader {
         float silAngle = 0.f;
         unsigned int numCells = 1;
         Vector<float> cellIntensities;
+        Vector<float> cellDiffuseScales;
+        Vector<float> cellSpecularScales;
         GLuint cellIntensitiesTexture;
-        Vector<float> cellScales;
-        GLuint cellScalesTexture;
+        GLuint cellDiffuseScalesTexture;
+        GLuint cellSpecularScalesTexture;
 };
 
 #endif 
