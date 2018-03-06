@@ -13,7 +13,7 @@ class PathfindingComponent : public Component {
     
     protected: // only scene or friends can create component
 
-    PathfindingComponent(GameObject & gameObject, GameObject & player, float ms);
+    PathfindingComponent(GameObject & gameObject, GameObject & player, float ms, bool wander);
 
     public:
 
@@ -37,9 +37,8 @@ class PathfindingComponent : public Component {
     SpatialComponent * m_spatial;
     GameObject * m_player;
     float m_moveSpeed;
-    // Wander code start
-    glm::vec3 wanderCurrent;
-    float wanderCurrentWeight;
-    float wanderWeight;
-    // Wander code end
+    bool m_wander;
+    glm::vec3 m_wanderCurrent;
+    float m_wanderCurrentWeight;
+    float m_wanderWeight;
 };
