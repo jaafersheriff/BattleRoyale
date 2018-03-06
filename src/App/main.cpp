@@ -274,8 +274,6 @@ int main(int argc, char **argv) {
         imguiGO,
         "Misc",
         [&]() {
-            /* Light dir */
-            ImGui::SliderFloat3("LightDir", glm::value_ptr(light::dir), -1.f, 1.f);
             /* VSync */
             if (ImGui::Button("VSync")) {
                 Window::toggleVSync();
@@ -289,6 +287,18 @@ int main(int argc, char **argv) {
                     }
                 }
             }
+        }
+    );
+    
+    // Shadows 
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO,
+        "Shadows",
+        [&]() {
+            /* Light dir */
+            ImGui::SliderFloat3("LightDir", glm::value_ptr(light::dir), -1.f, 1.f);
+            /* Shadow map FBO */
+            ImGui::Image((ImTextureID)RenderSystem::shadowShader->getShadowMapTexture(), ImVec2(128, 128));
         }
     );
 
