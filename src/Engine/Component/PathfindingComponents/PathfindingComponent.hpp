@@ -29,6 +29,9 @@ class PathfindingComponent : public Component {
 
     virtual void update(float) override;
 
+    // TODO : just add enable/disable options for all components?
+    void setMoveSpeed(float f) { this->m_moveSpeed = f; }
+
     private:
 
     SpatialComponent * m_spatial;
