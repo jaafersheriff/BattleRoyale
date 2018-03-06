@@ -152,7 +152,7 @@ void createEnemy(const glm::vec3 & position) {
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
     GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
     BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *mesh, false, true, false));
-    PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed));
+    PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed, false));
     DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, toon);   
     EnemyComponent & enemyComp(Scene::addComponent<EnemyComponent>(obj));
     
