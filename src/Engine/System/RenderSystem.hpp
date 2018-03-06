@@ -48,16 +48,18 @@ public:
 
     static void setCamera(const CameraComponent * camera);
 
-    static void setLightDir(const glm::vec3);
-    static glm::vec3 getLightDir();
-
     static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
     static UnorderedMap<std::type_index, UniquePtr<Shader>> s_shaders;
 
     static const CameraComponent * s_playerCamera;
 
     /* Light stuff */
+    static GameObject * s_lightObject;
+    static SpatialComponent * s_lightSpatial;
     static CameraComponent * s_lightCamera;
+    static glm::vec3 getLightDir();
+    static void setLightDir(glm::vec3);
+
 
     /* Shadow shader */
     static ShadowDepthShader * shadowShader;

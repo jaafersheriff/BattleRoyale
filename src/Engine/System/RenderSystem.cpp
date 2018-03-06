@@ -12,7 +12,9 @@
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 UnorderedMap<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
 const CameraComponent * RenderSystem::s_playerCamera = nullptr;
+GameObject * RenderSystem::s_lightObject = nullptr;
 CameraComponent * RenderSystem::s_lightCamera = nullptr;
+SpatialComponent * RenderSystem::s_lightSpatial = nullptr;
 ShadowDepthShader * RenderSystem::shadowShader = nullptr;
 
 void RenderSystem::init() {
@@ -24,8 +26,10 @@ void RenderSystem::init() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     /* Init light */
-    
-
+    s_lightObject = &Scene::createGameObject();
+    s_lightSpatial = &Scene::addComponent<SpatialComponent>(*s_lightObject);
+    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, 45.f, 0.01f, 300.f);
+ 
     /* Init shadow shader */
     shadowShader = new ShadowDepthShader(
         EngineApp::RESOURCE_DIR + "shadow_vert.glsl",
@@ -118,10 +122,10 @@ void RenderSystem::setCamera(const CameraComponent * camera) {
     s_playerCamera = camera;
 }
 
-void RenderSystem::setLightDir(const glm::vec3 dir) {
-    s_lightCamera->setUVW(s_lightCamera->u(), s_lightCamera->v(), dir);
+glm::vec3 RenderSystem::getLightDir() {
+    return -s_lightCamera->w();
 }
 
-glm::vec3 RenderSystem::getLightDir() {
-    return -s_lightCamera->getLookDir();
+void RenderSystem::setLightDir(glm::vec3 in) {
+    s_lightCamera->lookInDir(in);
 }

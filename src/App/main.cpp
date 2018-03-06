@@ -128,13 +128,6 @@ namespace freecam {
 
 }
 
-// Light data and functions
-namespace light {
-
-    glm::vec3 dir = glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f));
-
-}
-
 Vector<GameObject *> f_enemies;
 Vector<GameObject *> f_projectiles;
 
@@ -197,7 +190,7 @@ int main(int argc, char **argv) {
     // Shader Setup
 
     // Diffuse shader
-    if (!RenderSystem::createShader<DiffuseShader>("diffuse_vert.glsl", "diffuse_frag.glsl", light::dir)) {
+    if (!RenderSystem::createShader<DiffuseShader>("diffuse_vert.glsl", "diffuse_frag.glsl")) {
         return EXIT_FAILURE;
     }
 
@@ -231,6 +224,10 @@ int main(int argc, char **argv) {
 
     // Set primary camera
     RenderSystem::setCamera(player::cameraComp);
+
+    // Set light
+    RenderSystem::setLightDir(glm::vec3(-0.25f, -0.7f, 0.7f));
+    RenderSystem::s_lightSpatial->setPosition(RenderSystem::getLightDir() * 1.f);
 
     // Add Enemies
     int nEnemies(5);
@@ -296,7 +293,9 @@ int main(int argc, char **argv) {
         "Shadows",
         [&]() {
             /* Light dir */
-            ImGui::SliderFloat3("LightDir", glm::value_ptr(light::dir), -1.f, 1.f);
+            glm::vec3 lightDir = RenderSystem::getLightDir();
+            ImGui::SliderFloat3("LightDir", glm::value_ptr(lightDir), -1.f, 1.f);
+            RenderSystem::setLightDir(lightDir);
             /* Shadow map FBO */
             ImGui::Image((ImTextureID)RenderSystem::shadowShader->getShadowMapTexture(), ImVec2(128, 128));
         }
