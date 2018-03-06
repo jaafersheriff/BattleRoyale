@@ -102,6 +102,12 @@ namespace player {
         bounderComp = &Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(*gameObject, 5, playerCap);
         cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, k_fov, k_near, k_far);
         controllerComp = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_lookSpeed, k_moveSpeed, k_jumpSpeed, k_sprintSpeed);
+
+        // An example of using object initialization message
+        auto initCallback([&](const Message & msg) {            
+            cameraComp->lookInDir(cameraComp->getLookDir());
+        });
+        Scene::addReceiver<ObjectInitMessage>(gameObject, initCallback);
     }
 
 }

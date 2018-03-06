@@ -69,6 +69,17 @@ struct Message {
 
 
 
+// a game object was initialized. This is sent out after Scene's init queue is finished
+struct ObjectInitMessage : public Message {
+    ObjectInitMessage() {}
+};
+// a game object was killed. This is sent out after Scene's kill queue is finished
+struct ObjectKillMessage : public Message {
+    ObjectKillMessage() {}
+};
+
+
+
 // a spatial was transformed in some way
 // tag for the following six messages
 // Don't use this as a message type!!

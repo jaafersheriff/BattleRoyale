@@ -116,6 +116,7 @@ void Scene::doKillQueue() {
 
 void Scene::initGameObjects() {
     for (auto & o : s_gameObjectInitQueue) {
+        sendMessage<ObjectInitMessage>(o.get());
         s_gameObjects.emplace_back(std::move(o));
     }
     s_gameObjectInitQueue.clear();
@@ -155,6 +156,7 @@ void Scene::initComponents() {
 
 void Scene::killGameObjects() {
     for (auto killIt(s_gameObjectKillQueue.begin()); killIt != s_gameObjectKillQueue.end(); ++killIt) {
+        sendMessage<ObjectKillMessage>(*killIt);
         bool found(false);
         // look in active game objects, in reverse order
         for (int i(int(s_gameObjects.size()) - 1); i >= 0; --i) {
