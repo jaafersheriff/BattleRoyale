@@ -9,6 +9,7 @@
 
 #include "glm/gtx/string_cast.hpp"
 
+
 PathfindingComponent::PathfindingComponent(GameObject & gameObject, GameObject & player, float ms) :
     Component(gameObject),
     m_spatial(nullptr),
@@ -22,7 +23,7 @@ void PathfindingComponent::init() {
 
     slowTime = 0;
 
-    curPosNeighbors = Vector<glm::vec3>();
+    //visitedSet = std::unordered_set<glm::vec3, vecHash, customCompare>();
     visitedSet = Vector<glm::vec3>();
     pos_queue = std::queue<glm::vec3>();
 
@@ -34,7 +35,11 @@ void PathfindingComponent::init() {
     // Set curPos to the objects initial pos
     searchFromPos = tmpPos;
 
+    std::cout << "Start at: " << tmpPos.x << ", " << tmpPos.y << ", " << tmpPos.z << std::endl;
+
     //drawCup(tmpPos);
+
+    validNeighbors = Vector<glm::vec3>();
 
     // Flag for if we recieved a collision message
     prevCollision = false;
@@ -71,8 +76,8 @@ void PathfindingComponent::update(float dt) {
 	curPos = gameObject().getSpatial()->position();
 
 	if (!prevCollision && curPos != searchFromPos) {
-		// TODO: add to searchFrom's validNeighbors
-
+		// add to searchFrom's validNeighbors
+		validNeighbors.push_back(curPos);
 		
 		// curPos isn't in the visitedSet
 		if (!findInVisited(curPos)) {
@@ -97,17 +102,27 @@ void PathfindingComponent::update(float dt) {
 			// every other ticke is a move out from the center, divide by 2 to get the correct dirIndex
 			int index = dirIndex / 2;
 
+			glm::vec3 nextStep = glm::vec3(searchFromPos.x + xdir[index] * stepSize, searchFromPos.y, searchFromPos.z + zdir[index] * stepSize);
+
 			// Cardinal directions
 			if (!xdir[index] || !zdir[index]) {
 				// If the pos is in the vistitedSet then its valid and we don't need to check collisions
-				if (!findInVisited(glm::vec3(searchFromPos.x + xdir[index], searchFromPos.y, searchFromPos.z + zdir[index]))) {
+				//if (!findInVisited(glm::vec3(searchFromPos.x + xdir[index], searchFromPos.y, searchFromPos.z + zdir[index]))) {
+				if (!findInVisited(nextStep)) {
 					gameObject().getSpatial()->move(Util::safeNorm(glm::vec3(xdir[index], 0, zdir[index])) * stepSize);
+				}
+				else {
+					validNeighbors.push_back(nextStep);
 				}
 			}
 			// Diagonals, multiply by sqrt(2) to make a grid and not a circle
 			else {
-				if (!findInVisited(glm::vec3(searchFromPos.x + xdir[index], searchFromPos.y, searchFromPos.z + zdir[index]))) {
+				if (!findInVisited(nextStep)) {
+				//if (!findInVisited(glm::vec3(searchFromPos.x + xdir[index], searchFromPos.y, searchFromPos.z + zdir[index]))) {
 					gameObject().getSpatial()->move(Util::safeNorm(glm::vec3(xdir[index], 0, zdir[index])) *stepSize * (float)sqrt(2));
+				}
+				else {
+					validNeighbors.push_back(nextStep);
 				}
 			}
 		}
@@ -116,12 +131,41 @@ void PathfindingComponent::update(float dt) {
 	// Searched all neighbors, move to a new searchFromPos
 	else {
 		dirIndex = 0;
+/*
+		std::cout << "**************************" << std::endl;
+		std::cout << "Length of neigbor list " << validNeighbors.size() << std::endl;
+
+		for (glm::vec3 vec : validNeighbors) {
+			std:: cout << vec.x << ", " << vec.y << ", " << vec.z << std::endl;
+		}
+
+		std::cout << "**************************" << std::endl;
+*/
+		// create node and push it in to graph
+		graph.push_back(Node(searchFromPos, validNeighbors));
+		validNeighbors = Vector<glm::vec3>();
 
 		if (!pos_queue.empty()) {
+		
 			searchFromPos = pos_queue.front();
 			pos_queue.pop();
 		}
 		else {
+			std::ofstream outFile;
+			outFile.open("testOut.txt");
+
+			if (outFile) {
+				for (Node node : graph) {
+					outFile <<
+						node.position.x << "," <<
+						node.position.y << "," <<
+						node.position.z << "," <<
+						vectorToString(node.neighbors) << '\n';
+
+				}
+			}
+
+			std::cout << "Length of total first floor graph: " << graph.size() << std::endl;
 			searchFromPos = glm::vec3(0.f);
 		}
 
@@ -135,13 +179,26 @@ void PathfindingComponent::update(float dt) {
 
 }
 
+std::string PathfindingComponent::vectorToString(Vector<glm::vec3> vec) {
+	std::string ret = "";
+
+	for (glm::vec3 tmpVec : vec) {
+		ret += glm::to_string(tmpVec) + ",";
+	}
+
+	return ret;
+}
+
+
+
 bool PathfindingComponent::findInVisited(glm::vec3 vec) {
 	float epsilon = .3f;
 
-	for (glm::vec3 test : visitedSet) {
-		if (abs(test.x - vec.x) < epsilon) {
-			if (abs(test.y - vec.y) < epsilon) {
-				if (abs(test.z - vec.z) < epsilon) {
+	//for (glm::vec3 test : visitedSet) {
+	for (std::vector<glm::vec3>::reverse_iterator test = visitedSet.rbegin(); test != visitedSet.rend(); ++test) {
+		if (abs(test->x - vec.x) < epsilon) {
+			if (abs(test->y - vec.y) < epsilon) {
+				if (abs(test->z - vec.z) < epsilon) {
 					return true;
 				}
 			}

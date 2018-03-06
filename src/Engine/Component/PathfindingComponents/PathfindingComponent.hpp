@@ -3,6 +3,7 @@
 #include "Component/Component.hpp"
 
 #include "glm/glm.hpp"
+#include "glm/gtx/norm.hpp"
 #include <iostream>
 #include <queue>
 
@@ -10,31 +11,55 @@
 
 class PathfindingSystem;
 
+namespace detail {
 
-struct customCompare {
+  inline void hash_combine(size_t &seed, size_t hash)
+  {
+    //Magic number is the golden ratio used to randomize bits
+    hash += 0x9e3779b9 + (seed << 6) + (seed >> 2);
+    seed ^= hash;
+  }
 
-	bool operator()(const glm::vec3& lhs, const glm::vec3& rhs)
+
+	struct vecHash
 	{
-		float radius = 2.5f;
+	  size_t operator()(const glm::vec3 &v) const {
+	  	static std::string s_scratch(sizeof(glm::vec3), 0);
+	  	std::memcpy(const_cast<char *>(s_scratch.c_str()), &v, sizeof(glm::vec3));
+	  	return std::hash<std::string>()(s_scratch);
+	    /*size_t seed = 0;
+	    std::hash<float> hasher;
+	    hash_combine(seed, hasher(v.x));
+	    hash_combine(seed, hasher(v.y));
+	    hash_combine(seed, hasher(v.z));
+	    return seed;*/
+	  }
+	};
 
-		std::cout << "Left: " <<  lhs.x << ", " << lhs.y << ", " << lhs.z << std::endl;
-		std::cout << "Right: " <<  rhs.x << ", " << rhs.y << ", " << rhs.z << std::endl;
 
-		if (lhs.x < rhs.x + radius && lhs.x > rhs.x - radius) {
-			if (lhs.y < rhs.y + radius && lhs.y > rhs.y - radius) {
-				if (lhs.z < rhs.z + radius && lhs.z > rhs.z - radius) {
-					
-					std::cout << "customCompare: true" << std::endl;
-					return false;
-				}
+	struct customCompare {
+
+		bool operator()(const glm::vec3& lhs, const glm::vec3& rhs)
+		{
+			float radius = .5f;
+
+			if (glm::distance2(lhs, rhs) > radius * radius) {
+				return false;
 			}
+			return true;
 		}
+	};
+}
 
-		std::cout << "customCompare: false" << std::endl;
-		return true;
-	}
+struct Node {
+	glm::vec3 position;
+	Vector<glm::vec3> neighbors;
+
+	Node(glm::vec3 pos, Vector<glm::vec3> neighbors) :
+		position(pos),
+		neighbors(neighbors)
+	{}
 };
-
 
 
 class PathfindingComponent : public Component {
@@ -56,6 +81,7 @@ class PathfindingComponent : public Component {
     void print_queue(std::queue<glm::vec3> q);
     void drawCup(glm::vec3 position);
     bool findInVisited(glm::vec3 vec);
+    std::string vectorToString(Vector<glm::vec3> vec);
 
     public:
 
@@ -78,10 +104,10 @@ class PathfindingComponent : public Component {
     int dirIndex;
 
     glm::vec3 prevMove;
-    Vector<glm::vec3> curPosNeighbors;
     std::queue<glm::vec3> pos_queue;
-    //std::set<glm::vec3, customCompare> visitedSet;
+    //std::unordered_set<glm::vec3, detail::vecHash, detail::customCompare> visitedSet;
     Vector<glm::vec3> visitedSet;
-    //UnorderedMap<glm::vec3, Vector<glm::vec3>> graph;
+    Vector<Node> graph;
+    Vector<glm::vec3> validNeighbors;
 
 };
