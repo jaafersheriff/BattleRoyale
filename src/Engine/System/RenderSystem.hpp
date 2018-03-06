@@ -29,10 +29,13 @@ public:
 
     static void init();
 
+    /* Full render function including shadow maps, main render calls, and post-processing */
+    static void update(float dt);
+
     /* Iterate through shaders map
         * Bind individual shaders 
         * Call shaders' render function with the appropriate render component list */
-    static void update(float dt);
+    static void renderScene(const CameraComponent *, bool shadowRender);
 
     // creates a new shader and initializes it
     template<typename ShaderT, typename... Args> static bool createShader(Args &&... args);
@@ -47,7 +50,6 @@ public:
 
     static void setLightDir(const glm::vec3);
     static glm::vec3 getLightDir();
-    static GLuint getShadowMap() { return shadowShader->getShadowMapTexture(); }
 
     static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
     static UnorderedMap<std::type_index, UniquePtr<Shader>> s_shaders;
@@ -60,8 +62,6 @@ public:
     /* Shadow shader */
     static ShadowDepthShader * shadowShader;
 
-
-    static void renderScene(const CameraComponent *, bool shadowRender);
 };
 
 

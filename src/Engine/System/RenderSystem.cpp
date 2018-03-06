@@ -90,6 +90,8 @@ void RenderSystem::renderScene(const CameraComponent *camera, bool shadowRender)
                 }
             }
 
+            /* If this is the shadow render pass, then the shadow shader will already be bound 
+             * Otherwise, bind the current shader program */
             if (!shadowRender) {
                 shader.second->bind();
             }
