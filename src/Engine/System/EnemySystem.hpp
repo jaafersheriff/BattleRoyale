@@ -4,12 +4,12 @@
 #include "Component/EnemyComponents/EnemyComponent.hpp"
 
 // static class
-class StatsSystem {
+class EnemySystem {
     friend Scene;
     
     public:
 
-    static constexpr SystemID ID = SystemID::stats;
+    static constexpr SystemID ID = SystemID::enemy;
 
     public:
 

@@ -13,6 +13,7 @@
 #include "System/GameLogicSystem.hpp"
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"
+#include "System/EnemySystem.hpp"
 #include "System/CollisionSystem.hpp"
 #include "System/PostCollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
@@ -90,14 +91,14 @@ class Scene {
     static float gameLogicDT;
     static float spatialDT;
     static float pathfindingDT;
-    static float statsDT;
+    static float enemyDT;
     static float collisionDT;
     static float postCollisionDT;
     static float renderDT;
     static float gameLogicMessagingDT;
     static float spatialMessagingDT;
     static float pathfindingMessagingDT;
-    static float statsMessagingDT;
+    static float enemyMessagingDT;
     static float collisionMessagingDT;
     static float postCollisionMessagingDT;
     static float renderMessagingDT;
