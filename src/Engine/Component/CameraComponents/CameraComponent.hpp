@@ -81,8 +81,6 @@ class CameraComponent : public Component, public Orientable {
 
         void detUVW();
 
-        void detAngles();
-
         void detView() const;
         void detProj() const;
         void detFrustum() const;
