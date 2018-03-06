@@ -49,11 +49,6 @@ public:
     static glm::vec3 getLightDir();
     static GLuint getShadowMap() { return shadowShader->getShadowMapTexture(); }
 
-private:
-    static void added(Component & component) {};
-
-    static void removed(Component & component) {};
-
     static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
     static UnorderedMap<std::type_index, UniquePtr<Shader>> s_shaders;
 

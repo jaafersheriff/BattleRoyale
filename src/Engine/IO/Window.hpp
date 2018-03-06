@@ -14,13 +14,10 @@
 #include "Mouse.hpp"
 #include "Keyboard.hpp"
 
-#define DEFAULT_WIDTH 1280
-#define DEFAULT_HEIGHT 720
-
+// static class
 class Window {
+    
     public:
-       /* Reference to GLFW window, mouse, keyboard */
-        static GLFWwindow * window;
 
         /* Init */
         static int init(const String &);
@@ -34,42 +31,48 @@ class Window {
         /* Return if window should close */
         static int shouldClose();
 
-        /* Return running time */
-        static double getTime();
-
         /* Shut down */
         static void shutDown();
 
-        /* Set window size */
-        static void setSize(int w, int h);
-        static glm::ivec2 getSize();
-        static float getAspectRatio();
+        static void setSize(const glm::ivec2 & size);
+        static const glm::ivec2 & getSize() { return s_fullscreen ? s_fullscreenSize : s_windowedSize; }
+        static const glm::ivec2 & getFrameSize() { return s_frameSize; }
+        static float getAspectRatio() { return float(s_frameSize.x) / float(s_frameSize.y); }
+
+        static bool isFullscreen() { return s_fullscreen; }
 
         static void toggleVSync();
-        static bool isVSyncEnabled() { return vSyncEnabled; }
+        static bool isVSyncEnabled() { return s_vSyncEnabled; }
 
         /* ImGui */
         static void toggleImGui();
-        static bool isImGuiEnabled() { return imGuiEnabled; }
+        static bool isImGuiEnabled() { return s_imGuiEnabled; }
 
         static void setCursorEnabled(bool enabled);
         static void toggleCursorEnabled();
 
     private:
     
-        static bool vSyncEnabled;
-        static bool cursorEnabled;
-
-        /* ImGui */
-        static bool imGuiEnabled;
+        /* Reference to GLFW window */
+        static GLFWwindow * s_window;
+        static glm::ivec2 s_frameSize;
+        static glm::ivec2 s_windowedSize;
+        static glm::ivec2 s_fullscreenSize;
+        static bool s_fullscreen;
+        static bool s_vSyncEnabled;
+        static bool s_cursorEnabled;
+        static bool s_imGuiEnabled;
 
         /* Callback functions */
         static void errorCallback(int, const char *);
         static void keyCallback(GLFWwindow *, int, int, int, int);
         static void mouseButtonCallback(GLFWwindow *, int, int, int);
+        static void scrollCallback(GLFWwindow *, double dx, double dy);
         static void characterCallback(GLFWwindow *, unsigned int);
+        static void windowSizeCallback(GLFWwindow *, int width, int height);
         static void framebufferSizeCallback(GLFWwindow *, int width, int height);
         static void cursorEnterCallback(GLFWwindow * window, int entered);
+
 };
 
 #endif

@@ -26,12 +26,6 @@ class PostCollisionSystem {
 
     private:
 
-    static void added(Component & component) {};
-
-    static void removed(Component & component) {};
-
-    private:
-
     static const Vector<GroundComponent *> & s_groundComponents;
 
 };

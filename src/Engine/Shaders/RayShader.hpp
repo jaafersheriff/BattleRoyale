@@ -22,12 +22,12 @@ class RayShader : public Shader {
 
     virtual void render(const CameraComponent * camera, const Vector<Component *> &) override;
 
-    void setRay(const Ray & ray); // TODO: don't have it work this way once rendering has been fixed
+    void setPositions(const Vector<glm::vec3> & positions);
 
     private:
 
-    Ray m_ray;
+    Vector<glm::vec3> m_positions;
     unsigned int m_vbo, m_ibo, m_vao;
-    mutable bool m_rayValid;
+    mutable bool m_positionsValid;
 
 };

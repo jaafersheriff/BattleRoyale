@@ -5,6 +5,14 @@
 
 
 
+namespace {
+
+constexpr float k_collisionE = 0.000001f;
+
+}
+
+
+
 bool collide(const AABox & box1, const AABox & box2, glm::vec3 * delta_) {
     if (
         box1.min.x >= box2.max.x || box1.max.x <= box2.min.x ||
@@ -55,7 +63,7 @@ bool collide(const AABox & box, const Sphere & sphere, glm::vec3 * delta_) {
     glm::vec3 dVec(p - sphere.origin);
     float d2(glm::length2(dVec));
     
-    if (d2 >= sphere.radius * sphere.radius) {
+    if (Util::isGreater(d2, sphere.radius * sphere.radius, k_collisionE)) {
         return false;
     }
     if (!delta_) {
@@ -77,7 +85,7 @@ bool collide(const AABox & box, const Sphere & sphere, glm::vec3 * delta_) {
 
         delta = sphere.origin - p;
         glm::vec3 aDelta(glm::abs(delta));
-        glm::vec3 boxC(box.min + (box.max - box.min) * 0.5f);
+        glm::vec3 boxC(box.center());
 
         // preserve onlz minimum component and add radius
         if (aDelta.x < aDelta.z) {
@@ -117,7 +125,7 @@ bool collide(const AABox & box, const Capsule & cap, glm::vec3 * delta_) {
     glm::vec3 dVec(boxP - rodP);
     float d2(glm::length2(dVec));
     
-    if (d2 >= cap.radius * cap.radius) {
+    if (Util::isGreater(d2, cap.radius * cap.radius, k_collisionE)) {
         return false;
     }
     if (!delta_) {
@@ -132,7 +140,7 @@ bool collide(const AABox & box, const Capsule & cap, glm::vec3 * delta_) {
     }
     // rod core is at least partially inside box
     else {
-        glm::vec3 boxC(box.min + (box.max - box.min) * 0.5f);
+        glm::vec3 boxC(box.center());
 
         if (cap.center.y < boxC.y) {
             boxP.y = glm::clamp(highP.y, box.min.y, box.max.y);
@@ -196,7 +204,7 @@ bool collide(const Sphere & sphere1, const Sphere & sphere2, glm::vec3 * delta) 
     glm::vec3 dVec(sphere1.origin - sphere2.origin);
     float d2(glm::length2(dVec));
     
-    if (d2 >= combR * combR) {
+    if (Util::isGreater(d2, combR * combR, k_collisionE)) {
         return false;
     }
     if (!delta) {
@@ -222,7 +230,7 @@ bool collide(const Sphere & sphere, const Capsule & cap, glm::vec3 * delta) {
     glm::vec3 dVec(sphere.origin - rodP);
     float d2(glm::length2(dVec));
 
-    if (d2 >= combR * combR) {
+    if (Util::isGreater(d2, combR * combR, k_collisionE)) {
         return false;
     }
     if (!delta) {
@@ -256,7 +264,7 @@ bool collide(const Capsule & cap1, const Capsule & cap2, glm::vec3 * delta) {
     glm::vec3 dVec(rodP1 - rodP2);
     float d2(glm::length2(dVec));
 
-    if (d2 >= combR * combR) {
+    if (Util::isGreater(d2, combR * combR, k_collisionE)) {
         return false;
     }
     if (!delta) {
@@ -458,13 +466,13 @@ Intersect intersectLowerHemiRelative(const Ray & ray, float r) {
     return inter;
 }
 
-Intersect intersectUpperHemi(const Ray & ray, Sphere & sphere) {
+Intersect intersectUpperHemi(const Ray & ray, const Sphere & sphere) {
     Intersect inter(intersectUpperHemiRelative(Ray(ray.pos - sphere.origin, ray.dir), sphere.radius));
     if (inter.is) inter.pos += sphere.origin;
     return inter;
 }
 
-Intersect intersectLowerHemi(const Ray & ray, Sphere & sphere) {
+Intersect intersectLowerHemi(const Ray & ray, const Sphere & sphere) {
     Intersect inter(intersectLowerHemiRelative(Ray(ray.pos - sphere.origin, ray.dir), sphere.radius));
     if (inter.is) inter.pos += sphere.origin;
     return inter;

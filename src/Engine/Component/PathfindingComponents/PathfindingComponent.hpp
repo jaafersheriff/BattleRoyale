@@ -13,7 +13,7 @@ class PathfindingComponent : public Component {
     
     protected: // only scene or friends can create component
 
-    PathfindingComponent(GameObject & player, float ms);
+    PathfindingComponent(GameObject & gameObject, GameObject & player, float ms);
 
     public:
 
@@ -21,7 +21,7 @@ class PathfindingComponent : public Component {
 
     protected:
 
-    virtual void init(GameObject & go) override;
+    virtual void init() override;
 
     public:
 

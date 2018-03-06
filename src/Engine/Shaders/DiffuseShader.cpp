@@ -78,7 +78,7 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     loadMat4(getUniform("P"), camera->getProj());
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightDir"), *lightDir);
-    loadVec3(getUniform("camPos"), camera->gameObject()->getSpatial()->position());
+    loadVec3(getUniform("camPos"), camera->gameObject().getSpatial()->position());
 
     /* Toon shading */
     loadFloat(getUniform("silAngle"), silAngle);
@@ -86,11 +86,11 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     loadInt(getUniform("cellIntensities"), cellIntensitiesTexture);
     glActiveTexture(GL_TEXTURE0 + cellIntensitiesTexture);
     glBindTexture(GL_TEXTURE_1D, cellIntensitiesTexture);
-    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, cellIntensities.size(), GL_RED, GL_FLOAT, cellIntensities.data());
+    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellIntensities.size()), GL_RED, GL_FLOAT, cellIntensities.data());
     loadInt(getUniform("cellScales"), cellScalesTexture);
     glActiveTexture(GL_TEXTURE0 + cellScalesTexture);
     glBindTexture(GL_TEXTURE_1D, cellScalesTexture);
-    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, cellScales.size(), GL_RED, GL_FLOAT, cellScales.data());
+    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellScales.size()), GL_RED, GL_FLOAT, cellScales.data());
 
     for (Component * comp : components) {
         // TODO : component list should be passed in as diffuserendercomponent
@@ -108,9 +108,9 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
         }
 
         /* Model matrix */
-        loadMat4(getUniform("M"), drc->gameObject()->getSpatial()->modelMatrix());
+        loadMat4(getUniform("M"), drc->gameObject().getSpatial()->modelMatrix());
         /* Normal matrix */
-        loadMat3(getUniform("N"), drc->gameObject()->getSpatial()->normalMatrix());
+        loadMat3(getUniform("N"), drc->gameObject().getSpatial()->normalMatrix());
 
         /* Bind materials */
         loadFloat(getUniform("matAmbient"), drc->modelTexture.material.ambient);
@@ -191,9 +191,9 @@ void DiffuseShader::setCells(unsigned int in) {
     numCells = glm::min(in, (unsigned int)16);
     cellIntensities.resize(numCells, 0.f);
     cellScales.resize(numCells, 0.f);
-    for (int i = 0; i < numCells; i++) {
+    for (int i = 0; i < int(numCells); i++) {
         float scale = 1.f - i / (float)numCells;
-        cellIntensities[i] = (scale - 0.5) * 2;
+        cellIntensities[i] = (scale - 0.5f) * 2.0f;
         cellScales[i] = scale;
     }
 }

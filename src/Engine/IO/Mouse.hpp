@@ -11,6 +11,7 @@ class Mouse {
         /* x-y position and speed */
         static double x, y;
         static double dx, dy;
+        static double scrollDX, scrollDY;
 
         /* Update */
         static void update(double, double);

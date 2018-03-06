@@ -29,7 +29,7 @@ class CameraComponent : public Component, public Orientable {
 
     protected: // only scene or friends can create component
 
-        CameraComponent(float fov, float near, float far);
+        CameraComponent(GameObject & gameObject, float fov, float near, float far);
 
     public:
 
@@ -37,7 +37,7 @@ class CameraComponent : public Component, public Orientable {
 
     protected:
 
-        virtual void init(GameObject & go) override;
+        virtual void init() override;
 
     public:
         
