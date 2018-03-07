@@ -40,9 +40,6 @@ public:
     // creates a new shader and initializes it
     template<typename ShaderT, typename... Args> static bool createShader(Args &&... args);
 
-    // takes possession of shader and initializes it
-    template <typename ShaderT> static bool addShader(UniquePtr<ShaderT> shader);
-
     // get shader of the specified type
     template <typename ShaderT> static ShaderT * getShader();
 
@@ -59,7 +56,7 @@ public:
     static CameraComponent * s_lightCamera;
     static glm::vec3 getLightDir();
     static void setLightDir(glm::vec3);
-
+    static float lightDist;
 
     /* Shadow shader */
     static ShadowDepthShader * shadowShader;

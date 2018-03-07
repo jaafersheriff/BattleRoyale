@@ -16,6 +16,7 @@ GameObject * RenderSystem::s_lightObject = nullptr;
 CameraComponent * RenderSystem::s_lightCamera = nullptr;
 SpatialComponent * RenderSystem::s_lightSpatial = nullptr;
 ShadowDepthShader * RenderSystem::shadowShader = nullptr;
+float RenderSystem::lightDist = 1.f;
 
 void RenderSystem::init() {
     /* Init GL state */
@@ -27,9 +28,11 @@ void RenderSystem::init() {
 
     /* Init light */
     s_lightObject = &Scene::createGameObject();
-    s_lightSpatial = &Scene::addComponent<SpatialComponent>(*s_lightObject);
     s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, 45.f, 0.01f, 300.f);
- 
+    glm::vec3 lightDir = glm::normalize(glm::vec3(-0.5f, -0.75f, 0.5f));
+    s_lightSpatial = &Scene::addComponent<SpatialComponent>(*s_lightObject, lightDir * lightDist, glm::vec3(0.f), glm::mat3(glm::lookAt(glm::normalize(lightDir * lightDist), glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f))));
+    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, 45.f, 0.01f, 300.f);
+
     /* Init shadow shader */
     shadowShader = new ShadowDepthShader(
         EngineApp::RESOURCE_DIR + "shadow_vert.glsl",
@@ -48,8 +51,11 @@ void RenderSystem::init() {
 // list and expecting each shader to filter through         //
 //////////////////////////////////////////////////////////////
 void RenderSystem::update(float dt) {
+    /* Update light */
+    s_lightSpatial->setPosition(getLightDir() * lightDist);
+
     /* Render to shadow map */
-    shadowShader->prepareRender(getLightDir());
+    shadowShader->prepareRender(-getLightDir());
     renderScene(s_lightCamera, true);
     shadowShader->finishRender();
 
@@ -123,7 +129,7 @@ void RenderSystem::setCamera(const CameraComponent * camera) {
 }
 
 glm::vec3 RenderSystem::getLightDir() {
-    return -s_lightCamera->w();
+    return s_lightCamera->w();
 }
 
 void RenderSystem::setLightDir(glm::vec3 in) {

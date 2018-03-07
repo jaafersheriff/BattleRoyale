@@ -103,7 +103,6 @@ namespace player {
         cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, k_fov, k_near, k_far);
         controllerComp = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_lookSpeed, k_moveSpeed, k_jumpSpeed, k_sprintSpeed);
     }
-
 }
 
 // Freecam data and functions
@@ -225,10 +224,6 @@ int main(int argc, char **argv) {
     // Set primary camera
     RenderSystem::setCamera(player::cameraComp);
 
-    // Set light
-    RenderSystem::setLightDir(glm::vec3(-0.25f, -0.7f, 0.7f));
-    RenderSystem::s_lightSpatial->setPosition(RenderSystem::getLightDir() * 1.f);
-
     // Add Enemies
     int nEnemies(5);
     for (int i(0); i < 5; ++i) {
@@ -295,7 +290,9 @@ int main(int argc, char **argv) {
             /* Light dir */
             glm::vec3 lightDir = RenderSystem::getLightDir();
             ImGui::SliderFloat3("LightDir", glm::value_ptr(lightDir), -1.f, 1.f);
-            RenderSystem::setLightDir(lightDir);
+            RenderSystem::setLightDir(-lightDir);
+            /* Light distance */
+            ImGui::SliderFloat("LightPos", &RenderSystem::lightDist, 0.f, 100.f);
             /* Shadow map FBO */
             ImGui::Image((ImTextureID)RenderSystem::shadowShader->getShadowMapTexture(), ImVec2(128, 128));
         }
