@@ -260,12 +260,14 @@ int main(int argc, char **argv) {
             ImGui::NewLine();
             ImGui::Text("Workload by System (Update, Messaging)");
             float factor(100.0f / Scene::totalDT);
-            ImGui::Text("    Game Logic: %4.1f%%, %4.1f%%", Scene::gameLogicDT * factor, Scene::gameLogicMessagingDT * factor);
-            ImGui::Text("   Pathfinding: %4.1f%%, %4.1f%%", Scene::pathfindingDT * factor, Scene::pathfindingMessagingDT * factor);
-            ImGui::Text("       Spatial: %4.1f%%, %4.1f%%", Scene::spatialDT * factor, Scene::spatialMessagingDT * factor);
-            ImGui::Text("     Collision: %4.1f%%, %4.1f%%", Scene::collisionDT * factor, Scene::collisionMessagingDT * factor);
-            ImGui::Text("Post Collision: %4.1f%%, %4.1f%%", Scene::postCollisionDT * factor, Scene::postCollisionMessagingDT * factor);
-            ImGui::Text("        Render: %4.1f%%, %4.1f%%", Scene::renderDT * factor, Scene::renderMessagingDT * factor);
+            ImGui::Text("    Init Queue: %5.2f%%", Scene::initDT * factor);
+            ImGui::Text("    Game Logic: %5.2f%%, %5.2f%%", Scene::    gameLogicDT * factor, Scene::    gameLogicMessagingDT * factor);
+            ImGui::Text("   Pathfinding: %5.2f%%, %5.2f%%", Scene::  pathfindingDT * factor, Scene::  pathfindingMessagingDT * factor);
+            ImGui::Text("       Spatial: %5.2f%%, %5.2f%%", Scene::      spatialDT * factor, Scene::      spatialMessagingDT * factor);
+            ImGui::Text("     Collision: %5.2f%%, %5.2f%%", Scene::    collisionDT * factor, Scene::    collisionMessagingDT * factor);
+            ImGui::Text("Post Collision: %5.2f%%, %5.2f%%", Scene::postCollisionDT * factor, Scene::postCollisionMessagingDT * factor);
+            ImGui::Text("        Render: %5.2f%%, %5.2f%%", Scene::       renderDT * factor, Scene::       renderMessagingDT * factor);
+            ImGui::Text("    Kill Queue: %5.2f%%", Scene::killDT * factor);
             ImGui::NewLine();
             ImGui::Text("Player Pos:\n%f %f %f",
                 player::spatialComp->position().x,

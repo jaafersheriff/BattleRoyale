@@ -26,6 +26,8 @@ Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_m
 UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> Scene::s_receivers;
 
 float Scene::totalDT;
+float Scene::initDT;
+float Scene::killDT;
 float Scene::gameLogicDT;
 float Scene::spatialDT;
 float Scene::pathfindingDT;
@@ -62,7 +64,7 @@ void Scene::update(float dt) {
 
     doInitQueue();
     relayMessages();
-    watch.lap();
+    initDT = float(watch.lap());
 
     GameLogicSystem::update(dt);
     gameLogicDT = float(watch.lap());
@@ -92,9 +94,10 @@ void Scene::update(float dt) {
     RenderSystem::update(dt); // rendering should be last
     renderDT = float(watch.lap());
     relayMessages();
-    renderMessagingDT = float (watch.lap());
+    renderMessagingDT = float(watch.lap());
 
     doKillQueue();
+    killDT = float(watch.lap());
 
     totalDT = float(watch.total());
 }
@@ -156,7 +159,6 @@ void Scene::initComponents() {
 
 void Scene::killGameObjects() {
     for (auto killIt(s_gameObjectKillQueue.begin()); killIt != s_gameObjectKillQueue.end(); ++killIt) {
-        sendMessage<ObjectKillMessage>(*killIt);
         bool found(false);
         // look in active game objects, in reverse order
         for (int i(int(s_gameObjects.size()) - 1); i >= 0; --i) {
