@@ -73,10 +73,6 @@ struct Message {
 struct ObjectInitMessage : public Message {
     ObjectInitMessage() {}
 };
-// a game object was killed. This is sent out after Scene's kill queue is finished
-struct ObjectKillMessage : public Message {
-    ObjectKillMessage() {}
-};
 
 
 
