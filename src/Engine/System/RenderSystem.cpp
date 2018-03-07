@@ -29,8 +29,10 @@ void RenderSystem::init() {
     /* Init light */
     s_lightObject = &Scene::createGameObject();
     s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, 45.f, 0.01f, 300.f);
-    glm::vec3 lightDir = glm::normalize(glm::vec3(-0.5f, -0.75f, 0.5f));
-    s_lightSpatial = &Scene::addComponent<SpatialComponent>(*s_lightObject, lightDir * lightDist, glm::vec3(0.f), glm::mat3(glm::lookAt(glm::normalize(lightDir * lightDist), glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f))));
+    glm::vec3 w = glm::normalize(glm::vec3(-0.2f, 0.75f, 0.5f));
+    glm::vec3 u = glm::normalize(glm::cross(w, glm::vec3(0.f, 1.f, 0.f)));
+    glm::vec3 v = glm::normalize(glm::cross(u, w));
+    s_lightSpatial = &Scene::addComponent<SpatialComponent>(*s_lightObject, w * lightDist, glm::vec3(0.f), glm::mat3(u, v, w));
     s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, 45.f, 0.01f, 300.f);
 
     /* Init shadow shader */
@@ -129,7 +131,7 @@ void RenderSystem::setCamera(const CameraComponent * camera) {
 }
 
 glm::vec3 RenderSystem::getLightDir() {
-    return s_lightCamera->w();
+    return s_lightCamera->getLookDir();
 }
 
 void RenderSystem::setLightDir(glm::vec3 in) {

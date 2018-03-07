@@ -27,7 +27,7 @@ out vec4 color;
 void main() {
     vec3 viewDir = camPos - worldPos;
     vec3 V = normalize(viewDir);
-    vec3 L = normalize(lightDir);
+    vec3 L = normalize(-lightDir);
     vec3 N = normalize(fragNor);
 
     /* Base color */

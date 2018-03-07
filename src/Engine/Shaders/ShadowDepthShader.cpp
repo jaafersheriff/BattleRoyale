@@ -59,8 +59,8 @@ void ShadowDepthShader::prepareRender(glm::vec3 & lightDir) {
 
     /* Calculate L */
     // TODO : don't hardcode?
-    glm::mat4 LP = glm::ortho(-10.f, 10.f,  /* left, right */
-                              -10.f, 10.f,  /* bottom, top */
+    glm::mat4 LP = glm::ortho(-50.f, 50.f,  /* left, right */
+                              -50.f, 50.f,  /* bottom, top */
                               0.1f, 250.f); /* near, far */
     loadMat4(getUniform("LP"), LP);
     glm::mat4 LV = glm::lookAt(lightDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));

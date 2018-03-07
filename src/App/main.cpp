@@ -290,7 +290,7 @@ int main(int argc, char **argv) {
             /* Light dir */
             glm::vec3 lightDir = RenderSystem::getLightDir();
             ImGui::SliderFloat3("LightDir", glm::value_ptr(lightDir), -1.f, 1.f);
-            RenderSystem::setLightDir(-lightDir);
+            RenderSystem::setLightDir(lightDir);
             /* Light distance */
             ImGui::SliderFloat("LightPos", &RenderSystem::lightDist, 0.f, 100.f);
             /* Shadow map FBO */
