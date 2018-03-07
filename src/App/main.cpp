@@ -188,8 +188,6 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
 
 
 int main(int argc, char **argv) {
-
-    std::cout << "ok";
     if (parseArgs(argc, argv) || EngineApp::init()) {
         std::cin.get(); // don't immediately close the console
         return EXIT_FAILURE;
@@ -205,6 +203,11 @@ int main(int argc, char **argv) {
 
     // Bounder shader
     if (!RenderSystem::createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
+        return EXIT_FAILURE;
+    }
+
+    // Octree shader
+    if (!RenderSystem::createShader<OctreeShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
         return EXIT_FAILURE;
     }
     
@@ -224,6 +227,9 @@ int main(int argc, char **argv) {
 
     // Load Level
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json", k_ambience);
+    //GameObject & obj(Scene::createGameObject());
+    //Scene::addComponent<SpatialComponent>(obj);
+    //Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, UINT_MAX, AABox(glm::vec3(-7.0f, 0.0f, 10.0f), glm::vec3(7.0f, 10.0f, 12.0f)));
 
     // Setup Player
     player::setup(glm::vec3(0.0f, 6.0f, 0.0f));
@@ -235,8 +241,8 @@ int main(int argc, char **argv) {
     RenderSystem::setCamera(player::cameraComp);
 
     // Add Enemies
-    int nEnemies(5);
-    for (int i(0); i < 5; ++i) {
+    int nEnemies(0);
+    for (int i(0); i < nEnemies; ++i) {
         createEnemy(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f));
     }
 
@@ -339,6 +345,17 @@ int main(int argc, char **argv) {
         [&]() {
             if (ImGui::Button("Active")) {
                 RenderSystem::getShader<BounderShader>()->toggleEnabled();
+            }
+        }
+    );
+
+    // Octree shader toggle
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO,
+        "Octree Shader",
+        [&]() {
+            if (ImGui::Button("Active")) {
+                RenderSystem::getShader<OctreeShader>()->toggleEnabled();
             }
         }
     );

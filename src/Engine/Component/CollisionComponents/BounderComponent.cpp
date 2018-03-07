@@ -86,6 +86,10 @@ Intersect AABBounderComponent::intersect(const Ray & ray) const {
     return ::intersect(ray, m_transBox);
 }
 
+AABox AABBounderComponent::enclosingAABox() const {
+    return m_transBox;
+}
+
 Sphere AABBounderComponent::enclosingSphere() const {
     glm::vec3 center(this->center());
     float radius(glm::length(m_transBox.max - center));
@@ -140,6 +144,10 @@ bool SphereBounderComponent::collide(const BounderComponent & o, glm::vec3 * del
 
 Intersect SphereBounderComponent::intersect(const Ray & ray) const {
     return ::intersect(ray, m_transSphere);
+}
+
+AABox SphereBounderComponent::enclosingAABox() const {
+    return AABox(m_transSphere.origin - m_transSphere.radius, m_transSphere.origin + m_transSphere.radius);
 }
 
 Sphere SphereBounderComponent::enclosingSphere() const {
@@ -197,6 +205,21 @@ bool CapsuleBounderComponent::collide(const BounderComponent & o, glm::vec3 * de
 
 Intersect CapsuleBounderComponent::intersect(const Ray & ray) const {
     return ::intersect(ray, m_transCapsule);
+}
+
+AABox CapsuleBounderComponent::enclosingAABox() const {
+    return AABox(
+        glm::vec3(
+            m_transCapsule.center.x - m_transCapsule.radius,
+            m_transCapsule.center.y - m_transCapsule.height * 0.5f - m_transCapsule.radius,
+            m_transCapsule.center.z - m_transCapsule.radius
+        ),
+        glm::vec3(
+            m_transCapsule.center.x + m_transCapsule.radius,
+            m_transCapsule.center.y + m_transCapsule.height * 0.5f + m_transCapsule.radius,
+            m_transCapsule.center.z + m_transCapsule.radius
+        )
+    );
 }
 
 Sphere CapsuleBounderComponent::enclosingSphere() const {

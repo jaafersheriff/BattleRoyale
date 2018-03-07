@@ -95,6 +95,7 @@ void Scene::update(float dt) {
     renderMessagingDT = float (watch.lap());
 
     doKillQueue();
+    relayMessages();
 
     totalDT = float(watch.total());
 }
@@ -141,14 +142,7 @@ void Scene::initComponents() {
         it->second->emplace_back(std::move(comp));
         Component & c(*it->second->back());
         c.init();
-        switch (c.systemID()) {
-            case SystemID::    gameLogic: sendMessage<SystemComponentAddedMessage<    GameLogicSystem>>(nullptr, c); break;
-            case SystemID::  pathfinding: sendMessage<SystemComponentAddedMessage<  PathfindingSystem>>(nullptr, c); break;
-            case SystemID::      spatial: sendMessage<SystemComponentAddedMessage<      SpatialSystem>>(nullptr, c); break;
-            case SystemID::    collision: sendMessage<SystemComponentAddedMessage<    CollisionSystem>>(nullptr, c); break;
-            case SystemID::postCollision: sendMessage<SystemComponentAddedMessage<PostCollisionSystem>>(nullptr, c); break;
-            case SystemID::       render: sendMessage<SystemComponentAddedMessage<       RenderSystem>>(nullptr, c); break;
-        }
+        sendMessage<ComponentAddedMessage>(&c.gameObject(), c, typeI);
     }
     s_componentInitQueue.clear();
 }
@@ -188,14 +182,15 @@ void Scene::killComponents() {
     for (auto & killE : s_componentKillQueue) {
         std::type_index typeI(killE.first);
         Component * comp(killE.second);
-        SystemID sysID(comp->systemID());
         bool found(false);
         // look in active components, in reverse order
         if (s_components.count(typeI)) {
             auto & comps(*s_components.at(typeI));
             for (int i(int(comps.size()) - 1); i >= 0; --i) {
                 if (comps[i].get() == comp) {
-                    comps.erase(comps.begin() + i);
+                    auto it(comps.begin() + i);
+                    sendMessage<ComponentRemovedMessage>(nullptr, std::move(*it), typeI);
+                    comps.erase(it);
                     found = true;
                     break;
                 }
@@ -209,14 +204,6 @@ void Scene::killComponents() {
                     break;
                 }
             }
-        }
-        switch (sysID) {
-            case SystemID::    gameLogic: sendMessage<SystemComponentRemovedMessage<    GameLogicSystem>>(nullptr, comp, typeI); break;
-            case SystemID::  pathfinding: sendMessage<SystemComponentRemovedMessage<  PathfindingSystem>>(nullptr, comp, typeI); break;
-            case SystemID::      spatial: sendMessage<SystemComponentRemovedMessage<      SpatialSystem>>(nullptr, comp, typeI); break;
-            case SystemID::    collision: sendMessage<SystemComponentRemovedMessage<    CollisionSystem>>(nullptr, comp, typeI); break;
-            case SystemID::postCollision: sendMessage<SystemComponentRemovedMessage<PostCollisionSystem>>(nullptr, comp, typeI); break;
-            case SystemID::       render: sendMessage<SystemComponentRemovedMessage<       RenderSystem>>(nullptr, comp, typeI); break;
         }
     }
     s_componentKillQueue.clear();

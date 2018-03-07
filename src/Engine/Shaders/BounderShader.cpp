@@ -64,7 +64,7 @@ bool BounderShader::init() {
     addUniform("u_color");
 
     if (!initAABMesh() || !initSphereMesh() || !initCapMesh() || !initRodMesh()) {
-        std::cerr << "Failed to initialize collider shader meshes" << std::endl;
+        std::cerr << "Failed to initialize bounder shader meshes" << std::endl;
     }
 
     return true;

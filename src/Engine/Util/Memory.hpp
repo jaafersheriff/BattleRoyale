@@ -232,6 +232,7 @@ class UniquePtr<T[]> {
     const T * get() const { return m_vs; }
 
     T & operator[](size_t i) { return m_vs[i]; };
+    const T & operator[](size_t i) const { return m_vs[i]; };
 
     size_t size() const { return m_size; }
 
@@ -296,7 +297,6 @@ void UniquePtr<T>::release() {
     m_v->~T();
     deallocate(m_v);
     m_v = nullptr;
-    m_size = 0;
 }
 
 template <typename T>
