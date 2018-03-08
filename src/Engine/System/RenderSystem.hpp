@@ -52,7 +52,13 @@ class RenderSystem {
     static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
     static UnorderedMap<std::type_index, UniquePtr<Shader>> s_shaders;
     static const CameraComponent * s_camera;
+    
+    static GLuint frameBuffer;
+    static GLuint texColorBuffer;
+    static GLuint texDepthBuffer;
+    static const Vector<float> frameSquare;
 
+    
 };
 
 
