@@ -188,7 +188,7 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     f_projectiles.push_back(&obj);
 }
 
-void createParticleEffect(glm::vec3 pos, ParticleEffect::Effect effect) {
+void createParticleEffect(ParticleEffect::Effect effect, glm::vec3 pos) {
     // Need to create function that maps effects to .objs and .pngs
     Mesh * mesh(Loader::getMesh("Hamburger.obj"));
     ParticleShader * shader(RenderSystem::getShader<ParticleShader>());
@@ -197,8 +197,8 @@ void createParticleEffect(glm::vec3 pos, ParticleEffect::Effect effect) {
     GameObject & obj(Scene::createGameObject());
     ParticleComponent & particleComp(Scene::addComponent<ParticleComponent>(obj));
     ParticleRenderComponent & renderComp(Scene::addComponent<ParticleRenderComponent>(obj, shader->pid, true, effect));
-    obj.getComponentByType<ParticleComponent>();
-
+    
+    obj.getComponentByType<ParticleComponent>()->spawnParticleEffect(effect, pos);
     f_particleEffects.push_back(&obj);
 }
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "Component/Component.hpp"
 #include "ParticleEffect.hpp"
-//#include "Shaders/ParticleShader.hpp"
 #include "Loader/Loader.hpp"
 #include "Model/Mesh.hpp"
 #include "Model/ModelTexture.hpp"
@@ -9,8 +8,6 @@
 class ParticleComponent : public Component {
 
     friend Scene;
-    //friend ParticleRenderComponent;
-    //friend ParticleShader;
 
     protected:
         ParticleComponent(GameObject & gameobject);
