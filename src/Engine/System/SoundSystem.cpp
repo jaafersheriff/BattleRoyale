@@ -2,11 +2,10 @@
 
 const Vector<SoundComponent *> & SoundSystem::s_soundComponents(Scene::getComponents<SoundComponent>());
 String SoundSystem::s_SOUND_DIR = EngineApp::RESOURCE_DIR + "/soundeffects/";
-
+CameraComponent* SoundSystem::s_camera = NULL;
 #ifdef HAVE_FMOD_LIBRARY
 FMOD::System* SoundSystem::s_system = NULL;
 Map<String, FMOD::Sound*> SoundSystem::s_soundLibrary = Map<String, FMOD::Sound*>();
-CameraComponent* SoundSystem::s_camera = NULL;
 Sound* SoundSystem::s_bgMusic = NULL;
 #endif
 
