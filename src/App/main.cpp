@@ -238,6 +238,9 @@ int main(int argc, char **argv) {
     // Set primary camera
     RenderSystem::setCamera(player::cameraComp);
 
+    // Set Sound camera
+    SoundSystem::setCamera(player::cameraComp);
+
     // Add Enemies
     int nEnemies(5);
     for (int i(0); i < 5; ++i) {
