@@ -88,6 +88,8 @@ class Scene {
   public:
 
     static float totalDT;
+    static float initDT;
+    static float killDT;
     static float gameLogicDT;
     static float spatialDT;
     static float pathfindingDT;
