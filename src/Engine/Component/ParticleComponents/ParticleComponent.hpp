@@ -1,7 +1,6 @@
 #pragma once
 #include "Component/Component.hpp"
 #include "ParticleEffect.hpp"
-#include "Particle.hpp"
 //#include "Shaders/ParticleShader.hpp"
 #include "Loader/Loader.hpp"
 #include "Model/Mesh.hpp"

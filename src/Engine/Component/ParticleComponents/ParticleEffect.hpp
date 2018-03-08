@@ -4,7 +4,6 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/constants.hpp"
-#include "Particle.hpp"
 #include "Model/Mesh.hpp"
 #include "Model/ModelTexture.hpp"
 
@@ -24,6 +23,13 @@ class ParticleEffect {
             SPICE_GRENADE,
             MUSTARD_SPLAT
         };
+
+        typedef struct {
+            int i;
+            glm::vec3 position;
+            int meshID;
+            int modelTextureID;
+        }Particle;
 
         typedef struct {
             ParticleEffect::Type type;
@@ -51,9 +57,7 @@ class ParticleEffect {
     private:
         EffectParams *m_ep;
         glm::vec3 m_origin;
-        glm::vec3 m_euler;
-        glm::vec3 m_scale;
-        Vector<Particle> & m_particles;
+        Vector<Particle*> & m_particles;
         float m_life;
 
     public:
@@ -61,8 +65,6 @@ class ParticleEffect {
         Mesh* getMesh(int i);
         ModelTexture* getModelTexture(int i);
         glm::vec3 Origin() { return m_origin; }
-        glm::vec3 Euler() { return m_euler; }
-        glm::vec3 Scale() { return m_scale; }
         static EffectParams* createEffectParams(
             ParticleEffect::Type type,
             int n,
@@ -81,9 +83,12 @@ class ParticleEffect {
             );
 
     private:
-        Vector<Particle> generateParticles();
+        void ParticleEffect::pinit(ParticleEffect::Particle *p, int i, glm::vec3 pos, int meshID, int modelTextureID);
+        int ParticleEffect::meshSelect(ParticleEffect::Effect effect, int i);
+        int ParticleEffect::modelTextureSelect(ParticleEffect::Effect effect, int i);
+        Vector<ParticleEffect::Particle*> generateParticles();
+        void ParticleEffect::sphereMove(ParticleEffect::Particle* p, float dt);
 
-        
 };
 
 #endif 
