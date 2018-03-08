@@ -8,6 +8,7 @@ const Vector<CameraComponent *> & GameLogicSystem::s_cameraComponents(Scene::get
 const Vector<CameraControllerComponent *> & GameLogicSystem::s_cameraControllerComponents(Scene::getComponents<CameraControllerComponent>());
 const Vector<PlayerControllerComponent *> & GameLogicSystem::s_playerControllers(Scene::getComponents<PlayerControllerComponent>());
 const Vector<ImGuiComponent *> & GameLogicSystem::s_imguiComponents(Scene::getComponents<ImGuiComponent>());
+const Vector<EnemyComponent *> & GameLogicSystem::s_enemyComponents(Scene::getComponents<EnemyComponent>());
 
 void GameLogicSystem::update(float dt) {
     // this is here and not in SpatialSystem because this needs to happen right
@@ -25,6 +26,9 @@ void GameLogicSystem::update(float dt) {
         comp->update(dt);
     }
     for (auto & comp : s_cameraComponents) {
+        comp->update(dt);
+    }
+    for (auto & comp : s_enemyComponents) {
         comp->update(dt);
     }
 }

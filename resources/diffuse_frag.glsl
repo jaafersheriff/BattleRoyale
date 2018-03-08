@@ -19,7 +19,8 @@ uniform bool isToon;
 uniform float silAngle;
 uniform float numCells;
 uniform sampler1D cellIntensities;
-uniform sampler1D cellScales;
+uniform sampler1D cellDiffuseScales;
+uniform sampler1D cellSpecularScales;
 
 out vec4 color;
 
@@ -42,8 +43,8 @@ void main() {
     if (isToon) {
         for(int i = 0; i < numCells; i++) {
             if(lambert > texelFetch(cellIntensities, i, 0).r) {
-                float scale = texelFetch(cellScales, i, 0).r;
-                diffuseContrib = specularContrib = scale;
+                diffuseContrib = texelFetch(cellDiffuseScales, i, 0).r;
+                specularContrib = pow(texelFetch(cellSpecularScales, i, 0).r, shine);
                 break;
             }
         }

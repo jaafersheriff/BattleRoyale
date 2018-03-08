@@ -11,6 +11,7 @@
 
 #include "Util/Memory.hpp"
 #include "System/GameLogicSystem.hpp"
+#include "System/SoundSystem.hpp"
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"
 #include "System/CollisionSystem.hpp"
@@ -88,6 +89,8 @@ class Scene {
   public:
 
     static float totalDT;
+    static float initDT;
+    static float killDT;
     static float gameLogicDT;
     static float spatialDT;
     static float pathfindingDT;

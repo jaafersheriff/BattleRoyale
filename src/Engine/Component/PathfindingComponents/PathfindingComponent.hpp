@@ -13,7 +13,7 @@ class PathfindingComponent : public Component {
     
     protected: // only scene or friends can create component
 
-    PathfindingComponent(GameObject & gameObject, GameObject & player, float ms);
+    PathfindingComponent(GameObject & gameObject, GameObject & player, float ms, bool wander);
 
     public:
 
@@ -29,9 +29,16 @@ class PathfindingComponent : public Component {
 
     virtual void update(float) override;
 
+    // TODO : just add enable/disable options for all components?
+    void setMoveSpeed(float f) { this->m_moveSpeed = f; }
+
     private:
 
     SpatialComponent * m_spatial;
     GameObject * m_player;
     float m_moveSpeed;
+    bool m_wander;
+    glm::vec3 m_wanderCurrent;
+    float m_wanderCurrentWeight;
+    float m_wanderWeight;
 };
