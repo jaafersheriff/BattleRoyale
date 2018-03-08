@@ -192,13 +192,12 @@ void createParticleEffect(glm::vec3 pos, ParticleEffect::Effect effect) {
     // Need to create function that maps effects to .objs and .pngs
     Mesh * mesh(Loader::getMesh("Hamburger.obj"));
     ParticleShader * shader(RenderSystem::getShader<ParticleShader>());
-    Texture * tex(Loader::getTexture("Hamburger_BaseColor.png"));
-    ModelTexture modelTex(tex, k_ambience, glm::vec3(1.0f), glm::vec3(1.0f));
     bool toon(true);
 
     GameObject & obj(Scene::createGameObject());
     ParticleComponent & particleComp(Scene::addComponent<ParticleComponent>(obj));
-    ParticleRenderComponent & renderComp(Scene::addComponent<ParticleRenderComponent>(obj, shader->pid, *mesh, modelTex, true, effect));
+    ParticleRenderComponent & renderComp(Scene::addComponent<ParticleRenderComponent>(obj, shader->pid, true, effect));
+    obj.getComponentByType<ParticleComponent>();
 
     f_particleEffects.push_back(&obj);
 }
@@ -228,6 +227,10 @@ int main(int argc, char **argv) {
     
     // Ray shader
     if (!RenderSystem::createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) {
+        return EXIT_FAILURE;
+    }
+
+    if (!RenderSystem::createShader<ParticleShader>("particle_vert.glsl", "particle_frag.glsl", light::dir)) {
         return EXIT_FAILURE;
     }
 

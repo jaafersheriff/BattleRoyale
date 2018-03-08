@@ -5,6 +5,7 @@
 #include "Component/RenderComponents/ParticleRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/BounderComponent.hpp"
+#include "Component/ParticleComponents/ParticleComponent.hpp"
 #include "System/CollisionSystem.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 
@@ -23,6 +24,7 @@ bool ParticleShader::init() {
     addAttribute("vertPos");
     addAttribute("vertNor");
     addAttribute("vertTex");
+    addAttribute("particleOffset");
 
     /* Add uniforms */
     addUniform("P");
@@ -99,6 +101,8 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
             continue;
         }
 
+        ParticleComponent* pc = prc->gameObject().getComponentByType<ParticleComponent>();
+
         /* Toon shading */
         if (showToon && prc->isToon) {
             loadBool(getUniform("isToon"), true);
@@ -112,53 +116,55 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         /* Normal matrix */
         loadMat3(getUniform("N"), prc->gameObject().getSpatial()->normalMatrix());
 
+
+
         /* Bind materials */
-        loadFloat(getUniform("matAmbient"), prc->modelTexture.material.ambient);
-        loadVec3(getUniform("matDiffuse"), prc->modelTexture.material.diffuse);
-        loadVec3(getUniform("matSpecular"), prc->modelTexture.material.specular);
-        loadFloat(getUniform("shine"), prc->modelTexture.material.shineDamper);
+        loadFloat(getUniform("matAmbient"), pc->getModelTexture(0)->material.ambient);
+        loadVec3(getUniform("matDiffuse"), pc->getModelTexture(0)->material.diffuse);
+        loadVec3(getUniform("matSpecular"), pc->getModelTexture(0)->material.specular);
+        loadFloat(getUniform("shine"), pc->getModelTexture(0)->material.shineDamper);
    
         /* Load texture */
-        if(prc->modelTexture.texture && prc->modelTexture.texture->textureId != 0) {
+        if(pc->getModelTexture(0)->texture && pc->getModelTexture(0)->texture->textureId != 0) {
             loadBool(getUniform("usesTexture"), true);
-            loadInt(getUniform("textureImage"), prc->modelTexture.texture->textureId);
-            glActiveTexture(GL_TEXTURE0 + prc->modelTexture.texture->textureId);
-            glBindTexture(GL_TEXTURE_2D, prc->modelTexture.texture->textureId);
+            loadInt(getUniform("textureImage"), pc->getModelTexture(0)->texture->textureId);
+            glActiveTexture(GL_TEXTURE0 + pc->getModelTexture(0)->texture->textureId);
+            glBindTexture(GL_TEXTURE_2D, pc->getModelTexture(0)->texture->textureId);
         }
         else {
             loadBool(getUniform("usesTexture"), false);
         }
 
         /* Bind mesh */
-        glBindVertexArray(prc->mesh->vaoId);
+        glBindVertexArray(pc->getMesh(0)->vaoId);
             
         /* Bind vertex buffer VBO */
         int pos = getAttribute("vertPos");
         glEnableVertexAttribArray(pos);
-        glBindBuffer(GL_ARRAY_BUFFER, prc->mesh->vertBufId);
+        glBindBuffer(GL_ARRAY_BUFFER, pc->getMesh(0)->vertBufId);
         glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
 
         /* Bind normal buffer VBO */
         pos = getAttribute("vertNor");
-        if (pos != -1 && prc->mesh->norBufId != 0) {
+        if (pos != -1 && pc->getMesh(0)->norBufId != 0) {
             glEnableVertexAttribArray(pos);
-            glBindBuffer(GL_ARRAY_BUFFER, prc->mesh->norBufId);
+            glBindBuffer(GL_ARRAY_BUFFER, pc->getMesh(0)->norBufId);
             glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
         }
 
         /* Bind texture coordinate buffer VBO */
         pos = getAttribute("vertTex");
-        if (pos != -1 && prc->mesh->texBufId != 0) {
+        if (pos != -1 && pc->getMesh(0)->texBufId != 0) {
             glEnableVertexAttribArray(pos);
-            glBindBuffer(GL_ARRAY_BUFFER, prc->mesh->texBufId);
+            glBindBuffer(GL_ARRAY_BUFFER, pc->getMesh(0)->texBufId);
             glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, 0, (const void *)0);
         }
 
         /* Bind indices buffer VBO */
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prc->mesh->eleBufId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pc->getMesh(0)->eleBufId);
 
         /* DRAW */
-        glDrawElements(GL_TRIANGLES, (int)prc->mesh->eleBufSize, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, (int)pc->getMesh(0)->eleBufSize, GL_UNSIGNED_INT, nullptr);
 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));
@@ -175,8 +181,8 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
         /* Unload texture */
-        if (prc->modelTexture.texture) {
-            glActiveTexture(GL_TEXTURE0 + prc->modelTexture.texture->textureId);
+        if (pc->getModelTexture(0)->texture) {
+            glActiveTexture(GL_TEXTURE0 + pc->getModelTexture(0)->texture->textureId);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
  

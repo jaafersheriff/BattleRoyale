@@ -45,6 +45,7 @@ class ParticleEffect {
         
 
     public:
+        ParticleEffect();
         ParticleEffect(EffectParams *ep, const glm::vec3 & origin);
    
     private:

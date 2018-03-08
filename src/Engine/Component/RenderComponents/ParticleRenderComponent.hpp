@@ -14,15 +14,14 @@ class RenderSystem;
 class ParticleRenderComponent : public Component {
 
     friend Scene;
+    //friend ParticleComponent;
 
 protected: // only scene or friends can create component
 
-    ParticleRenderComponent(GameObject & gameObject, int pid, Mesh & mesh, const ModelTexture & texture, bool toon,
+    ParticleRenderComponent(GameObject & gameObject, int pid, bool toon,
         ParticleEffect::Effect effect) :
         Component(gameObject),
         pid(pid),
-        mesh(&mesh),
-        modelTexture(texture),
         isToon(toon),
         effect(effect)
     {}
@@ -36,8 +35,6 @@ public:
 public:
 
     int pid;
-    Mesh * mesh;
-    ModelTexture modelTexture;
     bool isToon;
     ParticleEffect::Effect effect;
 

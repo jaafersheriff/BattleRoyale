@@ -1,5 +1,16 @@
 #include "ParticleEffect.hpp"
 
+ParticleEffect::ParticleEffect() :
+    m_ep(NULL),
+    m_origin(NULL),
+    m_euler(NULL),
+    m_scale(NULL),
+    m_particles(Vector<Particle>()),
+    m_life(0.0f)
+{
+}
+
+
 ParticleEffect::ParticleEffect(EffectParams *ep, const glm::vec3 & origin) :
     m_ep(ep),
     m_origin(origin),

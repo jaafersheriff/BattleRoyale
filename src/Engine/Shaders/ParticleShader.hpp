@@ -5,6 +5,7 @@
 
 #include "Shader.hpp"
 
+
 class ParticleShader : public Shader {
     public:
         ParticleShader(const String & vertFile, const String & fragFile, const glm::vec3 & light);
