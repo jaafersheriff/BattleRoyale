@@ -165,7 +165,8 @@ int FileReader::loadLevel(const char & filePath, float ambience) {
         }
 
         //Read the texture data from the json
-        FileReader::addRenderComponent(gameObject, jsonTransform, filePath, ambience);
+        if(filePath.compare("") != 0)
+            FileReader::addRenderComponent(gameObject, jsonTransform, filePath, ambience);
     }
 
     return 0;

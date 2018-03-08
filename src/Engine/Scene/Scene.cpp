@@ -27,6 +27,8 @@ Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_m
 UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> Scene::s_receivers;
 
 float Scene::totalDT;
+float Scene::initDT;
+float Scene::killDT;
 float Scene::gameLogicDT;
 float Scene::spatialDT;
 float Scene::pathfindingDT;
@@ -64,7 +66,7 @@ void Scene::update(float dt) {
 
     doInitQueue();
     relayMessages();
-    watch.lap();
+    initDT = float(watch.lap());
 
     GameLogicSystem::update(dt);
     gameLogicDT = float(watch.lap());
@@ -95,12 +97,9 @@ void Scene::update(float dt) {
     renderDT = float(watch.lap());
     relayMessages();
     renderMessagingDT = float (watch.lap());
-  
-    // TODO: add profiling for sound system
-    SoundSystem::update(dt); // sound is also last, as it's like rendering for you ears :thinking:
-    relayMessages();    
-  
+
     doKillQueue();
+    killDT = float(watch.lap());
 
     totalDT = float(watch.total());
 }
@@ -122,6 +121,7 @@ void Scene::doKillQueue() {
 
 void Scene::initGameObjects() {
     for (auto & o : s_gameObjectInitQueue) {
+        sendMessage<ObjectInitMessage>(o.get());
         s_gameObjects.emplace_back(std::move(o));
     }
     s_gameObjectInitQueue.clear();
