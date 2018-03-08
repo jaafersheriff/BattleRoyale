@@ -97,11 +97,11 @@ void Scene::update(float dt) {
     renderDT = float(watch.lap());
     relayMessages();
     renderMessagingDT = float (watch.lap());
-  
-    // TODO: add profiling for sound system
-    SoundSystem::update(dt); // sound is also last, as it's like rendering for you ears :thinking:
-    relayMessages();    
-  
+
+    // TO DO: time stuff
+    SoundSystem::update(dt);
+    relayMessages();
+
     doKillQueue();
     killDT = float(watch.lap());
 
