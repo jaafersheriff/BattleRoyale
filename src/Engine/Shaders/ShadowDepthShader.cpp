@@ -1,5 +1,7 @@
 #include "ShadowDepthShader.hpp"
 
+#include "Component/CameraComponents/CameraComponent.hpp"
+
 #include <glm/gtc/matrix_transform.hpp>
 
 ShadowDepthShader::ShadowDepthShader(const String & vertName, const String & fragName, int width, int height) :
@@ -49,7 +51,7 @@ void ShadowDepthShader::initFBO() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ShadowDepthShader::prepareRender(glm::vec3 & lightDir) {
+void ShadowDepthShader::prepareRender(const CameraComponent *lightCam) {
     glViewport(0, 0, mapWidth, mapHeight);
     glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -58,16 +60,11 @@ void ShadowDepthShader::prepareRender(glm::vec3 & lightDir) {
     bind();
 
     /* Calculate L */
-    // TODO : don't hardcode?
-    glm::mat4 LP = glm::ortho(-50.f, 50.f,  /* left, right */
-                              -50.f, 50.f,  /* bottom, top */
-                              0.1f, 250.f); /* near, far */
-    loadMat4(getUniform("LP"), LP);
-    glm::mat4 LV = glm::lookAt(lightDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-    loadMat4(getUniform("LV"), LV);
+    loadMat4(getUniform("LP"), lightCam->getProj());
+    loadMat4(getUniform("LV"), lightCam->getView());
 
     // TODO : store, getter/setter, only recompute on dirty 
-    this->L = LP * LV;
+    this->L = lightCam->getProj() * lightCam->getView();
 }
 
 void ShadowDepthShader::finishRender() {

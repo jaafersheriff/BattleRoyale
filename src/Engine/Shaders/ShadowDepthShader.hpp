@@ -11,7 +11,7 @@ class ShadowDepthShader : public Shader {
 
         bool init();
 
-        void prepareRender(glm::vec3 & lightDir);
+        void prepareRender(const CameraComponent *);
         void finishRender();
 
         virtual void render(const CameraComponent * camera, const Vector<Component *> &) override {}
