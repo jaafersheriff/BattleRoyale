@@ -2,7 +2,7 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "Component/RenderComponents/DiffuseRenderComponent.hpp"
+#include "Component/RenderComponents/ParticleRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/BounderComponent.hpp"
 #include "System/CollisionSystem.hpp"
@@ -93,14 +93,14 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
     glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellScales.size()), GL_RED, GL_FLOAT, cellScales.data());
 
     for (Component * comp : components) {
-        // TODO : component list should be passed in as diffuserendercomponent
-        DiffuseRenderComponent *drc;
-        if (!(drc = dynamic_cast<DiffuseRenderComponent *>(comp)) || drc->pid != this->pid) {
+        // TODO : component list should be passed in as ParticleRenderComponent
+        ParticleRenderComponent *prc;
+        if (!(prc = dynamic_cast<ParticleRenderComponent *>(comp)) || prc->pid != this->pid) {
             continue;
         }
 
         /* Toon shading */
-        if (showToon && drc->isToon) {
+        if (showToon && prc->isToon) {
             loadBool(getUniform("isToon"), true);
         }
         else {
@@ -108,57 +108,57 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         }
 
         /* Model matrix */
-        loadMat4(getUniform("M"), drc->gameObject().getSpatial()->modelMatrix());
+        loadMat4(getUniform("M"), prc->gameObject().getSpatial()->modelMatrix());
         /* Normal matrix */
-        loadMat3(getUniform("N"), drc->gameObject().getSpatial()->normalMatrix());
+        loadMat3(getUniform("N"), prc->gameObject().getSpatial()->normalMatrix());
 
         /* Bind materials */
-        loadFloat(getUniform("matAmbient"), drc->modelTexture.material.ambient);
-        loadVec3(getUniform("matDiffuse"), drc->modelTexture.material.diffuse);
-        loadVec3(getUniform("matSpecular"), drc->modelTexture.material.specular);
-        loadFloat(getUniform("shine"), drc->modelTexture.material.shineDamper);
+        loadFloat(getUniform("matAmbient"), prc->modelTexture.material.ambient);
+        loadVec3(getUniform("matDiffuse"), prc->modelTexture.material.diffuse);
+        loadVec3(getUniform("matSpecular"), prc->modelTexture.material.specular);
+        loadFloat(getUniform("shine"), prc->modelTexture.material.shineDamper);
    
         /* Load texture */
-        if(drc->modelTexture.texture && drc->modelTexture.texture->textureId != 0) {
+        if(prc->modelTexture.texture && prc->modelTexture.texture->textureId != 0) {
             loadBool(getUniform("usesTexture"), true);
-            loadInt(getUniform("textureImage"), drc->modelTexture.texture->textureId);
-            glActiveTexture(GL_TEXTURE0 + drc->modelTexture.texture->textureId);
-            glBindTexture(GL_TEXTURE_2D, drc->modelTexture.texture->textureId);
+            loadInt(getUniform("textureImage"), prc->modelTexture.texture->textureId);
+            glActiveTexture(GL_TEXTURE0 + prc->modelTexture.texture->textureId);
+            glBindTexture(GL_TEXTURE_2D, prc->modelTexture.texture->textureId);
         }
         else {
             loadBool(getUniform("usesTexture"), false);
         }
 
         /* Bind mesh */
-        glBindVertexArray(drc->mesh->vaoId);
+        glBindVertexArray(prc->mesh->vaoId);
             
         /* Bind vertex buffer VBO */
         int pos = getAttribute("vertPos");
         glEnableVertexAttribArray(pos);
-        glBindBuffer(GL_ARRAY_BUFFER, drc->mesh->vertBufId);
+        glBindBuffer(GL_ARRAY_BUFFER, prc->mesh->vertBufId);
         glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
 
         /* Bind normal buffer VBO */
         pos = getAttribute("vertNor");
-        if (pos != -1 && drc->mesh->norBufId != 0) {
+        if (pos != -1 && prc->mesh->norBufId != 0) {
             glEnableVertexAttribArray(pos);
-            glBindBuffer(GL_ARRAY_BUFFER, drc->mesh->norBufId);
+            glBindBuffer(GL_ARRAY_BUFFER, prc->mesh->norBufId);
             glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
         }
 
         /* Bind texture coordinate buffer VBO */
         pos = getAttribute("vertTex");
-        if (pos != -1 && drc->mesh->texBufId != 0) {
+        if (pos != -1 && prc->mesh->texBufId != 0) {
             glEnableVertexAttribArray(pos);
-            glBindBuffer(GL_ARRAY_BUFFER, drc->mesh->texBufId);
+            glBindBuffer(GL_ARRAY_BUFFER, prc->mesh->texBufId);
             glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, 0, (const void *)0);
         }
 
         /* Bind indices buffer VBO */
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drc->mesh->eleBufId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prc->mesh->eleBufId);
 
         /* DRAW */
-        glDrawElements(GL_TRIANGLES, (int)drc->mesh->eleBufSize, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, (int)prc->mesh->eleBufSize, GL_UNSIGNED_INT, nullptr);
 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));
@@ -175,8 +175,8 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
         /* Unload texture */
-        if (drc->modelTexture.texture) {
-            glActiveTexture(GL_TEXTURE0 + drc->modelTexture.texture->textureId);
+        if (prc->modelTexture.texture) {
+            glActiveTexture(GL_TEXTURE0 + prc->modelTexture.texture->textureId);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
  

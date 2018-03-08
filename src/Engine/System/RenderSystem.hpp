@@ -13,8 +13,10 @@
 #include "Shaders/Shader.hpp"
 #include "Shaders/DiffuseShader.hpp"
 #include "Shaders/BounderShader.hpp"
+#include "Shaders/ParticleShader.hpp"
 #include "Shaders/RayShader.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
+#include "Component/RenderComponents/ParticleRenderComponent.hpp"
 
 
 

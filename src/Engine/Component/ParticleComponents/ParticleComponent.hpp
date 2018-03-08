@@ -3,14 +3,22 @@
 #include "ParticleEffect.hpp"
 #include "Particle.hpp"
 
-class ParticleComponent : Component {
+class ParticleComponent : public Component {
+
+    friend Scene;
 
     protected:
         ParticleComponent(GameObject & gameobject);
 
     public:
-        void init();
-        void update(float dt);
+        ParticleComponent(ParticleComponent && other) = default;
+    
+    protected:    
+        virtual void init() override;
+    
+    public:
+        virtual SystemID systemID() const override { return SystemID::gameLogic;  }
+        void update(float dt) override;
         void spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & pos);
 
     private:

@@ -137,6 +137,7 @@ namespace light {
 
 Vector<GameObject *> f_enemies;
 Vector<GameObject *> f_projectiles;
+Vector<GameObject *> f_particleEffects;
 
 void createEnemy(const glm::vec3 & position) {    
     Mesh * mesh(Loader::getMesh("bunny.obj"));
@@ -181,7 +182,20 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     f_projectiles.push_back(&obj);
 }
 
+void createParticleEffect(glm::vec3 pos, ParticleEffect::Effect effect) {
+    // Need to create function that maps effects to .objs and .pngs
+    Mesh * mesh(Loader::getMesh("Hamburger.obj"));
+    ParticleShader * shader(RenderSystem::getShader<ParticleShader>());
+    Texture * tex(Loader::getTexture("Hamburger_BaseColor.png"));
+    ModelTexture modelTex(tex, k_ambience, glm::vec3(1.0f), glm::vec3(1.0f));
+    bool toon(true);
 
+    GameObject & obj(Scene::createGameObject());
+    ParticleComponent & particleComp(Scene::addComponent<ParticleComponent>(obj));
+    ParticleRenderComponent & renderComp(Scene::addComponent<ParticleRenderComponent>(obj, shader->pid, *mesh, modelTex, true, effect));
+
+    f_particleEffects.push_back(&obj);
+}
 
 }
 

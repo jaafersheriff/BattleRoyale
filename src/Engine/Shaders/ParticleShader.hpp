@@ -1,7 +1,7 @@
 /* Basic diffuse shader */
 #pragma once
-#ifndef _DIFFUSE_SHADER_HPP_
-#define _DIFFUSE_SHADER_HPP_
+#ifndef _PARTICLE_SHADER_HPP_
+#define _PARTICLE_SHADER_HPP_
 
 #include "Shader.hpp"
 
