@@ -12,6 +12,16 @@ ParticleEffect::ParticleEffect() :
 ParticleEffect::ParticleEffect(EffectParams *ep, const glm::vec3 & origin) :
     m_ep(ep),
     m_origin(origin),
+    m_direction(glm::vec3(0.0f, 1.0f, 0.0f)),
+    m_particles(generateParticles()),
+    m_life(0.0f)
+{
+}
+
+ParticleEffect::ParticleEffect(EffectParams *ep, const glm::vec3 & origin, const glm::vec3 & direction) :
+    m_ep(ep),
+    m_origin(origin),
+    m_direction(direction),
     m_particles(generateParticles()),
     m_life(0.0f)
 {
@@ -72,7 +82,6 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     float mass,
     bool loop,
     glm::vec3* initVelocity,
-    glm::vec3* forward,
     Vector<glm::vec3>* forceFactors,
     Vector<Mesh *>* meshes,
     Vector<ModelTexture *>* textures
@@ -87,7 +96,6 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     ep->mass = mass;
     ep->loop = loop;
     ep->initVelocity = initVelocity;
-    ep->forward = forward;
     ep->forceFactors = forceFactors;
     ep->meshes = meshes;
     ep->textures = textures;

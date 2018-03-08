@@ -13,9 +13,10 @@ void ParticleComponent::update(float dt) {
    activeEffect->update(dt);
 }
 
-void ParticleComponent::spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & pos) {
+void ParticleComponent::spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & pos, const glm::vec3 & dir) {
     ParticleEffect::EffectParams *ep = getEffectParams(effect);
-    activeEffect = new ParticleEffect(ep, pos);
+    activeEffect = new ParticleEffect(ep, pos, dir);
+
 }
 
 ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect::Effect effect) {
@@ -24,7 +25,7 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
     case ParticleEffect::Effect::BLOOD_SPLAT:
         return ParticleEffect::createEffectParams(ParticleEffect::Type::SPHERE,
             100, 5.0f, 0.0f, 0.0f, 2 * glm::pi<float>(), 100.0f, 1.0f, false,
-            new glm::vec3(0), new glm::vec3(0.0f, 1.0f, 0.0f), NULL, getMeshes(effect), getTextures(effect));
+            new glm::vec3(0), NULL, getMeshes(effect), getTextures(effect));
     default:
         return NULL;
     }

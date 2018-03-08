@@ -188,7 +188,7 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     f_projectiles.push_back(&obj);
 }
 
-void createParticleEffect(ParticleEffect::Effect effect, glm::vec3 pos) {
+void createParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & pos, const glm::vec3 & dir) {
     // Need to create function that maps effects to .objs and .pngs
     Mesh * mesh(Loader::getMesh("Hamburger.obj"));
     ParticleShader * shader(RenderSystem::getShader<ParticleShader>());
@@ -198,7 +198,7 @@ void createParticleEffect(ParticleEffect::Effect effect, glm::vec3 pos) {
     ParticleComponent & particleComp(Scene::addComponent<ParticleComponent>(obj));
     ParticleRenderComponent & renderComp(Scene::addComponent<ParticleRenderComponent>(obj, shader->pid, true, effect));
     
-    obj.getComponentByType<ParticleComponent>()->spawnParticleEffect(effect, pos);
+    particleComp.spawnParticleEffect(effect, pos, dir);
     f_particleEffects.push_back(&obj);
 }
 
@@ -396,6 +396,9 @@ int main(int argc, char **argv) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && !msg.mods && msg.action == GLFW_PRESS) {
             createProjectile(player::spatialComp->position() + player::cameraComp->getLookDir() * 2.0f, player::cameraComp->getLookDir());
+            //Remove later
+            createParticleEffect(ParticleEffect::BLOOD_SPLAT, 
+                player::spatialComp->position() + player::cameraComp->getLookDir() * 2.0f, player::cameraComp->getLookDir());
         }
         if (msg.button == GLFW_MOUSE_BUTTON_2 && msg.action == GLFW_PRESS) {
             for (GameObject * obj : f_projectiles) {

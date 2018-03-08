@@ -21,7 +21,7 @@ class ParticleComponent : public Component {
     public:
         virtual SystemID systemID() const override { return SystemID::gameLogic;  }
         void update(float dt) override;
-        void spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & pos);
+        void spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & pos, const glm::vec3 & dir);
         Mesh* getMesh(int i);
         ModelTexture* getModelTexture(int i);
 
@@ -31,6 +31,6 @@ class ParticleComponent : public Component {
         Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect effect);
     
     private:
-        ParticleEffect *activeEffect = NULL;
+        ParticleEffect * activeEffect;;
 
 };

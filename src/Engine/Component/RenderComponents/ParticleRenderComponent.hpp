@@ -14,7 +14,6 @@ class RenderSystem;
 class ParticleRenderComponent : public Component {
 
     friend Scene;
-    //friend ParticleComponent;
 
 protected: // only scene or friends can create component
 

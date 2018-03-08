@@ -42,7 +42,6 @@ class ParticleEffect {
             float mass = 1.0f;
             bool loop = false;
             glm::vec3* initVelocity = new glm::vec3(0);
-            glm::vec3* forward = new glm::vec3(0);
             Vector<glm::vec3>* forceFactors;
             Vector<Mesh *>* meshes;
             Vector<ModelTexture *>* textures;
@@ -53,10 +52,12 @@ class ParticleEffect {
     public:
         ParticleEffect();
         ParticleEffect(EffectParams *ep, const glm::vec3 & origin);
+        ParticleEffect(EffectParams *ep, const glm::vec3 & origin, const glm::vec3 & direction);
    
     private:
         EffectParams *m_ep;
         glm::vec3 m_origin;
+        glm::vec3 m_direction;
         Vector<Particle*> & m_particles;
         float m_life;
 
@@ -76,7 +77,6 @@ class ParticleEffect {
             float mass,
             bool loop,
             glm::vec3* initVelocity,
-            glm::vec3* forward,
             Vector<glm::vec3>* forceFactors,
             Vector<Mesh *>* meshes,
             Vector<ModelTexture *>* textures
