@@ -11,6 +11,7 @@
 #include "System/CollisionSystem.hpp"
 #include "System/PostCollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
+#include "System/SoundSystem.hpp"
 
 
 
@@ -48,6 +49,7 @@ void Scene::init() {
     CollisionSystem::init();
     PostCollisionSystem::init();
     RenderSystem::init();
+    SoundSystem::init();
 }
 
 GameObject & Scene::createGameObject() {
@@ -94,7 +96,11 @@ void Scene::update(float dt) {
     RenderSystem::update(dt); // rendering should be last
     renderDT = float(watch.lap());
     relayMessages();
-    renderMessagingDT = float(watch.lap());
+    renderMessagingDT = float (watch.lap());
+
+    // TO DO: time stuff
+    SoundSystem::update(dt);
+    relayMessages();
 
     doKillQueue();
     killDT = float(watch.lap());
@@ -152,6 +158,7 @@ void Scene::initComponents() {
             case SystemID::    collision: sendMessage<SystemComponentAddedMessage<    CollisionSystem>>(nullptr, c); break;
             case SystemID::postCollision: sendMessage<SystemComponentAddedMessage<PostCollisionSystem>>(nullptr, c); break;
             case SystemID::       render: sendMessage<SystemComponentAddedMessage<       RenderSystem>>(nullptr, c); break;
+            case SystemID::        sound: sendMessage<SystemComponentAddedMessage<        SoundSystem>>(nullptr, c); break;
         }
     }
     s_componentInitQueue.clear();
@@ -221,6 +228,7 @@ void Scene::killComponents() {
             case SystemID::    collision: sendMessage<SystemComponentRemovedMessage<    CollisionSystem>>(nullptr, comp, typeI); break;
             case SystemID::postCollision: sendMessage<SystemComponentRemovedMessage<PostCollisionSystem>>(nullptr, comp, typeI); break;
             case SystemID::       render: sendMessage<SystemComponentRemovedMessage<       RenderSystem>>(nullptr, comp, typeI); break;
+            case SystemID::        sound: sendMessage<SystemComponentRemovedMessage<        SoundSystem>>(nullptr, comp, typeI); break;
         }
     }
     s_componentKillQueue.clear();
