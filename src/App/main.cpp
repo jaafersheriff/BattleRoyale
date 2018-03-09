@@ -102,6 +102,12 @@ namespace player {
         bounderComp = &Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(*gameObject, 5, playerCap);
         cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, k_fov, k_near, k_far);
         controllerComp = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_lookSpeed, k_moveSpeed, k_jumpSpeed, k_sprintSpeed);
+
+        // An example of using object initialization message
+        auto initCallback([&](const Message & msg) {            
+            cameraComp->lookInDir(cameraComp->getLookDir());
+        });
+        Scene::addReceiver<ObjectInitMessage>(gameObject, initCallback);
     }
 
 }
@@ -152,7 +158,7 @@ void createEnemy(const glm::vec3 & position) {
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
     GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
     BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *mesh, false, true, false));
-    PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed));
+    PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed, false));
     DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, toon);   
     EnemyComponent & enemyComp(Scene::addComponent<EnemyComponent>(obj));
     
@@ -245,6 +251,9 @@ int main(int argc, char **argv) {
     // Set primary camera
     RenderSystem::setCamera(player::cameraComp);
 
+    // Set Sound camera
+    SoundSystem::setCamera(player::cameraComp);
+
     // Add Enemies
     int nEnemies(5);
     for (int i(0); i < nEnemies; ++i) {
@@ -267,12 +276,14 @@ int main(int argc, char **argv) {
             ImGui::NewLine();
             ImGui::Text("Workload by System (Update, Messaging)");
             float factor(100.0f / Scene::totalDT);
-            ImGui::Text("    Game Logic: %4.1f%%, %4.1f%%", Scene::gameLogicDT * factor, Scene::gameLogicMessagingDT * factor);
-            ImGui::Text("   Pathfinding: %4.1f%%, %4.1f%%", Scene::pathfindingDT * factor, Scene::pathfindingMessagingDT * factor);
-            ImGui::Text("       Spatial: %4.1f%%, %4.1f%%", Scene::spatialDT * factor, Scene::spatialMessagingDT * factor);
-            ImGui::Text("     Collision: %4.1f%%, %4.1f%%", Scene::collisionDT * factor, Scene::collisionMessagingDT * factor);
-            ImGui::Text("Post Collision: %4.1f%%, %4.1f%%", Scene::postCollisionDT * factor, Scene::postCollisionMessagingDT * factor);
-            ImGui::Text("        Render: %4.1f%%, %4.1f%%", Scene::renderDT * factor, Scene::renderMessagingDT * factor);
+            ImGui::Text("    Init Queue: %5.2f%%", Scene::initDT * factor);
+            ImGui::Text("    Game Logic: %5.2f%%, %5.2f%%", Scene::    gameLogicDT * factor, Scene::    gameLogicMessagingDT * factor);
+            ImGui::Text("   Pathfinding: %5.2f%%, %5.2f%%", Scene::  pathfindingDT * factor, Scene::  pathfindingMessagingDT * factor);
+            ImGui::Text("       Spatial: %5.2f%%, %5.2f%%", Scene::      spatialDT * factor, Scene::      spatialMessagingDT * factor);
+            ImGui::Text("     Collision: %5.2f%%, %5.2f%%", Scene::    collisionDT * factor, Scene::    collisionMessagingDT * factor);
+            ImGui::Text("Post Collision: %5.2f%%, %5.2f%%", Scene::postCollisionDT * factor, Scene::postCollisionMessagingDT * factor);
+            ImGui::Text("        Render: %5.2f%%, %5.2f%%", Scene::       renderDT * factor, Scene::       renderMessagingDT * factor);
+            ImGui::Text("    Kill Queue: %5.2f%%", Scene::killDT * factor);
             ImGui::NewLine();
             ImGui::Text("Player Pos");
             ImGui::Text("%f %f %f",
@@ -289,23 +300,26 @@ int main(int argc, char **argv) {
         }
     );
 
-    // VSync toggle
+    // Misc
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
-        "VSync",
-        []() {
+        "Misc",
+        [&]() {
+            /* Light dir */
+            ImGui::SliderFloat3("LightDir", glm::value_ptr(light::dir), -1.f, 1.f);
+            /* VSync */
             if (ImGui::Button("VSync")) {
                 Window::toggleVSync();
             }
-        }
-    );
-
-    // Light config
-    Scene::addComponent<ImGuiComponent>(
-        imguiGO,
-        "Light",
-        [&]() {
-            ImGui::SliderFloat3("LightDir", glm::value_ptr(light::dir), -1.f, 1.f);
+            /* Path finding */
+            if (ImGui::Button("Turn off Path finding")) {
+                for (auto e : f_enemies) {
+                    PathfindingComponent *p = e->getComponentByType<PathfindingComponent>();
+                    if (p) {
+                        p->setMoveSpeed(0.f);
+                    }
+                }
+            }
         }
     );
 
@@ -337,14 +351,16 @@ int main(int argc, char **argv) {
                 ImGui::End();
                 ImGui::Begin("Cell Shading");
                 for (int i = 0; i < cells; i++) {
-                    float vals[2];
-                    float minBounds[2] = { -1.f, 0.f };
-                    float maxBounds[2] = { 1.f, 1.f };
+                    float vals[3];
+                    float minBounds[3] = { -1.f,  0.f,  0.f };
+                    float maxBounds[3] = {  1.f,  1.f,  1.f };
                     vals[0] = RenderSystem::getShader<DiffuseShader>()->getCellIntensity(i);
-                    vals[1] = RenderSystem::getShader<DiffuseShader>()->getCellScale(i);
-                    ImGui::SliderFloat2(("Cell " + std::to_string(i)).c_str(), vals, minBounds, maxBounds);
+                    vals[1] = RenderSystem::getShader<DiffuseShader>()->getCellDiffuseScale(i);
+                    vals[2] = RenderSystem::getShader<DiffuseShader>()->getCellSpecularScale(i);
+                    ImGui::SliderFloat3(("Cell " + std::to_string(i)).c_str(), vals, minBounds, maxBounds);
                     RenderSystem::getShader<DiffuseShader>()->setCellIntensity(i, vals[0]);
-                    RenderSystem::getShader<DiffuseShader>()->setCellScale(i, vals[1]);
+                    RenderSystem::getShader<DiffuseShader>()->setCellDiffuseScale(i, vals[1]);
+                    RenderSystem::getShader<DiffuseShader>()->setCellSpecularScale(i, vals[2]);
                 }
             }
         }

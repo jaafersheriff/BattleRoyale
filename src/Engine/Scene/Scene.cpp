@@ -11,6 +11,7 @@
 #include "System/CollisionSystem.hpp"
 #include "System/PostCollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
+#include "System/SoundSystem.hpp"
 
 
 
@@ -26,6 +27,8 @@ Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_m
 UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> Scene::s_receivers;
 
 float Scene::totalDT;
+float Scene::initDT;
+float Scene::killDT;
 float Scene::gameLogicDT;
 float Scene::spatialDT;
 float Scene::pathfindingDT;
@@ -46,6 +49,7 @@ void Scene::init() {
     CollisionSystem::init();
     PostCollisionSystem::init();
     RenderSystem::init();
+    SoundSystem::init();
 }
 
 GameObject & Scene::createGameObject() {
@@ -62,7 +66,7 @@ void Scene::update(float dt) {
 
     doInitQueue();
     relayMessages();
-    watch.lap();
+    initDT = float(watch.lap());
 
     GameLogicSystem::update(dt);
     gameLogicDT = float(watch.lap());
@@ -92,10 +96,15 @@ void Scene::update(float dt) {
     RenderSystem::update(dt); // rendering should be last
     renderDT = float(watch.lap());
     relayMessages();
-    renderMessagingDT = float (watch.lap());
+    renderMessagingDT = float(watch.lap());
+
+    // TO DO: time stuff
+    SoundSystem::update(dt);
+    relayMessages();
 
     doKillQueue();
     relayMessages();
+    killDT = float(watch.lap());
 
     totalDT = float(watch.total());
 }
@@ -117,6 +126,7 @@ void Scene::doKillQueue() {
 
 void Scene::initGameObjects() {
     for (auto & o : s_gameObjectInitQueue) {
+        sendMessage<ObjectInitMessage>(o.get());
         s_gameObjects.emplace_back(std::move(o));
     }
     s_gameObjectInitQueue.clear();

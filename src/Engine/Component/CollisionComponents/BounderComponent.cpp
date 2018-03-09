@@ -34,7 +34,7 @@ AABox AABBounderComponent::transformAABox(const AABox & box, const glm::mat4 & t
         glm::vec3(box.max.x, box.max.y, box.max.z)
     };
     for (int i(0); i < 8; ++i) {
-        corners[i] = transMat * glm::vec4(corners[i], 1.0f);
+        corners[i] = glm::vec3(transMat * glm::vec4(corners[i], 1.0f));
     }
 
     AABox transBox(corners[0], corners[0]);
@@ -110,7 +110,7 @@ bool AABBounderComponent::isCritical() const {
 
 Sphere SphereBounderComponent::transformSphere(const Sphere & sphere, const glm::mat4 & transMat, const glm::vec3 & scale) {
     return Sphere(
-        transMat * glm::vec4(sphere.origin, 1.0f),
+        glm::vec3(transMat * glm::vec4(sphere.origin, 1.0f)),
         glm::compMax(scale) * sphere.radius
     );
 }
@@ -167,7 +167,7 @@ bool SphereBounderComponent::isCritical() const {
 Capsule CapsuleBounderComponent::transformCapsule(const Capsule & capsule, const glm::mat4 & transMat, const glm::vec3 & scale) {
     float transRadius(glm::max(scale.x, scale.z) * capsule.radius);
     return Capsule(
-        transMat * glm::vec4(capsule.center, 1.0f),
+        glm::vec3(transMat * glm::vec4(capsule.center, 1.0f)),
         transRadius,
         glm::max(0.0f, scale.y * (capsule.height + 2.0f * capsule.radius) - 2.0f * transRadius)
     );

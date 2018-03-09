@@ -139,22 +139,28 @@ inline std::string convert(const std::string & string) {
 #endif
 
 // std::vector equivalent
-template <typename T> using Vector = std::vector<T, ScopedAllocator<T>>;
+template <typename T>
+using Vector = std::vector<T, ScopedAllocator<T>>;
 
 // std::list equivalent
-template <typename T> using List = std::list<T, ScopedAllocator<T>>;
+template <typename T>
+using List = std::list<T, ScopedAllocator<T>>;
 
 // std::set equivalent
-template <typename K> using Set = std::set<K, std::less<K>, ScopedAllocator<K>>;
+template <typename K, typename E = std::less<K>>
+using Set = std::set<K, E, ScopedAllocator<K>>;
 
 // std::unordered_set equivalent
-template <typename K> using UnorderedSet = std::unordered_set<K, std::hash<K>, std::equal_to<K>, ScopedAllocator<K>>;
+template <typename K, typename H = std::hash<K>, typename E = std::equal_to<K>>
+using UnorderedSet = std::unordered_set<K, H, E, ScopedAllocator<K>>;
 
 // std::map equivalent
-template <typename K, typename V> using Map = std::map<K, V, std::less<K>, ScopedAllocator<std::pair<K, V>>>;
+template <typename K, typename V, typename E = std::less<K>>
+using Map = std::map<K, V, E, ScopedAllocator<std::pair<K, V>>>;
 
 // std::unordered_map equivalent
-template <typename K, typename V> using UnorderedMap = std::unordered_map<K, V, std::hash<K>, std::equal_to<K>, ScopedAllocator<std::pair<const K, V>>>;
+template <typename K, typename V, typename H = std::hash<K>, typename E = std::equal_to<K>>
+using UnorderedMap = std::unordered_map<K, V, H, E, ScopedAllocator<std::pair<const K, V>>>;
 
 
 
