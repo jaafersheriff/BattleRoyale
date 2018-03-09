@@ -27,6 +27,9 @@ void RenderSystem::init() {
 // list and expecting each shader to filter through         //
 //////////////////////////////////////////////////////////////
 void RenderSystem::update(float dt) {
+    static UnorderedSet<GameObject *> s_visibleGOs;
+    static Vector<Component *> s_compsToRender;
+
     /* Reset rendering display */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
@@ -34,32 +37,20 @@ void RenderSystem::update(float dt) {
     glm::ivec2 size = Window::getFrameSize();
     glViewport(0, 0, size.x, size.y);
     if (s_camera) {
+        // Frustum culling
+        s_compsToRender.clear();
+        s_visibleGOs.clear();
+        CollisionSystem::getVisible(*s_camera, s_visibleGOs);
+        for (GameObject * go : s_visibleGOs) {
+            for (DiffuseRenderComponent * comp : go->getComponentsByType<DiffuseRenderComponent>()) {
+                s_compsToRender.push_back(comp);
+            }
+        }
+
         /* Loop through active shaders */
         for (auto &shader : s_shaders) {
             if (!shader.second->isEnabled()) {
                 continue;
-            }
-
-            /* Frustum culling */
-            static Vector<Component *> s_compsToRender;
-            for (auto comp : s_diffuseComponents) {
-                const Vector<Component *> & bounders(comp->gameObject().getComponentsByType<BounderComponent>());
-                if (bounders.size()) {
-                    bool inFrustum(false);
-                    for (Component * bounder_ : bounders) {
-                        BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
-                        if (s_camera->sphereInFrustum(bounder->enclosingSphere())) {
-                            inFrustum = true;
-                            break;
-                        }
-                    }
-                    if (inFrustum) {
-                        s_compsToRender.push_back(comp);
-                    }
-                }
-                else {
-                    s_compsToRender.push_back(comp);
-                }
             }
 
             shader.second->bind();
@@ -67,8 +58,6 @@ void RenderSystem::update(float dt) {
             // guaranteed is the same as a pointer
             shader.second->render(s_camera, reinterpret_cast<const Vector<Component *> &>(s_compsToRender));
             shader.second->unbind();
-
-            s_compsToRender.clear();
         }
     }
 

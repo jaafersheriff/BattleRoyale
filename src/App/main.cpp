@@ -255,7 +255,7 @@ int main(int argc, char **argv) {
     SoundSystem::setCamera(player::cameraComp);
 
     // Add Enemies
-    int nEnemies(5);
+    int nEnemies(0);
     for (int i(0); i < nEnemies; ++i) {
         createEnemy(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f));
     }
@@ -283,6 +283,7 @@ int main(int argc, char **argv) {
             ImGui::Text("     Collision: %5.2f%%, %5.2f%%", Scene::    collisionDT * factor, Scene::    collisionMessagingDT * factor);
             ImGui::Text("Post Collision: %5.2f%%, %5.2f%%", Scene::postCollisionDT * factor, Scene::postCollisionMessagingDT * factor);
             ImGui::Text("        Render: %5.2f%%, %5.2f%%", Scene::       renderDT * factor, Scene::       renderMessagingDT * factor);
+            ImGui::Text("         Sound: %5.2f%%, %5.2f%%", Scene::        soundDT * factor, Scene::        soundMessagingDT * factor);
             ImGui::Text("    Kill Queue: %5.2f%%", Scene::killDT * factor);
             ImGui::NewLine();
             ImGui::Text("Player Pos");

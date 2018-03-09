@@ -24,7 +24,7 @@ class OctreeShader : public Shader {
 
     private:
 
-    void renderNode(const void * node, int depth);
+    void renderNode(const CameraComponent * camera, const void * node, int depth, int maxDepth);
 
     bool initAABMesh();
 

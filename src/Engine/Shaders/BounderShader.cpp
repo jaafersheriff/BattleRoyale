@@ -81,6 +81,11 @@ void BounderShader::render(const CameraComponent * camera, const Vector<Componen
     for (auto & comp : CollisionSystem::s_bounderComponents) {
         BounderComponent & bounder(static_cast<BounderComponent &>(*comp));
 
+        // View frustum culling
+        if (!camera->sphereInFrustum(bounder.enclosingSphere())) {
+            continue;
+        }
+
         bool collided(CollisionSystem::s_collided.count(&bounder));
         bool adjusted(CollisionSystem::s_adjusted.count(&bounder));
 

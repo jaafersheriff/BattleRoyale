@@ -30,17 +30,19 @@ float Scene::totalDT;
 float Scene::initDT;
 float Scene::killDT;
 float Scene::gameLogicDT;
-float Scene::spatialDT;
-float Scene::pathfindingDT;
-float Scene::collisionDT;
-float Scene::postCollisionDT;
-float Scene::renderDT;
 float Scene::gameLogicMessagingDT;
+float Scene::spatialDT;
 float Scene::spatialMessagingDT;
+float Scene::pathfindingDT;
 float Scene::pathfindingMessagingDT;
+float Scene::collisionDT;
 float Scene::collisionMessagingDT;
+float Scene::postCollisionDT;
 float Scene::postCollisionMessagingDT;
+float Scene::renderDT;
 float Scene::renderMessagingDT;
+float Scene::soundDT;
+float Scene::soundMessagingDT;
 
 void Scene::init() {
     GameLogicSystem::init();
@@ -98,9 +100,10 @@ void Scene::update(float dt) {
     relayMessages();
     renderMessagingDT = float(watch.lap());
 
-    // TO DO: time stuff
     SoundSystem::update(dt);
+    soundDT = float(watch.lap());
     relayMessages();
+    soundMessagingDT = float(watch.lap());
 
     doKillQueue();
     relayMessages();
@@ -164,7 +167,7 @@ void Scene::killGameObjects() {
         for (int i(int(s_gameObjects.size()) - 1); i >= 0; --i) {
             GameObject * go(s_gameObjects[i].get());
             if (go == *killIt) {
-                // add game object's componets to kill queue
+                // add game object's components to kill queue
                 for (auto compTIt(go->m_compsByCompT.begin()); compTIt != go->m_compsByCompT.end(); ++compTIt) {
                     for (auto & comp : compTIt->second) {
                         s_componentKillQueue.emplace_back(compTIt->first, comp);
