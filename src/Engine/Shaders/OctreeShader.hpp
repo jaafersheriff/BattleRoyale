@@ -3,7 +3,6 @@
 
 
 #include "Shader.hpp"
-#include "Util/Octree.hpp"
 
 
 
@@ -25,7 +24,7 @@ class OctreeShader : public Shader {
 
     private:
 
-    void renderNode(const Octree<BounderComponent *>::Node & node, int depth, float radius);
+    void renderNode(const void * node, int depth);
 
     bool initAABMesh();
 

@@ -48,11 +48,11 @@ struct Util {
         return isZero(v1 - v2, e);
     }
 
-    static inline bool isGreater(float v1, float v2, float e = epsilon) {
-        return v1 - v2 > -e;
+    static inline bool isGE(float v1, float v2, float e = epsilon) {
+        return v2 - v1 < e;
     }
 
-    static inline bool isLess(float v1, float v2, float e = epsilon) {
+    static inline bool isLE(float v1, float v2, float e = epsilon) {
         return v1 - v2 < e;
     }
 

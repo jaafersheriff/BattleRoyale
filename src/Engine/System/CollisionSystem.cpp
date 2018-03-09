@@ -8,6 +8,7 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Scene/Scene.hpp"
 #include "Util/Octree.hpp"
+#include "Component/CameraComponents/CameraComponent.hpp"
 
 
 
@@ -144,8 +145,7 @@ const Vector<BounderComponent *> & CollisionSystem::s_bounderComponents(Scene::g
 UnorderedSet<BounderComponent *> CollisionSystem::s_potentials;
 UnorderedSet<BounderComponent *> CollisionSystem::s_collided;
 UnorderedSet<BounderComponent *> CollisionSystem::s_adjusted;
-UniquePtr<Octree<BounderComponent *>> CollisionSystem::s_octree = UniquePtr<Octree<BounderComponent *>>::make(AABox(), k_minOctreeSize);
-bool CollisionSystem::s_rebuildOctree = true;
+UniquePtr<Octree<BounderComponent *>> CollisionSystem::s_octree;
 
 void CollisionSystem::init() {
     auto compAddedCallback(
@@ -154,7 +154,6 @@ void CollisionSystem::init() {
             if (msg.typeI == typeid(BounderComponent)) {
                 BounderComponent & bounder(static_cast<BounderComponent &>(msg.comp));
                 s_potentials.insert(&bounder);
-                if (s_octree && bounder.weight() == UINT_MAX) s_rebuildOctree = true;
             }
         }
     );
@@ -166,8 +165,7 @@ void CollisionSystem::init() {
             if (msg.typeI == typeid(BounderComponent)) {
                 BounderComponent & bounder(const_cast<BounderComponent &>(static_cast<const BounderComponent &>(*msg.comp)));
                 s_potentials.erase(&bounder);
-                if (s_octree) s_octree->remove(&bounder, bounder.enclosingAABox());
-                if (s_octree && bounder.weight() == UINT_MAX) s_rebuildOctree = true;
+                if (s_octree) s_octree->remove(&bounder);
             }
         }
     );
@@ -179,7 +177,6 @@ void CollisionSystem::init() {
             for (auto & comp : msg.spatial.gameObject().getComponentsByType<BounderComponent>()) {
                 BounderComponent & bounder(static_cast<BounderComponent &>(*comp));
                 s_potentials.insert(&bounder);
-                if (s_octree && bounder.weight() == UINT_MAX) s_rebuildOctree = true;
             }
         }
     );
@@ -197,20 +194,32 @@ void CollisionSystem::update(float dt) {
     static UnorderedSet<BounderComponent *> s_checked;
     static UnorderedMap<GameObject *, glm::vec3> s_gameObjectDeltas;
     static Vector<BounderComponent *> s_octreeResults;
+    static UnorderedSet<GameObject *> s_outOfBounds;
 
     s_collided.clear();
     s_adjusted.clear();
 
     // update all potential bounders
     for (BounderComponent * bounder : s_potentials) {
-        if (s_octree) s_octree->remove(bounder, bounder->enclosingAABox());
         bounder->update(dt);
-        if (s_octree) s_octree->add(bounder, bounder->enclosingAABox());
     }
 
-    // if static geometry has changed, rebuild octree
-    if (s_octree && s_rebuildOctree) {
-        rebuildOctree();
+    // update octree
+    if (s_octree) {
+        for (BounderComponent * bounder : s_potentials) {
+            if (!s_octree->set(bounder, bounder->enclosingAABox())) {
+                s_outOfBounds.insert(&bounder->gameObject());
+            }
+        }
+        // remove all out of bounds game objects
+        for (GameObject * go : s_outOfBounds) {
+            const auto & bounders(go->getComponentsByType<BounderComponent>());
+            for (BounderComponent * bounder : bounders) {
+                s_potentials.erase(bounder);
+            }
+            Scene::destroyGameObject(*go);
+        }
+        s_outOfBounds.clear();
     }
     
     // determine all bounders with path intersections
@@ -246,9 +255,10 @@ void CollisionSystem::update(float dt) {
         for (Component * comp : go.getComponentsByType<BounderComponent>()) {
             BounderComponent & bounder(static_cast<BounderComponent &>(*comp));
             s_potentials.insert(&bounder);
-            if (s_octree) s_octree->remove(&bounder, bounder.enclosingAABox());
             bounder.update(dt);
-            if (s_octree) s_octree->add(&bounder, bounder.enclosingAABox());
+            if (s_octree) {
+                s_octree->set(&bounder, bounder.enclosingAABox());
+            }
         }
     }
     s_criticals.clear();
@@ -305,6 +315,9 @@ void CollisionSystem::update(float dt) {
             BounderComponent * bounder(static_cast<BounderComponent *>(comp));
             s_potentials.insert(bounder);
             bounder->update(dt);
+            if (s_octree) {
+                s_octree->set(bounder, bounder->enclosingAABox());
+            }
             s_adjusted.insert(bounder);
             Scene::sendMessage<CollisionAdjustMessage>(gameObject, *gameObject, delta);
         }
@@ -335,17 +348,44 @@ std::pair<BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray, 
             inter = potential;
         }
     }
+
+    s_octreeResults.clear();
+
     return { bounder, inter };
 }
 
 void CollisionSystem::setOctree(const glm::vec3 & min, const glm::vec3 & max, float minCellSize) {
     s_octree = UniquePtr<Octree<BounderComponent *>>::make(AABox(min, max), minCellSize);
     for (BounderComponent * bounder : s_bounderComponents) {
-        s_octree->add(bounder, bounder->enclosingAABox());
+        s_octree->set(bounder, bounder->enclosingAABox());
     }
 }
 
+void CollisionSystem::getVisible(const CameraComponent & camera, UnorderedSet<GameObject *> & r_gameObjects) {
+    static Vector<BounderComponent *> s_octreeResults;
+    static const float sqrt3(std::sqrt(3.0f));
 
+    const Vector<BounderComponent *> * possible(&s_bounderComponents);
+
+    if (s_octree) {
+        s_octreeResults.clear();
+        s_octree->filter(
+            [&](const glm::vec3 & center, float radius) {                
+                return camera.sphereInFrustum(Sphere(center, sqrt3 * radius));
+            },
+            s_octreeResults
+        );
+        possible = &s_octreeResults;
+    }
+
+    for (BounderComponent * bounder : *possible) {
+        if (!r_gameObjects.count(&bounder->gameObject())) {
+            if (camera.sphereInFrustum(bounder->enclosingSphere())) {
+                r_gameObjects.insert(&bounder->gameObject());
+            }
+        }
+    }
+}
 
 namespace {
 
@@ -441,30 +481,4 @@ BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, 
     else {
         return Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(gameObject, weight, capsule);
     }
-}
-
-void CollisionSystem::rebuildOctree() {
-    glm::vec3 min(Util::infinity()), max(-Util::infinity());
-    bool isStatic = false;
-
-    for (BounderComponent * bounder : s_bounderComponents) {
-        if (bounder->weight() == UINT_MAX) {
-            AABox box(bounder->enclosingAABox());
-            min = glm::min(min, box.min);
-            max = glm::max(max, box.max);
-            isStatic = true;
-        }
-    }
-
-    if (isStatic) {
-        s_octree = UniquePtr<Octree<BounderComponent *>>::make(AABox(min, max), k_minOctreeSize);
-        for (BounderComponent * bounder : s_bounderComponents) {
-            s_octree->add(bounder, bounder->enclosingAABox());
-        }
-    }
-    else {
-        s_octree.release();
-    }
-
-    s_rebuildOctree = false;
 }

@@ -227,9 +227,14 @@ int main(int argc, char **argv) {
 
     // Load Level
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json", k_ambience);
+    // Needs to be manually adjusted to fit level size
+    CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
     //GameObject & obj(Scene::createGameObject());
     //Scene::addComponent<SpatialComponent>(obj);
-    //Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, UINT_MAX, AABox(glm::vec3(-7.0f, 0.0f, 10.0f), glm::vec3(7.0f, 10.0f, 12.0f)));
+    //Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, UINT_MAX, AABox(glm::vec3(-7.0f, -2.0f, -10.0f), glm::vec3(7.0f, 0.0f, 10.0f)));
+    //Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, UINT_MAX, AABox(glm::vec3(-7.0f, 0.0f, -10.0f), glm::vec3(7.0f, 10.0f, -9.0f)));
+    //Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, UINT_MAX, AABox(glm::vec3(-7.0f, 0.0f, -10.0f), glm::vec3(-6.0f, 10.0f, 10.0f)));
+    //CollisionSystem::setOctree(glm::vec3(-16.0f), glm::vec3(16.0f), 1.0f);
 
     // Setup Player
     player::setup(glm::vec3(0.0f, 6.0f, 0.0f));
@@ -241,7 +246,7 @@ int main(int argc, char **argv) {
     RenderSystem::setCamera(player::cameraComp);
 
     // Add Enemies
-    int nEnemies(0);
+    int nEnemies(5);
     for (int i(0); i < nEnemies; ++i) {
         createEnemy(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f));
     }
@@ -269,10 +274,17 @@ int main(int argc, char **argv) {
             ImGui::Text("Post Collision: %4.1f%%, %4.1f%%", Scene::postCollisionDT * factor, Scene::postCollisionMessagingDT * factor);
             ImGui::Text("        Render: %4.1f%%, %4.1f%%", Scene::renderDT * factor, Scene::renderMessagingDT * factor);
             ImGui::NewLine();
-            ImGui::Text("Player Pos:\n%f %f %f",
+            ImGui::Text("Player Pos");
+            ImGui::Text("%f %f %f",
                 player::spatialComp->position().x,
                 player::spatialComp->position().y,
                 player::spatialComp->position().z
+            );
+            ImGui::Text("Freecam Pos");
+            ImGui::Text("%f %f %f",
+                freecam::spatialComp->position().x,
+                freecam::spatialComp->position().y,
+                freecam::spatialComp->position().z
             );
         }
     );

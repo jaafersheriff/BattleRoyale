@@ -6,6 +6,9 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 #include "System/CollisionSystem.hpp"
+#include "Util/Octree.hpp"
+
+
 
 namespace {
 
@@ -60,23 +63,27 @@ void OctreeShader::render(const CameraComponent * camera, const Vector<Component
     loadMat4(getUniform("u_viewMat"), camera->getView());
     loadMat4(getUniform("u_projMat"), camera->getProj());
 
-    renderNode(*CollisionSystem::s_octree->m_root, 0, CollisionSystem::s_octree->m_rootRadius);
+    renderNode(CollisionSystem::s_octree->m_root.get(), 0);
 
     glBindVertexArray(0);
 }
 
-void OctreeShader::renderNode(const Octree<BounderComponent *>::Node & node, int depth, float radius) {
-    loadMat4(getUniform("u_modelMat"), detAABBMat(AABox(node.center - radius, node.center + radius)));
+void OctreeShader::renderNode(const void * node_, int depth) {
+    // Using void * and this cast because I really don't want OctreeShader.hpp
+    // to include Octree.hpp, for compilation time concerns, and you can't
+    // forward declare an inner class
+    const Octree<BounderComponent *>::Node & node(*static_cast<const Octree<BounderComponent *>::Node *>(node_));
+    loadMat4(getUniform("u_modelMat"), detAABBMat(AABox(node.center - node.radius, node.center + node.radius)));
 
     int maxDepth(CollisionSystem::s_octree->m_maxDepth);
     float d(maxDepth == 0 ? 0.0f : float(depth) / float(maxDepth));
     loadVec3(getUniform("u_color"), glm::mix(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 1.0f), d));
     glDrawElements(GL_LINES, m_nAABIndices, GL_UNSIGNED_INT, nullptr);
 
-    if (node.nodes) {
-        for (int o(0), op(1); o < 8; ++o, op <<= 1) {
-            if (node.active & op) {
-                renderNode(node.nodes[o], depth + 1, radius * 0.5f);
+    if (node.children) {
+        for (unsigned char o(0), op(1); o < 8; ++o, op <<= 1) {
+            if (node.activeOs & op) {
+                renderNode(&node.children[o], depth + 1);
             }
         }
     }

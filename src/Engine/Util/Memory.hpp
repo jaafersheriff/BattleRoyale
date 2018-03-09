@@ -182,7 +182,7 @@ class UniquePtr {
     UniquePtr<T> & operator=(const UniquePtr<T> & other) = delete;
     UniquePtr<T> & operator=(UniquePtr<T> && other);
 
-    explicit operator bool() const { return m_v != nullptr; }
+    explicit operator bool() const { return m_v; }
 
     void release();
 
@@ -205,6 +205,8 @@ class UniquePtr {
 
 };
 
+
+
 // std::unique_ptr array variant using custom memory allocator
 template <typename T>
 class UniquePtr<T[]> {
@@ -224,7 +226,7 @@ class UniquePtr<T[]> {
     UniquePtr<T[]> & operator=(const UniquePtr<T[]> & other) = delete;
     UniquePtr<T[]> & operator=(UniquePtr<T[]> && other);
 
-    explicit operator bool() const { return m_vs != nullptr; }
+    explicit operator bool() const { return m_vs; }
 
     void release();
 
@@ -234,16 +236,13 @@ class UniquePtr<T[]> {
     T & operator[](size_t i) { return m_vs[i]; };
     const T & operator[](size_t i) const { return m_vs[i]; };
 
-    size_t size() const { return m_size; }
-
     private:
 
-    UniquePtr(T * vs, size_t size);
+    UniquePtr(T * vs);
 
     private:
 
     T * m_vs;
-    size_t m_size;
 
 };
 
@@ -293,7 +292,10 @@ UniquePtr<T> & UniquePtr<T>::operator=(UniquePtr<T> && other) {
 
 template <typename T>
 void UniquePtr<T>::release() {
-    if (!m_v) return;
+    if (!m_v) {
+        return;
+    }
+
     m_v->~T();
     deallocate(m_v);
     m_v = nullptr;
@@ -309,22 +311,23 @@ UniquePtr<T>::UniquePtr(T * v) :
 template <typename T>
 UniquePtr<T[]> UniquePtr<T[]>::make(size_t size) {
     static_assert(std::is_default_constructible<T>::value, "T must be default constructible");
-    return UniquePtr<T[]>(new (allocate(size * sizeof(T))) T[size], size);
+    unsigned char * mem(static_cast<unsigned char *>(allocate(sizeof(size_t) + size * sizeof(T))));
+    *reinterpret_cast<size_t *>(mem) = size;
+    T * arr(reinterpret_cast<T *>(mem + sizeof(size_t)));
+    for (size_t i(0); i < size; ++i) new (arr + i) T();
+    return UniquePtr<T[]>(arr);
 }
 
 template <typename T>
 UniquePtr<T[]>::UniquePtr() :
-    m_vs(nullptr),
-    m_size(0)
+    m_vs(nullptr)
 {}
 
 template <typename T>
 UniquePtr<T[]>::UniquePtr(UniquePtr<T[]> && other) :
-    m_vs(other.m_vs),
-    m_size(other.m_size)
+    m_vs(other.m_vs)
 {
     other.m_vs = nullptr;
-    other.m_size = 0;
 }
 
 template <typename T>
@@ -335,23 +338,24 @@ UniquePtr<T[]>::~UniquePtr() {
 template <typename T>
 UniquePtr<T[]> & UniquePtr<T[]>::operator=(UniquePtr<T[]> && other) {
     m_vs = other.m_vs;
-    m_size = other.m_size;
     other.m_vs = nullptr;
-    other.m_size = 0;
     return *this;
 }
 
 template <typename T>
 void UniquePtr<T[]>::release() {
-    if (!m_vs) return;
-    for (size_t i(0); i < m_size; ++i) m_vs[i].~T();
-    deallocate(m_vs);
+    if (!m_vs) {
+        return;
+    }
+
+    unsigned char * mem(reinterpret_cast<unsigned char *>(m_vs) - sizeof(size_t));
+    size_t size(*reinterpret_cast<size_t *>(mem));
+    for (size_t i(0); i < size; ++i) m_vs[i].~T();
+    deallocate(mem);
     m_vs = nullptr;
-    m_size = 0;
 }
 
 template <typename T>
-UniquePtr<T[]>::UniquePtr(T * vs, size_t size) :
-    m_vs(vs),
-    m_size(size)
+UniquePtr<T[]>::UniquePtr(T * vs) :
+    m_vs(vs)
 {}

@@ -21,32 +21,65 @@ class Octree {
 
     friend OctreeShader;
 
-    using Element = std::pair<T, AABox>;
-
     struct Node {
 
         friend Octree;
 
         glm::vec3 center;
-        Vector<Element> elements;
-        UniquePtr<Node[]> nodes;
-        unsigned char active;
+        float radius;
+        Vector<std::pair<T, AABox>> elements;
+        UniquePtr<Node[]> children;
+        Node * parent;
+        unsigned char activeOs;
+        unsigned char parentOP;
 
         Node();
-        Node(const glm::vec3 & center);
+        Node(const glm::vec3 & center, float radius, Node * parent, unsigned char parentOP);
         Node(const Node & other) = delete;
+        Node(Node && other) = delete;/* :
+            center(other.center),
+            radius(other.radius),
+            elements(std::move(other.elements)),
+            children(std::move(other.children)),
+            parent(other.parent),
+            activeOs(other.activeOs),
+            parentOP(other.parentOP)
+        {
+            other.parent = nullptr;
+            other.activeOs = 0;
+            other.parentOP = 0;
+        }*/
         
         Node & operator=(const Node & other) = delete;
+        Node & operator=(Node && other) = delete;/*{
+            center = other.center;
+            radius = other.radius;
+            elements = std::move(other.elements);
+            children = std::move(other.children);
+            parent = otehr.parent;
+            activeOS = other.activeOs;
+            parentOP = other.parentOP;
+            other.parent = nullptr;
+            other.activeOs = 0;
+            other.parentOP = 0;
+        }*/
 
-        void add(Element && element, int depthRemaining, float radius);
+        //~Node() { if (children) delete[] children; }
 
-        bool remove(const Element & element);
+        bool addUp(const T & v, const AABox & region, float minRadius, UnorderedMap<T, Node *> & r_map);
+        void addDown(const T & v, const AABox & region, float minRadius, UnorderedMap<T, Node *> & r_map);
 
-        size_t filter(const std::function<bool(const AABox &)> & filter, Vector<T> & r_results, float radius) const;
+        void remove(const T & v);
+
+        void trim();
+        
+        size_t filter(const std::function<bool(const glm::vec3 &, float)> & filter, Vector<T> & r_results) const;
         size_t filter(const AABox & region, Vector<T> & r_results) const;
-        size_t filter(const Ray & ray, const glm::vec3 & invDir, Vector<T> & r_results, float radius) const;
+        size_t filter(const Ray & ray, const glm::vec3 & invDir, Vector<T> & r_results) const;
 
-        void fragment(float radius);
+        void fragment();
+
+        AABox region() const;
 
     };
 
@@ -56,9 +89,11 @@ class Octree {
 
     bool add(const T & v, const AABox & region);
 
-    bool remove(const T & v, const AABox & region);
+    bool set(const T & v, const AABox & region);
 
-    size_t filter(const std::function<bool(const AABox &)> & filter, Vector<T> & r_results) const;
+    bool remove(const T & v);
+
+    size_t filter(const std::function<bool(const glm::vec3 &, float)> & filter, Vector<T> & r_results) const;
     size_t filter(const AABox & region, Vector<T> & r_results) const;
     size_t filter(const Ray & ray, Vector<T> & r_results) const;
 
@@ -66,8 +101,9 @@ class Octree {
 
     UniquePtr<Node> m_root;
     AABox m_rootRegion;
-    float m_rootRadius;
     int m_maxDepth;
+    float m_minRadius;
+    UnorderedMap<T, Node *> m_map;
 
 };
 

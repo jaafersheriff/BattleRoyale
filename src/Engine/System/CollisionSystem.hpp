@@ -12,6 +12,7 @@ struct Intersect;
 class BounderShader;
 template <typename T> class Octree;
 class OctreeShader;
+class CameraComponent;
 
 
 
@@ -25,7 +26,6 @@ class CollisionSystem {
     public:
 
     static constexpr SystemID ID = SystemID::collision;
-    static constexpr float k_minOctreeSize = 1.0f;
 
     public:
 
@@ -36,6 +36,9 @@ class CollisionSystem {
     static std::pair<BounderComponent *, Intersect> pick(const Ray & ray, const GameObject * ignore);
     static std::pair<BounderComponent *, Intersect> pick(const Ray & ray, const std::function<bool(const BounderComponent &)> & conditional);
 
+    // any game objects with bounders within the camera's frustum are added to r_gameObjects
+    static void getVisible(const CameraComponent & camera, UnorderedSet<GameObject *> & r_gameObjects);
+
     static void setOctree(const glm::vec3 & min, const glm::vec3 & max, float minCellSize);
 
     // chooses the bounder with the smallest volume from the vertex data of the given mesh
@@ -45,15 +48,10 @@ class CollisionSystem {
 
     private:
 
-    static void rebuildOctree();
-
-    private:
-
     static const Vector<BounderComponent *> & s_bounderComponents;
     static UnorderedSet<BounderComponent *> s_potentials;
     static UnorderedSet<BounderComponent *> s_collided;
     static UnorderedSet<BounderComponent *> s_adjusted;
     static UniquePtr<Octree<BounderComponent *>> s_octree;
-    static bool s_rebuildOctree;
 
 };
