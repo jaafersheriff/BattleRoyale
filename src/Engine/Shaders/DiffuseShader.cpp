@@ -81,7 +81,7 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     }
 
     if (showWireFrame) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     /* Bind uniforms */
@@ -203,7 +203,7 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     }
 
     if (showWireFrame) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }    
 }
 

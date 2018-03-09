@@ -59,7 +59,7 @@ void FileReader::addRenderComponent(GameObject & gameObject, const rapidjson::Va
         gameObject,
         RenderSystem::getShader<DiffuseShader>()->pid,
         *Loader::getMesh(filePath),
-        ModelTexture(Loader::getTexture(texturePath), ambience, glm::vec3(1.0f), glm::vec3(1.0f)),
+        ModelTexture(Loader::getTexture(texturePath, GL_REPEAT, true), ambience, glm::vec3(1.0f), glm::vec3(1.0f)),
         isToon.GetBool(), tiling);
 }
 
