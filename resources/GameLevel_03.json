@@ -4005,10 +4005,10 @@
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Tile_Tex.png",
     "tiling": [
-        1.0,
-        1.0
+        50.0,
+        10.0
     ],
     "isToon": false,
     "allowColliders": true,
@@ -4052,10 +4052,10 @@
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Tile_Tex.png",
     "tiling": [
-        1.0,
-        1.0
+        50.0,
+        10.0
     ],
     "isToon": false,
     "allowColliders": true,
@@ -4099,10 +4099,10 @@
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Tile_Tex.png",
     "tiling": [
-        1.0,
-        1.0
+        50.0,
+        10.0
     ],
     "isToon": false,
     "allowColliders": true,
@@ -4146,10 +4146,10 @@
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Tile_Tex.png",
     "tiling": [
-        1.0,
-        1.0
+        50.0,
+        10.0
     ],
     "isToon": false,
     "allowColliders": true,
@@ -4193,10 +4193,10 @@
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Tile_Tex.png",
     "tiling": [
-        1.0,
-        1.0
+        10.0,
+        10.0
     ],
     "isToon": false,
     "allowColliders": true,
@@ -4240,10 +4240,10 @@
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Tile_Tex.png",
     "tiling": [
-        1.0,
-        1.0
+        10.0,
+        10.0
     ],
     "isToon": false,
     "allowColliders": true,
@@ -4287,17 +4287,17 @@
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Tile_Tex.png",
     "tiling": [
-        1.0,
-        1.0
+        50.0,
+        10.0
     ],
     "isToon": false,
     "allowColliders": true,
     "position": [
-        -33.099998474121097,
+        -33.0,
         -1.2000000476837159,
-        -147.49000549316407
+        -146.8000030517578
     ],
     "scale": [
         0.9300199747085571,
@@ -4334,17 +4334,17 @@
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Wall.obj",
-    "objTexture": "Assets/Models/Tex_White.png",
+    "objTexture": "Assets/Models/Tile_Tex.png",
     "tiling": [
-        1.0,
-        1.0
+        50.0,
+        10.0
     ],
     "isToon": false,
     "allowColliders": true,
     "position": [
-        36.0,
+        35.900001525878909,
         -1.2000000476837159,
-        -147.49000549316407
+        -146.8000030517578
     ],
     "scale": [
         0.9300199747085571,
@@ -4478,7 +4478,7 @@
     "objTexture": "Assets/Models/floor_tiles.png",
     "tiling": [
         300.0,
-        300.0
+        500.0
     ],
     "isToon": false,
     "allowColliders": true,
@@ -4488,7 +4488,7 @@
         -81.4000015258789
     ],
     "scale": [
-        10.0,
+        5.243436813354492,
         10.0,
         10.0
     ],
