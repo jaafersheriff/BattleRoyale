@@ -27,7 +27,7 @@ class Octree {
 
         glm::vec3 center;
         float radius;
-        Vector<std::pair<T, AABox>> elements;
+        Vector<T> elements;
         UniquePtr<Node[]> children;
         Node * parent;
         unsigned char activeOs;
@@ -47,9 +47,9 @@ class Octree {
 
     Octree(const AABox & region, float minSize);
 
-    bool set(const T & v, const AABox & region);
+    bool set(const T & e, const AABox & region);
 
-    bool remove(const T & v);
+    bool remove(const T & e);
 
     size_t filter(const std::function<bool(const glm::vec3 &, float)> & f, Vector<T> & r_results) const;
     size_t filter(const AABox & region, Vector<T> & r_results) const;
@@ -57,8 +57,8 @@ class Octree {
 
     private:
 
-    bool addUp(Node & node, const T & v, const AABox & region);
-    void addDown(Node & node, const T & v, const AABox & region);
+    bool addUp(Node & node, const T & e, const AABox & region);
+    void addDown(Node & node, const T & e, const AABox & region);
 
     void fragment(Node & node);
 
@@ -73,7 +73,7 @@ class Octree {
     UniquePtr<Node> m_root;
     AABox m_rootRegion;
     float m_minRadius;
-    UnorderedMap<T, Node *> m_map;
+    UnorderedMap<T, std::pair<Node *, AABox>> m_map;
 
 };
 

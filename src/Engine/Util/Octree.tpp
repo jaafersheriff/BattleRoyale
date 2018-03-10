@@ -115,24 +115,24 @@ Octree<T>::Octree(const AABox & region, float minSize) {
 }
 
 template <typename T>
-bool Octree<T>::set(const T & v, const AABox & region) {
-    auto it(m_map.find(v));
+bool Octree<T>::set(const T & e, const AABox & region) {
+    auto it(m_map.find(e));
     if (it != m_map.end()) {
-        Node & node(*it->second);
+        Node & node(*it->second.first);
         m_map.erase(it);
         for (Util::nat i(node.elements.size() - 1); i >= 0; --i) {
-            if (node.elements[i].first == v) {
+            if (node.elements[i] == e) {
                 node.elements.erase(node.elements.begin() + i);
                 break;
             }
         }
-        bool res(addUp(node, v, region));
+        bool res(addUp(node, e, region));
         trim(node);
         return res;
     }
     else {
         if (detail::intersects(m_rootRegion, region)) {
-            addDown(*m_root, v, region);
+            addDown(*m_root, e, region);
             return true;
         }
         return false;
@@ -140,15 +140,15 @@ bool Octree<T>::set(const T & v, const AABox & region) {
 }
 
 template <typename T>
-bool Octree<T>::remove(const T & v) {
-    auto it(m_map.find(v));
+bool Octree<T>::remove(const T & e) {
+    auto it(m_map.find(e));
     if (it == m_map.end()) {
         return false;
     }
 
-    Node & node(*it->second);
+    Node & node(*it->second.first);
     for (Util::nat i(node.elements.size() - 1); i >= 0; --i) {
-        if (node.elements[i].first == v) {
+        if (node.elements[i] == e) {
             node.elements.erase(node.elements.begin() + i);
             break;
         }
@@ -182,20 +182,20 @@ size_t Octree<T>::filter(const Ray & ray, Vector<T> & r_results) const {
 }
 
 template <typename T>
-bool Octree<T>::addUp(Node & node, const T & v, const AABox & region) {
+bool Octree<T>::addUp(Node & node, const T & e, const AABox & region) {
     AABox nodeRegion(node.center - node.radius, node.center + node.radius);
     if (detail::contains(nodeRegion, region)) {
-        addDown(node, v, region);
+        addDown(node, e, region);
         return true;
     }
     else {
         if (node.parent) {
-            return addUp(*node.parent, v, region);
+            return addUp(*node.parent, e, region);
         }
         else {
             if (detail::intersects(nodeRegion, region)) {
-                node.elements.emplace_back(v, region);
-                m_map[v] = &node;
+                node.elements.push_back(e);
+                m_map[e] = std::pair<Node *, AABox>(&node, region);
                 return true;
             }
             return false;
@@ -204,23 +204,24 @@ bool Octree<T>::addUp(Node & node, const T & v, const AABox & region) {
 }
 
 template <typename T>
-void Octree<T>::addDown(Node & node, const T & v, const AABox & region) {
+void Octree<T>::addDown(Node & node, const T & e, const AABox & region) {
     // The node is a leaf. Extra logic necessary
     if (!node.children) {
         // If the node is empty or at max depth, simply add to elements
         if (!node.elements.size() || Util::isLE(node.radius, m_minRadius)) {
-            node.elements.emplace_back(v, region);
-            m_map[v] = &node;
+            node.elements.push_back(e);
+            m_map[e] = std::pair<Node *, AABox>(&node, region);
         }
         else {
             // If the node only has one element, it may not have been tried
             // to be put into a sub node. Try that now
             if (node.elements.size() == 1) {
-                int o(detail::detOctant(node.center, node.elements.front().second));
+                const T & v_(node.elements.front());
+                const AABox & region_(m_map.at(v_).second);
+                int o(detail::detOctant(node.center, region_));
                 if (o >= 0) {
                     fragment(node);
-                    auto & e(node.elements.front());
-                    addDown(node.children[o], e.first, e.second);
+                    addDown(node.children[o], v_, region_);
                     node.activeOs |= 1 << o;
                     node.elements.clear();       
                 }
@@ -229,12 +230,12 @@ void Octree<T>::addDown(Node & node, const T & v, const AABox & region) {
             int o(detail::detOctant(node.center, region));
             if (o >= 0) {
                 if (!node.children) fragment(node);
-                addDown(node.children[o], v, region);
+                addDown(node.children[o], e, region);
                 node.activeOs |= 1 << o;
             }
             else {
-                node.elements.emplace_back(v, region);
-                m_map[v] = &node;
+                node.elements.push_back(e);
+                m_map[e] = std::pair<Node *, AABox>(&node, region);
             }
         }
     }
@@ -242,12 +243,12 @@ void Octree<T>::addDown(Node & node, const T & v, const AABox & region) {
     else {
         int o(detail::detOctant(node.center, region));
         if (o >= 0) {
-            addDown(node.children[o], v, region);
+            addDown(node.children[o], e, region);
             node.activeOs |= 1 << o;
         }
         else {
-            node.elements.emplace_back(v, region);
-            m_map[v] = &node;
+            node.elements.push_back(e);
+            m_map[e] = std::pair<Node *, AABox>(&node, region);
         }
     }
 }
@@ -294,8 +295,8 @@ void Octree<T>::trim(Node & node_) {
 template <typename T>
 size_t Octree<T>::filter(const Node & node, const std::function<bool(const glm::vec3 &, float)> & f, Vector<T> & r_results) const {
     size_t n(node.elements.size());
-    for (const auto & e : node.elements) {
-        r_results.push_back(e.first);
+    for (const T & e : node.elements) {
+        r_results.push_back(e);
     }
     if (node.children) {
         for (unsigned char o(0), op(1); o < 8; ++o, op <<= 1) {
@@ -310,8 +311,8 @@ size_t Octree<T>::filter(const Node & node, const std::function<bool(const glm::
 template <typename T>
 size_t Octree<T>::filter(const Node & node, const AABox & region_, Vector<T> & r_results) const {
     size_t n(node.elements.size());    
-    for (const auto & e : node.elements) {
-        r_results.push_back(e.first);
+    for (const T & e : node.elements) {
+        r_results.push_back(e);
     }
 
     if (node.children) {
@@ -336,8 +337,8 @@ size_t Octree<T>::filter(const Node & node, const AABox & region_, Vector<T> & r
 template <typename T>
 size_t Octree<T>::filter(const Node & node, const Ray & ray, const glm::vec3 & invDir, Vector<T> & r_results) const {
     size_t n(node.elements.size());    
-    for (const auto & e : node.elements) {
-        r_results.push_back(e.first);
+    for (const T & e : node.elements) {
+        r_results.push_back(e);
     }
     
     if (node.children) {
