@@ -14,6 +14,7 @@
 #include "Shaders/DiffuseShader.hpp"
 #include "Shaders/BounderShader.hpp"
 #include "Shaders/RayShader.hpp"
+#include "Shaders/SquareShader.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 
 
@@ -53,15 +54,8 @@ class RenderSystem {
     static UnorderedMap<std::type_index, UniquePtr<Shader>> s_shaders;
     static const CameraComponent * s_camera;
     
-    static GLuint frameBuffer;
-    static GLuint texColorBuffer;
-    static GLuint texDepthBuffer;
-    static const Vector<float> frameSquare;
-
-    
+    static SquareShader *squareShader;
 };
-
-
 
 // TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
 

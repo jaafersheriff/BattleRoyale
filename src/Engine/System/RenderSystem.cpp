@@ -12,15 +12,7 @@
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 UnorderedMap<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
 const CameraComponent * RenderSystem::s_camera = nullptr;
-GLuint RenderSystem::frameBuffer = 0;
-GLuint RenderSystem::texColorBuffer = 0;
-GLuint RenderSystem::texDepthBuffer = 0;
-const Vector<float> RenderSystem::frameSquare = {
-    1.f, 1.f,
-    1.f, -1.f,
-    -1.f, 1.f,
-    -1.f, -1.f
-};
+SquareShader *RenderSystem::squareShader = new SquareShader("square_vert.glsl", "square_frag.glsl");
 
 void RenderSystem::init() {
     glEnable(GL_DEPTH_TEST);
@@ -29,43 +21,8 @@ void RenderSystem::init() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // Initialize texture to draw into
-    glGenFramebuffers(1, &frameBuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-
-    glm::ivec2 size = Window::getFrameSize();
-
-    // Attach color to the framebuffer
-    glGenTextures(1, &texColorBuffer);
-    glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-
-    glTexImage2D(
-        GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL
-    );
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glFramebufferTexture2D(
-        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0
-    );
-
-    // Attach depth to the framebuffer
-    glGenTextures(1, &texDepthBuffer);
-    glBindTexture(GL_TEXTURE_2D, texDepthBuffer);
-
-    // TODO: Pack it tighter ???
-    glTexImage2D(
-        GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL
-    );
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glFramebufferTexture2D(
-        GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texDepthBuffer, 0
-    );
-
+    squareShader->init();
+    // Just in case!
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -119,6 +76,13 @@ void RenderSystem::update(float dt) {
             s_compsToRender.clear();
         }
     }
+
+    static Vector<Component *> dummyVector;
+
+    squareShader->bind();
+    // squareShader->render(nullptr, reinterpret_cast<const Vector<Component *> &>(dummyVector));
+    squareShader->render(nullptr, *((Vector<Component *> *) nullptr));
+    squareShader->unbind();
 
     /* ImGui */
 #ifdef DEBUG_MODE

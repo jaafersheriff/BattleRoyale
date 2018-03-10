@@ -1,6 +1,8 @@
 #version 330 core
 
-in vec2 screenPos;
+uniform sampler2D f_texCol;
+
+in vec2 f_screenPos;
 
 out vec4 color;
 
