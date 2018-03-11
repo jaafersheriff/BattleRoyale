@@ -51,6 +51,8 @@ class Octree {
 
     bool remove(const T & e);
 
+    void clear();
+
     size_t filter(const std::function<bool(const glm::vec3 &, float)> & f, Vector<const T *> & r_results) const;
     size_t filter(const AABox & region, Vector<const T *> & r_results) const;
     size_t filter(const Ray & ray, Vector<const T *> & r_results) const;

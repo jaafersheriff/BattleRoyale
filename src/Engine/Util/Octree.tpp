@@ -160,6 +160,14 @@ bool Octree<T>::remove(const T & e) {
 }
 
 template <typename T>
+void Octree<T>::clear() {
+    m_root->elements.clear();
+    m_root->children.release();
+    m_root->activeOs = 0;
+    m_map.clear();
+}
+
+template <typename T>
 size_t Octree<T>::filter(const std::function<bool(const glm::vec3 &, float)> & f, Vector<const T *> & r_results) const {
     return f(m_root->center, m_root->radius) ? filter(*m_root, f, r_results) : 0;
 }
@@ -187,27 +195,27 @@ std::pair<const T *, Intersect> Octree<T>::filter(const Ray & ray, const std::fu
     glm::vec3 absDir(glm::abs(ray.dir));
     glm::vec3 invDir, signDir;
     if (Util::isZeroAbs(absDir.x)) {
-        absDir.x = Util::infinity();
+        invDir.x = Util::infinity();
         signDir.x = 0.0f;
     }
     else {
-        absDir.x = 1.0f / ray.dir.x;
+        invDir.x = 1.0f / ray.dir.x;
         signDir.x = ray.dir.x < 0.0f ? -1.0f : 1.0f;
     }
     if (Util::isZeroAbs(absDir.y)) {
-        absDir.y = Util::infinity();
+        invDir.y = Util::infinity();
         signDir.y = 0.0f;
     }
     else {
-        absDir.y = 1.0f / ray.dir.y;
+        invDir.y = 1.0f / ray.dir.y;
         signDir.y = ray.dir.y < 0.0f ? -1.0f : 1.0f;
     }
     if (Util::isZeroAbs(absDir.z)) {
-        absDir.z = Util::infinity();
+        invDir.z = Util::infinity();
         signDir.z = 0.0f;
     }
     else {
-        absDir.z = 1.0f / ray.dir.z;
+        invDir.z = 1.0f / ray.dir.z;
         signDir.z = ray.dir.z < 0.0f ? -1.0f : 1.0f;
     }
 
@@ -484,7 +492,7 @@ void Octree<T>::filter(const Node & node, const Ray & ray, const std::function<I
     }
 
     // Determine starting octant and starting far corner
-    uint8_t o(0);
+    int o(0);
     glm::vec3 farCorner(node.center);
     glm::fvec3 delta(ray.pos - node.center);
     if (delta.z * signDir.z >= 0.0f) { o += 4; farCorner.z += node.radius * signDir.z; }
@@ -506,7 +514,7 @@ void Octree<T>::filter(const Node & node, const Ray & ray, const std::function<I
 
         far = glm::compMin((farCorner - ray.pos) * invDir);
 
-        if (node.activeOs & (1 << o)) {
+        if (node.activeOs & (1 << oMap[o])) {
             Intersect potential;
             const T * elem;
             filter(node.children[oMap[o]], ray, f, invDir, signDir, near, far, oMap, route, elem, potential);
@@ -515,6 +523,10 @@ void Octree<T>::filter(const Node & node, const Ray & ray, const std::function<I
                 r_elem = elem;
                 break;
             }
+        }
+
+        if (ri >= 3) {
+            break;
         }
 
         // progress far corner along octant route

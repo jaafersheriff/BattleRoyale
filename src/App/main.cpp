@@ -229,7 +229,7 @@ int main(int argc, char **argv) {
     Window::setCursorEnabled(false);
 
     // Set Gravity
-    SpatialSystem::setGravity(k_gravity);
+    //SpatialSystem::setGravity(k_gravity);
 
     // Load Level
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json", k_ambience);
@@ -237,9 +237,10 @@ int main(int argc, char **argv) {
     CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
     //GameObject & obj(Scene::createGameObject());
     //Scene::addComponent<SpatialComponent>(obj);
-    //Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, UINT_MAX, AABox(glm::vec3(-7.0f, -2.0f, -10.0f), glm::vec3(7.0f, 0.0f, 10.0f)));
-    //Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, UINT_MAX, AABox(glm::vec3(-7.0f, 0.0f, -10.0f), glm::vec3(7.0f, 10.0f, -9.0f)));
-    //Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, UINT_MAX, AABox(glm::vec3(-7.0f, 0.0f, -10.0f), glm::vec3(-6.0f, 10.0f, 10.0f)));
+    //Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, UINT_MAX, AABox(glm::vec3(-7.0f, -10.0f, -10.0f), glm::vec3(7.0f, 0.0f, 10.0f)));
+    //Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, UINT_MAX, AABox(glm::vec3(-7.0f, -10.0f, -10.0f), glm::vec3(7.0f, 10.0f, -9.0f)));
+    //Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, UINT_MAX, AABox(glm::vec3(-7.0f, -10.0f, -10.0f), glm::vec3(-6.0f, 10.0f, 10.0f)));
+    //Scene::addComponentAs<SphereBounderComponent, BounderComponent>(obj, 1, Sphere(glm::vec3(3.0f, 3.0f, 3.0f), 1.0f));
     //CollisionSystem::setOctree(glm::vec3(-16.0f), glm::vec3(16.0f), 1.0f);
 
     // Setup Player
@@ -422,7 +423,7 @@ int main(int argc, char **argv) {
     Scene::addReceiver<MouseMessage>(nullptr, fireCallback);
 
     // Shoot ray (ctrl-click)
-    int rayDepth(100);
+    int rayDepth(1);
     Vector<glm::vec3> rayPositions;
     auto rayPickCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
@@ -472,14 +473,17 @@ int main(int argc, char **argv) {
     });
     Scene::addReceiver<KeyMessage>(nullptr, camSwitchCallback);
 
-    // Flip Gravity (ctrl-g)
-    auto gravSwapCallback([&](const Message & msg_) {
+    // Flip gravity (ctrl-g), toggle gravity (alt-g)
+    auto gravCallback([&](const Message & msg_) {
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
         if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_CONTROL) {
             SpatialSystem::setGravity(-SpatialSystem::gravity());
         }
+        else if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_ALT) {
+            SpatialSystem::setGravity(Util::isZero(SpatialSystem::gravity()) ? k_gravity : glm::vec3());
+        }
     });
-    Scene::addReceiver<KeyMessage>(nullptr, gravSwapCallback);
+    Scene::addReceiver<KeyMessage>(nullptr, gravCallback);
 
     // Destroy game object looking at (delete)
     auto deleteCallback([&] (const Message & msg_) {

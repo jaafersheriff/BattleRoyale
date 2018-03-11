@@ -381,6 +381,15 @@ void CollisionSystem::setOctree(const glm::vec3 & min, const glm::vec3 & max, fl
     }
 }
 
+void CollisionSystem::remakeOctree() {
+    if (s_octree) {
+        s_octree->clear();
+        for (BounderComponent * bounder : s_bounderComponents) {
+            s_octree->set(*bounder, bounder->enclosingAABox());
+        }
+    }
+}
+
 namespace {
 
 std::pair<glm::vec3, glm::vec3> detMeshSpan(int nVerts, const glm::vec3 * positions) {    

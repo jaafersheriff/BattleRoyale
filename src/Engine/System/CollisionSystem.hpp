@@ -37,6 +37,8 @@ class CollisionSystem {
 
     static void setOctree(const glm::vec3 & min, const glm::vec3 & max, float minCellSize);
 
+    static void remakeOctree();
+
     // chooses the bounder with the smallest volume from the vertex data of the given mesh
     // optionally enable/disable certain types of bounders. If all are false you are
     // dumb and it acts as if all were true
