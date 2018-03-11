@@ -11,10 +11,21 @@
 
 
 PathfindingComponent::PathfindingComponent(GameObject & gameObject, GameObject & player, float ms) :
-    Component(gameObject),
+	Component(gameObject),
     m_spatial(nullptr),
     m_player(&player),
     m_moveSpeed(ms)
+{}
+
+PathfindingComponent::PathfindingComponent(GameObject & gameObject, GameObject & player, float ms, bool wander) :
+    Component(gameObject),
+    m_spatial(nullptr),
+    m_player(&player),
+    m_moveSpeed(ms),
+    m_wander(wander),
+    m_wanderCurrent(0.0f, 0.0f, 0.0f),
+    m_wanderCurrentWeight(0.9f),
+    m_wanderWeight(0.9f)
 {}
 
 void PathfindingComponent::init() {
@@ -84,7 +95,6 @@ void PathfindingComponent::init() {
 }
 
 void PathfindingComponent::update(float dt) {
-
 	const int xdir[] = {1, 1, 0, -1, -1, -1, 0, 1};
 	const int zdir[] = {0, 1, 1, 1, 0, -1, -1, -1};
 	const float ydir[] = {0, .55f};
@@ -315,5 +325,31 @@ void PathfindingComponent::drawCup(glm::vec3 position) {
 
     GameObject & obj(Scene::createGameObject());
     SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, scale));
-    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, true));
+    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, true, glm::vec2()));
+/*
+    const glm::vec3 & playerPos = m_player->getSpatial()->position();
+    const glm::vec3 & pos = m_spatial->position();
+    glm::vec3 dir = playerPos - pos;
+    if (glm::length2(dir) < 0.001f) {
+        return;
+    }
+
+    if (m_wander) {
+        glm::vec3 wanderNext;
+        wanderNext = Util::safeNorm(glm::vec3(
+            (float) ((rand() % 200) - 100), 
+            (float) ((rand() % 200) - 100),
+            (float) ((rand() % 200) - 100)
+        ));
+
+        m_wanderCurrent = Util::safeNorm(
+            m_wanderCurrentWeight * m_wanderCurrent +
+            (1.f - m_wanderCurrentWeight) * wanderNext
+        );
+
+        dir = dir * (1.f - m_wanderWeight) + m_wanderCurrent * m_wanderWeight;
+    }
+
+    gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
+    */
 }

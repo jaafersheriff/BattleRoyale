@@ -15,12 +15,13 @@ class DiffuseRenderComponent : public Component {
 
     protected: // only scene or friends can create component
 
-        DiffuseRenderComponent(GameObject & gameObject, int pid, Mesh & mesh, const ModelTexture & texture, bool toon) :
+        DiffuseRenderComponent(GameObject & gameObject, int pid, Mesh & mesh, const ModelTexture & texture, bool toon, glm::vec2 tiling) :
             Component(gameObject),
             pid(pid),
             mesh(&mesh),
             modelTexture(texture),
-            isToon(toon)
+            isToon(toon),
+            tiling(tiling)
         {}
 
     public:
@@ -35,6 +36,7 @@ class DiffuseRenderComponent : public Component {
         Mesh * mesh;
         ModelTexture modelTexture;
         bool isToon;
+        glm::vec2 tiling;
 };
 
 #endif
