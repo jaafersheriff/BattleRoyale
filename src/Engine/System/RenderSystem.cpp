@@ -22,8 +22,6 @@ void RenderSystem::init() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     squareShader->init();
-    // Just in case!
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 ///////////////////////////  TODO  ///////////////////////////
@@ -32,7 +30,8 @@ void RenderSystem::init() {
 // list and expecting each shader to filter through         //
 //////////////////////////////////////////////////////////////
 void RenderSystem::update(float dt) {
-    /* Render to postprocessing framebuffer */
+    // Make it so that rendering is not done to the computer screen
+    // but to the framebuffer in squareShader->fboHandle
     glBindFramebuffer(GL_FRAMEBUFFER, squareShader->fboHandle);
 
     /* Reset rendering display */
@@ -87,7 +86,7 @@ void RenderSystem::update(float dt) {
     }
 #endif
 
-    // Render to screen framebuffer
+    // Make it so that rendering is done to the computer screen
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // Reset rendering display
@@ -98,7 +97,7 @@ void RenderSystem::update(float dt) {
 
     squareShader->bind();
     // The second parameter is passed by reference (not by pointer),
-    // hence the funny business.
+    // hence the funny pointer business
     squareShader->render(nullptr, *((Vector<Component *> *) nullptr));
     squareShader->unbind();
 }
