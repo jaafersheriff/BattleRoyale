@@ -110,12 +110,12 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     for (Component * comp : components) {
         // TODO : component list should be passed in as diffuserendercomponent
         DiffuseRenderComponent *drc;
-        if (!(drc = dynamic_cast<DiffuseRenderComponent *>(comp)) || drc->pid != this->pid) {
+        if (!(drc = dynamic_cast<DiffuseRenderComponent *>(comp)) || drc->m_pid != this->pid) {
             continue;
         }
 
         /* Toon shading */
-        if (showToon && drc->isToon) {
+        if (showToon && drc->isToon()) {
             loadBool(getUniform("isToon"), true);
         }
         else {
@@ -128,52 +128,54 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
         loadMat3(getUniform("N"), drc->gameObject().getSpatial()->normalMatrix());
 
         /* Bind materials */
-        loadFloat(getUniform("matAmbient"), drc->modelTexture.material.ambient);
-        loadVec3(getUniform("matDiffuse"), drc->modelTexture.material.diffuse);
-        loadVec3(getUniform("matSpecular"), drc->modelTexture.material.specular);
-        loadFloat(getUniform("shine"), drc->modelTexture.material.shineDamper);
+        const ModelTexture modelTexture(drc->modelTexture());
+        loadFloat(getUniform("matAmbient"), modelTexture.material.ambient);
+        loadVec3(getUniform("matDiffuse"), modelTexture.material.diffuse);
+        loadVec3(getUniform("matSpecular"), modelTexture.material.specular);
+        loadFloat(getUniform("shine"), modelTexture.material.shineDamper);
    
         /* Load texture */
-        if(drc->modelTexture.texture && drc->modelTexture.texture->textureId != 0) {
+        if(modelTexture.texture && modelTexture.texture->textureId != 0) {
             loadBool(getUniform("usesTexture"), true);
-            loadInt(getUniform("textureImage"), drc->modelTexture.texture->textureId);
-            glActiveTexture(GL_TEXTURE0 + drc->modelTexture.texture->textureId);
-            glBindTexture(GL_TEXTURE_2D, drc->modelTexture.texture->textureId);
+            loadInt(getUniform("textureImage"), modelTexture.texture->textureId);
+            glActiveTexture(GL_TEXTURE0 + modelTexture.texture->textureId);
+            glBindTexture(GL_TEXTURE_2D, modelTexture.texture->textureId);
         }
         else {
             loadBool(getUniform("usesTexture"), false);
         }
 
         /* Bind mesh */
-        glBindVertexArray(drc->mesh->vaoId);
+        const Mesh & mesh(drc->mesh());
+        glBindVertexArray(mesh.vaoId);
             
         /* Bind vertex buffer VBO */
         int pos = getAttribute("vertPos");
         glEnableVertexAttribArray(pos);
-        glBindBuffer(GL_ARRAY_BUFFER, drc->mesh->vertBufId);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.vertBufId);
         glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
 
         /* Bind normal buffer VBO */
         pos = getAttribute("vertNor");
-        if (pos != -1 && drc->mesh->norBufId != 0) {
+        if (pos != -1 && mesh.norBufId != 0) {
             glEnableVertexAttribArray(pos);
-            glBindBuffer(GL_ARRAY_BUFFER, drc->mesh->norBufId);
+            glBindBuffer(GL_ARRAY_BUFFER, mesh.norBufId);
             glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
         }
 
         /* Bind texture coordinate buffer VBO */
         pos = getAttribute("vertTex");
-        if (pos != -1 && drc->mesh->texBufId != 0) {
+        if (pos != -1 && mesh.texBufId != 0) {
             glEnableVertexAttribArray(pos);
-            glBindBuffer(GL_ARRAY_BUFFER, drc->mesh->texBufId);
+            glBindBuffer(GL_ARRAY_BUFFER, mesh.texBufId);
             glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, 0, (const void *)0);
         }
 
         /* Bind indices buffer VBO */
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drc->mesh->eleBufId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.eleBufId);
 
         /* DRAW */
-        glDrawElements(GL_TRIANGLES, (int)drc->mesh->eleBufSize, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, (int)mesh.eleBufSize, GL_UNSIGNED_INT, nullptr);
 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));
@@ -190,8 +192,8 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
         /* Unload texture */
-        if (drc->modelTexture.texture) {
-            glActiveTexture(GL_TEXTURE0 + drc->modelTexture.texture->textureId);
+        if (modelTexture.texture) {
+            glActiveTexture(GL_TEXTURE0 + modelTexture.texture->textureId);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
  

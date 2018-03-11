@@ -35,9 +35,22 @@ void RenderSystem::init() {
 // list and expecting each shader to filter through         //
 //////////////////////////////////////////////////////////////
 void RenderSystem::update(float dt) {
-    static UnorderedSet<GameObject *> s_visibleGOs;
     static Vector<Component *> s_compsToRender;
     static bool s_wasRender = true;
+
+    // Update components
+    for (DiffuseRenderComponent * comp : s_diffuseComponents) {
+        comp->update(dt);
+    }
+    // Frustum culling
+    s_compsToRender.clear();
+    if (s_camera) {
+        for (DiffuseRenderComponent * comp : s_diffuseComponents) {
+            if (s_camera->sphereInFrustum(comp->enclosingSphere())) {
+                s_compsToRender.push_back(comp);
+            }
+        }
+    }
 
     if (s_wasRender) {
         /* Reset rendering display */
@@ -46,15 +59,6 @@ void RenderSystem::update(float dt) {
     }
 
     if (s_camera) {
-        // Frustum culling
-        s_compsToRender.clear();
-        s_visibleGOs.clear();
-        CollisionSystem::getVisible(*s_camera, s_visibleGOs);
-        for (GameObject * go : s_visibleGOs) {
-            for (DiffuseRenderComponent * comp : go->getComponentsByType<DiffuseRenderComponent>()) {
-                s_compsToRender.push_back(comp);
-            }
-        }
 
         /* Loop through active shaders */
         for (auto &shader : s_shaders) {

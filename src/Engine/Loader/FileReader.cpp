@@ -3,7 +3,7 @@
 #include "System/RenderSystem.hpp"
 #include "System/CollisionSystem.hpp"
 
-void FileReader::addSpatialComponent(GameObject & gameObject, const rapidjson::Value& jsonTransform) {
+SpatialComponent & FileReader::addSpatialComponent(GameObject & gameObject, const rapidjson::Value& jsonTransform) {
     glm::vec3 position, scale;
     glm::mat3 rotation;
 
@@ -31,15 +31,15 @@ void FileReader::addSpatialComponent(GameObject & gameObject, const rapidjson::V
     rotation[1] = glm::vec3(objRotation_row1[0].GetFloat(), objRotation_row1[1].GetFloat(), objRotation_row1[2].GetFloat());
     rotation[2] = glm::vec3(objRotation_row2[0].GetFloat(), objRotation_row2[1].GetFloat(), objRotation_row2[2].GetFloat());
 
-    Scene::addComponent<SpatialComponent>(
+    return Scene::addComponent<SpatialComponent>(
         gameObject,
         position, // position
         scale, // scale
         rotation // rotation
-        );
+    );
 }
 
-void FileReader::addRenderComponent(GameObject & gameObject, const rapidjson::Value& jsonTransform, const String filePath, float ambience) {
+DiffuseRenderComponent & FileReader::addRenderComponent(GameObject & gameObject, const SpatialComponent & spatial, const rapidjson::Value& jsonTransform, const String filePath, float ambience) {
 
     //Get full filepath of texture file
     assert(jsonTransform["objTexture"].IsString());
@@ -52,12 +52,14 @@ void FileReader::addRenderComponent(GameObject & gameObject, const rapidjson::Va
     assert(isToon.IsBool());
 
     //Add diffuse component
-    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(
+    return Scene::addComponent<DiffuseRenderComponent>(
         gameObject,
+        spatial,
         RenderSystem::getShader<DiffuseShader>()->pid,
         *Loader::getMesh(filePath),
         ModelTexture(Loader::getTexture(texturePath), ambience, glm::vec3(1.0f), glm::vec3(1.0f)),
-        isToon.GetBool());
+        isToon.GetBool()
+    );
 }
 
 int FileReader::addCapsuleColliderComponents(GameObject & gameObject, const rapidjson::Value& jsonObject) {
@@ -151,7 +153,7 @@ int FileReader::loadLevel(const char & filePath, float ambience) {
         filePath = filePath.substr(fileOffset + 1);
 
         //Read the transform data from the json
-        FileReader::addSpatialComponent(gameObject, jsonTransform);
+        SpatialComponent & spatialComp(FileReader::addSpatialComponent(gameObject, jsonTransform));
         
         //Read the collider data from the json
         numberOfColliders += FileReader::addCapsuleColliderComponents(gameObject, jsonObject);
@@ -165,8 +167,9 @@ int FileReader::loadLevel(const char & filePath, float ambience) {
         }
 
         //Read the texture data from the json
-        if(filePath.compare("") != 0)
-            FileReader::addRenderComponent(gameObject, jsonTransform, filePath, ambience);
+        if(filePath.compare("") != 0) {
+            DiffuseRenderComponent & renderComp(FileReader::addRenderComponent(gameObject, spatialComp, jsonTransform, filePath, ambience));
+        }
     }
 
     return 0;

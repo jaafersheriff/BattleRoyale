@@ -159,7 +159,7 @@ void createEnemy(const glm::vec3 & position) {
     GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
     BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *mesh, false, true, false));
     PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed, false));
-    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, toon);   
+    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, toon);   
     EnemyComponent & enemyComp(Scene::addComponent<EnemyComponent>(obj));
     
     f_enemies.push_back(&obj);
@@ -181,7 +181,7 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
     Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj);
     newtComp.addVelocity(dir * speed);
-    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, true));
+    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, true));
     ProjectileComponent & projectileComp(Scene::addComponent<ProjectileComponent>(obj));
     
     f_projectiles.push_back(&obj);

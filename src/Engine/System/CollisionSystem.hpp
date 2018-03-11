@@ -12,7 +12,6 @@ struct Intersect;
 class BounderShader;
 template <typename T> class Octree;
 class OctreeShader;
-class CameraComponent;
 
 
 
@@ -35,9 +34,6 @@ class CollisionSystem {
 
     static std::pair<BounderComponent *, Intersect> pick(const Ray & ray, const GameObject * ignore);
     static std::pair<BounderComponent *, Intersect> pick(const Ray & ray, const std::function<bool(const BounderComponent &)> & conditional);
-
-    // any game objects with bounders within the camera's frustum are added to r_gameObjects
-    static void getVisible(const CameraComponent & camera, UnorderedSet<GameObject *> & r_gameObjects);
 
     static void setOctree(const glm::vec3 & min, const glm::vec3 & max, float minCellSize);
 

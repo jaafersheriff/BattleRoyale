@@ -8,7 +8,6 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Scene/Scene.hpp"
 #include "Util/Octree.hpp"
-#include "Component/CameraComponents/CameraComponent.hpp"
 
 
 
@@ -358,32 +357,6 @@ void CollisionSystem::setOctree(const glm::vec3 & min, const glm::vec3 & max, fl
     s_octree = UniquePtr<Octree<BounderComponent *>>::make(AABox(min, max), minCellSize);
     for (BounderComponent * bounder : s_bounderComponents) {
         s_octree->set(bounder, bounder->enclosingAABox());
-    }
-}
-
-void CollisionSystem::getVisible(const CameraComponent & camera, UnorderedSet<GameObject *> & r_gameObjects) {
-    static Vector<BounderComponent *> s_octreeResults;
-    static const float sqrt3(std::sqrt(3.0f));
-
-    const Vector<BounderComponent *> * possible(&s_bounderComponents);
-
-    if (s_octree) {
-        s_octreeResults.clear();
-        s_octree->filter(
-            [&](const glm::vec3 & center, float radius) {                
-                return camera.sphereInFrustum(Sphere(center, sqrt3 * radius));
-            },
-            s_octreeResults
-        );
-        possible = &s_octreeResults;
-    }
-
-    for (BounderComponent * bounder : *possible) {
-        if (!r_gameObjects.count(&bounder->gameObject())) {
-            if (camera.sphereInFrustum(bounder->enclosingSphere())) {
-                r_gameObjects.insert(&bounder->gameObject());
-            }
-        }
     }
 }
 
