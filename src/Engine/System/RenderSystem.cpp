@@ -21,7 +21,13 @@ void RenderSystem::init() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    squareShader->init();
+    // squareShader->init();
+    if (!squareShader->init()) {
+        std::cerr << "Failed to initialize shader:" << std::endl;
+        std::cerr << "\t" << squareShader->vShaderName << std::endl;
+        std::cerr << "\t" << squareShader->fShaderName << std::endl;
+        std::cin.get();
+    }
 }
 
 ///////////////////////////  TODO  ///////////////////////////
@@ -79,13 +85,6 @@ void RenderSystem::update(float dt) {
         }
     }
 
-    /* ImGui */
-#ifdef DEBUG_MODE
-    if (Window::isImGuiEnabled()) {
-        ImGui::Render();
-    }
-#endif
-
     // Make it so that rendering is done to the computer screen
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -100,6 +99,13 @@ void RenderSystem::update(float dt) {
     // hence the funny pointer business
     squareShader->render(nullptr, *((Vector<Component *> *) nullptr));
     squareShader->unbind();
+
+    /* ImGui */
+#ifdef DEBUG_MODE
+    if (Window::isImGuiEnabled()) {
+        ImGui::Render();
+    }
+#endif
 }
 
 void RenderSystem::setCamera(const CameraComponent * camera) {
