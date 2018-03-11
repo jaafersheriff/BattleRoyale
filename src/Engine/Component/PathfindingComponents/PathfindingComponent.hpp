@@ -16,9 +16,9 @@ namespace detail {
 	struct vecHash
 	{
 	  size_t operator()(const glm::vec3 &v) const {
-	  	size_t h1 = std::hash<float>()(v.x);
-    	size_t h2 = std::hash<float>()(v.y);
-    	size_t h3 = std::hash<float>()(v.z);
+	  	size_t h1 = std::hash<int>()(round(v.x));
+    	size_t h2 = std::hash<int>()(round(v.y));
+    	size_t h3 = std::hash<int>()(round(v.z));
     	return (h1 ^ (h2 << 1)) ^ h3;
 	  }
 	};
@@ -103,11 +103,12 @@ class PathfindingComponent : public Component {
     int slowTime;
     int dirIndex;
     int yIndex; 
+    int *checkedDirections;
 
     glm::vec3 prevMove;
     std::queue<glm::vec3> pos_queue;
-    //std::unordered_set<glm::vec3, detail::vecHash, detail::customCompare> visitedSet;
-    Vector<glm::vec3> visitedSet;
+    std::unordered_set<glm::vec3, detail::vecHash, detail::customCompare> visitedSet;
+    //Vector<glm::vec3> visitedSet;
     Vector<Node> graph;
     Vector<glm::vec3> validNeighbors;
 

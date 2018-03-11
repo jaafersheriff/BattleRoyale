@@ -23,8 +23,8 @@ void PathfindingComponent::init() {
 
     slowTime = 0;
 
-    //visitedSet = std::unordered_set<glm::vec3, vecHash, customCompare>();
-    visitedSet = Vector<glm::vec3>();
+    visitedSet = std::unordered_set<glm::vec3, detail::vecHash, detail::customCompare>();
+    //visitedSet = Vector<glm::vec3>();
     pos_queue = std::queue<glm::vec3>();
 
     auto pair(CollisionSystem::pick(Ray(curPos, glm::vec3(0,-1,0)), &gameObject()));
@@ -33,7 +33,7 @@ void PathfindingComponent::init() {
     tmpPos = glm::vec3(tmpPos.x, tmpPos.y - pair.second.dist, tmpPos.z);
 
     // Node for the starting pos
-    visitedSet.push_back(tmpPos);
+    visitedSet.insert(tmpPos);
 
     // Set curPos to the objects initial pos
     searchFromPos = tmpPos;
@@ -53,6 +53,7 @@ void PathfindingComponent::init() {
     // Greater than 16 to start off the loop
     dirIndex = 0;
     yIndex = 0;
+    checkedDirections = (int *)std::calloc(8, sizeof(int));
 
     // set m_cosCriticalAngle
     m_cosCriticalAngle = std::cos(k_defCriticalAngle);
@@ -86,14 +87,15 @@ void PathfindingComponent::update(float dt) {
 
 	const int xdir[] = {1, 1, 0, -1, -1, -1, 0, 1};
 	const int zdir[] = {0, 1, 1, 1, 0, -1, -1, -1};
-	const float ydir[] = {0, .35f};
-	float stepSize = .75f;
+	const float ydir[] = {0, .55f};
+	float stepSize = 1.f;
 	float extension = 0.f;
 	glm::vec3 curPos;
 	float distance = 0.f;
+	
 
 
-	//if (slowTime++ > 25) {
+	if (slowTime++ > 0) {
 
 	curPos = gameObject().getSpatial()->position();
 
@@ -105,24 +107,27 @@ void PathfindingComponent::update(float dt) {
         	curPos = glm::vec3(curPos.x, curPos.y - pair.second.dist, curPos.z); 
 			
 			// curPos isn't in the visitedSet
-			if (!findInVisited(curPos, stepSize)) {
+			//if (!findInVisited(curPos, stepSize)) {
+        	if (visitedSet.find(curPos) == visitedSet.end()) {
 				// Add curPos to the visitedSet and push it onto the queue to be searched
-				visitedSet.push_back(curPos);
+				visitedSet.insert(curPos);
 				pos_queue.push(curPos);
 
 				// add to searchFrom's validNeighbors
 				validNeighbors.push_back(curPos);
+				//std::cout << "added neighbor" << std::endl;
+				checkedDirections[(dirIndex - 1) / 2] = 1;
 
 				//std::cout << "Added: " << curPos.x << ", " << curPos.y << ", " << curPos.z << std::endl;
 
 				//DEBUG
 				drawCup(curPos);
 			}
-			else {
-				glm::vec3 closest = closestPos(curPos);
+			//else {
+			//	glm::vec3 closest = closestPos(curPos);
 				// add to searchFrom's validNeighbors
-				validNeighbors.push_back(closest);
-			}
+			//	validNeighbors.push_back(closest);
+			//}
 		}
 	}
 	
@@ -136,6 +141,7 @@ void PathfindingComponent::update(float dt) {
 			else {
 				// every other ticke is a move out from the center, divide by 2 to get the correct dirIndex
 				int index = dirIndex / 2;
+				if (!checkedDirections[index]) {
 
 				// ydir == 0
 				if (ydir[yIndex] == 0) {
@@ -171,17 +177,22 @@ void PathfindingComponent::update(float dt) {
         			nextStep = glm::vec3(nextStep.x, nextStep.y - pair.second.dist, nextStep.z);
 
 					// If the point has been visited before, we don't need to check it again, can just add it and move on
-					if (!findInVisited(nextStep, stepSize)) {
+					if (visitedSet.find(nextStep) ==  visitedSet.end()) {
 						//std::cout << "new node" << std::endl;
 						//std::cout << "Move to: " << nextStep.x << ", " << nextStep.y << ", " << nextStep.z << std::endl;
 						gameObject().getSpatial()->move(dirStep);
 					}
 					else {
-						glm::vec3 closest = closestPos(nextStep);
-						validNeighbors.push_back(closest);
+						//glm::vec3 closest = closestPos(nextStep);
+						//if (!checkedDirections[index]) {
+							validNeighbors.push_back(nextStep);
+							//std::cout << "added neighbor" << std::endl;
+							checkedDirections[index] = 1;
+						//}
 						dirIndex++;
 					}
 				}
+			}
 			}
 			dirIndex++;
 		}
@@ -194,6 +205,11 @@ void PathfindingComponent::update(float dt) {
 	else {
 		yIndex = 0;
 
+		if (validNeighbors.size() > 8) {
+			std::cout << "To many neighbors" << std::endl;
+		}
+
+		std::fill_n(checkedDirections, 8, 0);
 		// create node and push it in to graph
 		graph.push_back(Node(searchFromPos, validNeighbors));
 		validNeighbors = Vector<glm::vec3>();
@@ -228,9 +244,9 @@ void PathfindingComponent::update(float dt) {
 
 	}
 
-	//slowTime = 0;
+	slowTime = 0;
 
-	//}	
+	}	
 
 }
 
@@ -263,6 +279,7 @@ glm::vec3 PathfindingComponent::closestPos(glm::vec3 vec) {
 	return closeNode;
 }
 
+/*
 bool PathfindingComponent::findInVisited(glm::vec3 vec, float stepSize) {
 	float epsilon = sqrt(2) * stepSize / 2.f;
 
@@ -275,6 +292,7 @@ bool PathfindingComponent::findInVisited(glm::vec3 vec, float stepSize) {
 
 	return false;
 }
+*/
 
 void PathfindingComponent::print_queue(std::queue<glm::vec3> q)
 {
