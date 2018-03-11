@@ -54,7 +54,6 @@ void FileReader::addRenderComponent(GameObject & gameObject, const rapidjson::Va
     //Add diffuse component
     DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(
         gameObject,
-        RenderSystem::getShader<DiffuseShader>()->pid,
         *Loader::getMesh(filePath),
         ModelTexture(Loader::getTexture(texturePath), ambience, glm::vec3(1.0f), glm::vec3(1.0f)),
         isToon.GetBool());

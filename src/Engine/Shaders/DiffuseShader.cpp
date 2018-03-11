@@ -75,7 +75,7 @@ bool DiffuseShader::init() {
 }
 
 void DiffuseShader::render(const CameraComponent * camera, const Vector<Component *> & components) {
-    if (!camera) {
+    if (!camera || !m_isEnabled) {
         return;
     }
 
@@ -111,7 +111,7 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     for (Component * comp : components) {
         // TODO : component list should be passed in as diffuserendercomponent
         DiffuseRenderComponent *drc;
-        if (!(drc = dynamic_cast<DiffuseRenderComponent *>(comp)) || drc->pid != this->pid) {
+        if (!(drc = dynamic_cast<DiffuseRenderComponent *>(comp))) {
             continue;
         }
 

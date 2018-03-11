@@ -46,10 +46,7 @@ bool RayShader::init() {
 }
 
 void RayShader::render(const CameraComponent * camera, const Vector<Component *> & components_) {
-    if (!camera) {
-        return;
-    }
-    if (m_positions.size() < 2) {
+    if (!camera || !m_isEnabled || m_positions.size() < 2) {
         return;
     }
 

@@ -15,9 +15,8 @@ class DiffuseRenderComponent : public Component {
 
     protected: // only scene or friends can create component
 
-        DiffuseRenderComponent(GameObject & gameObject, int pid, Mesh & mesh, const ModelTexture & texture, bool toon) :
+        DiffuseRenderComponent(GameObject & gameObject, Mesh & mesh, const ModelTexture & texture, bool toon) :
             Component(gameObject),
-            pid(pid),
             mesh(&mesh),
             modelTexture(texture),
             isToon(toon)
@@ -31,7 +30,6 @@ class DiffuseRenderComponent : public Component {
 
     public:
 
-        int pid;
         Mesh * mesh;
         ModelTexture modelTexture;
         bool isToon;

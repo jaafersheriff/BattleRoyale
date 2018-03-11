@@ -37,18 +37,12 @@ public:
         * Call shaders' render function with the appropriate render component list */
     static void renderScene(const CameraComponent *, bool shadowRender);
 
-    // creates a new shader and initializes it
-    template<typename ShaderT, typename... Args> static bool createShader(Args &&... args);
-
-    // get shader of the specified type
-    template <typename ShaderT> static ShaderT * getShader();
-
+    /* Camera stuff */
     static void setCamera(const CameraComponent * camera);
-
-    static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
-    static UnorderedMap<std::type_index, UniquePtr<Shader>> s_shaders;
-
     static const CameraComponent * s_playerCamera;
+
+    /* Render targets */
+    static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
 
     /* Light stuff */
     static GameObject * s_lightObject;
@@ -58,46 +52,18 @@ public:
     static void setLightDir(glm::vec3);
     static float lightDist;
 
-    /* Shadow shader */
+    /* Shaders */
     static ShadowDepthShader * shadowShader;
+    static DiffuseShader * diffuseShader;
+    static bool createDiffuseShader(String, String);
+    static BounderShader * bounderShader;
+    static bool createBounderShader(String, String);
+    static RayShader * rayShader;
+    static bool createRayShader(String, String);
 
+private:
+    static bool initShader(Shader *);
+    static Vector<Component *> getFrustumComps(const CameraComponent *);
 };
-
-
-
-// TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
-
-template<typename ShaderT, typename... Args>
-bool RenderSystem::createShader(Args &&... args) {
-    auto shader(UniquePtr<ShaderT>::make(std::forward<Args>(args)...));
-    std::type_index typeI(typeid(ShaderT));
-
-    auto it(s_shaders.find(typeI));
-    if (it != s_shaders.end()) {
-        return true;
-    }
-    if (shader->init()) {
-        s_shaders[typeI] = std::move(shader);
-        return true;
-    }
-    else {
-        std::cerr << "Failed to initialize shader:" << std::endl;
-        std::cerr << "\t" << shader->vShaderName << std::endl;
-        std::cerr << "\t" << shader->fShaderName << std::endl;
-        std::cin.get();
-        return false;
-    }
-}
-
-template <typename ShaderT>
-ShaderT * RenderSystem::getShader() {
-    std::type_index typeI(typeid(ShaderT));
-    if (!s_shaders.count(typeI)) {
-        return nullptr;
-    }
-    return static_cast<ShaderT *>(s_shaders.at(typeI).get());
-}
-
-
 
 #endif

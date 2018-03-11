@@ -132,7 +132,7 @@ Vector<GameObject *> f_projectiles;
 
 void createEnemy(const glm::vec3 & position) {    
     Mesh * mesh(Loader::getMesh("bunny.obj"));
-    DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
+    DiffuseShader * shader(RenderSystem::diffuseShader);
     ModelTexture modelTex(k_ambience, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f));
     bool toon(true);
     glm::vec3 scale(0.75f);
@@ -145,7 +145,7 @@ void createEnemy(const glm::vec3 & position) {
     GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
     BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *mesh, false, true, false));
     PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed));
-    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, toon);   
+    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, *mesh, modelTex, toon);   
     EnemyComponent & enemyComp(Scene::addComponent<EnemyComponent>(obj));
     
     f_enemies.push_back(&obj);
@@ -153,7 +153,7 @@ void createEnemy(const glm::vec3 & position) {
 
 void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     Mesh * mesh(Loader::getMesh("Hamburger.obj"));
-    DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
+    DiffuseShader * shader(RenderSystem::diffuseShader);
     Texture * tex(Loader::getTexture("Hamburger_BaseColor.png"));
     ModelTexture modelTex(tex, k_ambience, glm::vec3(1.0f), glm::vec3(1.0f));
     bool toon(true);
@@ -167,7 +167,7 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
     Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj);
     newtComp.addVelocity(dir * speed);
-    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, true));
+    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, *mesh, modelTex, true));
     ProjectileComponent & projectileComp(Scene::addComponent<ProjectileComponent>(obj));
     
     f_projectiles.push_back(&obj);
@@ -189,17 +189,17 @@ int main(int argc, char **argv) {
     // Shader Setup
 
     // Diffuse shader
-    if (!RenderSystem::createShader<DiffuseShader>("diffuse_vert.glsl", "diffuse_frag.glsl")) {
+    if (!RenderSystem::createDiffuseShader("diffuse_vert.glsl", "diffuse_frag.glsl")) {
         return EXIT_FAILURE;
     }
 
     // Bounder shader
-    if (!RenderSystem::createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
+    if (!RenderSystem::createBounderShader("bounder_vert.glsl", "bounder_frag.glsl")) {
         return EXIT_FAILURE;
     }
     
     // Ray shader
-    if (!RenderSystem::createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) {
+    if (!RenderSystem::createRayShader("ray_vert.glsl", "ray_frag.glsl")) {
         return EXIT_FAILURE;
     }
 
@@ -303,23 +303,24 @@ int main(int argc, char **argv) {
         imguiGO,
         "Diffuse Shader",
         [&]() {
+            DiffuseShader * dShader = RenderSystem::diffuseShader;
             if (ImGui::Button("Active")) {
-                RenderSystem::getShader<DiffuseShader>()->toggleEnabled();
+                dShader->toggleEnabled();
             }
             if (ImGui::Button("Wireframe")) {
-                RenderSystem::getShader<DiffuseShader>()->toggleWireFrame();
+                dShader->toggleWireFrame();
             }
             if (ImGui::Button("Toon")) {
-                RenderSystem::getShader<DiffuseShader>()->toggleToon();
+                dShader->toggleToon();
             }
-            if (RenderSystem::getShader<DiffuseShader>()->isToon()) {
-                float angle = RenderSystem::getShader<DiffuseShader>()->getSilAngle();
+            if (RenderSystem::diffuseShader->isToon()) {
+                float angle = RenderSystem::diffuseShader->getSilAngle();
                 ImGui::SliderFloat("Silhouette Angle", &angle, 0.f, 1.f);
-                RenderSystem::getShader<DiffuseShader>()->setSilAngle(angle);
+                dShader->setSilAngle(angle);
                 
-                int cells = RenderSystem::getShader<DiffuseShader>()->getCells();
+                int cells = dShader->getCells();
                 if (ImGui::SliderInt("Cells", &cells, 1, 15)) {
-                    RenderSystem::getShader<DiffuseShader>()->setCells(cells);
+                    dShader->setCells(cells);
                 }
 
                 /* Make a new pane to define cell values */
@@ -329,13 +330,13 @@ int main(int argc, char **argv) {
                     float vals[3];
                     float minBounds[3] = { -1.f,  0.f,  0.f };
                     float maxBounds[3] = {  1.f,  1.f,  1.f };
-                    vals[0] = RenderSystem::getShader<DiffuseShader>()->getCellIntensity(i);
-                    vals[1] = RenderSystem::getShader<DiffuseShader>()->getCellDiffuseScale(i);
-                    vals[2] = RenderSystem::getShader<DiffuseShader>()->getCellSpecularScale(i);
+                    vals[0] = dShader->getCellIntensity(i);
+                    vals[1] = dShader->getCellDiffuseScale(i);
+                    vals[2] = dShader->getCellSpecularScale(i);
                     ImGui::SliderFloat3(("Cell " + std::to_string(i)).c_str(), vals, minBounds, maxBounds);
-                    RenderSystem::getShader<DiffuseShader>()->setCellIntensity(i, vals[0]);
-                    RenderSystem::getShader<DiffuseShader>()->setCellDiffuseScale(i, vals[1]);
-                    RenderSystem::getShader<DiffuseShader>()->setCellSpecularScale(i, vals[2]);
+                    dShader->setCellIntensity(i, vals[0]);
+                    dShader->setCellDiffuseScale(i, vals[1]);
+                    dShader->setCellSpecularScale(i, vals[2]);
                 }
             }
         }
@@ -347,7 +348,7 @@ int main(int argc, char **argv) {
         "Bounder Shader",
         [&]() {
             if (ImGui::Button("Active")) {
-                RenderSystem::getShader<BounderShader>()->toggleEnabled();
+                RenderSystem::bounderShader->toggleEnabled();
             }
         }
     );
@@ -358,7 +359,7 @@ int main(int argc, char **argv) {
         "Ray Shader",
         [&]() {
             if (ImGui::Button("Active")) {
-                RenderSystem::getShader<RayShader>()->toggleEnabled();
+                RenderSystem::rayShader->toggleEnabled();
             }
         }
     );
@@ -401,7 +402,7 @@ int main(int argc, char **argv) {
                 rayPositions.push_back(pair.second.pos);
                 dir = glm::reflect(dir, pair.second.norm);
             }
-            RenderSystem::getShader<RayShader>()->setPositions(rayPositions);
+            RenderSystem::rayShader->setPositions(rayPositions);
         }
     });
     Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);

@@ -10,12 +10,15 @@
 
 
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
-UnorderedMap<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
 const CameraComponent * RenderSystem::s_playerCamera = nullptr;
 GameObject * RenderSystem::s_lightObject = nullptr;
 CameraComponent * RenderSystem::s_lightCamera = nullptr;
 SpatialComponent * RenderSystem::s_lightSpatial = nullptr;
 ShadowDepthShader * RenderSystem::shadowShader = nullptr;
+DiffuseShader * RenderSystem::diffuseShader = nullptr;
+BounderShader * RenderSystem::bounderShader = nullptr;
+RayShader * RenderSystem::rayShader = nullptr;
+ 
 float RenderSystem::lightDist = 1.f;
 
 void RenderSystem::init() {
@@ -47,19 +50,14 @@ void RenderSystem::init() {
     }
 }
 
-///////////////////////////  TODO  ///////////////////////////
-// pass a list of render components that are specific       //
-// to this shader -- right now we are passing the entire    //
-// list and expecting each shader to filter through         //
-//////////////////////////////////////////////////////////////
 void RenderSystem::update(float dt) {
     /* Update light */
     s_lightSpatial->setPosition(getLightDir() * -lightDist);
 
     /* Render to shadow map */
-    shadowShader->prepareRender(s_lightCamera);
-    renderScene(s_lightCamera, true);
-    shadowShader->finishRender();
+    //shadowShader->prepareRender(s_lightCamera);
+    //renderScene(s_lightCamera, true);
+    //shadowShader->finishRender();
 
     /* Regularly render scene */
     renderScene(s_playerCamera, false);
@@ -83,54 +81,26 @@ void RenderSystem::renderScene(const CameraComponent *camera, bool shadowRender)
         return;
     }
     
-    /* Loop through active shaders */
-    for (auto &shader : s_shaders) {
-        if (!shader.second->isEnabled()) {
-            continue;
-        }
+    /* Get components in frustum */
+    // TODO : make this DiffuseRenderComponent
+    Vector<Component *> s_compsToRender = getFrustumComps(camera);
 
-        /* Frustum culling */
-        static Vector<Component *> s_compsToRender;
-        // TODO : call this on shader-specific component list
-        for (auto comp : s_diffuseComponents) {
-            const Vector<Component *> & bounders(comp->gameObject().getComponentsByType<BounderComponent>());
-            if (bounders.size()) {
-                bool inFrustum(false);
-                for (Component * bounder_ : bounders) {
-                    BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
-                    if (camera->sphereInFrustum(bounder->enclosingSphere())) {
-                        inFrustum = true;
-                        break;
-                    }
-                }
-                if (inFrustum) {
-                    s_compsToRender.push_back(comp);
-                }
-            }
-            else {
-                s_compsToRender.push_back(comp);
-            }
-        }
-
-        /* If this is the shadow render pass, then the shadow shader will already be bound 
-         * Otherwise, bind the current shader program */
-        if (!shadowRender) {
-            shader.second->bind();
-        }
-        // this reinterpret_cast business works because unique_ptr's data is
-        // guaranteed is the same as a pointer
-        shader.second->render(camera, reinterpret_cast<const Vector<Component *> &>(s_compsToRender));
-        if (!shadowRender) {
-            shader.second->unbind();
-        }
-
-        s_compsToRender.clear();
-    }
+    /* Render diffused */
+    diffuseShader->bind();
+    diffuseShader->render(camera, s_compsToRender);
+    diffuseShader->unbind();
+    /* Render ray */
+    rayShader->bind();
+    rayShader->render(camera, s_compsToRender);
+    rayShader->unbind();
+    /* Render bounder */
+    bounderShader->bind();
+    bounderShader->render(camera, s_compsToRender);
+    bounderShader->unbind();
 }
 
 void RenderSystem::setCamera(const CameraComponent * camera) {
     s_playerCamera = camera;
-    s_playerCamera = s_lightCamera;
 }
 
 glm::vec3 RenderSystem::getLightDir() {
@@ -139,4 +109,53 @@ glm::vec3 RenderSystem::getLightDir() {
 
 void RenderSystem::setLightDir(glm::vec3 in) {
     s_lightCamera->lookInDir(in);
+}
+
+bool RenderSystem::createDiffuseShader(String vert, String frag) {
+    diffuseShader = new DiffuseShader(vert, frag);
+    return initShader(diffuseShader);
+}
+
+bool RenderSystem::createBounderShader(String vert, String frag) {
+    bounderShader = new BounderShader(vert, frag);
+    return initShader(bounderShader);
+}
+
+bool RenderSystem::createRayShader(String vert, String frag) {
+    rayShader = new RayShader(vert, frag);
+    return initShader(rayShader);
+}
+
+bool RenderSystem::initShader(Shader *shader) {
+    if (shader->init()) {
+        return true;
+    }
+
+    std::cerr << "Failed to initialize shader:" << std::endl;
+    std::cerr << "\t" << shader->vShaderName << std::endl;
+    std::cerr << "\t" << shader->fShaderName << std::endl;
+    std::cin.get();
+    return false;
+}
+
+/* Frustum culling */
+Vector<Component *> RenderSystem::getFrustumComps(const CameraComponent *camera) {
+    Vector<Component *> renderComps;
+    for (auto comp : s_diffuseComponents) {
+        const Vector<Component *> & bounders(comp->gameObject().getComponentsByType<BounderComponent>());
+        /* Case game object doesn't have bounder component */
+        if (!bounders.size()) {
+            renderComps.push_back(comp);
+            continue;
+        }
+        /* Frustum cull through game object's bounders */
+        for (Component * bounder_ : bounders) {
+            BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
+            if (camera->sphereInFrustum(bounder->enclosingSphere())) {
+                renderComps.push_back(comp);
+                break;
+            }
+        }
+    }
+    return renderComps;
 }
