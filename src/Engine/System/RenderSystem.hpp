@@ -41,9 +41,6 @@ public:
     static void setCamera(const CameraComponent * camera);
     static const CameraComponent * s_playerCamera;
 
-    /* Render targets */
-    static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
-
     /* Light stuff */
     static GameObject * s_lightObject;
     static SpatialComponent * s_lightSpatial;
@@ -63,7 +60,10 @@ public:
 
 private:
     static bool initShader(Shader *);
-    static Vector<Component *> getFrustumComps(const CameraComponent *);
+    static Vector<DiffuseRenderComponent *> getFrustumComps(const CameraComponent *);
+
+    /* Render targets */
+    static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
 };
 
 #endif

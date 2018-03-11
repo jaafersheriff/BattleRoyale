@@ -70,7 +70,7 @@ bool BounderShader::init() {
     return true;
 }
 
-void BounderShader::render(const CameraComponent * camera, const Vector<Component *> & components_) {
+void BounderShader::render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> & components_) {
     if (!camera || !m_isEnabled) {
         return;
     }

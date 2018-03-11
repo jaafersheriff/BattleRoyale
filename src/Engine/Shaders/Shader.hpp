@@ -12,9 +12,8 @@
 #include "Util/Memory.hpp"
 #include "GLSL.hpp"
 
-class Component;
 class CameraComponent;
-
+class DiffuseRenderComponent;
 
 class Shader {
     public:
@@ -38,7 +37,7 @@ class Shader {
         void unloadTexture(int);
 
         /* Render functions */
-        virtual void render(const CameraComponent * camera, const Vector<Component *> & components) = 0;
+        virtual void render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> & components) = 0;
 
         /* Parent load functions */
         void loadBool(const int, const bool) const;

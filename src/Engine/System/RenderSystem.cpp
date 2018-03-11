@@ -82,8 +82,7 @@ void RenderSystem::renderScene(const CameraComponent *camera, bool shadowRender)
     }
     
     /* Get components in frustum */
-    // TODO : make this DiffuseRenderComponent
-    Vector<Component *> s_compsToRender = getFrustumComps(camera);
+    Vector<DiffuseRenderComponent *> s_compsToRender = getFrustumComps(camera);
 
     /* Render diffused */
     diffuseShader->bind();
@@ -139,8 +138,8 @@ bool RenderSystem::initShader(Shader *shader) {
 }
 
 /* Frustum culling */
-Vector<Component *> RenderSystem::getFrustumComps(const CameraComponent *camera) {
-    Vector<Component *> renderComps;
+Vector<DiffuseRenderComponent *> RenderSystem::getFrustumComps(const CameraComponent *camera) {
+    Vector<DiffuseRenderComponent *> renderComps;
     for (auto comp : s_diffuseComponents) {
         const Vector<Component *> & bounders(comp->gameObject().getComponentsByType<BounderComponent>());
         /* Case game object doesn't have bounder component */

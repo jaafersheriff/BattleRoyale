@@ -74,7 +74,7 @@ bool DiffuseShader::init() {
     return true;
 }
 
-void DiffuseShader::render(const CameraComponent * camera, const Vector<Component *> & components) {
+void DiffuseShader::render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> & components) {
     if (!camera || !m_isEnabled) {
         return;
     }
@@ -108,12 +108,7 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     glBindTexture(GL_TEXTURE_1D, cellSpecularScalesTexture);
     glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellSpecularScales.size()), GL_RED, GL_FLOAT, cellSpecularScales.data());
 
-    for (Component * comp : components) {
-        // TODO : component list should be passed in as diffuserendercomponent
-        DiffuseRenderComponent *drc;
-        if (!(drc = dynamic_cast<DiffuseRenderComponent *>(comp))) {
-            continue;
-        }
+    for (auto drc : components) {
 
         /* Toon shading */
         if (showToon && drc->isToon) {

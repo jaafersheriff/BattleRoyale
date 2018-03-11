@@ -45,7 +45,7 @@ bool RayShader::init() {
     return glGetError() == GL_NO_ERROR;
 }
 
-void RayShader::render(const CameraComponent * camera, const Vector<Component *> & components_) {
+void RayShader::render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> & components_) {
     if (!camera || !m_isEnabled || m_positions.size() < 2) {
         return;
     }
