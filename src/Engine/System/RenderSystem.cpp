@@ -7,12 +7,11 @@
 #include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
 #include "Scene/Scene.hpp"
 
-
-
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 UnorderedMap<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
 const CameraComponent * RenderSystem::s_camera = nullptr;
-SquareShader *RenderSystem::squareShader = new SquareShader("square_vert.glsl", "square_frag.glsl");
+// SquareShader *RenderSystem::squareShader = new SquareShader("square_vert.glsl", "square_frag.glsl");
+std::unique_ptr<SquareShader> RenderSystem::squareShader(new SquareShader("square_vert.glsl", "square_frag.glsl"));
 
 void RenderSystem::init() {
     glEnable(GL_DEPTH_TEST);
