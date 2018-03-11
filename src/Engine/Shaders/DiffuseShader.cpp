@@ -75,7 +75,7 @@ bool DiffuseShader::init() {
 }
 
 void DiffuseShader::render(const CameraComponent * camera, const Vector<Component *> & components) {
-    if (!camera || !isEnabled()) {
+    if (!camera) {
         return;
     }
 

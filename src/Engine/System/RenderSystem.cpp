@@ -85,6 +85,10 @@ void RenderSystem::renderScene(const CameraComponent *camera, bool shadowRender)
     
     /* Loop through active shaders */
     for (auto &shader : s_shaders) {
+        if (!shader.second->isEnabled()) {
+            continue;
+        }
+
         /* Frustum culling */
         static Vector<Component *> s_compsToRender;
         // TODO : call this on shader-specific component list
@@ -126,6 +130,7 @@ void RenderSystem::renderScene(const CameraComponent *camera, bool shadowRender)
 
 void RenderSystem::setCamera(const CameraComponent * camera) {
     s_playerCamera = camera;
+    s_playerCamera = s_lightCamera;
 }
 
 glm::vec3 RenderSystem::getLightDir() {

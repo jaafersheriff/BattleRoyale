@@ -71,7 +71,7 @@ bool BounderShader::init() {
 }
 
 void BounderShader::render(const CameraComponent * camera, const Vector<Component *> & components_) {
-    if (!camera || !isEnabled()) {
+    if (!camera) {
         return;
     }
 
