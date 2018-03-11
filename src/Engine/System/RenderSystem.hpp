@@ -54,8 +54,8 @@ class RenderSystem {
     static UnorderedMap<std::type_index, UniquePtr<Shader>> s_shaders;
     static const CameraComponent * s_camera;
     
-    // static SquareShader *squareShader;
-    static std::unique_ptr<SquareShader> squareShader;
+    // static std::unique_ptr<SquareShader> squareShader;
+    static UniquePtr<SquareShader> squareShader;
 };
 
 // TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
