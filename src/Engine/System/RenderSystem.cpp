@@ -19,6 +19,14 @@ void RenderSystem::init() {
     glCullFace(GL_BACK);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(0.2f, 0.3f, 0.4f, 1.f);
+    glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
+
+    auto sizeCallback([&] (const Message & msg_) {
+        const WindowFrameSizeMessage & msg(static_cast<const WindowFrameSizeMessage &>(msg_));
+        glViewport(0, 0, msg.frameSize.x, msg.frameSize.y);
+    });
+    Scene::addReceiver<WindowFrameSizeMessage>(nullptr, sizeCallback);
 }
 
 ///////////////////////////  TODO  ///////////////////////////
@@ -29,13 +37,14 @@ void RenderSystem::init() {
 void RenderSystem::update(float dt) {
     static UnorderedSet<GameObject *> s_visibleGOs;
     static Vector<Component *> s_compsToRender;
+    static bool s_wasRender = true;
 
-    /* Reset rendering display */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.2f, 0.3f, 0.4f, 1.f);
+    if (s_wasRender) {
+        /* Reset rendering display */
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        s_wasRender = false;
+    }
 
-    glm::ivec2 size = Window::getFrameSize();
-    glViewport(0, 0, size.x, size.y);
     if (s_camera) {
         // Frustum culling
         s_compsToRender.clear();
@@ -58,6 +67,8 @@ void RenderSystem::update(float dt) {
             // guaranteed is the same as a pointer
             shader.second->render(s_camera, reinterpret_cast<const Vector<Component *> &>(s_compsToRender));
             shader.second->unbind();
+
+            s_wasRender = true;
         }
     }
 
@@ -65,6 +76,7 @@ void RenderSystem::update(float dt) {
 #ifdef DEBUG_MODE
     if (Window::isImGuiEnabled()) {
         ImGui::Render();
+        s_wasRender = true;
     }
 #endif
 }
