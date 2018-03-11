@@ -55,8 +55,8 @@ void RenderSystem::update(float dt) {
     s_lightSpatial->setPosition(getLightDir() * -lightDist);
 
     /* Render to shadow map */
-    //Vector<DiffuseRenderComponent *> shadowCasters = getFrustumComps(s_lightCamera);
-    shadowShader->render(s_lightCamera, s_diffuseComponents);
+    Vector<DiffuseRenderComponent *> shadowCasters = getFrustumComps(s_lightCamera);
+    shadowShader->render(s_lightCamera, shadowCasters);
 
     /* Reset rendering display */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
