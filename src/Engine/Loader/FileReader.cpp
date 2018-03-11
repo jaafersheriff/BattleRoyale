@@ -51,6 +51,9 @@ DiffuseRenderComponent & FileReader::addRenderComponent(GameObject & gameObject,
     const rapidjson::Value& isToon = jsonTransform["isToon"];
     assert(isToon.IsBool());
 
+    const rapidjson::Value& jsonTiling = jsonTransform["tiling"];
+    glm::vec2 tiling = glm::vec2(jsonTiling[0].GetFloat(), jsonTiling[1].GetFloat());
+
     //Add diffuse component
     return Scene::addComponent<DiffuseRenderComponent>(
         gameObject,
@@ -58,7 +61,8 @@ DiffuseRenderComponent & FileReader::addRenderComponent(GameObject & gameObject,
         RenderSystem::getShader<DiffuseShader>()->pid,
         *Loader::getMesh(filePath),
         ModelTexture(Loader::getTexture(texturePath), ambience, glm::vec3(1.0f), glm::vec3(1.0f)),
-        isToon.GetBool()
+        isToon.GetBool(),
+        m_tiling
     );
 }
 
