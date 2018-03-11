@@ -11,9 +11,6 @@ class SquareShader : public Shader {
       bool init();
       virtual void render(const CameraComponent * camera, const Vector<Component *> & components) override;
 
-   private:
-      void initFBO();
-
       GLuint fboHandle;
       GLuint colorTexture;
       GLuint depthTexture;
@@ -21,7 +18,10 @@ class SquareShader : public Shader {
       Vector<float> frameSquarePos;
       Vector<unsigned> frameSquareElem;
       GLuint frameSquarePosHandle;
-      GLuint frameSquareElemHandle;      
+      GLuint frameSquareElemHandle;   
+
+   private:
+      void initFBO();   
 };
 
 #endif

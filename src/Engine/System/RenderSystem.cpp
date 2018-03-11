@@ -32,6 +32,9 @@ void RenderSystem::init() {
 // list and expecting each shader to filter through         //
 //////////////////////////////////////////////////////////////
 void RenderSystem::update(float dt) {
+    /* Render to postprocessing framebuffer */
+    glBindFramebuffer(GL_FRAMEBUFFER, squareShader->fboHandle);
+
     /* Reset rendering display */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
@@ -77,10 +80,16 @@ void RenderSystem::update(float dt) {
         }
     }
 
-    static Vector<Component *> dummyVector;
+    /* Render to screen framebuffer */
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    /* Reset rendering display */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.2f, 0.3f, 0.4f, 1.f);
 
     squareShader->bind();
-    // squareShader->render(nullptr, reinterpret_cast<const Vector<Component *> &>(dummyVector));
+    // The second parameter is passed by reference (not by pointer),
+    // hence the funny business.
     squareShader->render(nullptr, *((Vector<Component *> *) nullptr));
     squareShader->unbind();
 
