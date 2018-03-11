@@ -349,29 +349,6 @@ std::pair<const BounderComponent *, Intersect> CollisionSystem::pick(const Ray &
         }
         return std::pair<BounderComponent *, Intersect>(bounder, inter);
     }
-
-    /*
-    const Vector<BounderComponent *> * possible(&s_bounderComponents);
-    if (s_octree) {
-        s_octree->filter(ray, s_octreeResults);
-        possible = &s_octreeResults;
-    }
-
-    BounderComponent * bounder(nullptr);
-    Intersect inter;
-    for (BounderComponent * b : *possible) {
-        if (!conditional(*b)) continue;
-        Intersect potential(b->intersect(ray));
-        if (potential.dist < inter.dist) {
-            bounder = b;
-            inter = potential;
-        }
-    }
-
-    s_octreeResults.clear();
-
-    return { bounder, inter };
-    */
 }
 
 void CollisionSystem::setOctree(const glm::vec3 & min, const glm::vec3 & max, float minCellSize) {
