@@ -63,7 +63,7 @@ void OctreeShader::render(const CameraComponent * camera, const Vector<Component
     loadMat4(getUniform("u_viewMat"), camera->getView());
     loadMat4(getUniform("u_projMat"), camera->getProj());
 
-    Octree<BounderComponent> & octree(*CollisionSystem::s_octree);
+    Octree<const BounderComponent *> & octree(*CollisionSystem::s_octree);
     int maxDepth(Util::log2Floor(int(std::round(octree.m_root->radius / octree.m_minRadius))) - 1);
     renderNode(camera, CollisionSystem::s_octree->m_root.get(), 0, maxDepth);
 

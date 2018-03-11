@@ -20,16 +20,6 @@ void ProjectileComponent::init() {
 
         const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
         if (&msg.bounder1 == m_bounder) {
-            for (GameObject * go : Scene::getGameObjects()) {
-                BounderComponent * bounder(go->getComponentByType<BounderComponent>());
-                if (bounder && bounder->weight() == UINT_MAX && go != &msg.bounder2.gameObject()) {
-                    Scene::destroyGameObject(*go);
-                }
-            }
-            Scene::destroyGameObject(gameObject());
-            CollisionSystem::remakeOctree();
-            return;
-
             ec = msg.bounder2.gameObject().getComponentByType<EnemyComponent>();
             // If this projectile collided with an EnemyComponent...
             if (ec) {

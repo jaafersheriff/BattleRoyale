@@ -50,6 +50,6 @@ class CollisionSystem {
     static UnorderedSet<BounderComponent *> s_potentials;
     static UnorderedSet<const BounderComponent *> s_collided;
     static UnorderedSet<const BounderComponent *> s_adjusted;
-    static UniquePtr<Octree<BounderComponent>> s_octree;
+    static UniquePtr<Octree<const BounderComponent *>> s_octree;
 
 };

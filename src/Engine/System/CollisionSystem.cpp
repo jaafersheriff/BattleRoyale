@@ -144,7 +144,7 @@ const Vector<BounderComponent *> & CollisionSystem::s_bounderComponents(Scene::g
 UnorderedSet<BounderComponent *> CollisionSystem::s_potentials;
 UnorderedSet<const BounderComponent *> CollisionSystem::s_collided;
 UnorderedSet<const BounderComponent *> CollisionSystem::s_adjusted;
-UniquePtr<Octree<BounderComponent>> CollisionSystem::s_octree;
+UniquePtr<Octree<const BounderComponent *>> CollisionSystem::s_octree;
 
 void CollisionSystem::init() {
     auto compAddedCallback(
@@ -164,7 +164,7 @@ void CollisionSystem::init() {
             if (msg.typeI == typeid(BounderComponent)) {
                 BounderComponent & bounder(const_cast<BounderComponent &>(static_cast<const BounderComponent &>(*msg.comp)));
                 s_potentials.erase(&bounder);
-                if (s_octree) s_octree->remove(bounder);
+                if (s_octree) s_octree->remove(&bounder);
             }
         }
     );
@@ -206,7 +206,7 @@ void CollisionSystem::update(float dt) {
     // update octree
     if (s_octree) {
         for (BounderComponent * bounder : s_potentials) {
-            if (!s_octree->set(*bounder, bounder->enclosingAABox())) {
+            if (!s_octree->set(bounder, bounder->enclosingAABox())) {
                 s_outOfBounds.insert(&bounder->gameObject());
             }
         }
@@ -256,7 +256,7 @@ void CollisionSystem::update(float dt) {
             s_potentials.insert(&bounder);
             bounder.update(dt);
             if (s_octree) {
-                s_octree->set(bounder, bounder.enclosingAABox());
+                s_octree->set(&bounder, bounder.enclosingAABox());
             }
         }
     }
@@ -268,7 +268,7 @@ void CollisionSystem::update(float dt) {
         s_checked.insert(bounder);
         const Vector<const BounderComponent *> * possible(&reinterpret_cast<const Vector<const BounderComponent *> &>(s_bounderComponents));
         if (s_octree) {
-            s_octree->filter(*bounder, s_octreeResults);
+            s_octree->filter(bounder, s_octreeResults);
             possible = &s_octreeResults;
         }
         for (const BounderComponent * other : *possible) {
@@ -315,7 +315,7 @@ void CollisionSystem::update(float dt) {
             s_potentials.insert(bounder);
             bounder->update(dt);
             if (s_octree) {
-                s_octree->set(*bounder, bounder->enclosingAABox());
+                s_octree->set(bounder, bounder->enclosingAABox());
             }
             s_adjusted.insert(bounder);
             Scene::sendMessage<CollisionAdjustMessage>(gameObject, *gameObject, delta);
@@ -332,8 +332,8 @@ std::pair<const BounderComponent *, Intersect> CollisionSystem::pick(const Ray &
     static Vector<BounderComponent *> s_octreeResults;
 
     if (s_octree) {
-        return s_octree->filter(ray, [& conditional](const Ray & ray, const BounderComponent & bounder) {
-            return conditional(bounder) ? bounder.intersect(ray) : Intersect();
+        return s_octree->filter(ray, [& conditional](const Ray & ray, const BounderComponent * bounder) {
+            return conditional(*bounder) ? bounder->intersect(ray) : Intersect();
         });
     }
     else {
@@ -375,9 +375,9 @@ std::pair<const BounderComponent *, Intersect> CollisionSystem::pick(const Ray &
 }
 
 void CollisionSystem::setOctree(const glm::vec3 & min, const glm::vec3 & max, float minCellSize) {
-    s_octree = UniquePtr<Octree<BounderComponent>>::make(AABox(min, max), minCellSize);
+    s_octree = UniquePtr<Octree<const BounderComponent *>>::make(AABox(min, max), minCellSize);
     for (BounderComponent * bounder : s_bounderComponents) {
-        s_octree->set(*bounder, bounder->enclosingAABox());
+        s_octree->set(bounder, bounder->enclosingAABox());
     }
 }
 
@@ -385,7 +385,7 @@ void CollisionSystem::remakeOctree() {
     if (s_octree) {
         s_octree->clear();
         for (BounderComponent * bounder : s_bounderComponents) {
-            s_octree->set(*bounder, bounder->enclosingAABox());
+            s_octree->set(bounder, bounder->enclosingAABox());
         }
     }
 }
