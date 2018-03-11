@@ -85,10 +85,6 @@ void RenderSystem::renderScene(const CameraComponent *camera, bool shadowRender)
     
     /* Loop through active shaders */
     for (auto &shader : s_shaders) {
-        if (!shader.second->isEnabled()) {
-            continue;
-        }
-
         /* Frustum culling */
         static Vector<Component *> s_compsToRender;
         // TODO : call this on shader-specific component list
