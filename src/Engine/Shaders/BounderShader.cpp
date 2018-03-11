@@ -75,6 +75,8 @@ void BounderShader::render(const CameraComponent * camera, const Vector<DiffuseR
         return;
     }
 
+    bind();
+
     loadMat4(getUniform("u_viewMat"), camera->getView());
     loadMat4(getUniform("u_projMat"), camera->getProj());
 
@@ -117,6 +119,7 @@ void BounderShader::render(const CameraComponent * camera, const Vector<DiffuseR
         }
     }
 
+    unbind();
     glBindVertexArray(0);
 }
 

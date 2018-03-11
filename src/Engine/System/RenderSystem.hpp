@@ -32,11 +32,6 @@ public:
     /* Full render function including shadow maps, main render calls, and post-processing */
     static void update(float dt);
 
-    /* Iterate through shaders map
-        * Bind individual shaders 
-        * Call shaders' render function with the appropriate render component list */
-    static void renderScene(const CameraComponent *, bool shadowRender);
-
     /* Camera stuff */
     static void setCamera(const CameraComponent * camera);
     static const CameraComponent * s_playerCamera;

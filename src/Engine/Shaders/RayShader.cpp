@@ -50,6 +50,8 @@ void RayShader::render(const CameraComponent * camera, const Vector<DiffuseRende
         return;
     }
 
+    bind();
+
     if (!m_positionsValid) {
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
         glBufferData(GL_ARRAY_BUFFER, m_positions.size() * sizeof(glm::vec3), m_positions.data(), GL_STATIC_DRAW);
@@ -63,7 +65,9 @@ void RayShader::render(const CameraComponent * camera, const Vector<DiffuseRende
 
     glBindVertexArray(m_vao);
     glDrawArrays(GL_LINE_STRIP, 0, int(m_positions.size()));
+
     glBindVertexArray(0);
+    unbind();
 }
 
 void RayShader::setPositions(const Vector<glm::vec3> & positions) {

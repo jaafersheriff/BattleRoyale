@@ -79,6 +79,8 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<DiffuseR
         return;
     }
 
+    bind();
+
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
@@ -181,9 +183,9 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<DiffuseR
         if (pos != -1) {
             glDisableVertexAttribArray(pos);
         }
-        glBindTexture(GL_TEXTURE_1D, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindTexture(GL_TEXTURE_1D, 0);
 
         /* Unload texture */
         if (drc->modelTexture.texture) {
@@ -196,6 +198,8 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<DiffuseR
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }    
+
+    unbind();
 }
 
 void DiffuseShader::setCells(unsigned int in) {

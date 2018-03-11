@@ -294,7 +294,7 @@ int main(int argc, char **argv) {
             /* Light distance */
             ImGui::SliderFloat("LightPos", &RenderSystem::lightDist, 0.f, 100.f);
             /* Shadow map FBO */
-            ImGui::Image((ImTextureID)RenderSystem::shadowShader->getShadowMapTexture(), ImVec2(128, 128));
+            ImGui::Image((ImTextureID)RenderSystem::shadowShader->getShadowMapTexture(), ImVec2(256, 256));
         }
     );
 

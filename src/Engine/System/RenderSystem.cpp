@@ -55,12 +55,25 @@ void RenderSystem::update(float dt) {
     s_lightSpatial->setPosition(getLightDir() * -lightDist);
 
     /* Render to shadow map */
-    //shadowShader->prepareRender(s_lightCamera);
-    //renderScene(s_lightCamera, true);
-    //shadowShader->finishRender();
+    //Vector<DiffuseRenderComponent *> shadowCasters = getFrustumComps(s_lightCamera);
+    shadowShader->render(s_lightCamera, s_diffuseComponents);
 
-    /* Regularly render scene */
-    renderScene(s_playerCamera, false);
+    /* Reset rendering display */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.2f, 0.3f, 0.4f, 1.f);
+    glm::ivec2 size = Window::getFrameSize();
+    glViewport(0, 0, size.x, size.y);
+    if (!s_playerCamera) {
+        return;
+    }
+    
+    /* Get components in frustum */
+    Vector<DiffuseRenderComponent *> compsToRender = getFrustumComps(s_playerCamera);
+
+    /* Render! */
+    diffuseShader->render(s_playerCamera, compsToRender);
+    rayShader->render(s_playerCamera, compsToRender);
+    bounderShader->render(s_playerCamera, compsToRender);
 
     /* Render ImGui */
 #ifdef DEBUG_MODE
@@ -68,34 +81,6 @@ void RenderSystem::update(float dt) {
         ImGui::Render();
     }
 #endif
-}
-
-void RenderSystem::renderScene(const CameraComponent *camera, bool shadowRender) {
-    /* Reset rendering display */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.2f, 0.3f, 0.4f, 1.f);
-
-    glm::ivec2 size = Window::getFrameSize();
-    glViewport(0, 0, size.x, size.y);
-    if (!camera) {
-        return;
-    }
-    
-    /* Get components in frustum */
-    Vector<DiffuseRenderComponent *> s_compsToRender = getFrustumComps(camera);
-
-    /* Render diffused */
-    diffuseShader->bind();
-    diffuseShader->render(camera, s_compsToRender);
-    diffuseShader->unbind();
-    /* Render ray */
-    rayShader->bind();
-    rayShader->render(camera, s_compsToRender);
-    rayShader->unbind();
-    /* Render bounder */
-    bounderShader->bind();
-    bounderShader->render(camera, s_compsToRender);
-    bounderShader->unbind();
 }
 
 void RenderSystem::setCamera(const CameraComponent * camera) {
