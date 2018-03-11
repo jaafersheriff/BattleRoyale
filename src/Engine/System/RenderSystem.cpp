@@ -21,7 +21,6 @@ void RenderSystem::init() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // squareShader->init();
     if (!squareShader->init()) {
         std::cerr << "Failed to initialize shader:" << std::endl;
         std::cerr << "\t" << squareShader->vShaderName << std::endl;
