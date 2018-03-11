@@ -6,10 +6,10 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Util/Util.hpp"
 
-PathfindingComponent::PathfindingComponent(GameObject & gameObject, GameObject & player, float ms, bool wander) :
+PathfindingComponent::PathfindingComponent(GameObject & gameObject, const GameObject & player, float ms, bool wander) :
     Component(gameObject),
     m_spatial(nullptr),
-    m_player(&player),
+    m_player(player),
     m_moveSpeed(ms),
     m_wander(wander),
     m_wanderCurrent(0.0f, 0.0f, 0.0f),
@@ -22,7 +22,7 @@ void PathfindingComponent::init() {
 }
 
 void PathfindingComponent::update(float dt) {
-    const glm::vec3 & playerPos = m_player->getSpatial()->position();
+    const glm::vec3 & playerPos = m_player.getSpatial()->position();
     const glm::vec3 & pos = m_spatial->position();
     glm::vec3 dir = playerPos - pos;
     if (glm::length2(dir) < 0.001f) {

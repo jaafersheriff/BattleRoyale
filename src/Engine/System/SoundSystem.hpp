@@ -38,7 +38,7 @@ class SoundSystem {
     private:
         static String s_SOUND_DIR;
         static const Vector<SoundComponent *> & s_soundComponents;
-        static CameraComponent* s_camera;
+        static const CameraComponent* s_camera;
     #ifdef HAVE_FMOD_LIBRARY
 
         static Sound* s_bgMusic;
@@ -49,7 +49,7 @@ class SoundSystem {
         static void init();
         static void update(float dt);
 
-        static void setCamera(CameraComponent *camera);
+        static void setCamera(const CameraComponent *camera);
 
     #ifdef HAVE_FMOD_LIBRARY
         static void playSound(String name);
