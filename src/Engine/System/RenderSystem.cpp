@@ -80,25 +80,27 @@ void RenderSystem::update(float dt) {
         }
     }
 
-    /* Render to screen framebuffer */
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    /* Reset rendering display */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.2f, 0.3f, 0.4f, 1.f);
-
-    squareShader->bind();
-    // The second parameter is passed by reference (not by pointer),
-    // hence the funny business.
-    squareShader->render(nullptr, *((Vector<Component *> *) nullptr));
-    squareShader->unbind();
-
     /* ImGui */
 #ifdef DEBUG_MODE
     if (Window::isImGuiEnabled()) {
         ImGui::Render();
     }
 #endif
+
+    // Render to screen framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // Reset rendering display
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.2f, 0.3f, 0.4f, 1.f);
+
+    glViewport(0, 0, size.x, size.y);
+
+    squareShader->bind();
+    // The second parameter is passed by reference (not by pointer),
+    // hence the funny business.
+    squareShader->render(nullptr, *((Vector<Component *> *) nullptr));
+    squareShader->unbind();
 }
 
 void RenderSystem::setCamera(const CameraComponent * camera) {

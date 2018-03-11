@@ -22,7 +22,8 @@ uniform sampler1D cellIntensities;
 uniform sampler1D cellDiffuseScales;
 uniform sampler1D cellSpecularScales;
 
-out vec4 color;
+// out vec4 color;
+layout(location = 0) out vec4 color;
 
 void main() {
     vec3 viewDir = camPos - worldPos;

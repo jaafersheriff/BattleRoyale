@@ -75,7 +75,7 @@ void SquareShader::initFBO() {
         GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0
     );
 
-    // Attach depth to the framebuffer
+    /* // Attach depth and stencil to the framebuffer
     glGenTextures(1, &depthTexture);
     glBindTexture(GL_TEXTURE_2D, depthTexture);
 
@@ -89,7 +89,13 @@ void SquareShader::initFBO() {
 
     glFramebufferTexture2D(
         GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0
-    );
+    ); */
+
+    // Create Renderbuffer Object to hold depth and stencil buffers
+    glGenRenderbuffers(1, &depthTexture);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthTexture);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthTexture);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);

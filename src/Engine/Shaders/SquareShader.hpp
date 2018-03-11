@@ -18,7 +18,7 @@ class SquareShader : public Shader {
       Vector<float> frameSquarePos;
       Vector<unsigned> frameSquareElem;
       GLuint frameSquarePosHandle;
-      GLuint frameSquareElemHandle;   
+      GLuint frameSquareElemHandle;
 
    private:
       void initFBO();   
