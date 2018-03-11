@@ -182,6 +182,26 @@ size_t Octree<T>::filter(const Ray & ray, Vector<T> & r_results) const {
 }
 
 template <typename T>
+size_t Octree<T>::filter(const T & e, Vector<T> & r_results) const {
+    auto it(m_map.find(e));
+    if (it == m_map.end()) {
+        return 0;
+    }
+
+    size_t n(0);
+    Node * node(it->second.first->parent);
+    while (node) {
+        n += node->elements.size();
+        for (const T & e : node->elements) {
+            r_results.push_back(e);
+        }
+        node = node->parent;
+    }
+
+    return n + filter(*it->second.first, it->second.second, r_results);
+}
+
+template <typename T>
 bool Octree<T>::addUp(Node & node, const T & e, const AABox & region) {
     AABox nodeRegion(node.center - node.radius, node.center + node.radius);
     if (detail::contains(nodeRegion, region)) {
@@ -309,7 +329,7 @@ size_t Octree<T>::filter(const Node & node, const std::function<bool(const glm::
 }
 
 template <typename T>
-size_t Octree<T>::filter(const Node & node, const AABox & region_, Vector<T> & r_results) const {
+size_t Octree<T>::filter(const Node & node, const AABox & region, Vector<T> & r_results) const {
     size_t n(node.elements.size());    
     for (const T & e : node.elements) {
         r_results.push_back(e);
@@ -317,15 +337,15 @@ size_t Octree<T>::filter(const Node & node, const AABox & region_, Vector<T> & r
 
     if (node.children) {
         unsigned char possible(node.activeOs);
-        if (region_.max.z <= node.center.z) possible &= unsigned char(0x0F);
-        if (region_.min.z >= node.center.z) possible &= unsigned char(0xF0);
-        if (region_.max.y <= node.center.y) possible &= unsigned char(0x33);
-        if (region_.min.y >= node.center.y) possible &= unsigned char(0xCC);
-        if (region_.max.x <= node.center.x) possible &= unsigned char(0x55);
-        if (region_.min.x >= node.center.x) possible &= unsigned char(0xAA);
+        if (region.max.z <= node.center.z) possible &= unsigned char(0x0F);
+        if (region.min.z >= node.center.z) possible &= unsigned char(0xF0);
+        if (region.max.y <= node.center.y) possible &= unsigned char(0x33);
+        if (region.min.y >= node.center.y) possible &= unsigned char(0xCC);
+        if (region.max.x <= node.center.x) possible &= unsigned char(0x55);
+        if (region.min.x >= node.center.x) possible &= unsigned char(0xAA);
         for (unsigned char o(0), op(1); o < 8; ++o, op <<= 1) {
             if (possible & op) {
-                n += filter(node.children[o], region_, r_results);
+                n += filter(node.children[o], region, r_results);
             }
         }
     }

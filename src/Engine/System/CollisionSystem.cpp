@@ -269,7 +269,7 @@ void CollisionSystem::update(float dt) {
         s_checked.insert(bounder);
         const Vector<BounderComponent *> * possible(&s_bounderComponents);
         if (s_octree) {
-            s_octree->filter(bounder->enclosingAABox(), s_octreeResults);
+            s_octree->filter(bounder, s_octreeResults);
             possible = &s_octreeResults;
         }
         for (auto & other : *possible) {

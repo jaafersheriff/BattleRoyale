@@ -54,6 +54,7 @@ class Octree {
     size_t filter(const std::function<bool(const glm::vec3 &, float)> & f, Vector<T> & r_results) const;
     size_t filter(const AABox & region, Vector<T> & r_results) const;
     size_t filter(const Ray & ray, Vector<T> & r_results) const;
+    size_t filter(const T & e, Vector<T> & r_results) const;
 
     private:
 
