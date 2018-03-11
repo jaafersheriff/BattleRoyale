@@ -203,7 +203,7 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     }
 
     if (showWireFrame) {
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }    
 }
 
