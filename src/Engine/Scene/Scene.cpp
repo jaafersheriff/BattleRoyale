@@ -23,7 +23,7 @@ Vector<GameObject *> Scene::s_gameObjectKillQueue;
 Vector<std::pair<std::type_index, UniquePtr<Component>>> Scene::s_componentInitQueue;
 Vector<std::pair<std::type_index, Component *>> Scene::s_componentKillQueue;
 
-Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_messages;
+Vector<std::tuple<const GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_messages;
 UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> Scene::s_receivers;
 
 float Scene::totalDT;
@@ -223,14 +223,14 @@ void Scene::killComponents() {
 }
 
 void Scene::relayMessages() {
-    static Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messagesBuffer;
+    static Vector<std::tuple<const GameObject *, std::type_index, UniquePtr<Message>>> s_messagesBuffer;
 
     while (s_messages.size()) {
         // this keeps things from breaking if messages are sent from receivers
         std::swap(s_messages, s_messagesBuffer);
 
         for (auto & message : s_messagesBuffer) {
-            GameObject * gameObject(std::get<0>(message));
+            const GameObject * gameObject(std::get<0>(message));
             std::type_index msgTypeI(std::get<1>(message));
             auto & msg(std::get<2>(message));
 

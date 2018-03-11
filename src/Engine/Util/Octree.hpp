@@ -27,14 +27,14 @@ class Octree {
 
         glm::vec3 center;
         float radius;
-        Vector<T> elements;
+        Vector<const T *> elements;
         UniquePtr<Node[]> children;
         Node * parent;
-        unsigned char activeOs;
-        unsigned char parentOP;
+        uint8_t activeOs;
+        uint8_t parentO;
 
         Node();
-        Node(const glm::vec3 & center, float radius, Node * parent, unsigned char parentOP);
+        Node(const glm::vec3 & center, float radius, Node * parent, uint8_t parentO);
         Node(const Node & other) = delete;
         Node(Node && other) = delete;
         
@@ -51,10 +51,11 @@ class Octree {
 
     bool remove(const T & e);
 
-    size_t filter(const std::function<bool(const glm::vec3 &, float)> & f, Vector<T> & r_results) const;
-    size_t filter(const AABox & region, Vector<T> & r_results) const;
-    size_t filter(const Ray & ray, Vector<T> & r_results) const;
-    size_t filter(const T & e, Vector<T> & r_results) const;
+    size_t filter(const std::function<bool(const glm::vec3 &, float)> & f, Vector<const T *> & r_results) const;
+    size_t filter(const AABox & region, Vector<const T *> & r_results) const;
+    size_t filter(const Ray & ray, Vector<const T *> & r_results) const;
+    std::pair<const T *, Intersect> filter(const Ray & ray, const std::function<Intersect(const Ray &, const T &)> & f) const;
+    size_t filter(const T & e, Vector<const T *> & r_results) const;
 
     private:
 
@@ -65,16 +66,19 @@ class Octree {
 
     void trim(Node & node);
         
-    size_t filter(const Node & node, const std::function<bool(const glm::vec3 &, float)> & f, Vector<T> & r_results) const;
-    size_t filter(const Node & node, const AABox & region, Vector<T> & r_results) const;
-    size_t filter(const Node & node, const Ray & ray, const glm::vec3 & invDir, Vector<T> & r_results) const;
+    size_t filter(const Node & node, const std::function<bool(const glm::vec3 &, float)> & f, Vector<const T *> & r_results) const;
+    size_t filter(const Node & node, const AABox & region, Vector<const T *> & r_results) const;
+    void filter(
+        const Node & node, const Ray & ray, const std::function<Intersect(const Ray &, const T &)> & f,
+        const glm::vec3 & invDir, const glm::vec3 & signDir, float near, float far, const uint8_t * oMap, const uint8_t * route,
+        const T * & r_elem, Intersect & r_inter) const;
 
     private:
 
     UniquePtr<Node> m_root;
     AABox m_rootRegion;
     float m_minRadius;
-    UnorderedMap<T, std::pair<Node *, AABox>> m_map;
+    UnorderedMap<const T *, std::pair<Node *, AABox>> m_map;
 
 };
 

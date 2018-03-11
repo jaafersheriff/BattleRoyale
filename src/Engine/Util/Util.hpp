@@ -14,7 +14,7 @@
 
 struct Util {
 
-    static inline float infinity() {
+    static constexpr float infinity() {
         return std::numeric_limits<float>::infinity();
     }
 
@@ -32,12 +32,20 @@ struct Util {
         return sign ? k_posAxisVecs[axis] : k_negAxisVecs[axis];
     }
 
+    static inline bool isZeroAbs(float v, float e = epsilon) {
+        return v < e;
+    }
+
+    static inline bool isZeroAbs(const glm::vec3 & v, float e = epsilon) {
+        return isZeroAbs(v.x, e) && isZeroAbs(v.y, e) && isZeroAbs(v.z, e);
+    }
+
     static inline bool isZero(float v, float e = epsilon) {
-        return glm::abs(v) < e;
+        return isZeroAbs(glm::abs(v));
     }
 
     static inline bool isZero(const glm::vec3 & v, float e = epsilon) {
-        return isZero(v.x, e) && isZero(v.y, e) && isZero(v.z, e);
+        return isZeroAbs(glm::abs(v));
     }
 
     static inline bool isEqual(float v1, float v2, float e = epsilon) {

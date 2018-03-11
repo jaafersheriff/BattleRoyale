@@ -486,7 +486,7 @@ int main(int argc, char **argv) {
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
         if (msg.key == GLFW_KEY_DELETE && msg.action == GLFW_PRESS) {
             auto pair(CollisionSystem::pick(Ray(player::spatialComp->position(), player::cameraComp->getLookDir()), player::gameObject));
-            if (pair.first) Scene::destroyGameObject(pair.first->gameObject());
+            if (pair.first) Scene::destroyGameObject(const_cast<GameObject &>(pair.first->gameObject()));
         }
     });
     Scene::addReceiver<KeyMessage>(nullptr, deleteCallback);

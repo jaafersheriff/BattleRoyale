@@ -32,8 +32,8 @@ class CollisionSystem {
 
     static void update(float dt);
 
-    static std::pair<BounderComponent *, Intersect> pick(const Ray & ray, const GameObject * ignore);
-    static std::pair<BounderComponent *, Intersect> pick(const Ray & ray, const std::function<bool(const BounderComponent &)> & conditional);
+    static std::pair<const BounderComponent *, Intersect> pick(const Ray & ray, const GameObject * ignore);
+    static std::pair<const BounderComponent *, Intersect> pick(const Ray & ray, const std::function<bool(const BounderComponent &)> & conditional);
 
     static void setOctree(const glm::vec3 & min, const glm::vec3 & max, float minCellSize);
 
@@ -46,8 +46,8 @@ class CollisionSystem {
 
     static const Vector<BounderComponent *> & s_bounderComponents;
     static UnorderedSet<BounderComponent *> s_potentials;
-    static UnorderedSet<BounderComponent *> s_collided;
-    static UnorderedSet<BounderComponent *> s_adjusted;
-    static UniquePtr<Octree<BounderComponent *>> s_octree;
+    static UnorderedSet<const BounderComponent *> s_collided;
+    static UnorderedSet<const BounderComponent *> s_adjusted;
+    static UniquePtr<Octree<BounderComponent>> s_octree;
 
 };
