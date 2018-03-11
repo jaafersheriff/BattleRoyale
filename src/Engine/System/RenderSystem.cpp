@@ -10,7 +10,6 @@
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 UnorderedMap<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
 const CameraComponent * RenderSystem::s_camera = nullptr;
-// std::unique_ptr<SquareShader> RenderSystem::squareShader(new SquareShader("square_vert.glsl", "square_frag.glsl"));
 UniquePtr<SquareShader> RenderSystem::squareShader(
     UniquePtr<SquareShader>::make("square_vert.glsl", "square_frag.glsl")
 );
