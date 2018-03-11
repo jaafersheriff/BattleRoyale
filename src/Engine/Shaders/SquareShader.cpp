@@ -51,7 +51,7 @@ bool SquareShader::init() {
 }
 
 void SquareShader::initFBO() {
-    // Initialize texture to draw into
+    // Initialize framebuffer to draw into
     glGenFramebuffers(1, &fboHandle);
     glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
 
