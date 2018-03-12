@@ -7,11 +7,12 @@
 #include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
 #include "Scene/Scene.hpp"
 
-
-
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 UnorderedMap<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
 const CameraComponent * RenderSystem::s_camera = nullptr;
+UniquePtr<SquareShader> RenderSystem::squareShader(
+    UniquePtr<SquareShader>::make("square_vert.glsl", "square_frag.glsl")
+);
 
 void RenderSystem::init() {
     glEnable(GL_DEPTH_TEST);
@@ -20,13 +21,20 @@ void RenderSystem::init() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
-    glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
 
+    glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
     auto sizeCallback([&] (const Message & msg_) {
         const WindowFrameSizeMessage & msg(static_cast<const WindowFrameSizeMessage &>(msg_));
         glViewport(0, 0, msg.frameSize.x, msg.frameSize.y);
     });
     Scene::addReceiver<WindowFrameSizeMessage>(nullptr, sizeCallback);
+
+    if (!squareShader->init()) {
+        std::cerr << "Failed to initialize shader:" << std::endl;
+        std::cerr << "\t" << squareShader->vShaderName << std::endl;
+        std::cerr << "\t" << squareShader->fShaderName << std::endl;
+        std::cin.get();
+    }
 }
 
 ///////////////////////////  TODO  ///////////////////////////
@@ -35,6 +43,10 @@ void RenderSystem::init() {
 // list and expecting each shader to filter through         //
 //////////////////////////////////////////////////////////////
 void RenderSystem::update(float dt) {
+    // Make it so that rendering is not done to the computer screen
+    // but to the framebuffer in squareShader->fboHandle
+    glBindFramebuffer(GL_FRAMEBUFFER, squareShader->fboHandle);
+
     static Vector<Component *> s_compsToRender;
     static bool s_wasRender = true;
 
@@ -75,6 +87,18 @@ void RenderSystem::update(float dt) {
             s_wasRender = true;
         }
     }
+
+    // Make it so that rendering is done to the computer screen
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // Reset rendering display
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    squareShader->bind();
+    // The second parameter is passed by reference (not by pointer),
+    // hence the funny pointer business
+    squareShader->render(nullptr, *((Vector<Component *> *) nullptr));
+    squareShader->unbind();
 
     /* ImGui */
 #ifdef DEBUG_MODE
