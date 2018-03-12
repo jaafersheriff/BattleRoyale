@@ -82,6 +82,9 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
     loadVec3(getUniform("camPos"), camera->gameObject().getSpatial()->position());
 
     for (ParticleComponent * pc : ParticleSystem::s_particleComponents) {
+        if (pc->getParticlePositions()->size() == 0) {
+            break;
+        }
 
         /* Model matrix */
         loadMat4(getUniform("M"), pc->ModelMatrix());

@@ -66,10 +66,10 @@ void ParticleEffect::update(float dt) {
     // NOT UPDATED
     else if (m_effectParams->loop) {
         m_life = 0.0f;
-        for (int i = 0; i < m_effectParams->n; i++) {
-            m_particles[i]->position = m_origin;
-            sphereMotion(m_particles[i], 1.0f);
-        }
+        m_particles = generateParticles();
+        m_activeParticlePositions = getActiveParticlePositions();
+        m_activeMap = getActiveMap();
+        m_nextActivation = getNextActivation();
         update(dt);
     }
 }
@@ -144,12 +144,12 @@ void ParticleEffect::updatePosition(Particle *p, float dt) {
 }
 
  
-void ParticleEffect::sphereMotion(Particle* p, float speed) {
+void ParticleEffect::sphereMotion(Particle* p) {
     float phi = glm::golden_ratio<float>();
     float z = 1 - (2 * float(p->i) / float(m_effectParams->n - 1));
     float radius = sqrt(1 - z * z);
     float theta = 2 * glm::pi<float>() * (2 - phi) * float(p->i);
-    p->velocity = speed * glm::vec3(radius * cos(theta), radius * sin(theta), z);
+    p->velocity = glm::vec3(radius * cos(theta), radius * sin(theta), z);
 }
 
 Vector<ParticleEffect::Particle*> ParticleEffect::generateParticles() {
@@ -171,13 +171,16 @@ ParticleEffect::Particle* ParticleEffect::makeParticle(int i) {
     //Determine if active/inactive
     if (m_effectParams->rate == 0.0f) {
         p->active = true;
-
-        //Initialize starting Position
-        initPosition(p);
-
-        //initialize starting Velocity
-        initVelocity(p);
     }
+    else {
+        p->active = false;
+    }
+
+    //Initialize starting Position
+    initPosition(p);
+
+    //initialize starting Velocity
+    initVelocity(p);
 
     return p;
 }
@@ -189,12 +192,12 @@ void ParticleEffect::initParticle(Particle *p, int i, int meshID, int modelTextu
 
 void ParticleEffect::initVelocity(Particle *p) {
     switch (m_effectParams->type) {
-    case ParticleEffect::SPHERE:
-        sphereMotion(p, m_effectParams->magnitude);
-        
-        break;
-    default:
-        p->velocity = glm::vec3(0.0f);
+        case ParticleEffect::SPHERE : {
+            sphereMotion(p);
+            break;
+        }
+        default:
+            p->velocity = glm::vec3(0.0f);
     }
 
     //Add random variance if specified
@@ -202,6 +205,9 @@ void ParticleEffect::initVelocity(Particle *p) {
         glm::vec3 randVec = glm::ballRand(m_effectParams->variance);
         p->velocity += randVec;
     }
+
+    //set speed
+    p->velocity *= m_effectParams->magnitude;
 }
 
 void ParticleEffect::initPosition(Particle *p) {
