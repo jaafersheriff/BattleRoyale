@@ -160,7 +160,7 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
 
         /* DRAW */
         //glDrawElements(GL_TRIANGLES, (int)pc->getMesh(0)->eleBufSize, GL_UNSIGNED_INT, nullptr);
-        glDrawElementsInstanced(GL_TRIANGLES, (int)pc->getMesh(0)->eleBufSize, GL_UNSIGNED_INT, nullptr, pc->Count());
+        glDrawElementsInstanced(GL_TRIANGLES, (int)pc->getMesh(0)->eleBufSize, GL_UNSIGNED_INT, nullptr, positions->size());
 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));

@@ -12,7 +12,6 @@ void ParticleComponent::init() {
     const glm::fvec3 & scale = glm::fvec3(0.1f);
     glm::mat4 comp = Util::compositeTransform(scale, translation);
     m_M = comp;
-    //m_M = glm::mat4();
     m_N = glm::mat3();
 }   
 
@@ -43,13 +42,13 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
 
     switch (effect) {
         case ParticleEffect::Effect::BLOOD_SPLAT: {
-            //UNIMPLEMENTED - CONAL, DISK, Rate, angle
+            //UNIMPLEMENTED - CONAL, DISK, angle
             //IMPLEMENTED - Speed, n, accelerators, loop, getMeshes, getTextures, variance, rate
-            int n = 500;
+            int n = 100;
             float effectDuration = 5.0f;
-            float particleDuration = 1.0f;
+            float particleDuration = 5.0f;
             float variance = 0.0f;
-            float rate = 200.0f;
+            float rate = 500.0f;
             float angle = 2 * glm::pi<float>();
             bool loop = false;
             float magnitude = 5.0f;

@@ -1,5 +1,6 @@
 #pragma once
 #include "Component/Component.hpp"
+#include "Component/SpatialComponents/PhysicsComponents.hpp"
 #include "ParticleEffect.hpp"
 #include "Loader/Loader.hpp"
 #include "Model/Mesh.hpp"

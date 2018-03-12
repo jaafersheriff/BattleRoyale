@@ -39,8 +39,8 @@ class ParticleEffect {
             int n = 0; //Can be how many to spawn or, if rate is enable, the limit of particle count
             float effectDuration = 0.0f;
             float particleDuration = 0.0f;
-            float variance = 0.0f; //Added randomness velocity
-            float rate = 0.0f; // rate at which particles spawn, 0 if all at once
+            float variance = 0.0f; //randomness factor
+            float rate = 0.0f; // rate at which particles spawn (particles/sec), 0 if all spawn at once
             float angle = 2 * glm::pi<float>(); // default to 360 degrees
             bool loop = false;
             float magnitude = 1.0f;
