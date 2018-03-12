@@ -106,6 +106,8 @@ class ParticleEffect {
         void updatePosition(Particle* p, float dt);
         void updateActiveParticles(float dt);
         void sphereMotion(Particle* p);
+        void coneMotion(Particle* p);
+        void diskMotion(Particle* p);
 
 };
 

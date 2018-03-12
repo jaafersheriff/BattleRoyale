@@ -146,6 +146,16 @@ void ParticleEffect::sphereMotion(Particle* p) {
     p->velocity = glm::vec3(radius * cos(theta), radius * sin(theta), z);
 }
 
+void ParticleEffect::diskMotion(Particle* p) {
+    float radius = 1.0f;
+    float pi = glm::pi<float>();
+    float theta = 2 * pi*(p->i / (float)m_effectParams->n);
+    p->velocity = glm::vec3(radius * cos(theta), 0.0f, radius * sin(theta));
+}
+
+void ParticleEffect::coneMotion(Particle* p) {
+    
+}
 Vector<ParticleEffect::Particle*> ParticleEffect::generateParticles() {
     Vector<Particle*> vp = Vector<Particle*>();
     for (int i = 0; i < m_effectParams->n; i++) {
@@ -189,6 +199,10 @@ void ParticleEffect::initVelocity(Particle *p) {
     switch (m_effectParams->type) {
         case ParticleEffect::SPHERE : {
             sphereMotion(p);
+            break;
+        }
+        case ParticleEffect::DISK : {
+            diskMotion(p);
             break;
         }
         default:
@@ -262,6 +276,7 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     Vector<ModelTexture *>* textures
 ){
     ParticleEffect::EffectParams *effectParams = new ParticleEffect::EffectParams();
+    effectParams->type = type;
     effectParams->n = n;
     effectParams->effectDuration = effectDuration;
     effectParams->particleDuration = particleDuration;

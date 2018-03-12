@@ -44,21 +44,21 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
         case ParticleEffect::Effect::BLOOD_SPLAT: {
             //UNIMPLEMENTED - CONAL, DISK, angle
             //IMPLEMENTED - Speed, n, accelerators, loop, getMeshes, getTextures, variance, rate
+            ParticleEffect::Type type = ParticleEffect::Type::DISK;
             int n = 100;
             float effectDuration = 5.0f;
             float particleDuration = 5.0f;
             float variance = 0.0f;
-            float rate = 500.0f;
+            float rate = 0.0f;
             float angle = 2 * glm::pi<float>();
             bool loop = false;
             float magnitude = 5.0f;
             Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
-            //accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
+            accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
             Vector<Mesh *> *meshes = getMeshes(effect);
             Vector<ModelTexture*> * textures = getTextures(effect);
-            return ParticleEffect::createEffectParams(ParticleEffect::Type::SPHERE,
-                n, effectDuration, particleDuration, variance, rate, angle, loop, magnitude,
-                 accelerators, meshes, textures);
+            return ParticleEffect::createEffectParams(type,n, effectDuration, particleDuration, 
+                variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
         }
         default:
             return NULL;
