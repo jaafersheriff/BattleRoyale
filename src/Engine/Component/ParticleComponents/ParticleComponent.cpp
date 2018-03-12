@@ -43,7 +43,7 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
             //IMPLEMENTED - Speed, n, accelerators, loop, getMeshes, getTextures, variance
             int n = 100;
             float effectDuration = 5.0f;
-            float particleDuration = 2.0f;
+            float particleDuration = 5.0f;
             float variance = 0.0f;
             float rate = 10.0f;
             float angle = 2 * glm::pi<float>();

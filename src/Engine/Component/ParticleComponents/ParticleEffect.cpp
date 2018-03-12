@@ -90,7 +90,9 @@ void ParticleEffect::updateActiveParticles(float dt) {
             }
         }
         // Activate new particles based on rate. Cap at n limit and Remove the oldest Particle
-        float dx = m_nextActivation - (m_life - dt);
+        //TO DO: FIX THIS
+        float dx = m_nextActivation - m_life;
+        
         if (dt > dx) {
             int n = (int)(floor(dt / dx));
 
