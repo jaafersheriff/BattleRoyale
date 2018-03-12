@@ -13,8 +13,6 @@ const CameraComponent * RenderSystem::s_camera = nullptr;
 UniquePtr<SquareShader> RenderSystem::squareShader(
     UniquePtr<SquareShader>::make("square_vert.glsl", "square_frag.glsl")
 );
-bool RenderSystem::validViewport = false;
-glm::ivec2 RenderSystem::viewport;
 
 void RenderSystem::init() {
     glEnable(GL_DEPTH_TEST);
@@ -23,15 +21,15 @@ void RenderSystem::init() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
-    /* glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
+    // Viewport begin
+    glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
 
     auto sizeCallback([&] (const Message & msg_) {
         const WindowFrameSizeMessage & msg(static_cast<const WindowFrameSizeMessage &>(msg_));
         glViewport(0, 0, msg.frameSize.x, msg.frameSize.y);
     });
-    Scene::addReceiver<WindowFrameSizeMessage>(nullptr, sizeCallback); */
-  
-    viewport = Window::getFrameSize();
+    Scene::addReceiver<WindowFrameSizeMessage>(nullptr, sizeCallback);
+    // Viewport end
 
     if (!squareShader->init()) {
         std::cerr << "Failed to initialize shader:" << std::endl;
@@ -71,7 +69,7 @@ void RenderSystem::update(float dt) {
 
     glm::ivec2 size = Window::getFrameSize();
     //glViewport(0, 0, size.x, size.y);
-    glViewport(0, 0, viewport.x, viewport.y);
+    //glViewport(0, 0, viewport.x, viewport.y);
 
     // Update components
     for (DiffuseRenderComponent * comp : s_diffuseComponents) {
@@ -117,7 +115,7 @@ void RenderSystem::update(float dt) {
     // Reset rendering display
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glViewport(0, 0, viewport.x, viewport.y);
+    // glViewport(0, 0, viewport.x, viewport.y);
     //glViewport(0, 0, size.x, size.y);
     // glViewport(0, 0, 400, 200);
     // glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
