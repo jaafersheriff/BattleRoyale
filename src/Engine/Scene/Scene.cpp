@@ -11,6 +11,7 @@
 #include "System/CollisionSystem.hpp"
 #include "System/PostCollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
+#include "System/SoundSystem.hpp"
 
 
 
@@ -22,24 +23,26 @@ Vector<GameObject *> Scene::s_gameObjectKillQueue;
 Vector<std::pair<std::type_index, UniquePtr<Component>>> Scene::s_componentInitQueue;
 Vector<std::pair<std::type_index, Component *>> Scene::s_componentKillQueue;
 
-Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_messages;
+Vector<std::tuple<const GameObject *, std::type_index, UniquePtr<Message>>> Scene::s_messages;
 UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> Scene::s_receivers;
 
 float Scene::totalDT;
 float Scene::initDT;
 float Scene::killDT;
 float Scene::gameLogicDT;
-float Scene::spatialDT;
-float Scene::pathfindingDT;
-float Scene::collisionDT;
-float Scene::postCollisionDT;
-float Scene::renderDT;
 float Scene::gameLogicMessagingDT;
+float Scene::spatialDT;
 float Scene::spatialMessagingDT;
+float Scene::pathfindingDT;
 float Scene::pathfindingMessagingDT;
+float Scene::collisionDT;
 float Scene::collisionMessagingDT;
+float Scene::postCollisionDT;
 float Scene::postCollisionMessagingDT;
+float Scene::renderDT;
 float Scene::renderMessagingDT;
+float Scene::soundDT;
+float Scene::soundMessagingDT;
 
 void Scene::init() {
     GameLogicSystem::init();
@@ -48,6 +51,7 @@ void Scene::init() {
     CollisionSystem::init();
     PostCollisionSystem::init();
     RenderSystem::init();
+    SoundSystem::init();
 }
 
 GameObject & Scene::createGameObject() {
@@ -96,7 +100,13 @@ void Scene::update(float dt) {
     relayMessages();
     renderMessagingDT = float(watch.lap());
 
+    SoundSystem::update(dt);
+    soundDT = float(watch.lap());
+    relayMessages();
+    soundMessagingDT = float(watch.lap());
+
     doKillQueue();
+    relayMessages();
     killDT = float(watch.lap());
 
     totalDT = float(watch.total());
@@ -145,14 +155,7 @@ void Scene::initComponents() {
         it->second->emplace_back(std::move(comp));
         Component & c(*it->second->back());
         c.init();
-        switch (c.systemID()) {
-            case SystemID::    gameLogic: sendMessage<SystemComponentAddedMessage<    GameLogicSystem>>(nullptr, c); break;
-            case SystemID::  pathfinding: sendMessage<SystemComponentAddedMessage<  PathfindingSystem>>(nullptr, c); break;
-            case SystemID::      spatial: sendMessage<SystemComponentAddedMessage<      SpatialSystem>>(nullptr, c); break;
-            case SystemID::    collision: sendMessage<SystemComponentAddedMessage<    CollisionSystem>>(nullptr, c); break;
-            case SystemID::postCollision: sendMessage<SystemComponentAddedMessage<PostCollisionSystem>>(nullptr, c); break;
-            case SystemID::       render: sendMessage<SystemComponentAddedMessage<       RenderSystem>>(nullptr, c); break;
-        }
+        sendMessage<ComponentAddedMessage>(&c.gameObject(), c, typeI);
     }
     s_componentInitQueue.clear();
 }
@@ -164,7 +167,7 @@ void Scene::killGameObjects() {
         for (int i(int(s_gameObjects.size()) - 1); i >= 0; --i) {
             GameObject * go(s_gameObjects[i].get());
             if (go == *killIt) {
-                // add game object's componets to kill queue
+                // add game object's components to kill queue
                 for (auto compTIt(go->m_compsByCompT.begin()); compTIt != go->m_compsByCompT.end(); ++compTIt) {
                     for (auto & comp : compTIt->second) {
                         s_componentKillQueue.emplace_back(compTIt->first, comp);
@@ -192,14 +195,15 @@ void Scene::killComponents() {
     for (auto & killE : s_componentKillQueue) {
         std::type_index typeI(killE.first);
         Component * comp(killE.second);
-        SystemID sysID(comp->systemID());
         bool found(false);
         // look in active components, in reverse order
         if (s_components.count(typeI)) {
             auto & comps(*s_components.at(typeI));
             for (int i(int(comps.size()) - 1); i >= 0; --i) {
                 if (comps[i].get() == comp) {
-                    comps.erase(comps.begin() + i);
+                    auto it(comps.begin() + i);
+                    sendMessage<ComponentRemovedMessage>(nullptr, std::move(*it), typeI);
+                    comps.erase(it);
                     found = true;
                     break;
                 }
@@ -214,27 +218,19 @@ void Scene::killComponents() {
                 }
             }
         }
-        switch (sysID) {
-            case SystemID::    gameLogic: sendMessage<SystemComponentRemovedMessage<    GameLogicSystem>>(nullptr, comp, typeI); break;
-            case SystemID::  pathfinding: sendMessage<SystemComponentRemovedMessage<  PathfindingSystem>>(nullptr, comp, typeI); break;
-            case SystemID::      spatial: sendMessage<SystemComponentRemovedMessage<      SpatialSystem>>(nullptr, comp, typeI); break;
-            case SystemID::    collision: sendMessage<SystemComponentRemovedMessage<    CollisionSystem>>(nullptr, comp, typeI); break;
-            case SystemID::postCollision: sendMessage<SystemComponentRemovedMessage<PostCollisionSystem>>(nullptr, comp, typeI); break;
-            case SystemID::       render: sendMessage<SystemComponentRemovedMessage<       RenderSystem>>(nullptr, comp, typeI); break;
-        }
     }
     s_componentKillQueue.clear();
 }
 
 void Scene::relayMessages() {
-    static Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messagesBuffer;
+    static Vector<std::tuple<const GameObject *, std::type_index, UniquePtr<Message>>> s_messagesBuffer;
 
     while (s_messages.size()) {
         // this keeps things from breaking if messages are sent from receivers
         std::swap(s_messages, s_messagesBuffer);
 
         for (auto & message : s_messagesBuffer) {
-            GameObject * gameObject(std::get<0>(message));
+            const GameObject * gameObject(std::get<0>(message));
             std::type_index msgTypeI(std::get<1>(message));
             auto & msg(std::get<2>(message));
 
