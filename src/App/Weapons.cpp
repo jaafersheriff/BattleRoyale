@@ -27,7 +27,7 @@ namespace { // File static stuff
         NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
         Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj);
         newtComp.addVelocity(dir * speed);
-        DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, true));
+        DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, true, glm::vec2(1.0f)));
         ProjectileComponent & projectileComp(Scene::addComponent<ProjectileComponent>(obj));
     
         f_basicProjectiles.push_back(&obj);
