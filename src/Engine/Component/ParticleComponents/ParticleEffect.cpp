@@ -55,8 +55,8 @@ void ParticleEffect::update(float dt) {
     updateActiveParticles(dt);
 
     if (m_life < m_effectParams->effectDuration) {
-        for (int i = 0; i < m_activeParticlePositions->size(); i++) {
-            Particle *p = m_particles[m_activeMap[i]];        
+        for (int i = 0; i < (int)m_activeParticlePositions->size(); i++) {
+            Particle *p = m_particles[m_activeMap[i]];
             updatePosition(p, dt);
             m_activeParticlePositions->at(i) = p->position;
             p->life += dt;
@@ -80,7 +80,7 @@ void ParticleEffect::updateActiveParticles(float dt) {
         // Check if particle duration is expired and remove from list if so
         int i = 0;
         // TO DO: Optimize based on  the fact that the expired particles will always be the first
-        while(i < m_activeParticlePositions->size()) {
+        while(i < (int)m_activeParticlePositions->size()) {
             Particle *p = m_particles[m_activeMap[i]];
             if (p->life > m_effectParams->particleDuration) {
                 removeActiveParticle(i);
@@ -90,36 +90,26 @@ void ParticleEffect::updateActiveParticles(float dt) {
             }
         }
         // Activate new particles based on rate. Cap at n limit and Remove the oldest Particle
-        //TO DO: FIX THIS
-        float dx = m_nextActivation - m_life;
+        //TO DO: FIX THI
         
-        if (dt > dx) {
-            int n = (int)(floor(dt / dx));
-
-            if (m_activeParticlePositions->size() + n >= m_effectParams->n ) {
-                for (int j = 0; j < n; j++) {
-                    int pid = m_activeMap[0];
-                    removeActiveParticle(0);
-                    m_particles[pid] = makeParticle(pid);
-                    addActiveParticle(pid);
-
-                }
+        while (m_life> m_nextActivation) {
+            if (m_activeParticlePositions->size() == m_effectParams->n ) {
+                int pid = m_activeMap[0];
+                removeActiveParticle(0);
+                m_particles[pid] = makeParticle(pid);
             }
             else {
-                for (int j = 0; j < n; j++) {
-                    
-                    int pid;
-                    if (m_activeMap.size() == 0) {
-                        pid = 0;
-                    }
-                    else {
-                        pid = m_activeMap.back() + 1;
-                    }
-                    m_particles[pid] = makeParticle(pid);
-                    addActiveParticle(pid);
+                int pid;
+                if (m_activeMap.size() == 0) {
+                    pid = 0;
                 }
+                else {
+                    pid = m_activeMap.back() + 1;
+                }
+                m_particles[pid] = makeParticle(pid);
+                addActiveParticle(pid);
             }
-            m_nextActivation += n * (1.0f / m_effectParams->rate);
+            m_nextActivation += (1.0f / m_effectParams->rate);
         }
 
     }
