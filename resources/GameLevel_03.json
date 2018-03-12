@@ -13125,7 +13125,7 @@
     "isToon": true,
     "allowColliders": false,
     "position": [
-        -35.93000030517578,
+        -35.86199951171875,
         2.880000114440918,
         -37.0099983215332
     ],
@@ -13258,7 +13258,7 @@
 "transform": 
 {
     "objName": "Assets/Models/FoodSign.obj",
-    "objTexture": "Assets/Models/FoodSign_Tex.png",
+    "objTexture": "Assets/Models/FoodSign_Tex_2.png",
     "tiling": [
         1.0,
         1.0
@@ -13352,7 +13352,7 @@
 "transform": 
 {
     "objName": "Assets/Models/FoodSign.obj",
-    "objTexture": "Assets/Models/FoodSign_Tex.png",
+    "objTexture": "Assets/Models/FoodSign_Tex_1.png",
     "tiling": [
         1.0,
         1.0
