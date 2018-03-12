@@ -55,7 +55,7 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
             bool loop = true;
             float magnitude = 5.0f;
             Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
-            accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
+            //accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
             Vector<Mesh *> *meshes = getMeshes(effect);
             Vector<ModelTexture*> * textures = getTextures(effect);
             return ParticleEffect::createEffectParams(ParticleEffect::Type::SPHERE,
