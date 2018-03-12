@@ -25,6 +25,9 @@ bool SquareShader::init() {
         -1.f, -1.f
     };
 
+    glGenVertexArrays(1, &vaoHandle);
+    glBindVertexArray(vaoHandle);
+
     // Give frameSquarePos to the GPU
     glGenBuffers(1, &frameSquarePosHandle);
     glBindBuffer(GL_ARRAY_BUFFER, frameSquarePosHandle);
@@ -43,7 +46,11 @@ bool SquareShader::init() {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, frameSquareElem.size() * sizeof(unsigned),
         &frameSquareElem[0], GL_STATIC_DRAW);
 
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
     // Bind each of GL_ARRAY_BUFFER and GL_ELEMENT_ARRAY_BUFFER to default
+    glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -80,43 +87,31 @@ void SquareShader::initFBO() {
     glBindRenderbuffer(GL_RENDERBUFFER, depthTexture);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthTexture);
+    // Using a texture instead
+    //glGenTextures(1, &depthTexture);
+    //glBindTexture(GL_TEXTURE_2D, depthTexture);
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, size.x, size.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void SquareShader::render(const CameraComponent * camera, const Vector<Component *> & components) {
-    int pos;
-
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, colorTexture);
     glUniform1i(getUniform("f_texCol"), 0);
-
-    // Bind "vertex buffer"
-    pos = getAttribute("v_screenPos");
-    glEnableVertexAttribArray(pos);
-    glBindBuffer(GL_ARRAY_BUFFER, frameSquarePosHandle);
-    glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, 
-        sizeof(GL_FLOAT) * 2, (const void *) 0);
-
-    // Bind "element buffer"
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, frameSquareElemHandle);
+    
+    glBindVertexArray(vaoHandle);
 
     // Draw
     glDrawElements(GL_TRIANGLES, (int) frameSquareElem.size(),
         GL_UNSIGNED_INT, (const void *) 0);
 
-    // Disable
-    glDisableVertexAttribArray(frameSquarePosHandle);
-
-    // Unbind all
+    glBindVertexArray(0);
     
     // Unbind texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
-
-    // Unbind buffers
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
