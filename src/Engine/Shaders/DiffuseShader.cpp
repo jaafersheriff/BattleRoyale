@@ -31,6 +31,8 @@ bool DiffuseShader::init() {
     addUniform("V");
     addUniform("M");
     addUniform("N");
+    
+    addUniform("tiling");
 
     addUniform("lightDir");
     addUniform("camPos");
@@ -119,6 +121,9 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<DiffuseR
         else {
             loadBool(getUniform("isToon"), false);
         }
+
+        /* Tiling amount */
+        loadVec2(getUniform("tiling"), drc->tiling);
 
         /* Model matrix */
         loadMat4(getUniform("M"), drc->gameObject().getSpatial()->modelMatrix());

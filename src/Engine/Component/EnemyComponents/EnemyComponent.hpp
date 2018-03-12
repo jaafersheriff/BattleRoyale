@@ -21,6 +21,7 @@ class EnemyComponent : public Component {
     public:
 
     EnemyComponent(EnemyComponent && other) = default;
+    float hp = 100.f;
 
     protected:
 
@@ -30,6 +31,5 @@ class EnemyComponent : public Component {
 
     virtual SystemID systemID() const override { return SystemID::gameLogic; };
 
-    virtual void update(float dt) override {};
-
+    virtual void update(float dt) override;
 };

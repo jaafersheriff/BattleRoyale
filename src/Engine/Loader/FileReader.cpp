@@ -51,12 +51,15 @@ void FileReader::addRenderComponent(GameObject & gameObject, const rapidjson::Va
     const rapidjson::Value& isToon = jsonTransform["isToon"];
     assert(isToon.IsBool());
 
+    const rapidjson::Value& jsonTiling = jsonTransform["tiling"];
+    glm::vec2 tiling = glm::vec2(jsonTiling[0].GetFloat(), jsonTiling[1].GetFloat());
+
     //Add diffuse component
     DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(
         gameObject,
         *Loader::getMesh(filePath),
-        ModelTexture(Loader::getTexture(texturePath), ambience, glm::vec3(1.0f), glm::vec3(1.0f)),
-        isToon.GetBool());
+        ModelTexture(Loader::getTexture(texturePath, GL_REPEAT, true), ambience, glm::vec3(1.0f), glm::vec3(1.0f)),
+        isToon.GetBool(), tiling);
 }
 
 int FileReader::addCapsuleColliderComponents(GameObject & gameObject, const rapidjson::Value& jsonObject) {
@@ -164,7 +167,8 @@ int FileReader::loadLevel(const char & filePath, float ambience) {
         }
 
         //Read the texture data from the json
-        FileReader::addRenderComponent(gameObject, jsonTransform, filePath, ambience);
+        if(filePath.compare("") != 0)
+            FileReader::addRenderComponent(gameObject, jsonTransform, filePath, ambience);
     }
 
     return 0;

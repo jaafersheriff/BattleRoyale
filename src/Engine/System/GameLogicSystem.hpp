@@ -9,6 +9,7 @@
 #include "Component/CameraComponents/CameraControllerComponent.hpp"
 #include "Component/PlayerComponents/PlayerControllerComponent.hpp"
 #include "Component/ImGuiComponents/ImGuiComponent.hpp"
+#include "Component/EnemyComponents/EnemyComponent.hpp"
 
 
 
@@ -33,7 +34,7 @@ class GameLogicSystem {
     static const Vector<CameraControllerComponent *> & s_cameraControllerComponents;
     static const Vector<PlayerControllerComponent *> & s_playerControllers;
     static const Vector<ImGuiComponent *> & s_imguiComponents;
-
+    static const Vector<EnemyComponent *> & s_enemyComponents;
 };
 
 #endif

@@ -19,7 +19,8 @@ class DiffuseRenderComponent : public Component {
             Component(gameObject),
             mesh(&mesh),
             modelTexture(texture),
-            isToon(toon)
+            isToon(toon),
+            tiling(tiling)
         {}
 
     public:
@@ -33,6 +34,7 @@ class DiffuseRenderComponent : public Component {
         Mesh * mesh;
         ModelTexture modelTexture;
         bool isToon;
+        glm::vec2 tiling;
 };
 
 #endif
