@@ -27,6 +27,7 @@ class ParticleEffect {
         typedef struct {
             int i;
             glm::vec3 position;
+            glm::vec3 velocity;
             int meshID;
             int modelTextureID;
         }Particle;
@@ -41,6 +42,7 @@ class ParticleEffect {
             float maxDist = 0.0f; //not 0, if applicable
             float mass = 1.0f;
             bool loop = false;
+            float magnitude;
             glm::vec3* initVelocity = new glm::vec3(0);
             Vector<glm::vec3>* forceFactors;
             Vector<Mesh *>* meshes;
@@ -58,14 +60,17 @@ class ParticleEffect {
         EffectParams *m_ep;
         glm::vec3 m_origin;
         glm::vec3 m_direction;
-        Vector<Particle*> & m_particles;
+        Vector<Particle*> m_particles;
         float m_life;
+        Vector<glm::vec3> *m_positions;
 
     public:
         void update(float dt);
         Mesh* getMesh(int i);
         ModelTexture* getModelTexture(int i);
         glm::vec3 Origin() { return m_origin; }
+        Vector<glm::vec3> * Positions() {return m_positions; }
+        int Count() { return m_ep->n; }
         static EffectParams* createEffectParams(
             ParticleEffect::Type type,
             int n,
@@ -76,6 +81,7 @@ class ParticleEffect {
             float maxDist,
             float mass,
             bool loop,
+            float magnitude,
             glm::vec3* initVelocity,
             Vector<glm::vec3>* forceFactors,
             Vector<Mesh *>* meshes,
@@ -86,8 +92,10 @@ class ParticleEffect {
         void ParticleEffect::pinit(ParticleEffect::Particle *p, int i, glm::vec3 pos, int meshID, int modelTextureID);
         int ParticleEffect::meshSelect(ParticleEffect::Effect effect, int i);
         int ParticleEffect::modelTextureSelect(ParticleEffect::Effect effect, int i);
-        Vector<ParticleEffect::Particle*> generateParticles();
-        void ParticleEffect::sphereMove(ParticleEffect::Particle* p, float dt);
+        Vector<ParticleEffect::Particle*> generateParticles(ParticleEffect::EffectParams *ep);
+        Vector<glm::vec3> * getPositions();
+        void ParticleEffect::movement(ParticleEffect::Particle* p, float dt);
+        void ParticleEffect::sphereMove(ParticleEffect::Particle* p, float speed);
 
 };
 

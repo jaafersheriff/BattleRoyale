@@ -17,6 +17,7 @@ out vec2 texCoords;
 
 void main() {
     worldPos = vec3(M * vec4(vertPos, 1.0f)) + particleOffset;
+	//worldPos = vec3(M * vec4(vertPos, 1.0f)) + particleOffset;
 	fragNor = N * vertNor;
 	texCoords = vertTex;
 

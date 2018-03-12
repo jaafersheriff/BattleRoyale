@@ -16,7 +16,6 @@
 #include "Shaders/ParticleShader.hpp"
 #include "Shaders/RayShader.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
-#include "Component/RenderComponents/ParticleRenderComponent.hpp"
 
 
 

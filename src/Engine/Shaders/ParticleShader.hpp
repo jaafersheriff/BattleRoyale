@@ -4,7 +4,7 @@
 #define _PARTICLE_SHADER_HPP_
 
 #include "Shader.hpp"
-
+#include "System/ParticleSystem.hpp"
 
 class ParticleShader : public Shader {
     public:

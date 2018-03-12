@@ -2,7 +2,6 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "Component/RenderComponents/ParticleRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/BounderComponent.hpp"
 #include "Component/ParticleComponents/ParticleComponent.hpp"
@@ -94,27 +93,23 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
     glBindTexture(GL_TEXTURE_1D, cellScalesTexture);
     glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellScales.size()), GL_RED, GL_FLOAT, cellScales.data());
 
-    for (Component * comp : components) {
+    for (ParticleComponent * pc : ParticleSystem::s_particleComponents) {
         // TODO : component list should be passed in as ParticleRenderComponent
-        ParticleRenderComponent *prc;
-        if (!(prc = dynamic_cast<ParticleRenderComponent *>(comp)) || prc->pid != this->pid) {
+        //ParticleRenderComponent *prc;
+        /*if (!(prc = dynamic_cast<ParticleRenderComponent *>(comp)) || prc->pid != this->pid) {
             continue;
-        }
+        }*/
 
-        ParticleComponent* pc = prc->gameObject().getComponentByType<ParticleComponent>();
+        //ParticleComponent & pc = prc->pc;
+        loadBool(getUniform("isToon"), false);
 
-        /* Toon shading */
-        if (showToon && prc->isToon) {
-            loadBool(getUniform("isToon"), true);
-        }
-        else {
-            loadBool(getUniform("isToon"), false);
-        }
 
+
+        //ISSUE HERE - NO SPATIAL COMPONENT
         /* Model matrix */
-        loadMat4(getUniform("M"), prc->gameObject().getSpatial()->modelMatrix());
+        loadMat4(getUniform("M"), pc->ModelMatrix());
         /* Normal matrix */
-        loadMat3(getUniform("N"), prc->gameObject().getSpatial()->normalMatrix());
+        loadMat3(getUniform("N"), pc->NormalMatrix());
 
 
 
@@ -135,9 +130,35 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
             loadBool(getUniform("usesTexture"), false);
         }
 
+       
+
+
         /* Bind mesh */
         glBindVertexArray(pc->getMesh(0)->vaoId);
             
+        /*Set Particle positions*/
+        int posPO = getAttribute("particleOffset");
+        unsigned int offsetBufId;
+        Vector<float> offsetBuf;
+        Vector<glm::vec3> *positions = pc->getParticlePositions();
+        for (int i = 0; i < pc->Count(); i++) {
+            offsetBuf.push_back((*positions)[i].x);
+            offsetBuf.push_back((*positions)[i].y);
+            offsetBuf.push_back((*positions)[i].z);
+        }
+
+        /* Do all the buffer stuff */
+        glGenBuffers(1, &offsetBufId);
+        glBindBuffer(GL_ARRAY_BUFFER, offsetBufId);
+        
+        //glBufferData(GL_ARRAY_BUFFER, offsetBuf.size() * sizeof(float), &offsetBuf[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, offsetBuf.size() * sizeof(float), &(*positions)[0], GL_STATIC_DRAW);
+        glEnableVertexAttribArray(posPO);
+        glVertexAttribPointer(posPO, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
+
+        /* Update particle position attribute once per instance */
+        glVertexAttribDivisor(posPO, 1);
+
         /* Bind vertex buffer VBO */
         int pos = getAttribute("vertPos");
         glEnableVertexAttribArray(pos);
@@ -164,7 +185,8 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pc->getMesh(0)->eleBufId);
 
         /* DRAW */
-        glDrawElements(GL_TRIANGLES, (int)pc->getMesh(0)->eleBufSize, GL_UNSIGNED_INT, nullptr);
+        //glDrawElements(GL_TRIANGLES, (int)pc->getMesh(0)->eleBufSize, GL_UNSIGNED_INT, nullptr);
+        glDrawElementsInstanced(GL_TRIANGLES, (int)pc->getMesh(0)->eleBufSize, GL_UNSIGNED_INT, nullptr, pc->Count());
 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));

@@ -165,6 +165,7 @@ void Scene::initComponents() {
             case SystemID::postCollision: sendMessage<SystemComponentAddedMessage<PostCollisionSystem>>(nullptr, c); break;
             case SystemID::       render: sendMessage<SystemComponentAddedMessage<       RenderSystem>>(nullptr, c); break;
             case SystemID::        sound: sendMessage<SystemComponentAddedMessage<        SoundSystem>>(nullptr, c); break;
+            case SystemID::     particle: sendMessage<SystemComponentAddedMessage<     ParticleSystem>>(nullptr, c); break;
         }
     }
     s_componentInitQueue.clear();
@@ -235,6 +236,7 @@ void Scene::killComponents() {
             case SystemID::postCollision: sendMessage<SystemComponentRemovedMessage<PostCollisionSystem>>(nullptr, comp, typeI); break;
             case SystemID::       render: sendMessage<SystemComponentRemovedMessage<       RenderSystem>>(nullptr, comp, typeI); break;
             case SystemID::        sound: sendMessage<SystemComponentRemovedMessage<        SoundSystem>>(nullptr, comp, typeI); break;
+            case SystemID::     particle: sendMessage<SystemComponentRemovedMessage<     ParticleSystem>>(nullptr, comp, typeI); break;
         }
     }
     s_componentKillQueue.clear();
