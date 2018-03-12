@@ -255,7 +255,6 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     float variance,
     float rate,
     float angle,
-    float maxDist,
     bool loop,
     float magnitude,
     Vector<glm::vec3>* accelerators,
@@ -269,7 +268,6 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     effectParams->variance = variance;
     effectParams->rate = rate;
     effectParams->angle = angle;
-    effectParams->maxDist = maxDist;
     effectParams->loop = loop;
     effectParams->magnitude = magnitude;
     effectParams->accelerators = accelerators;

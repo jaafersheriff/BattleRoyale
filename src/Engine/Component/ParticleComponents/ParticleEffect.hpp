@@ -10,19 +10,18 @@
 
 class ParticleEffect {
     public:
-        /* Enum for particle effect */
         enum Type {
-            SPHERE,
-            CONE,
-            DISK,
+            SPHERE, 
+            CONE, // NOT IMPLEMENTED
+            DISK, //NOT IMPLEMENTED
         };
 
         enum Effect {
             BLOOD_SPLAT,
-            EXPLOADING_GUTS,
-            SIRACHA_FLAMETHROWER,
-            SPICE_GRENADE,
-            MUSTARD_SPLAT
+            EXPLOADING_GUTS, // NOT IMPLEMENTED
+            SIRACHA_FLAMETHROWER, // NOT IMPLEMENTED
+            SPICE_GRENADE, // NOT IMPLEMENTED
+            MUSTARD_SPLAT //NOT IMPLEMENTED
         };
 
         typedef struct {
@@ -40,18 +39,15 @@ class ParticleEffect {
             int n = 0; //Can be how many to spawn or, if rate is enable, the limit of particle count
             float effectDuration = 0.0f;
             float particleDuration = 0.0f;
-            float variance = 0.0f;
+            float variance = 0.0f; //Added randomness velocity
             float rate = 0.0f; // rate at which particles spawn, 0 if all at once
             float angle = 2 * glm::pi<float>(); // default to 360 degrees
-            float maxDist = 0.0f; //not 0, if applicable
             bool loop = false;
             float magnitude = 1.0f;
             Vector<glm::vec3>* accelerators;
             Vector<Mesh *>* meshes;
             Vector<ModelTexture *>* textures;
         }EffectParams;
-
-        
 
     public:
         ParticleEffect();
@@ -73,8 +69,7 @@ class ParticleEffect {
     public:
         void update(float dt);
         Mesh* getMesh(int i);
-        ModelTexture* getModelTexture(int i);
-        
+        ModelTexture* getModelTexture(int i);  
         Vector<glm::vec3> * ActiveParticlePositions() {return m_activeParticlePositions; }
         glm::vec3   Origin()    { return m_origin; }
         int         Count()     { return m_effectParams->n; }
@@ -88,7 +83,6 @@ class ParticleEffect {
             float variance,
             float rate,
             float angle,
-            float maxDist,
             bool loop,
             float magnitude,
             Vector<glm::vec3>* accelerators,
