@@ -15,7 +15,7 @@ class DiffuseRenderComponent : public Component {
 
     protected: // only scene or friends can create component
 
-        DiffuseRenderComponent(GameObject & gameObject, Mesh & mesh, const ModelTexture & texture, bool toon) :
+        DiffuseRenderComponent(GameObject & gameObject, Mesh & mesh, const ModelTexture & texture, bool toon, glm::vec2 tiling) :
             Component(gameObject),
             mesh(&mesh),
             modelTexture(texture),
