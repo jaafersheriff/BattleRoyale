@@ -7,8 +7,12 @@ ParticleComponent::ParticleComponent(GameObject & gameobject) :
 }
 
 void ParticleComponent::init() {
-
-    m_M = glm::mat4();
+    const glm::fmat3 & rotation = glm::fmat3();
+    const glm::fvec3 & translation = glm::fvec3(0.0f);
+    const glm::fvec3 & scale = glm::fvec3(0.1f);
+    glm::mat4 comp = Util::compositeTransform(scale, translation);
+    m_M = comp;
+    //m_M = glm::mat4();
     m_N = glm::mat3();
 }   
 
@@ -41,17 +45,17 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
         case ParticleEffect::Effect::BLOOD_SPLAT: {
             //UNIMPLEMENTED - CONAL, DISK, Rate, angle, maxDist
             //IMPLEMENTED - Speed, n, accelerators, loop, getMeshes, getTextures, variance
-            int n = 100;
+            int n = 500;
             float effectDuration = 5.0f;
-            float particleDuration = 5.0f;
+            float particleDuration = 1.0f;
             float variance = 0.0f;
-            float rate = 10.0f;
+            float rate = 200.0f;
             float angle = 2 * glm::pi<float>();
             float maxDist = 100.0f;
-            bool loop = false;
+            bool loop = true;
             float magnitude = 5.0f;
             Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
-            //accelerators->push_back(glm::vec3(0.0f, -100.0f, 0.0f));
+            accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
             Vector<Mesh *> *meshes = getMeshes(effect);
             Vector<ModelTexture*> * textures = getTextures(effect);
             return ParticleEffect::createEffectParams(ParticleEffect::Type::SPHERE,

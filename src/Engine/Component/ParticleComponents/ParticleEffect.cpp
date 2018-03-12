@@ -90,13 +90,12 @@ void ParticleEffect::updateActiveParticles(float dt) {
             }
         }
         // Activate new particles based on rate. Cap at n limit and Remove the oldest Particle
-        //TO DO: FIX THI
-        
         while (m_life> m_nextActivation) {
-            if (m_activeParticlePositions->size() == m_effectParams->n ) {
+            if (m_activeParticlePositions->size() == m_effectParams->n) {
                 int pid = m_activeMap[0];
                 removeActiveParticle(0);
                 m_particles[pid] = makeParticle(pid);
+                addActiveParticle(pid);
             }
             else {
                 int pid;
@@ -105,6 +104,9 @@ void ParticleEffect::updateActiveParticles(float dt) {
                 }
                 else {
                     pid = m_activeMap.back() + 1;
+                    if (pid == m_effectParams->n) {
+                        pid = 0;
+                    }
                 }
                 m_particles[pid] = makeParticle(pid);
                 addActiveParticle(pid);
@@ -129,7 +131,7 @@ void ParticleEffect::addActiveParticle(int i) {
 }
 
 void ParticleEffect::updatePosition(Particle *p, float dt) {
-    for (int i = 0; i < m_effectParams->accelerators->size(); i++) {
+    for (int i = 0; i < (int)m_effectParams->accelerators->size(); i++) {
         p->velocity += m_effectParams->accelerators->at(i) * dt;
     }
     p->position += p->velocity * dt;
@@ -180,6 +182,7 @@ void ParticleEffect::initParticle(Particle *p, int i, int meshID, int modelTextu
     p->i = i;
     p->meshID = meshID;
     p->modelTextureID = modelTextureID;
+    p->life = 0.0f;
 }
 
 void ParticleEffect::initVelocity(Particle *p) {

@@ -389,7 +389,7 @@ int main(int argc, char **argv) {
     auto fireCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && !msg.mods && msg.action == GLFW_PRESS) {
-            createProjectile(player::spatialComp->position() + player::cameraComp->getLookDir() * 2.0f, player::cameraComp->getLookDir());
+            //createProjectile(player::spatialComp->position() + player::cameraComp->getLookDir() * 2.0f, player::cameraComp->getLookDir());
             //Remove later
             createParticleEffect(ParticleEffect::BLOOD_SPLAT, 
                 player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, 
