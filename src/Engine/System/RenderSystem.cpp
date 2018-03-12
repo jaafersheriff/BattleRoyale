@@ -46,7 +46,6 @@ void RenderSystem::update(float dt) {
     // Make it so that rendering is not done to the computer screen
     // but to the framebuffer in squareShader->fboHandle
     glBindFramebuffer(GL_FRAMEBUFFER, squareShader->fboHandle);
-    // glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     static Vector<Component *> s_compsToRender;
     static bool s_wasRender = true;
