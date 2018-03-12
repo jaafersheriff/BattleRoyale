@@ -14,7 +14,7 @@
 
 struct Util {
 
-    static inline float infinity() {
+    static constexpr float infinity() {
         return std::numeric_limits<float>::infinity();
     }
 
@@ -32,12 +32,20 @@ struct Util {
         return sign ? k_posAxisVecs[axis] : k_negAxisVecs[axis];
     }
 
+    static inline bool isZeroAbs(float v, float e = epsilon) {
+        return v < e;
+    }
+
+    static inline bool isZeroAbs(const glm::vec3 & v, float e = epsilon) {
+        return isZeroAbs(v.x, e) && isZeroAbs(v.y, e) && isZeroAbs(v.z, e);
+    }
+
     static inline bool isZero(float v, float e = epsilon) {
-        return glm::abs(v) < e;
+        return isZeroAbs(glm::abs(v));
     }
 
     static inline bool isZero(const glm::vec3 & v, float e = epsilon) {
-        return isZero(v.x, e) && isZero(v.y, e) && isZero(v.z, e);
+        return isZeroAbs(glm::abs(v));
     }
 
     static inline bool isEqual(float v1, float v2, float e = epsilon) {
@@ -48,11 +56,11 @@ struct Util {
         return isZero(v1 - v2, e);
     }
 
-    static inline bool isGreater(float v1, float v2, float e = epsilon) {
-        return v1 - v2 > -e;
+    static inline bool isGE(float v1, float v2, float e = epsilon) {
+        return v2 - v1 < e;
     }
 
-    static inline bool isLess(float v1, float v2, float e = epsilon) {
+    static inline bool isLE(float v1, float v2, float e = epsilon) {
         return v1 - v2 < e;
     }
 
@@ -242,6 +250,74 @@ struct Util {
         double initT, lapT;
 
     };
+
+    using nat = intptr_t;
+
+    template <typename T, typename std::enable_if<std::is_floating_point<T>::value, int>::type = 0>
+    constexpr static nat floor(T v) {
+        nat i = nat(v);
+        return i - (v < i);
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static T floor(T v) {
+        return v;
+    }
+
+    template <typename T, typename std::enable_if<std::is_floating_point<T>::value, int>::type = 0>
+    constexpr static nat ceil(T v) {
+        nat i = nat(v);
+        return i + (v > i);
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static T ceil(T v) {
+        return v;
+    }
+
+    template <typename T>
+    constexpr static T pow2(int v) {
+        return T(1) << v;
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static bool isPow2(T v) {
+        return (v & (v - 1)) == 0;
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static T log2Floor(T v) {
+        static_assert(sizeof(T) <= 8, "log2 function needs updated for larger integer types");
+
+        T log(0);
+
+        if (sizeof(T) >= 8)
+            if (v & 0xFFFFFFFF00000000ULL) { v >>= 32; log += 32; }
+        if (sizeof(T) >= 4)
+            if (v & 0x00000000FFFF0000ULL) { v >>= 16; log += 16; }
+        if (sizeof(T) >= 2)
+            if (v & 0x000000000000FF00ULL) { v >>=  8; log +=  8; }
+        if     (v & 0x00000000000000F0ULL) { v >>=  4; log +=  4; }
+        if     (v & 0x000000000000000CULL) { v >>=  2; log +=  2; }
+        if     (v & 0x0000000000000002ULL) {           log +=  1; }
+
+        return log;
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static T log2Ceil(T v) {
+        return log2Floor(2 * v - 1);
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static T floor2(T v) {
+        return T(1) << log2Floor(v);
+    }
+
+    template <typename T, typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+    constexpr static T ceil2(T v) {
+        return T(1) << log2Ceil(v);
+    }
 
 };
 

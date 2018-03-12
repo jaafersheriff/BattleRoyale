@@ -159,7 +159,7 @@ void createEnemy(const glm::vec3 & position) {
     //GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
     BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *mesh, false, true, false));
     PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed, false));
-    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, toon, glm::vec2(1,1));   
+    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, toon, glm::vec2(1,1));   
     EnemyComponent & enemyComp(Scene::addComponent<EnemyComponent>(obj));
     
     f_enemies.push_back(&obj);
@@ -181,7 +181,7 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
     Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj);
     newtComp.addVelocity(dir * speed);
-    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, true, glm::vec2(1,1)));
+    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, true, glm::vec2(1,1)));
     ProjectileComponent & projectileComp(Scene::addComponent<ProjectileComponent>(obj));
     
     f_projectiles.push_back(&obj);
@@ -211,6 +211,11 @@ int main(int argc, char **argv) {
     if (!RenderSystem::createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
         return EXIT_FAILURE;
     }
+
+    // Octree shader
+    if (!RenderSystem::createShader<OctreeShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
+        return EXIT_FAILURE;
+    }
     
     // Ray shader
     if (!RenderSystem::createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) {
@@ -228,6 +233,8 @@ int main(int argc, char **argv) {
 
     // Load Level
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json", k_ambience);
+    // Needs to be manually adjusted to fit level size
+    CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
 
     // Setup Player
     player::setup(glm::vec3(0.0f, 6.0f, 0.0f));
@@ -271,12 +278,20 @@ int main(int argc, char **argv) {
             ImGui::Text("     Collision: %5.2f%%, %5.2f%%", Scene::    collisionDT * factor, Scene::    collisionMessagingDT * factor);
             ImGui::Text("Post Collision: %5.2f%%, %5.2f%%", Scene::postCollisionDT * factor, Scene::postCollisionMessagingDT * factor);
             ImGui::Text("        Render: %5.2f%%, %5.2f%%", Scene::       renderDT * factor, Scene::       renderMessagingDT * factor);
+            ImGui::Text("         Sound: %5.2f%%, %5.2f%%", Scene::        soundDT * factor, Scene::        soundMessagingDT * factor);
             ImGui::Text("    Kill Queue: %5.2f%%", Scene::killDT * factor);
             ImGui::NewLine();
-            ImGui::Text("Player Pos:\n%f %f %f",
+            ImGui::Text("Player Pos");
+            ImGui::Text("%f %f %f",
                 player::spatialComp->position().x,
                 player::spatialComp->position().y,
                 player::spatialComp->position().z
+            );
+            ImGui::Text("Freecam Pos");
+            ImGui::Text("%f %f %f",
+                freecam::spatialComp->position().x,
+                freecam::spatialComp->position().y,
+                freecam::spatialComp->position().z
             );
         }
     );
@@ -358,6 +373,17 @@ int main(int argc, char **argv) {
         }
     );
 
+    // Octree shader toggle
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO,
+        "Octree Shader",
+        [&]() {
+            if (ImGui::Button("Active")) {
+                RenderSystem::getShader<OctreeShader>()->toggleEnabled();
+            }
+        }
+    );
+
     // Ray shader toggle
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
@@ -390,7 +416,7 @@ int main(int argc, char **argv) {
     });
     Scene::addReceiver<MouseMessage>(nullptr, fireCallback);
 
-    // Shoot ray (cntrl-click)
+    // Shoot ray (ctrl-click)
     int rayDepth(100);
     Vector<glm::vec3> rayPositions;
     auto rayPickCallback([&](const Message & msg_) {
@@ -441,21 +467,24 @@ int main(int argc, char **argv) {
     });
     Scene::addReceiver<KeyMessage>(nullptr, camSwitchCallback);
 
-    // Flip Gravity (ctrl-g)
-    auto gravSwapCallback([&](const Message & msg_) {
+    // Toggle gravity (ctrl-g), flip gravity (alt-g)
+    auto gravCallback([&](const Message & msg_) {
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
         if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_CONTROL) {
+            SpatialSystem::setGravity(Util::isZero(SpatialSystem::gravity()) ? k_gravity : glm::vec3());
+        }
+        else if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_ALT) {
             SpatialSystem::setGravity(-SpatialSystem::gravity());
         }
     });
-    Scene::addReceiver<KeyMessage>(nullptr, gravSwapCallback);
+    Scene::addReceiver<KeyMessage>(nullptr, gravCallback);
 
     // Destroy game object looking at (delete)
     auto deleteCallback([&] (const Message & msg_) {
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
         if (msg.key == GLFW_KEY_DELETE && msg.action == GLFW_PRESS) {
             auto pair(CollisionSystem::pick(Ray(player::spatialComp->position(), player::cameraComp->getLookDir()), player::gameObject));
-            if (pair.first) Scene::destroyGameObject(pair.first->gameObject());
+            if (pair.first) Scene::destroyGameObject(const_cast<GameObject &>(pair.first->gameObject()));
         }
     });
     Scene::addReceiver<KeyMessage>(nullptr, deleteCallback);
