@@ -304,8 +304,14 @@ int main(int argc, char **argv) {
             RenderSystem::setLightDir(lightDir);
             /* Light distance */
             ImGui::SliderFloat("LightPos", &RenderSystem::lightDist, 0.f, 100.f);
+            /* Light ortho */
+            ImGui::SliderFloat2("H Bounds", glm::value_ptr(RenderSystem::shadowShader->hBounds), -50.f, 50.f);
+            ImGui::SliderFloat2("V Bounds", glm::value_ptr(RenderSystem::shadowShader->vBounds), -50.f, 50.f);
+            ImGui::SliderFloat("Far plane", &RenderSystem::shadowShader->fPlane, 50.f, 500.f);
             /* Shadow map FBO */
-            ImGui::Image((ImTextureID)RenderSystem::shadowShader->getShadowMapTexture(), ImVec2(256, 256));
+            static int fSize = 256;
+            ImGui::SliderInt("FBO", &fSize, 128, 1024);
+            ImGui::Image((ImTextureID)RenderSystem::shadowShader->getShadowMapTexture(), ImVec2(fSize, fSize));
         }
     );
 

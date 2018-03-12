@@ -14,6 +14,9 @@ class ShadowDepthShader : public Shader {
         virtual void render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> &) override;
         
         GLuint getShadowMapTexture() { return fboTexture; }
+
+        glm::vec2 hBounds, vBounds;
+        float nPlane, fPlane;
     private:
         void initFBO();
         
