@@ -62,7 +62,7 @@ DiffuseRenderComponent & FileReader::addRenderComponent(GameObject & gameObject,
         *Loader::getMesh(filePath),
         ModelTexture(Loader::getTexture(texturePath), ambience, glm::vec3(1.0f), glm::vec3(1.0f)),
         isToon.GetBool(),
-        m_tiling
+        tiling
     );
 }
 

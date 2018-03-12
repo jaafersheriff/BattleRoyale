@@ -27,7 +27,11 @@ class DiffuseRenderComponent : public Component {
 
     protected: // only scene or friends can create component
 
-        DiffuseRenderComponent(GameObject & gameObject, const SpatialComponent & spatial, int pid, Mesh & mesh, const ModelTexture & texture, bool toon, glm::vec2 tiling);
+        DiffuseRenderComponent(
+            GameObject & gameObject, const SpatialComponent & spatial,
+            int pid, const Mesh & mesh, const ModelTexture & texture,
+            bool toon, const glm::vec2 & tiling
+        );
 
     public:
 
@@ -43,7 +47,7 @@ class DiffuseRenderComponent : public Component {
 
         bool isToon() const  { return m_isToon; }
 
-        const glm::vec2 & tiling const { return m_tiling; }
+        const glm::vec2 & tiling() const { return m_tiling; }
 
         const Sphere & enclosingSphere() const { return m_transSphere; }
 
