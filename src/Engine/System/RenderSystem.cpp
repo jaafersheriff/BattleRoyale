@@ -19,15 +19,15 @@ void RenderSystem::init() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
-    glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
+    /* glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
 
     auto sizeCallback([&] (const Message & msg_) {
         const WindowFrameSizeMessage & msg(static_cast<const WindowFrameSizeMessage &>(msg_));
         glViewport(0, 0, msg.frameSize.x, msg.frameSize.y);
     });
-    Scene::addReceiver<WindowFrameSizeMessage>(nullptr, sizeCallback);
+    Scene::addReceiver<WindowFrameSizeMessage>(nullptr, sizeCallback); */
   
     if (!squareShader->init()) {
         std::cerr << "Failed to initialize shader:" << std::endl;
@@ -35,6 +35,21 @@ void RenderSystem::init() {
         std::cerr << "\t" << squareShader->fShaderName << std::endl;
         std::cin.get();
     }
+
+    /*
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    if (!squareShader->init()) {
+        std::cerr << "Failed to initialize shader:" << std::endl;
+        std::cerr << "\t" << squareShader->vShaderName << std::endl;
+        std::cerr << "\t" << squareShader->fShaderName << std::endl;
+        std::cin.get();
+    }
+    */
 }
 
 ///////////////////////////  TODO  ///////////////////////////
@@ -49,6 +64,9 @@ void RenderSystem::update(float dt) {
 
     static Vector<Component *> s_compsToRender;
     static bool s_wasRender = true;
+
+    glm::ivec2 size = Window::getFrameSize();
+    glViewport(0, 0, size.x, size.y);
 
     // Update components
     for (DiffuseRenderComponent * comp : s_diffuseComponents) {
@@ -70,6 +88,24 @@ void RenderSystem::update(float dt) {
         s_wasRender = false;
     }
 
+    if (s_camera) {
+
+        /* Loop through active shaders */
+        for (auto &shader : s_shaders) {
+            if (!shader.second->isEnabled()) {
+                continue;
+            }
+
+            shader.second->bind();
+            // this reinterpret_cast business works because unique_ptr's data is
+            // guaranteed is the same as a pointer
+            shader.second->render(s_camera, reinterpret_cast<const Vector<Component *> &>(s_compsToRender));
+            shader.second->unbind();
+
+            s_wasRender = true;
+        }
+    }
+
     // Make it so that rendering is done to the computer screen
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -77,6 +113,8 @@ void RenderSystem::update(float dt) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glViewport(0, 0, size.x, size.y);
+    // glViewport(0, 0, 400, 200);
+    // glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
 
     squareShader->bind();
     // The second parameter is passed by reference (not by pointer),
