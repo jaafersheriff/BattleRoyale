@@ -81,31 +81,8 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
     loadVec3(getUniform("lightDir"), *lightDir);
     loadVec3(getUniform("camPos"), camera->gameObject().getSpatial()->position());
 
-    /* Toon shading */
-    /*loadFloat(getUniform("silAngle"), silAngle);
-    loadFloat(getUniform("numCells"), (float)numCells);
-    loadInt(getUniform("cellIntensities"), cellIntensitiesTexture);
-    glActiveTexture(GL_TEXTURE0 + cellIntensitiesTexture);
-    glBindTexture(GL_TEXTURE_1D, cellIntensitiesTexture);
-    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellIntensities.size()), GL_RED, GL_FLOAT, cellIntensities.data());
-    loadInt(getUniform("cellScales"), cellScalesTexture);
-    glActiveTexture(GL_TEXTURE0 + cellScalesTexture);
-    glBindTexture(GL_TEXTURE_1D, cellScalesTexture);
-    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellScales.size()), GL_RED, GL_FLOAT, cellScales.data());
-    */
     for (ParticleComponent * pc : ParticleSystem::s_particleComponents) {
-        // TODO : component list should be passed in as ParticleRenderComponent
-        //ParticleRenderComponent *prc;
-        /*if (!(prc = dynamic_cast<ParticleRenderComponent *>(comp)) || prc->pid != this->pid) {
-            continue;
-        }*/
 
-        //ParticleComponent & pc = prc->pc;
-        //loadBool(getUniform("isToon"), false);
-
-
-
-        //ISSUE HERE - NO SPATIAL COMPONENT
         /* Model matrix */
         loadMat4(getUniform("M"), pc->ModelMatrix());
         /* Normal matrix */
@@ -139,20 +116,14 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         /*Set Particle positions*/
         int posPO = getAttribute("particleOffset");
         unsigned int offsetBufId;
-        Vector<float> offsetBuf;
         Vector<glm::vec3> *positions = pc->getParticlePositions();
-        for (int i = 0; i < pc->Count(); i++) {
-            offsetBuf.push_back((*positions)[i].x);
-            offsetBuf.push_back((*positions)[i].y);
-            offsetBuf.push_back((*positions)[i].z);
-        }
 
         /* Do all the buffer stuff */
         glGenBuffers(1, &offsetBufId);
         glBindBuffer(GL_ARRAY_BUFFER, offsetBufId);
         
         //glBufferData(GL_ARRAY_BUFFER, offsetBuf.size() * sizeof(float), &offsetBuf[0], GL_STATIC_DRAW);
-        glBufferData(GL_ARRAY_BUFFER, offsetBuf.size() * sizeof(float), &(*positions)[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, positions->size() * sizeof(glm::vec3), &(*positions)[0], GL_STATIC_DRAW);
         glEnableVertexAttribArray(posPO);
         glVertexAttribPointer(posPO, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
 
@@ -214,22 +185,3 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }    
 }
-
-/*void ParticleShader::setCells(unsigned int in) {
-    numCells = glm::min(in, (unsigned int)16);
-    cellIntensities.resize(numCells, 0.f);
-    cellScales.resize(numCells, 0.f);
-    for (int i = 0; i < int(numCells); i++) {
-        float scale = 1.f - i / (float)numCells;
-        cellIntensities[i] = (scale - 0.5f) * 2.0f;
-        cellScales[i] = scale;
-    }
-}
-
-void ParticleShader::setCellIntensity(unsigned int i, float f) {
-    cellIntensities[i] = (i == 0) ? f : glm::min(cellIntensities[i - 1], f);
-}
-
-void ParticleShader::setCellScale(unsigned int i, float f) {
-    cellScales[i] = (i == 0) ? f : glm::min(cellScales[i - 1], f);
-}*/

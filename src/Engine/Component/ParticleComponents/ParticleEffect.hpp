@@ -68,6 +68,7 @@ class ParticleEffect {
         float m_life;
         Vector<glm::vec3> *m_activeParticlePositions;
         Vector<int> m_activeMap;
+        float m_nextActivation;
 
     public:
         void update(float dt);
@@ -96,14 +97,18 @@ class ParticleEffect {
             );
 
     private:
+        Particle * makeParticle(int i);
         void initParticle(Particle *p, int i, int meshID, int modelTextureID);
         void initPosition(Particle *p);
         void initVelocity(Particle *p);
+        void removeActiveParticle(int i);
+        void addActiveParticle(int i);
         int meshSelect(ParticleEffect::Effect effect, int i);
         int modelTextureSelect(ParticleEffect::Effect effect, int i);
-        Vector<ParticleEffect::Particle*> generateParticles(EffectParams *ep);
+        Vector<ParticleEffect::Particle*> generateParticles();
         Vector<glm::vec3> * getActiveParticlePositions();
         Vector<int> getActiveMap();
+        float getNextActivation();
         void updatePosition(Particle* p, float dt);
         void updateActiveParticles(float dt);
         void sphereMotion(Particle* p, float speed);

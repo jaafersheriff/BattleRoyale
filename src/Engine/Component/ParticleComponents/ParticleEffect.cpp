@@ -13,9 +13,10 @@ ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & ori
     m_origin(origin),
     m_direction(glm::vec3(0.0f, 1.0f, 0.0f)),
     m_velocity(glm::vec3(0.0f, 0.0f, 0.0f)),
-    m_particles(generateParticles(effectParams)), 
+    m_particles(generateParticles()),
     m_activeParticlePositions(getActiveParticlePositions()),
     m_activeMap(getActiveMap()),
+    m_nextActivation(getNextActivation()),
     m_life(0.0f)
 {
 }
@@ -25,9 +26,10 @@ ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & ori
     m_origin(origin),
     m_direction(direction),
     m_velocity(glm::vec3(0.0f, 0.0f, 0.0f)),
-    m_particles(generateParticles(effectParams)),
+    m_particles(generateParticles()),
     m_activeParticlePositions(getActiveParticlePositions()),
     m_activeMap(getActiveMap()),
+    m_nextActivation(getNextActivation()),
     m_life(0.0f)
 {
 }
@@ -38,9 +40,10 @@ ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & ori
     m_origin(origin),
     m_direction(direction),
     m_velocity(velocity),
-    m_particles(generateParticles(effectParams)),
+    m_particles(generateParticles()),
     m_activeParticlePositions(getActiveParticlePositions()),
     m_activeMap(getActiveMap()),
+    m_nextActivation(getNextActivation()),
     m_life(0.0f)
 {
 }
@@ -76,21 +79,61 @@ void ParticleEffect::updateActiveParticles(float dt) {
     if (m_effectParams->rate != 0.0f) {
         // Check if particle duration is expired and remove from list if so
         int i = 0;
+        // TO DO: Optimize based on  the fact that the expired particles will always be the first
         while(i < m_activeParticlePositions->size()) {
             Particle *p = m_particles[m_activeMap[i]];
             if (p->life > m_effectParams->particleDuration) {
-                m_activeMap.erase(m_activeMap.begin() + i);
-                m_activeParticlePositions->erase(m_activeParticlePositions->begin() + i);
+                removeActiveParticle(i);
             }
             else {
                 i++;
             }
         }
+        // Activate new particles based on rate. Cap at n limit and Remove the oldest Particle
+        float dx = m_nextActivation - (m_life - dt);
+        if (dt > dx) {
+            int n = (int)(floor(dt / dx));
 
-        // Activate new particles based on rate - cap at n limit. Possibly remove the oldest
+            if (m_activeParticlePositions->size() + n >= m_effectParams->n ) {
+                for (int j = 0; j < n; j++) {
+                    int pid = m_activeMap[0];
+                    removeActiveParticle(0);
+                    m_particles[pid] = makeParticle(pid);
+                    addActiveParticle(pid);
 
+                }
+            }
+            else {
+                for (int j = 0; j < n; j++) {
+                    
+                    int pid;
+                    if (m_activeMap.size() == 0) {
+                        pid = 0;
+                    }
+                    else {
+                        pid = m_activeMap.back() + 1;
+                    }
+                    m_particles[pid] = makeParticle(pid);
+                    addActiveParticle(pid);
+                }
+            }
+            m_nextActivation += n * (1.0f / m_effectParams->rate);
+        }
 
     }
+}
+
+
+ //Remove from specific location
+void ParticleEffect::removeActiveParticle(int i) {
+    m_activeMap.erase(m_activeMap.begin() + i);
+    m_activeParticlePositions->erase(m_activeParticlePositions->begin() + i);
+}
+
+//Will always add to end of vector
+void ParticleEffect::addActiveParticle(int i) {
+    m_activeParticlePositions->push_back(m_particles[i]->position);
+    m_activeMap.push_back(i);
 }
 
 void ParticleEffect::updatePosition(Particle *p, float dt) {
@@ -100,7 +143,7 @@ void ParticleEffect::updatePosition(Particle *p, float dt) {
     p->position += p->velocity * dt;
 }
 
-//Spherical 
+ 
 void ParticleEffect::sphereMotion(Particle* p, float speed) {
     float phi = glm::golden_ratio<float>();
     float z = 1 - (2 * float(p->i) / float(m_effectParams->n - 1));
@@ -109,34 +152,35 @@ void ParticleEffect::sphereMotion(Particle* p, float speed) {
     p->velocity = speed * glm::vec3(radius * cos(theta), radius * sin(theta), z);
 }
 
-Vector<ParticleEffect::Particle*> ParticleEffect::generateParticles(
-    ParticleEffect::EffectParams *effectParams) {
+Vector<ParticleEffect::Particle*> ParticleEffect::generateParticles() {
     Vector<Particle*> vp = Vector<Particle*>();
     for (int i = 0; i < m_effectParams->n; i++) {
-        Particle *p = new Particle();
-
-        //General Particle Initialization
-        initParticle(p, i, 0, 0);
-        
-        //Determine if active/inactive
-        if (m_effectParams->rate == 0.0f) {
-            p->active = true;
-
-            //Initialize starting Position
-            //UNIMPLEMENTED - Multi mesh/Textures
-            initPosition(p);
-
-            //initialize starting Velocity
-            initVelocity(p);
-        
-        }
-        
+        Particle *p = makeParticle(i);
         vp.push_back(p);
-        
     }
     return vp;
 }
 
+ParticleEffect::Particle* ParticleEffect::makeParticle(int i) {
+    Particle *p = new Particle();
+    
+    //General Particle Initialization
+    // TO DO: Multi texture/mesh particle effects
+    initParticle(p, i, 0, 0);
+
+    //Determine if active/inactive
+    if (m_effectParams->rate == 0.0f) {
+        p->active = true;
+
+        //Initialize starting Position
+        initPosition(p);
+
+        //initialize starting Velocity
+        initVelocity(p);
+    }
+
+    return p;
+}
 void ParticleEffect::initParticle(Particle *p, int i, int meshID, int modelTextureID) {
     p->i = i;
     p->meshID = meshID;
@@ -155,8 +199,6 @@ void ParticleEffect::initVelocity(Particle *p) {
 
     //Add random variance if specified
     if (m_effectParams->variance != 0.0f) {
-        //glm::vec3 randVec = glm::vec3((rand() % 200 - 100) / 100.0f, 
-        //    (rand() % 200 - 100) / 100.0f, (rand() % 200 - 100) / 100.0f);
         glm::vec3 randVec = glm::ballRand(m_effectParams->variance);
         p->velocity += randVec;
     }
@@ -184,6 +226,15 @@ Vector<int> ParticleEffect::getActiveMap() {
         }
     }
     return map;
+}
+
+float ParticleEffect::getNextActivation() {
+    if (m_effectParams->rate == 0.0f) {
+        return 0.0f;
+    }
+    else {
+        return 1.0f / m_effectParams->rate;
+    }
 }
 
 Mesh* ParticleEffect::getMesh(int i) {

@@ -7,14 +7,7 @@ ParticleComponent::ParticleComponent(GameObject & gameobject) :
 }
 
 void ParticleComponent::init() {
-    glm::fvec3 & scalef = glm::fvec3(1.0f);
-    glm::vec3 & scale = glm::vec3(1.0f);
-    glm::fmat3 & rotf = glm::fmat3(0.0f);
-    glm::mat3 & rot = glm::mat3(0.0f);
-    glm::fvec3 & translatef = glm::fvec3(0.0f);
-    glm::vec3 & translate = glm::vec3(0.0f);
-    //m_M = Util::compositeTransform(scalef, rotf, translatef);
-    //m_N = rot * glm::mat3(glm::scale(glm::mat4(), 1.0f / scale));
+
     m_M = glm::mat4();
     m_N = glm::mat3();
 }   
@@ -51,7 +44,7 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
             int n = 100;
             float effectDuration = 5.0f;
             float particleDuration = 5.0f;
-            float variance = 0.5f;
+            float variance = 0.0f;
             float rate = 0.0f;
             float angle = 2 * glm::pi<float>();
             float maxDist = 100.0f;
