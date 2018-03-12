@@ -189,14 +189,9 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
 }
 
 void createParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & pos, const glm::vec3 & dir) {
-    // Need to create function that maps effects to .objs and .pngs
-    ParticleShader * shader(RenderSystem::getShader<ParticleShader>());
-
     GameObject & obj(Scene::createGameObject());
     ParticleComponent & particleComp(Scene::addComponent<ParticleComponent>(obj));
-    //ParticleRenderComponent & renderComp(
-        //Scene::addComponent<ParticleRenderComponent>(obj, shader->pid, true, effect));
-    
+
     particleComp.spawnParticleEffect(effect, pos, dir);
     f_particleEffects.push_back(&obj);
 }
@@ -208,7 +203,7 @@ void createParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & pos, 
 int main(int argc, char **argv) {
     if (parseArgs(argc, argv) || EngineApp::init()) {
         std::cin.get(); // don't immediately close the console
-        return EXIT_FAILURE;
+        return EXIT_FAILURE; 
     }
 
     //--------------------------------------------------------------------------
@@ -397,7 +392,8 @@ int main(int argc, char **argv) {
             createProjectile(player::spatialComp->position() + player::cameraComp->getLookDir() * 2.0f, player::cameraComp->getLookDir());
             //Remove later
             createParticleEffect(ParticleEffect::BLOOD_SPLAT, 
-                player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, player::cameraComp->getLookDir());
+                player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, 
+                player::cameraComp->getLookDir());
         }
         if (msg.button == GLFW_MOUSE_BUTTON_2 && msg.action == GLFW_PRESS) {
             for (GameObject * obj : f_projectiles) {

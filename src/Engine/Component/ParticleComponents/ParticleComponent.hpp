@@ -22,7 +22,13 @@ class ParticleComponent : public Component {
     public:
         virtual SystemID systemID() const override { return SystemID::particle;  }
         void update(float dt) override;
-        void spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & pos, const glm::vec3 & dir);
+
+        void spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & position, 
+            const glm::vec3 & direction, const glm::vec3 & velocity);
+        void spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & position,
+            const glm::vec3 & direction);
+        void spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & position);
+        
         Mesh* getMesh(int i);
         ModelTexture* getModelTexture(int i);
         glm::mat4 ModelMatrix() { return m_M; }
