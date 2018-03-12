@@ -56,6 +56,10 @@ class RenderSystem {
     static const CameraComponent * s_camera;
 
     static UniquePtr<SquareShader> squareShader;
+
+    // Viewport
+    static bool validViewport;
+    static glm::ivec2 viewport;
 };
 
 // TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
