@@ -34,7 +34,7 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
     switch (effect) {
     case ParticleEffect::Effect::BLOOD_SPLAT:
         return ParticleEffect::createEffectParams(ParticleEffect::Type::SPHERE,
-            100, 5.0f, 0.0f, 0.0f, 2 * glm::pi<float>(), 100.0f, 1.0f, false, 1.0f,
+            100, 2.0f, 0.0f, 0.0f, 2 * glm::pi<float>(), 100.0f, 1.0f, false, 100.0f,
             new glm::vec3(0), new Vector<glm::vec3>(), getMeshes(effect), getTextures(effect));
     default:
         return NULL;
@@ -47,21 +47,11 @@ Vector<glm::vec3> * ParticleComponent::getParticlePositions() {
 }
 
 Mesh* ParticleComponent::getMesh(int i) {
-    if (activeEffect != NULL) {
-        return activeEffect->getMesh(i);
-    }
-    else {
-        return NULL;
-    }
+    return activeEffect->getMesh(i);
 }
 
 ModelTexture* ParticleComponent::getModelTexture(int i) {
-    if (activeEffect != NULL) {
-        return activeEffect->getModelTexture(i);
-    }
-    else {
-        return NULL;
-    }
+    return activeEffect->getModelTexture(i);
 }
 
 Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect) {

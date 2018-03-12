@@ -35,12 +35,6 @@ void ParticleEffect::update(float dt) {
         for (int i = 0; i < m_ep->n; i++) {
             movement(m_particles[i], dt);
             (*m_positions)[i] = m_particles[i]->position;
-            /*switch (m_ep->type) {
-                case ParticleEffect::Type::SPHERE:
-                    sphereMove(m_particles[i], dt);
-                    (*m_positions)[i] = m_particles[i]->position;
-                    break;
-            }*/
         }
     }
     else if (m_ep->loop) {
@@ -81,22 +75,11 @@ Vector<glm::vec3> * ParticleEffect::getPositions() {
 }
 
 Mesh* ParticleEffect::getMesh(int i) {
-    if (i < (int)m_ep->meshes->size()) {
-        return m_ep->meshes->at(i);
-    }
-    else {
-        return NULL;
-    }
-
+    return m_ep->meshes->at(i);
 }
 
 ModelTexture* ParticleEffect::getModelTexture(int i) {
-    if (i < (int)m_ep->textures->size()) {
-        return m_ep->textures->at(i);
-    }
-    else {
-        return NULL;
-    }
+    return m_ep->textures->at(i);
 }
 
 ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
@@ -159,7 +142,6 @@ int ParticleEffect::modelTextureSelect(ParticleEffect::Effect effect, int i) {
 
 void ParticleEffect::movement(ParticleEffect::Particle *p, float dt) {
     for (int i = 0; i < m_ep->forceFactors->size(); i++) {
-        //glm::vec3 accel = m_ep->forceFactors->at(i);
         p->velocity += m_ep->forceFactors->at(i) * dt;
     }
     p->position += p->velocity * dt;
@@ -172,19 +154,7 @@ void ParticleEffect::sphereMove(ParticleEffect::Particle* p, float speed) {
     float z = 1 - (2 * float(p->i) / float(m_ep->n - 1));
     float radius = sqrt(1 - z * z);
     float theta = 2 * glm::pi<float>() * (2 - phi) * float(p->i);
-    //p->position += float(default_speed * dt) * glm::vec3(radius * cos(theta), radius * sin(theta), z);
     p->velocity = speed * glm::vec3(radius * cos(theta), radius * sin(theta), z);
 }
-/*void ParticleEffect::sphereMove(ParticleEffect::Particle* p, float dt) {
-    float phi = glm::golden_ratio<float>();
 
-    float z = 1 - (2 * float(p->i) / float(m_ep->n - 1));
-    float radius = sqrt(1 - z * z);
-    float theta = 2 * glm::pi<float>() * (2 - phi) * float(p->i);
-    float default_speed = 10.f;
-    //p->position += float(default_speed * dt) * glm::vec3(radius * cos(theta), radius * sin(theta), z);
-    p->velocity = glm::vec3(radius * cos(theta), radius * sin(theta), z);
-    
-    //return p->position + float(default_speed * dt) * glm::vec3(radius * cos(theta), radius * sin(theta), z);
-}*/
 

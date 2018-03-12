@@ -15,12 +15,12 @@ uniform vec3 lightDir;
 uniform sampler2D textureImage;
 uniform bool usesTexture;
 
-uniform bool isToon;
-uniform float silAngle;
-uniform float numCells;
-uniform sampler1D cellIntensities;
-uniform sampler1D cellDiffuseScales;
-uniform sampler1D cellSpecularScales;
+//uniform bool isToon;
+//uniform float silAngle;
+// float numCells;
+// sampler1D cellIntensities;
+//uniform sampler1D cellDiffuseScales;
+//uniform sampler1D cellSpecularScales;
 
 out vec4 color;
 
@@ -40,7 +40,7 @@ void main() {
     float diffuseContrib, specularContrib;
 
     /* Cell shading */
-    if (isToon) {
+    /*if (isToon) {
         for(int i = 0; i < numCells; i++) {
             if(lambert > texelFetch(cellIntensities, i, 0).r) {
                 diffuseContrib = texelFetch(cellDiffuseScales, i, 0).r;
@@ -48,19 +48,19 @@ void main() {
                 break;
             }
         }
-    }
+    }*/
     /* Blinn-Phong shading */
-    else {
+    //else {
         vec3 H = (L + V) / 2.0;
         diffuseContrib = clamp(lambert, matAmbient, 1.0);
         specularContrib = pow(max(dot(H, N), 0.0), shine);
-    }
+    //}
 
     /* Base color */
     vec3 bColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib);
 
     /* Silhouettes */
-    float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;
-
+    //float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;
+	float edge = 1.0f;
     color = vec4(edge * bColor, 1.0);
 }

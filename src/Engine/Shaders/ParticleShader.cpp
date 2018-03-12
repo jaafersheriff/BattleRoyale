@@ -11,8 +11,8 @@
 ParticleShader::ParticleShader(const String & vertFile, const String & fragFile, const glm::vec3 & light) :
     Shader(vertFile, fragFile),
     lightDir(&light) {
-    cellIntensities.resize(1, 1.f);
-    cellScales.resize(1, 1.f);
+    //cellIntensities.resize(1, 1.f);
+    //cellScales.resize(1, 1.f);
 }
 
 bool ParticleShader::init() {
@@ -41,14 +41,14 @@ bool ParticleShader::init() {
     addUniform("textureImage");
     addUniform("usesTexture");
 
-    addUniform("isToon");
+    /*addUniform("isToon");
     addUniform("silAngle");
     addUniform("numCells");
     addUniform("cellIntensities");
     addUniform("cellScales");
-    
+    */
     /* Generate 1D Textures with initial size of 16 floats */
-    glActiveTexture(GL_TEXTURE0);
+   /* glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &cellIntensitiesTexture);
     glBindTexture(GL_TEXTURE_1D, cellIntensitiesTexture);
     glTexStorage1D(GL_TEXTURE_1D, 1, GL_R32F, 16*4);
@@ -62,7 +62,7 @@ bool ParticleShader::init() {
 
     glBindTexture(GL_TEXTURE_1D, 0);
     assert(glGetError() == GL_NO_ERROR);
-
+    */
     return true;
 }
 
@@ -82,7 +82,7 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
     loadVec3(getUniform("camPos"), camera->gameObject().getSpatial()->position());
 
     /* Toon shading */
-    loadFloat(getUniform("silAngle"), silAngle);
+    /*loadFloat(getUniform("silAngle"), silAngle);
     loadFloat(getUniform("numCells"), (float)numCells);
     loadInt(getUniform("cellIntensities"), cellIntensitiesTexture);
     glActiveTexture(GL_TEXTURE0 + cellIntensitiesTexture);
@@ -92,7 +92,7 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
     glActiveTexture(GL_TEXTURE0 + cellScalesTexture);
     glBindTexture(GL_TEXTURE_1D, cellScalesTexture);
     glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellScales.size()), GL_RED, GL_FLOAT, cellScales.data());
-
+    */
     for (ParticleComponent * pc : ParticleSystem::s_particleComponents) {
         // TODO : component list should be passed in as ParticleRenderComponent
         //ParticleRenderComponent *prc;
@@ -101,7 +101,7 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         }*/
 
         //ParticleComponent & pc = prc->pc;
-        loadBool(getUniform("isToon"), false);
+        //loadBool(getUniform("isToon"), false);
 
 
 
@@ -215,7 +215,7 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
     }    
 }
 
-void ParticleShader::setCells(unsigned int in) {
+/*void ParticleShader::setCells(unsigned int in) {
     numCells = glm::min(in, (unsigned int)16);
     cellIntensities.resize(numCells, 0.f);
     cellScales.resize(numCells, 0.f);
@@ -232,4 +232,4 @@ void ParticleShader::setCellIntensity(unsigned int i, float f) {
 
 void ParticleShader::setCellScale(unsigned int i, float f) {
     cellScales[i] = (i == 0) ? f : glm::min(cellScales[i - 1], f);
-}
+}*/

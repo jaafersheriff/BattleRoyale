@@ -20,7 +20,7 @@ class ParticleShader : public Shader {
         void toggleWireFrame() { showWireFrame = !showWireFrame; }
 
         /* Toon shading */
-        bool isToon() const { return showToon; }
+        /*bool isToon() const { return showToon; }
         void toggleToon() { showToon = !showToon; }
         float getSilAngle() const { return silAngle; }
         void setSilAngle(float in) { this->silAngle = in; }
@@ -30,19 +30,20 @@ class ParticleShader : public Shader {
         void setCellIntensity(unsigned int i, float f);
         float getCellScale(unsigned int i) { return cellScales[i]; }
         void setCellScale(unsigned int i, float f);
-
+        */
     private:
         /* Wire frame */
         bool showWireFrame = false;
 
         /* Toon shading */
-        bool showToon = false;
+        /*bool showToon = false;
         float silAngle = 0.f;
         unsigned int numCells = 1;
         Vector<float> cellIntensities;
         GLuint cellIntensitiesTexture;
         Vector<float> cellScales;
         GLuint cellScalesTexture;
+        */
 };
 
 #endif 

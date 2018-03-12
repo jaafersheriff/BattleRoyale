@@ -29,6 +29,7 @@ class ParticleComponent : public Component {
         glm::mat4 NormalMatrix() { return m_N; }
         Vector<glm::vec3> * getParticlePositions();
         int Count() { return activeEffect->Count(); }
+        float Dead() {return activeEffect->Life() > activeEffect->Duration();}
         
 
     private:

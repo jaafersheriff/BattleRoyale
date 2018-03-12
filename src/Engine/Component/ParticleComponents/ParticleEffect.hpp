@@ -71,6 +71,8 @@ class ParticleEffect {
         glm::vec3 Origin() { return m_origin; }
         Vector<glm::vec3> * Positions() {return m_positions; }
         int Count() { return m_ep->n; }
+        float Life() { return m_life; }
+        float Duration() { return m_ep->duration; }
         static EffectParams* createEffectParams(
             ParticleEffect::Type type,
             int n,
