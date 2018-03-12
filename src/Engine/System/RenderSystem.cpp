@@ -19,6 +19,14 @@ void RenderSystem::init() {
     glCullFace(GL_BACK);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(0.2f, 0.3f, 0.4f, 1.f);
+    glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
+
+    auto sizeCallback([&] (const Message & msg_) {
+        const WindowFrameSizeMessage & msg(static_cast<const WindowFrameSizeMessage &>(msg_));
+        glViewport(0, 0, msg.frameSize.x, msg.frameSize.y);
+    });
+    Scene::addReceiver<WindowFrameSizeMessage>(nullptr, sizeCallback);
 }
 
 ///////////////////////////  TODO  ///////////////////////////
@@ -27,39 +35,35 @@ void RenderSystem::init() {
 // list and expecting each shader to filter through         //
 //////////////////////////////////////////////////////////////
 void RenderSystem::update(float dt) {
-    /* Reset rendering display */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.2f, 0.3f, 0.4f, 1.f);
+    static Vector<Component *> s_compsToRender;
+    static bool s_wasRender = true;
 
-    glm::ivec2 size = Window::getFrameSize();
-    glViewport(0, 0, size.x, size.y);
+    // Update components
+    for (DiffuseRenderComponent * comp : s_diffuseComponents) {
+        comp->update(dt);
+    }
+    // Frustum culling
+    s_compsToRender.clear();
     if (s_camera) {
+        for (DiffuseRenderComponent * comp : s_diffuseComponents) {
+            if (s_camera->sphereInFrustum(comp->enclosingSphere())) {
+                s_compsToRender.push_back(comp);
+            }
+        }
+    }
+
+    if (s_wasRender) {
+        /* Reset rendering display */
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        s_wasRender = false;
+    }
+
+    if (s_camera) {
+
         /* Loop through active shaders */
         for (auto &shader : s_shaders) {
             if (!shader.second->isEnabled()) {
                 continue;
-            }
-
-            /* Frustum culling */
-            static Vector<Component *> s_compsToRender;
-            for (auto comp : s_diffuseComponents) {
-                const Vector<Component *> & bounders(comp->gameObject().getComponentsByType<BounderComponent>());
-                if (bounders.size()) {
-                    bool inFrustum(false);
-                    for (Component * bounder_ : bounders) {
-                        BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
-                        if (s_camera->sphereInFrustum(bounder->enclosingSphere())) {
-                            inFrustum = true;
-                            break;
-                        }
-                    }
-                    if (inFrustum) {
-                        s_compsToRender.push_back(comp);
-                    }
-                }
-                else {
-                    s_compsToRender.push_back(comp);
-                }
             }
 
             shader.second->bind();
@@ -68,7 +72,7 @@ void RenderSystem::update(float dt) {
             shader.second->render(s_camera, reinterpret_cast<const Vector<Component *> &>(s_compsToRender));
             shader.second->unbind();
 
-            s_compsToRender.clear();
+            s_wasRender = true;
         }
     }
 
@@ -76,6 +80,7 @@ void RenderSystem::update(float dt) {
 #ifdef DEBUG_MODE
     if (Window::isImGuiEnabled()) {
         ImGui::Render();
+        s_wasRender = true;
     }
 #endif
 }
