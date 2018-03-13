@@ -15,7 +15,7 @@
 #include "Shaders/BounderShader.hpp"
 #include "Shaders/OctreeShader.hpp"
 #include "Shaders/RayShader.hpp"
-#include "Shaders/SquareShader.hpp"
+#include "Shaders/PostProcessShader.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 
 
@@ -24,6 +24,7 @@
 class RenderSystem {
 
     friend Scene;
+    friend PostProcessShader;
 
     public:
 
@@ -51,11 +52,19 @@ class RenderSystem {
     
     private:
 
+    static void initFBO();
+
+    static void doResize();
+
+    private:
+
     static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
     static UnorderedMap<std::type_index, UniquePtr<Shader>> s_shaders;
+    static UniquePtr<PostProcessShader> s_postProcessShader;
     static const CameraComponent * s_camera;
-
-    static UniquePtr<SquareShader> squareShader;
+    static GLuint s_fbo;
+    static GLuint s_fboColorTex;
+    static bool s_wasResize;
 };
 
 // TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
