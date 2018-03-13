@@ -48,14 +48,14 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
             // IMPLEMENTED - Speed, n, accelerators, loop, getMeshes, getTextures, variance, rate, DISK, CONE
             ParticleEffect::Type type = ParticleEffect::Type::DISK;
             int n = 100;
-            float effectDuration = 5.0f;
+            float effectDuration = 1.0f;
             float particleDuration = 1.0f;
             int orientations = 0;
             bool randomDistribution = true; // Have a random distribution vs uniform distribution
             float variance = 0.0f;
-            float rate = 100.0f;
+            float rate = 0.0f;
             float angle = glm::pi<float>()/4; // For Cones, must be limited to 0 -> pi
-            bool loop = false;
+            bool loop = true;
             float magnitude = 20.0f;
             Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
             accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));

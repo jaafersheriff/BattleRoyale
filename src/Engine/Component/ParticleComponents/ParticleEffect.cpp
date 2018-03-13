@@ -52,9 +52,10 @@ void ParticleEffect::update(float dt) {
     m_life += dt;
 
     //Active Online Particles
-    updateActiveParticles(dt);
+    
 
     if (m_life < m_effectParams->effectDuration) {
+        updateActiveParticles(dt);
         for (int i = 0; i < (int)m_activeParticlePositions->size(); i++) {
             Particle *p = m_particles[m_activeMap[i]];
             updatePosition(p, dt);
@@ -65,11 +66,16 @@ void ParticleEffect::update(float dt) {
     }
     // NOT UPDATED
     else if (m_effectParams->loop) {
-        m_life = 0.0f;
-        m_particles = generateParticles();
-        m_activeParticlePositions = getActiveParticlePositions();
-        m_activeMap = getActiveMap();
-        m_nextActivation = getNextActivation();
+        if (m_effectParams->rate == 0) {
+            m_life = 0.0f;
+            m_particles = generateParticles();
+            m_activeParticlePositions = getActiveParticlePositions();
+            m_activeMap = getActiveMap();
+            m_nextActivation = getNextActivation();
+        }
+        else {
+            m_effectParams->effectDuration += m_life;
+        }
         update(dt);
     }
 }
@@ -152,6 +158,7 @@ void ParticleEffect::sphereMotion(Particle* p) {
 }
 
 //TO DO: ability to have upward starting y -vector
+//TO DO: Disk motion based on direction
 void ParticleEffect::diskMotion(Particle* p) {
     if (!m_effectParams->randomDistribution) {
         float theta = m_effectParams->angle * (p->i / (float)m_effectParams->n);
@@ -162,6 +169,7 @@ void ParticleEffect::diskMotion(Particle* p) {
         p->velocity = glm::vec3(cos(theta), 0.0f, sin(theta));
     }
 }
+
 
 // TO DO: Uniform distribution
 void ParticleEffect::coneMotion(Particle* p) {
