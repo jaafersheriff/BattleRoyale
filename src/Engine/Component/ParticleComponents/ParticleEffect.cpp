@@ -157,6 +157,7 @@ void ParticleEffect::diskMotion(Particle* p) {
 void ParticleEffect::coneMotion(Particle* p) {
     
 }
+
 Vector<ParticleEffect::Particle*> ParticleEffect::generateParticles() {
     Vector<Particle*> vp = Vector<Particle*>();
     for (int i = 0; i < m_effectParams->n; i++) {
@@ -181,10 +182,8 @@ ParticleEffect::Particle* ParticleEffect::makeParticle(int i) {
         p->active = false;
     }
 
-    //Initialize starting Position
     initPosition(p);
 
-    //initialize starting Velocity
     initVelocity(p);
 
     return p;
@@ -267,6 +266,7 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     int n,
     float effectDuration,
     float particleDuration,
+    int randomOrientations,
     float variance,
     float rate,
     float angle,
@@ -281,6 +281,7 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     effectParams->n = n;
     effectParams->effectDuration = effectDuration;
     effectParams->particleDuration = particleDuration;
+    effectParams->randomOrientations = randomOrientations;
     effectParams->variance = variance;
     effectParams->rate = rate;
     effectParams->angle = angle;

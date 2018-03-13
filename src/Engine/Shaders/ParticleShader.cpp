@@ -41,6 +41,7 @@ bool ParticleShader::init() {
     addUniform("shine");
     addUniform("textureImage");
     addUniform("usesTexture");
+    addUniform("orientations");
 
     return true;
 }
@@ -65,11 +66,17 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
             break;
         }
 
+
+        if (pc->RandomMs().size() > pc->MAX_ORIENTATIONS) {
+            break;
+        }
+
+        loadInt(getUniform("orientations"), (int)pc->RandomMs().size());
+
         /* Model matrix */
         loadMat4(getUniform("M"), pc->ModelMatrix());
-
         /* Load Random Matrix Array */
-        loadMultiMat4(getUniform("randomMs"), &(pc->RandomMs()[0]), pc->RandomMs().size());
+        loadMultiMat4(getUniform("randomMs"), &(pc->RandomMs()[0]), (int)pc->RandomMs().size());
         /* Normal matrix */
         loadMat3(getUniform("N"), pc->NormalMatrix());
 
@@ -141,7 +148,7 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pc->getMesh(0)->eleBufId);
 
         /* DRAW */
-        glDrawElementsInstanced(GL_TRIANGLES, (int)pc->getMesh(0)->eleBufSize, GL_UNSIGNED_INT, nullptr, positions->size());
+        glDrawElementsInstanced(GL_TRIANGLES, (int)pc->getMesh(0)->eleBufSize, GL_UNSIGNED_INT, nullptr, (GLsizei)positions->size());
 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));

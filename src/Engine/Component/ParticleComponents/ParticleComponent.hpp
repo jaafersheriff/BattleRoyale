@@ -39,8 +39,8 @@ class ParticleComponent : public Component {
         glm::mat4 ModelMatrix() { return m_M; }
         glm::mat4 NormalMatrix() { return m_N; }
         Vector<glm::vec3> * getParticlePositions();
-        int Count() { return activeEffect->Count(); }
-        float Dead() {return activeEffect->Life() > activeEffect->Duration();}
+        int Count() { return m_activeEffect->Count(); }
+        float Dead() {return m_activeEffect->Life() > m_activeEffect->Duration();}
         Vector<glm::mat4> RandomMs() { return m_randomMs; }
         
 
@@ -49,11 +49,16 @@ class ParticleComponent : public Component {
         Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect);
         Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect effect);
         Vector<glm::mat4> initRandomMs(int count);
+        float getScaleFactor(ParticleEffect::Effect effect);
     
+    public:
+        static const int MAX_ORIENTATIONS = 20; // if changed, need to change vertex shader
+
     private:
-        ParticleEffect* activeEffect;
+        ParticleEffect* m_activeEffect;
+        ParticleEffect::Effect m_effect;
         glm::mat4 m_M;
         glm::mat3 m_N;
-        Vector<glm::mat4> m_randomMs;    
-
+        Vector<glm::mat4> m_randomMs;
+        
 };

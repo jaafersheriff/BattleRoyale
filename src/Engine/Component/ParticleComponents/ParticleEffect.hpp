@@ -39,6 +39,7 @@ class ParticleEffect {
             int n = 0; //Can be how many to spawn or, if rate is enable, the limit of particle count
             float effectDuration = 0.0f;
             float particleDuration = 0.0f;
+            int randomOrientations = 0; //How many different random orientations can the particle have, 0 means just base.
             float variance = 0.0f; //randomness factor
             float rate = 0.0f; // rate at which particles spawn (particles/sec), 0 if all spawn at once
             float angle = 2 * glm::pi<float>(); // default to 360 degrees
@@ -69,7 +70,8 @@ class ParticleEffect {
     public:
         void update(float dt);
         Mesh* getMesh(int i);
-        ModelTexture* getModelTexture(int i);  
+        ModelTexture* getModelTexture(int i);
+        int getOrientationCount() { return m_effectParams->randomOrientations; }
         Vector<glm::vec3> * ActiveParticlePositions() {return m_activeParticlePositions; }
         glm::vec3   Origin()    { return m_origin; }
         int         Count()     { return m_effectParams->n; }
@@ -80,6 +82,7 @@ class ParticleEffect {
             int n,
             float effectDuration,
             float particleDuration,
+            int randomOrientations,
             float variance,
             float rate,
             float angle,
@@ -108,6 +111,7 @@ class ParticleEffect {
         void sphereMotion(Particle* p);
         void coneMotion(Particle* p);
         void diskMotion(Particle* p);
+        
 
 };
 
