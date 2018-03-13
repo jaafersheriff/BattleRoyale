@@ -1,0 +1,518 @@
+{
+"object0": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -20.739999771118165,
+        3.440000057220459,
+        -12.960000038146973
+    ],
+    "scale": [
+        0.37388327717781069,
+        0.3738832175731659,
+        0.3738832175731659
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object1": {
+"transform": 
+{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -0.30000001192092898,
+        12.399999618530274,
+        -50.599998474121097
+    ],
+    "scale": [
+        0.5492225289344788,
+        1.232790470123291,
+        0.7426208257675171
+    ],
+    "rotMat3_0": [
+        1.7881393432617188e-7,
+        0.0,
+        0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -0.9999999403953552,
+        0.0,
+        1.7881393432617188e-7
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object2": {
+"transform": 
+{
+    "objName": "Assets/Models/Palm_Tree.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        -0.6499999761581421,
+        1.25,
+        -11.029999732971192
+    ],
+    "scale": [
+        0.29958999156951907,
+        0.29958999156951907,
+        0.29958999156951907
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object3": {
+"transform": 
+{
+    "objName": "Assets/Models/Stage Pieces/Ceiling.obj",
+    "objTexture": "Assets/Models/floor_tiles.png",
+    "tiling": [
+        300.0,
+        500.0
+    ],
+    "isToon": false,
+    "allowColliders": true,
+    "position": [
+        0.17454349994659425,
+        -106.77999877929688,
+        -81.4000015258789
+    ],
+    "scale": [
+        5.243439674377441,
+        10.0,
+        10.0
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object4": {
+"transform": 
+{
+    "objName": "Assets/Models/Palm_Tree.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        12.210000038146973,
+        1.25,
+        -36.70000076293945
+    ],
+    "scale": [
+        0.29958999156951907,
+        0.29958999156951907,
+        0.29958999156951907
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object5": {
+"transform": 
+{
+    "objName": "Assets/Models/Palm_Tree.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        -19.0,
+        1.25,
+        -36.70000076293945
+    ],
+    "scale": [
+        0.29958999156951907,
+        0.29958999156951907,
+        0.29958999156951907
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object6": {
+"transform": 
+{
+    "objName": "Assets/Models/Palm_Tree.obj",
+    "objTexture": "Assets/Models/QueenPalmTree_BaseColor.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        -1.100000023841858,
+        -2.5999999046325685,
+        -26.299999237060548
+    ],
+    "scale": [
+        1.1536446809768677,
+        1.1536448001861573,
+        1.1536448001861573
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object7": {
+"transform": 
+{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        40.29999923706055,
+        12.399999618530274,
+        -15.300000190734864
+    ],
+    "scale": [
+        0.5492202043533325,
+        1.2327899932861329,
+        0.7426202297210693
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object8": {
+"transform": 
+{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -38.400001525878909,
+        12.399999618530274,
+        -15.300000190734864
+    ],
+    "scale": [
+        0.5492199659347534,
+        1.2327899932861329,
+        0.7426199913024902
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object9": {
+"transform": 
+{
+    "objName": "Assets/Models/Window.obj",
+    "objTexture": "Assets/Models/window_tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -0.4000000059604645,
+        16.799999237060548,
+        15.100000381469727
+    ],
+    "scale": [
+        0.5492199659347534,
+        1.2327899932861329,
+        0.7426199913024902
+    ],
+    "rotMat3_0": [
+        5.960464477539063e-8,
+        0.0,
+        -0.9999999403953552
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.9999999403953552,
+        0.0,
+        5.960464477539063e-8
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object10": {
+"transform": 
+{
+    "objName": "Assets/Models/table.obj",
+    "objTexture": "Assets/Models/Table_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        17.920000076293947,
+        3.0999999046325685,
+        -20.399999618530275
+    ],
+    "scale": [
+        0.22034746408462525,
+        0.22034746408462525,
+        0.22034746408462525
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+}
