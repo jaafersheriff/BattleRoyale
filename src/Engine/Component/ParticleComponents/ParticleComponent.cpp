@@ -2,8 +2,7 @@
 
 ParticleComponent::ParticleComponent(GameObject & gameobject) :
     Component(gameobject)
-{
-    
+{  
 }
 
 void ParticleComponent::init() {
@@ -14,7 +13,7 @@ void ParticleComponent::init() {
     m_M = comp;
     m_N = glm::mat3();
 
-    m_randomMs = initRandomMs(m_activeEffect->getOrientationCount());
+    m_randomMs = initRandomMs(comp, m_activeEffect->getOrientationCount());
 }   
 
 void ParticleComponent::update(float dt) {  
@@ -45,24 +44,25 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
 
     switch (effect) {
         case ParticleEffect::Effect::BLOOD_SPLAT: {
-            // UNIMPLEMENTED - CONAL, angle
-            // IMPLEMENTED - Speed, n, accelerators, loop, getMeshes, getTextures, variance, rate, DISK
+            // UNIMPLEMENTED - angle
+            // IMPLEMENTED - Speed, n, accelerators, loop, getMeshes, getTextures, variance, rate, DISK, CONE
             ParticleEffect::Type type = ParticleEffect::Type::DISK;
             int n = 100;
             float effectDuration = 5.0f;
-            float particleDuration = 5.0f;
-            int orientations = 20;
+            float particleDuration = 1.0f;
+            int orientations = 0;
+            bool randomDistribution = true; // Have a random distribution vs uniform distribution
             float variance = 0.0f;
-            float rate = 0.0f;
-            float angle = 2 * glm::pi<float>();
+            float rate = 100.0f;
+            float angle = glm::pi<float>()/4; // For Cones, must be limited to 0 -> pi
             bool loop = false;
-            float magnitude = 5.0f;
+            float magnitude = 20.0f;
             Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
             accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
             Vector<Mesh *> *meshes = getMeshes(effect);
             Vector<ModelTexture*> * textures = getTextures(effect);
             return ParticleEffect::createEffectParams(type,n, effectDuration, particleDuration, orientations,
-                variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
+                randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
         }
         default:
             return NULL;
@@ -74,9 +74,9 @@ Vector<glm::vec3> * ParticleComponent::getParticlePositions() {
     return m_activeEffect->ActiveParticlePositions();
 }
 
-Vector<glm::mat4> ParticleComponent::initRandomMs(int count) {
+Vector<glm::mat4> ParticleComponent::initRandomMs(glm::mat4 comp, int count) {
     Vector<glm::mat4> randMs = Vector<glm::mat4>();
-    
+    randMs.push_back(comp);
     for (int i = 0; i < count; i++) {
         float angle = 2 * glm::pi<float>() * static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         glm::fvec3 & axis = glm::ballRand(1.0f);

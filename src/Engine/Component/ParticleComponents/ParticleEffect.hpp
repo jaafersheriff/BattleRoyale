@@ -40,6 +40,7 @@ class ParticleEffect {
             float effectDuration = 0.0f;
             float particleDuration = 0.0f;
             int randomOrientations = 0; //How many different random orientations can the particle have, 0 means just base.
+            bool randomDistribution = false;
             float variance = 0.0f; //randomness factor
             float rate = 0.0f; // rate at which particles spawn (particles/sec), 0 if all spawn at once
             float angle = 2 * glm::pi<float>(); // default to 360 degrees
@@ -51,14 +52,14 @@ class ParticleEffect {
         }EffectParams;
 
     public:
-        ParticleEffect();
-        ParticleEffect(EffectParams *ep, const glm::vec3 & origin);
-        ParticleEffect(EffectParams *ep, const glm::vec3 & origin, const glm::vec3 & direction);
-        ParticleEffect(EffectParams *ep, const glm::vec3 & origin, const glm::vec3 & direction, const glm::vec3 & velocity);
+        //ParticleEffect();
+        ParticleEffect(EffectParams *ep, const glm::vec3 & anchor);
+        ParticleEffect(EffectParams *ep, const glm::vec3 & anchor, const glm::vec3 & direction);
+        ParticleEffect(EffectParams *ep, const glm::vec3 & anchor, const glm::vec3 & direction, const glm::vec3 & velocity);
    
     private:
         EffectParams *m_effectParams;
-        glm::vec3 m_origin;
+        glm::vec3 m_anchor;
         glm::vec3 m_direction;
         glm::vec3 m_velocity;
         Vector<Particle*> m_particles;
@@ -73,7 +74,7 @@ class ParticleEffect {
         ModelTexture* getModelTexture(int i);
         int getOrientationCount() { return m_effectParams->randomOrientations; }
         Vector<glm::vec3> * ActiveParticlePositions() {return m_activeParticlePositions; }
-        glm::vec3   Origin()    { return m_origin; }
+        glm::vec3   anchor()    { return m_anchor; }
         int         Count()     { return m_effectParams->n; }
         float       Life()      { return m_life; }
         float       Duration()  { return m_effectParams->effectDuration; }
@@ -83,6 +84,7 @@ class ParticleEffect {
             float effectDuration,
             float particleDuration,
             int randomOrientations,
+            bool randomDistribution,
             float variance,
             float rate,
             float angle,
@@ -111,6 +113,8 @@ class ParticleEffect {
         void sphereMotion(Particle* p);
         void coneMotion(Particle* p);
         void diskMotion(Particle* p);
+        glm::vec3 getU(glm::vec3 direction);
+        float getRandom(float low, float high);
         
 
 };

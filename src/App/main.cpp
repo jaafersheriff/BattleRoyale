@@ -392,7 +392,7 @@ int main(int argc, char **argv) {
             //createProjectile(player::spatialComp->position() + player::cameraComp->getLookDir() * 2.0f, player::cameraComp->getLookDir());
             //Remove later
             createParticleEffect(ParticleEffect::BLOOD_SPLAT, 
-                player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, 
+                player::spatialComp->position() + player::cameraComp->getLookDir() * 5.0f, 
                 player::cameraComp->getLookDir());
         }
         if (msg.button == GLFW_MOUSE_BUTTON_2 && msg.action == GLFW_PRESS) {

@@ -66,17 +66,18 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
             break;
         }
 
-
-        if (pc->RandomMs().size() > pc->MAX_ORIENTATIONS) {
+        // The reason there is a plus one is that there has to always be at least one element in RandomMs even if unused.
+        if (pc->RandomMs().size() > pc->MAX_ORIENTATIONS + 1) {
             break;
         }
 
         loadInt(getUniform("orientations"), (int)pc->RandomMs().size());
 
         /* Model matrix */
-        loadMat4(getUniform("M"), pc->ModelMatrix());
+        
         /* Load Random Matrix Array */
         loadMultiMat4(getUniform("randomMs"), &(pc->RandomMs()[0]), (int)pc->RandomMs().size());
+        loadMat4(getUniform("M"), pc->ModelMatrix());
         /* Normal matrix */
         loadMat3(getUniform("N"), pc->NormalMatrix());
 

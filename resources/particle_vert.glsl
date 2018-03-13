@@ -1,6 +1,6 @@
 #version 330 core
 
-const int MAX_ORIENTATIONS = 20;
+const int MAX_ORIENTATIONS = 21;
 
 layout(location = 0) in vec3 vertPos;
 layout(location = 1) in vec3 vertNor;
@@ -21,8 +21,8 @@ out vec3 fragNor;
 out vec2 texCoords;
 
 void main() {
-	if(orientations > 0){
-		worldPos = vec3(randomMs[gl_InstanceID % orientations] * vec4(vertPos, 1.0f)) + particleOffset;
+	if(orientations > 1){
+		worldPos = vec3(randomMs[gl_InstanceID % orientations + 1] * vec4(vertPos, 1.0f)) + particleOffset;
 	}
 	else{
 		worldPos = vec3(M * vec4(vertPos, 1.0f)) + particleOffset;

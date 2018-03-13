@@ -1,16 +1,16 @@
 #include "ParticleEffect.hpp"
 
-ParticleEffect::ParticleEffect() :
+/*ParticleEffect::ParticleEffect() :
     m_effectParams(NULL),
-    m_origin(NULL),
+    m_anchor(glm::vec3(0)),
     m_particles(Vector<Particle*>()),
     m_life(0.0f)
 {
-}
+}*/
 
-ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & origin) :
+ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anchor) :
     m_effectParams(effectParams),
-    m_origin(origin),
+    m_anchor(anchor),
     m_direction(glm::vec3(0.0f, 1.0f, 0.0f)),
     m_velocity(glm::vec3(0.0f, 0.0f, 0.0f)),
     m_particles(generateParticles()),
@@ -21,9 +21,9 @@ ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & ori
 {
 }
 
-ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & origin, const glm::vec3 & direction) :
+ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anchor, const glm::vec3 & direction) :
     m_effectParams(effectParams),
-    m_origin(origin),
+    m_anchor(anchor),
     m_direction(direction),
     m_velocity(glm::vec3(0.0f, 0.0f, 0.0f)),
     m_particles(generateParticles()),
@@ -34,10 +34,10 @@ ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & ori
 {
 }
 
-ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & origin, const glm::vec3 & direction, 
+ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anchor, const glm::vec3 & direction, 
     const glm::vec3 & velocity) :
     m_effectParams(effectParams),
-    m_origin(origin),
+    m_anchor(anchor),
     m_direction(direction),
     m_velocity(velocity),
     m_particles(generateParticles()),
@@ -137,25 +137,59 @@ void ParticleEffect::updatePosition(Particle *p, float dt) {
     p->position += p->velocity * dt;
 }
 
-//TO DO: Random vec in velocity
+//TO DO: Random Distribution bool
 void ParticleEffect::sphereMotion(Particle* p) {
-    float phi = glm::golden_ratio<float>();
-    float z = 1 - (2 * float(p->i) / float(m_effectParams->n - 1));
-    float radius = sqrt(1 - z * z);
-    float theta = 2 * glm::pi<float>() * (2 - phi) * float(p->i);
-    p->velocity = glm::vec3(radius * cos(theta), radius * sin(theta), z);
+    if (!m_effectParams->randomDistribution) {
+        float phi = glm::golden_ratio<float>();
+        float z = 1 - (2 * float(p->i) / float(m_effectParams->n - 1));
+        float radius = sqrt(1 - z * z);
+        float theta = 2 * glm::pi<float>() * (2 - phi) * float(p->i);
+        p->velocity = glm::vec3(radius * cos(theta), radius * sin(theta), z);
+    }
+    else {
+        p->velocity = glm::ballRand(1.0f);
+    }
 }
 
-//TO DO: Random vec in velocity
+//TO DO: ability to have upward starting y -vector
 void ParticleEffect::diskMotion(Particle* p) {
-    float radius = 1.0f;
-    float pi = glm::pi<float>();
-    float theta = 2 * pi*(p->i / (float)m_effectParams->n);
-    p->velocity = glm::vec3(radius * cos(theta), 0.0f, radius * sin(theta));
+    if (!m_effectParams->randomDistribution) {
+        float theta = m_effectParams->angle * (p->i / (float)m_effectParams->n);
+        p->velocity = glm::vec3(cos(theta), 0.0f, sin(theta));
+    }
+    else {
+        float theta = getRandom(-1 * m_effectParams->angle / 2.0f, m_effectParams->angle / 2);
+        p->velocity = glm::vec3(cos(theta), 0.0f, sin(theta));
+    }
 }
 
+// TO DO: Uniform distribution
 void ParticleEffect::coneMotion(Particle* p) {
-    
+    glm::vec3 normalizedDirection = normalize(m_direction);
+    glm::vec3 u = getU(normalizedDirection);
+    glm::vec3 v = glm::cross(u, normalizedDirection);
+    float angle = m_effectParams->angle;
+    float phi = getRandom(-1 * glm::pi<float>(), glm::pi<float>());
+    //float phi = 2 * glm::pi<float>() * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) - glm::pi<float>(); //radomly from -pi to pi
+    float z = getRandom(cos(angle), 1);
+    //float z = cos(angle) + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1 - cos(angle)))); // randomly distributed from cos(theta) to 1
+    float theta = acosf(z);
+    p->velocity = sin(theta) * (cos(phi) * u + sin(phi) * v) + cos(theta) * normalizedDirection;
+}
+
+glm::vec3 ParticleEffect::getU(glm::vec3 directionNorm) {
+    glm::vec3 randVec = glm::ballRand(1.0f);
+    glm::vec3 u = normalize(cross(directionNorm, randVec));
+    while (u == glm::vec3(0.0f)) {
+        randVec = glm::ballRand(1.0f);
+        u = normalize(cross(directionNorm, randVec));
+    }
+    return u;
+}
+
+
+float ParticleEffect::getRandom(float low, float high) {
+    return low + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high - low)));
 }
 
 Vector<ParticleEffect::Particle*> ParticleEffect::generateParticles() {
@@ -205,6 +239,10 @@ void ParticleEffect::initVelocity(Particle *p) {
             diskMotion(p);
             break;
         }
+        case ParticleEffect::CONE: {
+            coneMotion(p);
+            break;
+        }
         default:
             p->velocity = glm::vec3(0.0f);
     }
@@ -220,7 +258,7 @@ void ParticleEffect::initVelocity(Particle *p) {
 }
 
 void ParticleEffect::initPosition(Particle *p) {
-    p->position = m_origin + m_life * m_velocity;
+    p->position = m_anchor + m_life * m_velocity;
 }
 
 Vector<glm::vec3> * ParticleEffect::getActiveParticlePositions() {
@@ -267,6 +305,7 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     float effectDuration,
     float particleDuration,
     int randomOrientations,
+    bool randomDistribution,
     float variance,
     float rate,
     float angle,
@@ -282,6 +321,7 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     effectParams->effectDuration = effectDuration;
     effectParams->particleDuration = particleDuration;
     effectParams->randomOrientations = randomOrientations;
+    effectParams->randomDistribution = randomDistribution;
     effectParams->variance = variance;
     effectParams->rate = rate;
     effectParams->angle = angle;

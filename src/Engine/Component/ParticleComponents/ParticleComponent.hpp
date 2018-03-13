@@ -48,7 +48,7 @@ class ParticleComponent : public Component {
         ParticleEffect::EffectParams* getEffectParams(ParticleEffect::Effect effect);
         Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect);
         Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect effect);
-        Vector<glm::mat4> initRandomMs(int count);
+        Vector<glm::mat4> initRandomMs(glm::mat4 comp, int  count);
         float getScaleFactor(ParticleEffect::Effect effect);
     
     public:
