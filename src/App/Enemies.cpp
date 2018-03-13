@@ -7,10 +7,8 @@
 
 namespace enemies {
 
-namespace { // File static stuff
-
-    // Constants
-    const float k_basicSpeed = 3.0f;
+// File static stuff
+namespace {
 
     Vector<GameObject *> f_basicEnemies;
 
@@ -41,7 +39,7 @@ namespace { // File static stuff
         for (GameObject * enemy : f_basicEnemies) {
             PathfindingComponent * comp(enemy->getComponentByType<PathfindingComponent>());
             if (!comp) {
-                Scene::addComponent<PathfindingComponent>(*enemy, player::gameObject(), k_basicSpeed, false);
+                Scene::addComponent<PathfindingComponent>(*enemy, player::gameObject(), k_defBasicSpeed, false);
             }
         }
     }

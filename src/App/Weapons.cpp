@@ -1,43 +1,58 @@
 #include "Weapons.hpp"
 
 #include "Lighting.hpp"
+#include "Player.hpp"
 
 
 namespace weapons {
 
-namespace { // File static stuff
+    namespace grenade {
 
-    Vector<GameObject *> f_basicProjectiles;
+        const Mesh * mesh = Loader::getMesh("Hamburger.obj");
+        const ModelTexture modelTex = ModelTexture(Loader::getTexture("Hamburger_BaseColor.png"), lighting::k_defAmbience, glm::vec3(1.0f), glm::vec3(1.0f));
+        const bool isToon = true;
+        const glm::vec3 scale = glm::vec3(0.05f);
+        const unsigned int weight = 1;
+        const float speed = 30.0f; 
 
-}
+        Vector<GameObject *> list;   
 
-    void fireBasic(const glm::vec3 & initPos, const glm::vec3 & dir) {
-        Mesh * mesh(Loader::getMesh("Hamburger.obj"));
-        DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
-        Texture * tex(Loader::getTexture("Hamburger_BaseColor.png"));
-        ModelTexture modelTex(tex, lighting::k_defAmbience, glm::vec3(1.0f), glm::vec3(1.0f));
-        bool toon(true);
-        glm::vec3 scale(0.05f);
-        unsigned int collisionWeight(5);
-        float speed(50.0f);
-
-        GameObject & obj(Scene::createGameObject());
-        SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, scale));
-        BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *mesh, false, true, false));
-        NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
-        Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj);
-        newtComp.addVelocity(dir * speed);
-        DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, true, glm::vec2(1.0f)));
-        ProjectileComponent & projectileComp(Scene::addComponent<ProjectileComponent>(obj));
+        void fire(const glm::vec3 & initPos, const glm::vec3 & initDir) {
+            GameObject & obj(Scene::createGameObject());
+            SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, scale));
+            BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, weight, *mesh, false, true, false));
+            NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
+            Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj);
+            newtComp.addVelocity(initDir * speed);
+            DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj,
+                spatComp,
+                RenderSystem::getShader<DiffuseShader>()->pid,
+                *mesh,
+                modelTex,
+                isToon,
+                glm::vec2(1.0f)
+            ));
     
-        f_basicProjectiles.push_back(&obj);
+            list.push_back(&obj);
+        }
+
+        void firePlayer() {
+            glm::vec3 initPos(player::spatial->position());
+            auto pair(CollisionSystem::pick(Ray(player::spatial->position(), player::camera->getLookDir())));
+            if (pair.second.is && &pair.first->gameObject() == player::gameObject) {
+                initPos = pair.second.pos;
+            }
+
+            fire(initPos, player::camera->getLookDir());
+        }
+
     }
 
     void destroyAllProjectiles() {        
-        for (GameObject * obj : f_basicProjectiles) {
+        for (GameObject * obj : grenade::list) {
             Scene::destroyGameObject(*obj);
         }
-        f_basicProjectiles.clear();
+        grenade::list.clear();
     }
 
 }

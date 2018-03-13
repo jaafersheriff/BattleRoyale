@@ -7,17 +7,7 @@
 
 
 
-namespace { // File static stuff
-
-// Constants
-const glm::vec3 k_defGravity = glm::vec3(0.0f, -10.0f, 0.0f);
-
-// Freecam data and functions
 namespace freecam {
-
-    const float k_lookSpeed = player::k_defLookSpeed;
-    const float k_minMoveSpeed = player::k_defMoveSpeed;
-    const float k_maxMoveSpeed = 10.0f * k_minMoveSpeed;
 
     GameObject * gameObject;
     SpatialComponent * spatialComp;
@@ -28,13 +18,15 @@ namespace freecam {
         gameObject = &Scene::createGameObject();
         spatialComp = &Scene::addComponent<SpatialComponent>(*gameObject);
         cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, player::k_defFOV, player::k_defNear, player::k_defFar);
-        controllerComp = &Scene::addComponent<CameraControllerComponent>(*gameObject, k_lookSpeed, k_minMoveSpeed, k_maxMoveSpeed);
+        controllerComp = &Scene::addComponent<CameraControllerComponent>(*gameObject, player::k_defLookSpeed, player::k_defMoveSpeed, 10.0f * player::k_defMoveSpeed);
         controllerComp->setEnabled(false);
     }
 
 }
 
-}
+
+
+const glm::vec3 k_defGravity = glm::vec3(0.0f, -10.0f, 0.0f);
 
 void startGame() {
 
@@ -86,10 +78,10 @@ void startGame() {
     freecam::setup();
 
     // Set primary camera
-    RenderSystem::setCamera(&player::camera());
+    RenderSystem::setCamera(player::camera);
 
     // Set Sound camera
-    SoundSystem::setCamera(&player::camera());
+    SoundSystem::setCamera(player::camera);
 
     // Add Enemies
     int nEnemies(5);
@@ -125,9 +117,9 @@ void startGame() {
             ImGui::NewLine();
             ImGui::Text("Player Pos");
             ImGui::Text("%f %f %f",
-                player::spatial().position().x,
-                player::spatial().position().y,
-                player::spatial().position().z
+                player::spatial->position().x,
+                player::spatial->position().y,
+                player::spatial->position().z
             );
             ImGui::Text("Freecam Pos");
             ImGui::Text("%f %f %f",
@@ -242,7 +234,7 @@ void startGame() {
     auto fireCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && !msg.mods && msg.action == GLFW_PRESS) {
-            weapons::fireBasic(player::spatial().position() + player::camera().getLookDir() * 2.0f, player::camera().getLookDir());
+            weapons::grenade::firePlayer();
         }
         else if (msg.button == GLFW_MOUSE_BUTTON_2 && msg.action == GLFW_PRESS) {
             weapons::destroyAllProjectiles();
@@ -257,10 +249,10 @@ void startGame() {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.mods & GLFW_MOD_CONTROL && msg.action == GLFW_PRESS) {
             rayPositions.clear();
-            rayPositions.push_back(player::spatial().position());
-            glm::vec3 dir(player::camera().getLookDir());
+            rayPositions.push_back(player::spatial->position());
+            glm::vec3 dir(player::camera->getLookDir());
             for (int i(0); i < rayDepth; ++i) {
-                auto pair(CollisionSystem::pick(Ray(rayPositions.back(), dir), &player::gameObject()));
+                auto pair(CollisionSystem::pick(Ray(rayPositions.back(), dir), player::gameObject));
                 if (!pair.second.is) {
                     break;
                 }
@@ -282,18 +274,18 @@ void startGame() {
                 // disable camera controller
                 freecam::controllerComp->setEnabled(false);
                 // enable player controller
-                player::controller().setEnabled(true);
-                RenderSystem::setCamera(&player::camera());
+                player::controller->setEnabled(true);
+                RenderSystem::setCamera(player::camera);
             }
             else {
                 // disable player controller
-                player::controller().setEnabled(false);
+                player::controller->setEnabled(false);
                 // enable camera object
                 freecam::controllerComp->setEnabled(true);
                 // set camera object camera to player camera
-                freecam::spatialComp->setPosition(player::spatial().position());
-                freecam::spatialComp->setUVW(player::spatial().u(), player::spatial().v(), player::spatial().w());
-                freecam::cameraComp->lookInDir(player::camera().getLookDir());
+                freecam::spatialComp->setPosition(player::spatial->position());
+                freecam::spatialComp->setUVW(player::spatial->u(), player::spatial->v(), player::spatial->w());
+                freecam::cameraComp->lookInDir(player::camera->getLookDir());
                 RenderSystem::setCamera(freecam::cameraComp);
             }
             free = !free;
@@ -326,7 +318,7 @@ void startGame() {
     auto deleteCallback([&] (const Message & msg_) {
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
         if (msg.key == GLFW_KEY_DELETE && msg.action == GLFW_PRESS) {
-            auto pair(CollisionSystem::pick(Ray(player::spatial().position(), player::camera().getLookDir()), &player::gameObject()));
+            auto pair(CollisionSystem::pick(Ray(player::spatial->position(), player::camera->getLookDir()), player::gameObject));
             if (pair.first) Scene::destroyGameObject(const_cast<GameObject &>(pair.first->gameObject()));
         }
     });

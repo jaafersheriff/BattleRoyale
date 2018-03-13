@@ -8,7 +8,12 @@
 
 namespace weapons {
 
-    void fireBasic(const glm::vec3 & initPos, const glm::vec3 & dir);
+    namespace grenade {
+
+        void fire(const glm::vec3 & initPos, const glm::vec3 & initDir);
+        void firePlayer();
+
+    }
 
     void destroyAllProjectiles();
 

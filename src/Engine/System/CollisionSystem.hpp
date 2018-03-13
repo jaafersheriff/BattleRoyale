@@ -32,7 +32,7 @@ class CollisionSystem {
 
     static void update(float dt);
 
-    static std::pair<const BounderComponent *, Intersect> pick(const Ray & ray, const GameObject * ignore);
+    static std::pair<const BounderComponent *, Intersect> pick(const Ray & ray, const GameObject * ignore = nullptr);
     static std::pair<const BounderComponent *, Intersect> pick(const Ray & ray, const std::function<bool(const BounderComponent &)> & conditional);
 
     static void setOctree(const glm::vec3 & min, const glm::vec3 & max, float minCellSize);
