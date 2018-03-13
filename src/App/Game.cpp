@@ -17,8 +17,8 @@ namespace freecam {
     void setup() {
         gameObject = &Scene::createGameObject();
         spatialComp = &Scene::addComponent<SpatialComponent>(*gameObject);
-        cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, player::k_defFOV, player::k_defNear, player::k_defFar);
-        controllerComp = &Scene::addComponent<CameraControllerComponent>(*gameObject, player::k_defLookSpeed, player::k_defMoveSpeed, 10.0f * player::k_defMoveSpeed);
+        cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, player::k_fov, player::k_near, player::k_far);
+        controllerComp = &Scene::addComponent<CameraControllerComponent>(*gameObject, player::k_lookSpeed, player::k_moveSpeed, 10.0f * player::k_moveSpeed);
         controllerComp->setEnabled(false);
     }
 
@@ -64,7 +64,7 @@ void startGame() {
     Window::setCursorEnabled(false);
 
     // Set Gravity
-    SpatialSystem::setGravity(k_defGravity);
+    //SpatialSystem::setGravity(k_defGravity);
 
     // Load Level
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json", lighting::k_defAmbience);

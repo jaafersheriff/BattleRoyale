@@ -28,7 +28,7 @@ namespace {
         NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
         GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
         BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *mesh, false, true, false));
-        PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, player::gameObject(), moveSpeed, false));
+        PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed, false));
         DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, toon, glm::vec2(1.0f));   
         EnemyComponent & enemyComp(Scene::addComponent<EnemyComponent>(obj));
     
@@ -39,7 +39,7 @@ namespace {
         for (GameObject * enemy : f_basicEnemies) {
             PathfindingComponent * comp(enemy->getComponentByType<PathfindingComponent>());
             if (!comp) {
-                Scene::addComponent<PathfindingComponent>(*enemy, player::gameObject(), k_defBasicSpeed, false);
+                Scene::addComponent<PathfindingComponent>(*enemy, *player::gameObject, k_defBasicSpeed, false);
             }
         }
     }

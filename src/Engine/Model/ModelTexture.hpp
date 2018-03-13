@@ -17,7 +17,7 @@ class ModelTexture {
             texture(nullptr),
             material(0.f, glm::vec3(0.f), glm::vec3(0.f))
         {}
-        ModelTexture(Texture *texture) :
+        ModelTexture(const Texture *texture) :
             texture(texture),
             material(0.f, glm::vec3(0.f), glm::vec3(1.f))
         {}
@@ -25,13 +25,13 @@ class ModelTexture {
             texture(nullptr),
             material(ambient, diffuse, specular)
         {}
-        ModelTexture(Texture *texture, const float ambient, const glm::vec3 & diffuse, const glm::vec3 & specular) :
+        ModelTexture(const Texture *texture, const float ambient, const glm::vec3 & diffuse, const glm::vec3 & specular) :
             texture(texture),
             material(ambient, diffuse, specular)
         {}
 
         /* Texture properties */
-        Texture *texture;
+        const Texture *texture;
 
         /* Material */
         Material material;

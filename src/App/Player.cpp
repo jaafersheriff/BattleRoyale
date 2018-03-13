@@ -4,6 +4,8 @@
 
 namespace player {
 
+    const glm::vec3 k_mainHandPosition = glm::vec3();//glm::vec3(k_width * 0.5f, 0.0f, -k_width * 0.5f);
+
     GameObject * gameObject;
     SpatialComponent * spatial;
     NewtonianComponent * newtonian;
@@ -17,10 +19,10 @@ namespace player {
         newtonian = &Scene::addComponent<NewtonianComponent>(*gameObject);
         Scene::addComponentAs<GravityComponent, AcceleratorComponent>(*gameObject);
         Scene::addComponent<GroundComponent>(*gameObject);
-        Capsule playerCap(glm::vec3(0.0f, -k_defHeight * 0.5f + k_defWidth, 0.0f), k_defWidth, k_defHeight - 2.0f * k_defWidth);
+        Capsule playerCap(glm::vec3(0.0f, -k_height * 0.5f + k_width, 0.0f), k_width, k_height - 2.0f * k_width);
         bounder = &Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(*gameObject, k_weight, playerCap);
-        camera = &Scene::addComponent<CameraComponent>(*gameObject, k_defFOV, k_defNear, k_defFar);
-        controller = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_defLookSpeed, k_defMoveSpeed, k_defJumpSpeed, k_defSprintSpeed);
+        camera = &Scene::addComponent<CameraComponent>(*gameObject, k_fov, k_near, k_far);
+        controller = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_lookSpeed, k_moveSpeed, k_jumpSpeed, k_sprintSpeed);
 
         // An example of using object initialization message
         auto initCallback([&](const Message & msg) {            
