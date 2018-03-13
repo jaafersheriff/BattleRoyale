@@ -15,7 +15,7 @@ void ParticleComponent::init() {
     m_N = glm::mat3();
 }   
 
-void ParticleComponent::update(float dt) {
+void ParticleComponent::update(float dt) {  
    activeEffect->update(dt);
 }
 
@@ -42,8 +42,8 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
 
     switch (effect) {
         case ParticleEffect::Effect::BLOOD_SPLAT: {
-            //UNIMPLEMENTED - CONAL, DISK, angle
-            //IMPLEMENTED - Speed, n, accelerators, loop, getMeshes, getTextures, variance, rate
+            // UNIMPLEMENTED - CONAL, angle
+            // IMPLEMENTED - Speed, n, accelerators, loop, getMeshes, getTextures, variance, rate, DISK
             ParticleEffect::Type type = ParticleEffect::Type::DISK;
             int n = 100;
             float effectDuration = 5.0f;

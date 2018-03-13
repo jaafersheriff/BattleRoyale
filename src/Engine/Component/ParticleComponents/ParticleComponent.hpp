@@ -43,10 +43,14 @@ class ParticleComponent : public Component {
         ParticleEffect::EffectParams* getEffectParams(ParticleEffect::Effect effect);
         Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect);
         Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect effect);
+        Vector<glm::mat4> initRandomM(int count);
+        Vector<glm::mat3> initRandomN(int count);
     
     private:
-        ParticleEffect * activeEffect;
+        ParticleEffect* activeEffect;
         glm::mat4 m_M;
         glm::mat3 m_N;
+        Vector<glm::mat4> m_randomM;
+        Vector<glm::mat3> m_randomN;     
 
 };

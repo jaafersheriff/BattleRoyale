@@ -137,7 +137,7 @@ void ParticleEffect::updatePosition(Particle *p, float dt) {
     p->position += p->velocity * dt;
 }
 
- 
+//TO DO: Random vec in velocity
 void ParticleEffect::sphereMotion(Particle* p) {
     float phi = glm::golden_ratio<float>();
     float z = 1 - (2 * float(p->i) / float(m_effectParams->n - 1));
@@ -146,6 +146,7 @@ void ParticleEffect::sphereMotion(Particle* p) {
     p->velocity = glm::vec3(radius * cos(theta), radius * sin(theta), z);
 }
 
+//TO DO: Random vec in velocity
 void ParticleEffect::diskMotion(Particle* p) {
     float radius = 1.0f;
     float pi = glm::pi<float>();
