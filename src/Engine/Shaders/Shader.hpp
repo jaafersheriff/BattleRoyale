@@ -48,6 +48,7 @@ class Shader {
         void loadVec3(const int, const glm::vec3 &) const;
         void loadMat3(const int, const glm::mat3 &) const;
         void loadMat4(const int, const glm::mat4 &) const;
+        void loadMultiMat4(const int, const glm::mat4 *, int count) const;
 
         /* Get shader location */
         GLint getAttribute(const String &);

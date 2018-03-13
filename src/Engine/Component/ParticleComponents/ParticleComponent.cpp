@@ -1,7 +1,8 @@
 #include "ParticleComponent.hpp"
 
 ParticleComponent::ParticleComponent(GameObject & gameobject) :
-    Component(gameobject)
+    Component(gameobject),
+    m_randomMs(initRandomMs(10))
 {
     
 }
@@ -68,6 +69,22 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
 
 Vector<glm::vec3> * ParticleComponent::getParticlePositions() {
     return activeEffect->ActiveParticlePositions();
+}
+
+Vector<glm::mat4> ParticleComponent::initRandomMs(int count) {
+    Vector<glm::mat4> randMs = Vector<glm::mat4>();
+    
+    for (int i = 1; i < count; i++) {
+        //const glm::fmat3 & rotation = glm::fmat3();
+        float angle = 2 * glm::pi<float>() * static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        glm::fvec3 & axis = glm::ballRand(1.0f);
+        const glm::fmat4 & rot = glm::rotate(angle, axis);
+        const glm::fvec3 & translation = glm::fvec3(0.0f);
+        const glm::fvec3 & scale = glm::fvec3(0.1f);
+        randMs.emplace_back(Util::compositeTransform(scale, rot, translation));
+    }
+
+    return randMs;
 }
 
 Mesh* ParticleComponent::getMesh(int i) {

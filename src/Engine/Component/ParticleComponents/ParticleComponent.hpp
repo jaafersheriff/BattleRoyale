@@ -1,4 +1,8 @@
 #pragma once
+#include <glm/gtx/transform.hpp>
+#include <glm/gtx/transform2.hpp>
+#include "glm/gtc/constants.hpp"
+#include "glm/gtc/random.hpp"
 #include "Component/Component.hpp"
 #include "Component/SpatialComponents/PhysicsComponents.hpp"
 #include "ParticleEffect.hpp"
@@ -37,20 +41,19 @@ class ParticleComponent : public Component {
         Vector<glm::vec3> * getParticlePositions();
         int Count() { return activeEffect->Count(); }
         float Dead() {return activeEffect->Life() > activeEffect->Duration();}
+        Vector<glm::mat4> RandomMs() { return m_randomMs; }
         
 
     private:
         ParticleEffect::EffectParams* getEffectParams(ParticleEffect::Effect effect);
         Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect);
         Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect effect);
-        Vector<glm::mat4> initRandomM(int count);
-        Vector<glm::mat3> initRandomN(int count);
+        Vector<glm::mat4> initRandomMs(int count);
     
     private:
         ParticleEffect* activeEffect;
         glm::mat4 m_M;
         glm::mat3 m_N;
-        Vector<glm::mat4> m_randomM;
-        Vector<glm::mat3> m_randomN;     
+        Vector<glm::mat4> m_randomMs;    
 
 };

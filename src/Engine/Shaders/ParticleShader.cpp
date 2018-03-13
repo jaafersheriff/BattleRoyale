@@ -29,6 +29,7 @@ bool ParticleShader::init() {
     addUniform("P");
     addUniform("V");
     addUniform("M");
+    addUniform("randomMs");
     addUniform("N");
 
     addUniform("lightDir");
@@ -41,28 +42,6 @@ bool ParticleShader::init() {
     addUniform("textureImage");
     addUniform("usesTexture");
 
-    /*addUniform("isToon");
-    addUniform("silAngle");
-    addUniform("numCells");
-    addUniform("cellIntensities");
-    addUniform("cellScales");
-    */
-    /* Generate 1D Textures with initial size of 16 floats */
-   /* glActiveTexture(GL_TEXTURE0);
-    glGenTextures(1, &cellIntensitiesTexture);
-    glBindTexture(GL_TEXTURE_1D, cellIntensitiesTexture);
-    glTexStorage1D(GL_TEXTURE_1D, 1, GL_R32F, 16*4);
-    GLSL::checkError();
-
-    glGenTextures(1, &cellScalesTexture);
-    glActiveTexture(GL_TEXTURE0 + cellScalesTexture);
-    glBindTexture(GL_TEXTURE_1D, cellScalesTexture);
-    glTexStorage1D(GL_TEXTURE_1D, 1, GL_R32F, 16*4);
-    GLSL::checkError();
-
-    glBindTexture(GL_TEXTURE_1D, 0);
-    assert(glGetError() == GL_NO_ERROR);
-    */
     return true;
 }
 
@@ -88,6 +67,9 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
 
         /* Model matrix */
         loadMat4(getUniform("M"), pc->ModelMatrix());
+
+        /* Load Random Matrix Array */
+        loadMultiMat4(getUniform("randomMs"), &(pc->RandomMs()[0]), pc->RandomMs().size());
         /* Normal matrix */
         loadMat3(getUniform("N"), pc->NormalMatrix());
 
@@ -159,7 +141,6 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pc->getMesh(0)->eleBufId);
 
         /* DRAW */
-        //glDrawElements(GL_TRIANGLES, (int)pc->getMesh(0)->eleBufSize, GL_UNSIGNED_INT, nullptr);
         glDrawElementsInstanced(GL_TRIANGLES, (int)pc->getMesh(0)->eleBufSize, GL_UNSIGNED_INT, nullptr, positions->size());
 
         /* Unload mesh */
