@@ -48,12 +48,12 @@ class Scene {
     // Sends out a message for any receivers of that message type to pick up.
     // If gameObject is not null, first sends the message locally to receivers
     // of only that object.
-    template <typename MsgT, typename... Args> static void sendMessage(GameObject * gameObject, Args &&... args);
+    template <typename MsgT, typename... Args> static void sendMessage(const GameObject * gameObject, Args &&... args);
 
     // Adds a receiver for a message type. If gameObject is null, the receiver
     // will pick up all messages of that type. If gameObject is not null, the
     // receiver will pick up only messages sent to that object
-    template <typename MsgT> static void addReceiver(GameObject * gameObject, const std::function<void (const Message &)> & receiver);
+    template <typename MsgT> static void addReceiver(const GameObject * gameObject, const std::function<void (const Message &)> & receiver);
 
     static const Vector<GameObject *> & getGameObjects() { return reinterpret_cast<const Vector<GameObject *> &>(s_gameObjects); }
 
@@ -82,7 +82,7 @@ class Scene {
     static Vector<std::pair<std::type_index, UniquePtr<Component>>> s_componentInitQueue;
     static Vector<std::pair<std::type_index, Component *>> s_componentKillQueue;
 
-    static Vector<std::tuple<GameObject *, std::type_index, UniquePtr<Message>>> s_messages;
+    static Vector<std::tuple<const GameObject *, std::type_index, UniquePtr<Message>>> s_messages;
     static UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> s_receivers;
 
   public:
@@ -91,17 +91,19 @@ class Scene {
     static float initDT;
     static float killDT;
     static float gameLogicDT;
-    static float spatialDT;
-    static float pathfindingDT;
-    static float collisionDT;
-    static float postCollisionDT;
-    static float renderDT;
     static float gameLogicMessagingDT;
+    static float spatialDT;
     static float spatialMessagingDT;
+    static float pathfindingDT;
     static float pathfindingMessagingDT;
+    static float collisionDT;
     static float collisionMessagingDT;
+    static float postCollisionDT;
     static float postCollisionMessagingDT;
+    static float renderDT;
     static float renderMessagingDT;
+    static float soundDT;
+    static float soundMessagingDT;
 
 };
 
@@ -135,18 +137,18 @@ void Scene::removeComponent(CompT & component) {
 }
 
 template<typename MsgT, typename... Args>
-void Scene::sendMessage(GameObject * gameObject, Args &&... args) {
+void Scene::sendMessage(const GameObject * gameObject, Args &&... args) {
     static_assert(std::is_base_of<Message, MsgT>::value, "MsgT must be a message type");
 
     s_messages.emplace_back(gameObject, typeid(MsgT), UniquePtr<Message>::makeAs<MsgT>(std::forward<Args>(args)...));
 }
 
 template <typename MsgT>
-void Scene::addReceiver(GameObject * gameObject, const std::function<void (const Message &)> & receiver) {
+void Scene::addReceiver(const GameObject * gameObject, const std::function<void (const Message &)> & receiver) {
     static_assert(std::is_base_of<Message, MsgT>::value, "MsgT must be a message type");
 
     if (gameObject) {
-        gameObject->m_receivers[std::type_index(typeid(MsgT))].emplace_back(receiver);
+        const_cast<GameObject *>(gameObject)->m_receivers[std::type_index(typeid(MsgT))].emplace_back(receiver);
     }
     else {
         s_receivers[std::type_index(typeid(MsgT))].emplace_back(receiver);
