@@ -24,7 +24,7 @@ bool ParticleShader::init() {
     addAttribute("vertNor");
     addAttribute("vertTex");
     addAttribute("particleOffset");
-    //addAttribute("orientationID");
+    addAttribute("orientationID");
 
     /* Add uniforms */
     addUniform("P");
@@ -124,17 +124,17 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         glVertexAttribDivisor(posPO, 1);
 
 
-        /*int randOrient = getAttribute("orientationID");
+        int randOrient = getAttribute("orientationID");
         unsigned int orientBufId;
-        Vector<int> *orientations = pc->getParticleOrientationIDs();*/
+        Vector<int> *orientations = pc->getParticleOrientationIDs();
 
         /* Do all the buffer stuff */
-        /*glGenBuffers(1, &orientBufId);
+        glGenBuffers(1, &orientBufId);
         glBindBuffer(GL_ARRAY_BUFFER, orientBufId);
         glBufferData(GL_ARRAY_BUFFER, orientations->size() * sizeof(int), &(*orientations)[0], GL_STATIC_DRAW);
         glEnableVertexAttribArray(randOrient);
         glVertexAttribPointer(randOrient, 1, GL_INT, GL_FALSE, 0, (const void *)0);
-        glVertexAttribDivisor(randOrient, 1);*/
+        glVertexAttribDivisor(randOrient, 1);
 
 
         /* Bind vertex buffer VBO */
