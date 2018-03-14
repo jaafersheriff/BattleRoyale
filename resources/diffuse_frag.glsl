@@ -22,7 +22,7 @@ uniform sampler1D cellIntensities;
 uniform sampler1D cellDiffuseScales;
 uniform sampler1D cellSpecularScales;
 
-out vec4 color;
+layout(location = 0) out vec4 color;
 
 void main() {
     vec3 viewDir = camPos - worldPos;
@@ -32,8 +32,14 @@ void main() {
 
     /* Base color */
     vec3 diffuseColor = matDiffuse;
+	float alpha = 1.0;
     if (usesTexture) {
-        diffuseColor = vec3(texture(textureImage, texCoords));
+        vec4 texColor = vec4(texture(textureImage, texCoords));
+		if (texColor.a < 0.1) {
+			discard; 
+		}
+		diffuseColor = texColor.xyz;
+		alpha = texColor.a;
     }
 
     float lambert = dot(L, N);
@@ -62,5 +68,5 @@ void main() {
     /* Silhouettes */
     float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;
 
-    color = vec4(edge * bColor, 1.0);
+    color = vec4(edge * bColor, alpha);
 }

@@ -7,11 +7,13 @@
 #include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
 #include "Scene/Scene.hpp"
 
-
-
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 UnorderedMap<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
+UniquePtr<PostProcessShader> RenderSystem::s_postProcessShader;
 const CameraComponent * RenderSystem::s_camera = nullptr;
+GLuint RenderSystem::s_fbo = 0;
+GLuint RenderSystem::s_fboColorTex = 0;
+bool RenderSystem::s_wasResize = false;
 
 void RenderSystem::init() {
     glEnable(GL_DEPTH_TEST);
@@ -19,6 +21,23 @@ void RenderSystem::init() {
     glCullFace(GL_BACK);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(0.2f, 0.3f, 0.4f, 1.f);
+
+    auto sizeCallback([&] (const Message & msg_) {
+        const WindowFrameSizeMessage & msg(static_cast<const WindowFrameSizeMessage &>(msg_));
+        s_wasResize = true;
+    });
+    Scene::addReceiver<WindowFrameSizeMessage>(nullptr, sizeCallback);    
+
+    // Setup square shader
+    s_postProcessShader = UniquePtr<PostProcessShader>::make("postprocess_vert.glsl", "postprocess_frag.glsl");
+    if (!s_postProcessShader->init()) {
+        std::cin.get();
+        std::exit(EXIT_FAILURE);
+    }
+    
+    glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
+    initFBO();
 }
 
 ///////////////////////////  TODO  ///////////////////////////
@@ -27,39 +46,44 @@ void RenderSystem::init() {
 // list and expecting each shader to filter through         //
 //////////////////////////////////////////////////////////////
 void RenderSystem::update(float dt) {
-    /* Reset rendering display */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.2f, 0.3f, 0.4f, 1.f);
+    if (s_wasResize) {
+        doResize();
+        s_wasResize = false;
+    }
 
-    glm::ivec2 size = Window::getFrameSize();
-    glViewport(0, 0, size.x, size.y);
+    // Make it so that rendering is not done to the computer screen
+    // but to the framebuffer in squareShader->fboHandle
+    glBindFramebuffer(GL_FRAMEBUFFER, s_fbo);
+
+    static Vector<Component *> s_compsToRender;
+    static bool s_wasRender = true;
+
+    // Update components
+    for (DiffuseRenderComponent * comp : s_diffuseComponents) {
+        comp->update(dt);
+    }
+    // Frustum culling
+    s_compsToRender.clear();
     if (s_camera) {
+        for (DiffuseRenderComponent * comp : s_diffuseComponents) {
+            if (s_camera->sphereInFrustum(comp->enclosingSphere())) {
+                s_compsToRender.push_back(comp);
+            }
+        }
+    }
+
+    if (s_wasRender) {
+        /* Reset rendering display */
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        s_wasRender = false;
+    }
+
+    if (s_camera) {
+
         /* Loop through active shaders */
         for (auto &shader : s_shaders) {
             if (!shader.second->isEnabled()) {
                 continue;
-            }
-
-            /* Frustum culling */
-            static Vector<Component *> s_compsToRender;
-            for (auto comp : s_diffuseComponents) {
-                const Vector<Component *> & bounders(comp->gameObject().getComponentsByType<BounderComponent>());
-                if (bounders.size()) {
-                    bool inFrustum(false);
-                    for (Component * bounder_ : bounders) {
-                        BounderComponent * bounder(static_cast<BounderComponent *>(bounder_));
-                        if (s_camera->sphereInFrustum(bounder->enclosingSphere())) {
-                            inFrustum = true;
-                            break;
-                        }
-                    }
-                    if (inFrustum) {
-                        s_compsToRender.push_back(comp);
-                    }
-                }
-                else {
-                    s_compsToRender.push_back(comp);
-                }
             }
 
             shader.second->bind();
@@ -68,18 +92,77 @@ void RenderSystem::update(float dt) {
             shader.second->render(s_camera, reinterpret_cast<const Vector<Component *> &>(s_compsToRender));
             shader.second->unbind();
 
-            s_compsToRender.clear();
+            s_wasRender = true;
         }
     }
+
+    // Make it so that rendering is done to the computer screen
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // Reset rendering display
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    s_postProcessShader->bind();
+    // The second parameter is passed by reference (not by pointer),
+    // hence the funny pointer business
+    s_postProcessShader->render(nullptr, *((Vector<Component *> *) nullptr));
+    s_postProcessShader->unbind();
 
     /* ImGui */
 #ifdef DEBUG_MODE
     if (Window::isImGuiEnabled()) {
         ImGui::Render();
+        s_wasRender = true;
     }
 #endif
 }
 
 void RenderSystem::setCamera(const CameraComponent * camera) {
     s_camera = camera;
+}
+
+void RenderSystem::initFBO() {
+    // Initialize framebuffer to draw into
+    glGenFramebuffers(1, &s_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, s_fbo);
+
+    glm::ivec2 size = Window::getFrameSize();
+
+    // Set the first texture unit as active
+    glActiveTexture(GL_TEXTURE0);
+
+    // Attach color to the framebuffer
+    glGenTextures(1, &s_fboColorTex);
+    glBindTexture(GL_TEXTURE_2D, s_fboColorTex);
+
+    glTexImage2D(
+        GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL
+    );
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glFramebufferTexture2D(
+        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, s_fboColorTex, 0
+    );
+
+    // Create Renderbuffer Object to hold depth and stencil buffers
+    GLuint fboDepthRB(0);
+    glGenRenderbuffers(1, &fboDepthRB);
+    glBindRenderbuffer(GL_RENDERBUFFER, fboDepthRB);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, fboDepthRB);
+    // Using a texture instead
+    //glGenTextures(1, &depthTexture);
+    //glBindTexture(GL_TEXTURE_2D, depthTexture);
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, size.x, size.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void RenderSystem::doResize() {
+    glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
+    initFBO();
 }

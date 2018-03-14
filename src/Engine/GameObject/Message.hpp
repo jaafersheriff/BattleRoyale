@@ -177,19 +177,18 @@ struct ScrollMessage : public Message {
 
 
 
-// component of system SysT added 
-template <typename SysT>
-struct SystemComponentAddedMessage : public Message {
+// component has put through the init queue and added to the scene
+struct ComponentAddedMessage : public Message {
     Component & comp;
-    SystemComponentAddedMessage(Component & comp) : comp(comp) {}
+    std::type_index typeI;
+    ComponentAddedMessage(Component & comp, std::type_index typeI) : comp(comp), typeI(typeI) {}
 };
 
-// component of system SysT removed
-template <typename SysT>
-struct SystemComponentRemovedMessage : public Message {
-    const void * address;
+// component has been added to kill queue and will be removed from the scene
+struct ComponentRemovedMessage : public Message {
+    UniquePtr<Component> comp;
     std::type_index typeI;
-    SystemComponentRemovedMessage(const void * address, std::type_index typeI) : address(address), typeI(typeI) {}
+    ComponentRemovedMessage(UniquePtr<Component> && comp, std::type_index typeI) : comp(std::move(comp)), typeI(typeI) {}
 };
 
 

@@ -8,6 +8,7 @@ uniform mat4 P;
 uniform mat4 V;
 uniform mat4 M;
 uniform mat3 N;
+uniform vec2 tiling;
 
 uniform vec3 cameraPos;
 
@@ -18,7 +19,7 @@ out vec2 texCoords;
 void main() {
     worldPos = vec3(M * vec4(vertPos, 1.0f));
     fragNor = N * vertNor;
-    texCoords = vertTex;
+    texCoords = vec2(vertTex.x*tiling.x, vertTex.y*tiling.y);
 
     gl_Position = P * V * vec4(worldPos, 1.0f);
 }

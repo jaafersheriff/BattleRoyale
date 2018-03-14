@@ -63,7 +63,7 @@ bool collide(const AABox & box, const Sphere & sphere, glm::vec3 * delta_) {
     glm::vec3 dVec(p - sphere.origin);
     float d2(glm::length2(dVec));
     
-    if (Util::isGreater(d2, sphere.radius * sphere.radius, k_collisionE)) {
+    if (Util::isGE(d2, sphere.radius * sphere.radius, k_collisionE)) {
         return false;
     }
     if (!delta_) {
@@ -125,7 +125,7 @@ bool collide(const AABox & box, const Capsule & cap, glm::vec3 * delta_) {
     glm::vec3 dVec(boxP - rodP);
     float d2(glm::length2(dVec));
     
-    if (Util::isGreater(d2, cap.radius * cap.radius, k_collisionE)) {
+    if (Util::isGE(d2, cap.radius * cap.radius, k_collisionE)) {
         return false;
     }
     if (!delta_) {
@@ -204,7 +204,7 @@ bool collide(const Sphere & sphere1, const Sphere & sphere2, glm::vec3 * delta) 
     glm::vec3 dVec(sphere1.origin - sphere2.origin);
     float d2(glm::length2(dVec));
     
-    if (Util::isGreater(d2, combR * combR, k_collisionE)) {
+    if (Util::isGE(d2, combR * combR, k_collisionE)) {
         return false;
     }
     if (!delta) {
@@ -230,7 +230,7 @@ bool collide(const Sphere & sphere, const Capsule & cap, glm::vec3 * delta) {
     glm::vec3 dVec(sphere.origin - rodP);
     float d2(glm::length2(dVec));
 
-    if (Util::isGreater(d2, combR * combR, k_collisionE)) {
+    if (Util::isGE(d2, combR * combR, k_collisionE)) {
         return false;
     }
     if (!delta) {
@@ -264,7 +264,7 @@ bool collide(const Capsule & cap1, const Capsule & cap2, glm::vec3 * delta) {
     glm::vec3 dVec(rodP1 - rodP2);
     float d2(glm::length2(dVec));
 
-    if (Util::isGreater(d2, combR * combR, k_collisionE)) {
+    if (Util::isGE(d2, combR * combR, k_collisionE)) {
         return false;
     }
     if (!delta) {
