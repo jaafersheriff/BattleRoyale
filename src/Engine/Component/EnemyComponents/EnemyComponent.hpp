@@ -7,6 +7,7 @@
 
 
 class BounderComponent;
+class HealthComponent;
 
 
 
@@ -16,7 +17,7 @@ class EnemyComponent : public Component {
 
     protected: // only scene or friends can create component
 
-    EnemyComponent(GameObject & gameObject, float hp);
+    EnemyComponent(GameObject & gameObject);
 
     public:
 
@@ -24,7 +25,7 @@ class EnemyComponent : public Component {
 
     protected:
 
-    virtual void init() override {};
+    virtual void init() override;
 
     public:
 
@@ -32,17 +33,9 @@ class EnemyComponent : public Component {
 
     virtual void update(float dt) override;
 
-    void damage(float hp);
-
-    void heal(float hp);
-
-    void setHP(float hp);
-
-    float hp() const { return m_hp; }
-
     protected:
 
-    float m_hp;
+    HealthComponent * m_health;
 
 };
 
@@ -54,6 +47,6 @@ class BasicEnemyComponent : public EnemyComponent {
 
     protected:
 
-    BasicEnemyComponent(GameObject & gameObject, float hp);
+    BasicEnemyComponent(GameObject & gameObject);
 
 };

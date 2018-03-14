@@ -220,7 +220,7 @@ void CollisionSystem::update(float dt) {
         }
         s_outOfBounds.clear();
     }
-    
+
     // determine all bounders with path intersections
     for (BounderComponent * bounder : s_potentials) {
         if (bounder->isCritical()) {

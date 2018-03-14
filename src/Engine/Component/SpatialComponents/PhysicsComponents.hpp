@@ -24,7 +24,7 @@ class NewtonianComponent : public Component {
 
   protected: // only scene or friends can create component
 
-    NewtonianComponent(GameObject & gameObject);
+    NewtonianComponent(GameObject & gameObject, bool isBouncy);
 
   public:
 
@@ -44,6 +44,8 @@ class NewtonianComponent : public Component {
 
     void addVelocity(const glm::vec3 & velocity);
 
+    void setVelocity(const glm::vec3 & velocity);
+
     // dir should be normalized
     void removeAllVelocityAgainstDir(const glm::vec3 & dir);
     // dir should be normalized
@@ -56,6 +58,7 @@ class NewtonianComponent : public Component {
     SpatialComponent * m_spatial;
     glm::vec3 m_velocity;
     glm::vec3 m_acceleration;
+    bool m_isBouncy;
 
 
 };

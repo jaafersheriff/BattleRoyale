@@ -7,7 +7,9 @@
 #include "ImGuiComponents/ImGuiComponent.hpp"
 #include "PlayerComponents/PlayerControllerComponent.hpp"
 #include "EnemyComponents/EnemyComponent.hpp"
-#include "ProjectileComponents/ProjectileComponent.hpp"
+#include "WeaponComponents/ProjectileComponents.hpp"
+#include "WeaponComponents/BlastComponent.hpp"
+#include "StatComponents/StatComponents.hpp"
 // pathfinding
 #include "PathfindingComponents/PathfindingComponent.hpp"
 // spatial

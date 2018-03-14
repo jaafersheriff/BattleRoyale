@@ -4,8 +4,10 @@
 
 
 
-const float SpatialSystem::s_coefficientOfFriction = 0.5f;
-const float SpatialSystem::s_terminalVelocity = 50.0f;
+const float SpatialSystem::k_terminalVelocity = 50.0f;
+const float SpatialSystem::k_coefficientOfFriction = 0.5f;
+const float SpatialSystem::k_elasticity = 0.75f;
+const float SpatialSystem::k_bounceCosThreshold = std::cos(glm::radians(85.0f));
 
 const Vector<SpatialComponent *> & SpatialSystem::s_spatialComponents(Scene::getComponents<SpatialComponent>());
 const Vector<NewtonianComponent *> & SpatialSystem::s_newtonianComponents(Scene::getComponents<NewtonianComponent>());

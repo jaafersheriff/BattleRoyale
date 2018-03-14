@@ -149,6 +149,14 @@ struct CollisionAdjustMessage : public Message {
 
 
 
+// a bouncy newtonian bounced
+struct BounceMessage : public Message {
+    glm::vec3 norm;
+    BounceMessage(const glm::vec3 & norm) : norm(norm) {}
+};
+
+
+
 // the window was resized
 struct WindowFrameSizeMessage : public Message {
     glm::ivec2 frameSize;

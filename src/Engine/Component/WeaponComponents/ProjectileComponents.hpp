@@ -9,6 +9,8 @@
 
 
 class BounderComponent;
+class GroundComponent;
+class NewtonianComponent;
 
 
 
@@ -32,11 +34,10 @@ class ProjectileComponent : public Component {
 
     virtual SystemID systemID() const override { return SystemID::gameLogic; };
 
-    virtual void update(float dt) override {};
-
     protected:
 
     BounderComponent * m_bounder;
+    NewtonianComponent * m_newtonian;
 
 };
 
@@ -52,13 +53,20 @@ class GrenadeComponent : public ProjectileComponent {
 
     virtual void init() override;
 
+    public:
+
+    virtual void update(float dt) override;
+
     protected:
 
     void detonate();
 
     protected:
 
+    GroundComponent * m_ground;
     float m_damage;
     float m_radius;
+    float m_shouldDetonate;
+    int m_nBounces;
 
 };

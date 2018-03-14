@@ -13,7 +13,7 @@ namespace weapons {
         const bool k_isToon = true;
         const glm::vec3 k_scale = glm::vec3(1.0f);
         const unsigned int k_weight = 1;
-        const float k_speed = 10.0f; 
+        const float k_speed = 15.0f; 
         const float k_damage = 100.0f;
         const float k_radius = 5.0f;
 
@@ -24,7 +24,8 @@ namespace weapons {
             GameObject & obj(Scene::createGameObject());
             SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_scale));
             BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *mesh, false, true, false));
-            NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
+            NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, true));
+            GroundComponent & groundComp(Scene::addComponent<GroundComponent>(obj));
             Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj);
             newtComp.addVelocity(initDir * k_speed + srcVel);
             DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj,
@@ -40,13 +41,16 @@ namespace weapons {
 
         void firePlayer() {
             glm::vec3 initPos(player::camera->orientMatrix() * player::k_mainHandPosition + player::spatial->position());
-            fire(initPos + player::camera->getLookDir(), player::camera->getLookDir(), player::spatial->effectiveVelocity());
+            fire(initPos, player::camera->getLookDir(), player::spatial->effectiveVelocity());
         }
 
     }
 
     void destroyAllProjectiles() {        
         for (ProjectileComponent * comp : Scene::getComponents<ProjectileComponent>()) {
+            Scene::destroyGameObject(comp->gameObject());
+        }
+        for (BlastComponent * comp : Scene::getComponents<BlastComponent>()) {
             Scene::destroyGameObject(comp->gameObject());
         }
     }

@@ -4,7 +4,7 @@
 
 namespace player {
 
-    const glm::vec3 k_mainHandPosition = glm::vec3();//glm::vec3(k_width * 0.5f, 0.0f, -k_width * 0.5f);
+    const glm::vec3 k_mainHandPosition = glm::vec3(k_width * 0.5f, 0.0f, -k_width * 0.5f);
 
     GameObject * gameObject;
     SpatialComponent * spatial;
@@ -16,7 +16,7 @@ namespace player {
     void setup(const glm::vec3 & position) {
         gameObject = &Scene::createGameObject();
         spatial = &Scene::addComponent<SpatialComponent>(*gameObject, position);
-        newtonian = &Scene::addComponent<NewtonianComponent>(*gameObject);
+        newtonian = &Scene::addComponent<NewtonianComponent>(*gameObject, false);
         Scene::addComponentAs<GravityComponent, AcceleratorComponent>(*gameObject);
         Scene::addComponent<GroundComponent>(*gameObject);
         Capsule playerCap(glm::vec3(0.0f, -k_height * 0.5f + k_width, 0.0f), k_width, k_height - 2.0f * k_width);

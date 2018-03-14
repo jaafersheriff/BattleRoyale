@@ -24,7 +24,7 @@ namespace enemies {
             ModelTexture modelTex(lighting::k_defAmbience, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f));
             GameObject & obj(Scene::createGameObject());
             SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, k_scale));
-            NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
+            NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, false));
             GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
             BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *mesh, false, true, false));
             PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, k_moveSpeed, false));
@@ -36,8 +36,9 @@ namespace enemies {
                 modelTex,
                 k_isToon,
                 glm::vec2(1.0f)
-            );   
-            EnemyComponent & enemyComp(Scene::addComponentAs<BasicEnemyComponent, EnemyComponent>(obj, k_hp));
+            );
+            HealthComponent & healthComp(Scene::addComponent<HealthComponent>(obj, k_hp));
+            EnemyComponent & enemyComp(Scene::addComponentAs<BasicEnemyComponent, EnemyComponent>(obj));
     
             list.push_back(&obj);
         }

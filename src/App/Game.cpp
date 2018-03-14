@@ -69,7 +69,7 @@ void startGame() {
     // Load Level
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json", lighting::k_defAmbience);
     // Needs to be manually adjusted to fit level size
-    //CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
+    CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
 
     // Setup Player
     player::setup(glm::vec3(0.0f, 6.0f, 0.0f));
@@ -84,7 +84,7 @@ void startGame() {
     SoundSystem::setCamera(player::camera);
 
     // Add Enemies
-    int nEnemies(5);
+    int nEnemies(3);
     for (int i(0); i < nEnemies; ++i) {
         enemies::basic::create(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f));
     }
@@ -252,12 +252,13 @@ void startGame() {
             rayPositions.push_back(player::spatial->position());
             glm::vec3 dir(player::camera->getLookDir());
             for (int i(0); i < rayDepth; ++i) {
-                auto pair(CollisionSystem::pick(Ray(rayPositions.back(), dir), player::gameObject));
+                float r(glm::distance(rayPositions.back(), glm::vec3(0.0f, 6.0f, 0.0f)));
+                auto pair(CollisionSystem::pick(Ray(rayPositions.back() + dir * 0.001f, dir), player::gameObject));
                 if (!pair.second.is) {
                     break;
                 }
                 rayPositions.push_back(pair.second.pos);
-                dir = glm::reflect(dir, pair.second.norm);
+                dir = glm::normalize(glm::reflect(dir, pair.second.face ? pair.second.norm : -pair.second.norm));
             }
             RenderSystem::getShader<RayShader>()->setPositions(rayPositions);
         }

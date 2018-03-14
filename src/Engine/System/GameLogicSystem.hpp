@@ -10,6 +10,8 @@
 #include "Component/PlayerComponents/PlayerControllerComponent.hpp"
 #include "Component/ImGuiComponents/ImGuiComponent.hpp"
 #include "Component/EnemyComponents/EnemyComponent.hpp"
+#include "Component/WeaponComponents/ProjectileComponents.hpp"
+#include "Component/WeaponComponents/BlastComponent.hpp"
 
 
 
@@ -35,6 +37,8 @@ class GameLogicSystem {
     static const Vector<PlayerControllerComponent *> & s_playerControllers;
     static const Vector<ImGuiComponent *> & s_imguiComponents;
     static const Vector<EnemyComponent *> & s_enemyComponents;
+    static const Vector<ProjectileComponent *> & s_projectileComponents;
+    static const Vector<BlastComponent *> & s_blastComponents;
 };
 
 #endif
