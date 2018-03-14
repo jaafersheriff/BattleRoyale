@@ -32,6 +32,9 @@ bool DiffuseShader::init() {
     addUniform("M");
     addUniform("N");
     
+    addUniform("L");
+    addUniform("shadowMap");
+
     addUniform("tiling");
 
     addUniform("lightDir");
@@ -93,6 +96,13 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<DiffuseR
     loadVec3(getUniform("lightDir"), RenderSystem::getLightDir());
     loadVec3(getUniform("camPos"), camera->gameObject().getSpatial()->position());
 
+    /* Shadows */
+    loadMat4(getUniform("L"), RenderSystem::getL());
+    GLuint shadowMap = RenderSystem::getShadowMap();
+    glActiveTexture(GL_TEXTURE0 + shadowMap);
+    glBindTexture(GL_TEXTURE_2D, shadowMap);
+    loadInt(getUniform("shadowMap"), shadowMap);
+
     /* Toon shading */
     loadFloat(getUniform("silAngle"), silAngle);
     loadFloat(getUniform("numCells"), (float)numCells);
@@ -112,6 +122,7 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<DiffuseR
     glBindTexture(GL_TEXTURE_1D, cellSpecularScalesTexture);
     glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellSpecularScales.size()), GL_RED, GL_FLOAT, cellSpecularScales.data());
 
+    /* Iterate through render targets */
     for (auto drc : components) {
 
         /* Toon shading */

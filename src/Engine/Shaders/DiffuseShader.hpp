@@ -44,6 +44,9 @@ class DiffuseShader : public Shader {
         GLuint cellIntensitiesTexture;
         GLuint cellDiffuseScalesTexture;
         GLuint cellSpecularScalesTexture;
+
+        /* Shadows */
+        glm::mat4 * L;
 };
 
 #endif 
