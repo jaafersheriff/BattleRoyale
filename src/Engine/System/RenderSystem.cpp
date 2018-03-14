@@ -10,9 +10,13 @@
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 UnorderedMap<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
 UniquePtr<PostProcessShader> RenderSystem::s_postProcessShader;
+UniquePtr<BlurShader> RenderSystem::s_BlurShader;
 const CameraComponent * RenderSystem::s_camera = nullptr;
 GLuint RenderSystem::s_fbo = 0;
 GLuint RenderSystem::s_fboColorTex = 0;
+GLuint RenderSystem::colorBuffers[2];
+GLuint RenderSystem::pingpongFBO[2];
+GLuint RenderSystem::pingpongColorbuffers[2];
 bool RenderSystem::s_wasResize = false;
 
 void RenderSystem::init() {
@@ -32,6 +36,13 @@ void RenderSystem::init() {
     // Setup square shader
     s_postProcessShader = UniquePtr<PostProcessShader>::make("postprocess_vert.glsl", "postprocess_frag.glsl");
     if (!s_postProcessShader->init()) {
+        std::cin.get();
+        std::exit(EXIT_FAILURE);
+    }
+
+    //Setup gaussian blur shader
+    s_BlurShader = UniquePtr<BlurShader>::make("pass_vert.glsl", "blur_frag.glsl");
+    if (!s_BlurShader->init()) {
         std::cin.get();
         std::exit(EXIT_FAILURE);
     }
@@ -97,16 +108,51 @@ void RenderSystem::update(float dt) {
     }
 
     // Make it so that rendering is done to the computer screen
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);   
 
+    //Blur bright frags
+    bool horizontal = true, first_iteration = true;
+    unsigned int amount = 10;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     // Reset rendering display
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    glActiveTexture(GL_TEXTURE0);
+    
+    s_BlurShader->bind();
+    for (unsigned int i = 0; i < amount; i++) {
+        glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
+        s_BlurShader->s_Horizontal = horizontal;
+        //glBindTexture(GL_TEXTURE_2D, colorBuffers[1]);
+        glBindTexture(GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongColorbuffers[!horizontal]); // bind texture of other framebuffer (or scene if first iteration)
+        s_BlurShader->render(nullptr, *((Vector<Component *> *) nullptr));
+        horizontal = !horizontal;
+        if (first_iteration)
+            first_iteration = false;
+    }
+    s_BlurShader->unbind();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    s_postProcessShader->bind();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
+    //glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
+    s_postProcessShader->render(nullptr, *((Vector<Component *> *) nullptr));
+    s_postProcessShader->unbind();
+
+    /*
     s_postProcessShader->bind();
     // The second parameter is passed by reference (not by pointer),
     // hence the funny pointer business
+
     s_postProcessShader->render(nullptr, *((Vector<Component *> *) nullptr));
     s_postProcessShader->unbind();
+    */
+
 
     /* ImGui */
 #ifdef DEBUG_MODE
@@ -128,6 +174,25 @@ void RenderSystem::initFBO() {
 
     glm::ivec2 size = Window::getFrameSize();
 
+    //Create 2 color buffers
+    glGenTextures(2, colorBuffers);
+    for (unsigned int i = 0; i < 2; i++)
+    {
+        glBindTexture(GL_TEXTURE_2D, colorBuffers[i]);
+        glTexImage2D(
+            GL_TEXTURE_2D, 0, GL_RGB16F, size.x, size.y, 0, GL_RGB, GL_FLOAT, NULL
+        );
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        // attach texture to framebuffer
+        glFramebufferTexture2D(
+            GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorBuffers[i], 0
+        );
+    }
+
+    /*
     // Set the first texture unit as active
     glActiveTexture(GL_TEXTURE0);
 
@@ -145,21 +210,49 @@ void RenderSystem::initFBO() {
     glFramebufferTexture2D(
         GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, s_fboColorTex, 0
     );
+    */
 
+    //Create depth and stencil buffers
+    RenderSystem::CreateRenderBuffer(size);
+
+    unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+    glDrawBuffers(2, attachments);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // ping-pong-framebuffer for blurring
+    glGenFramebuffers(2, pingpongFBO);
+    glGenTextures(2, pingpongColorbuffers);
+    for (unsigned int i = 0; i < 2; i++)
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
+        glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[i]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, size.x, size.y, 0, GL_RGB, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongColorbuffers[i], 0);
+        // also check if framebuffers are complete (no need for depth buffer)
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            std::cout << "Framebuffer not complete!" << std::endl;
+    }
+}
+
+void RenderSystem::CreateRenderBuffer(glm::ivec2 size) {
     // Create Renderbuffer Object to hold depth and stencil buffers
     GLuint fboDepthRB(0);
     glGenRenderbuffers(1, &fboDepthRB);
     glBindRenderbuffer(GL_RENDERBUFFER, fboDepthRB);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, fboDepthRB);
+
     // Using a texture instead
     //glGenTextures(1, &depthTexture);
     //glBindTexture(GL_TEXTURE_2D, depthTexture);
     //glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, size.x, size.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
     //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void RenderSystem::doResize() {

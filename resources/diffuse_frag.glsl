@@ -23,6 +23,7 @@ uniform sampler1D cellDiffuseScales;
 uniform sampler1D cellSpecularScales;
 
 layout(location = 0) out vec4 color;
+layout (location = 1) out vec4 BrightColor;
 
 void main() {
     vec3 viewDir = camPos - worldPos;
@@ -69,4 +70,10 @@ void main() {
     float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;
 
     color = vec4(edge * bColor, alpha);
+
+	float brightness = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 0.6)
+        BrightColor = vec4(color.rgb, 1.0);
+    else
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 }

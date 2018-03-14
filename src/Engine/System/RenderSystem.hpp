@@ -16,6 +16,7 @@
 #include "Shaders/OctreeShader.hpp"
 #include "Shaders/RayShader.hpp"
 #include "Shaders/PostProcessShader.hpp"
+#include "Shaders/BlurShader.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 
 
@@ -25,6 +26,7 @@ class RenderSystem {
 
     friend Scene;
     friend PostProcessShader;
+    friend BlurShader;
 
     public:
 
@@ -54,6 +56,8 @@ class RenderSystem {
 
     static void initFBO();
 
+    static void RenderSystem::CreateRenderBuffer(glm::ivec2 size);
+
     static void doResize();
 
     private:
@@ -61,9 +65,13 @@ class RenderSystem {
     static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
     static UnorderedMap<std::type_index, UniquePtr<Shader>> s_shaders;
     static UniquePtr<PostProcessShader> s_postProcessShader;
+    static UniquePtr<BlurShader> RenderSystem::s_BlurShader;
     static const CameraComponent * s_camera;
     static GLuint s_fbo;
     static GLuint s_fboColorTex;
+    static GLuint colorBuffers[2];
+    static GLuint pingpongFBO[2];
+    static GLuint pingpongColorbuffers[2];
     static bool s_wasResize;
 };
 
