@@ -306,6 +306,7 @@ namespace ImGui
     // Widgets: Sliders (tip: ctrl+click on a slider to input with keyboard. manually input values aren't clamped, can go off-bounds)
     IMGUI_API bool          SliderFloat(const char* label, float* v, float v_min, float v_max, const char* display_format = "%.3f", float power = 1.0f);     // adjust display_format to decorate the value with a prefix or a suffix. Use power!=1.0 for logarithmic sliders
     IMGUI_API bool          SliderFloat2(const char* label, float v[2], float v_min, float v_max, const char* display_format = "%.3f", float power = 1.0f);
+    IMGUI_API bool          SliderFloat2(const char* label, float v[2], float v_min[2], float v_max[2], const char* display_format = "%.3f", float power = 1.0f);
     IMGUI_API bool          SliderFloat3(const char* label, float v[3], float v_min[3], float v_max[3], const char* display_format = "%.3f", float power = 1.0f);
     IMGUI_API bool          SliderFloat3(const char* label, float v[3], float v_min, float v_max, const char* display_format = "%.3f", float power = 1.0f);
     IMGUI_API bool          SliderFloat4(const char* label, float v[4], float v_min, float v_max, const char* display_format = "%.3f", float power = 1.0f);

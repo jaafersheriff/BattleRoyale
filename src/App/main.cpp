@@ -303,15 +303,24 @@ int main(int argc, char **argv) {
             ImGui::SliderFloat3("LightDir", glm::value_ptr(lightDir), -1.f, 1.f);
             RenderSystem::setLightDir(lightDir);
             /* Light distance */
-            ImGui::SliderFloat("LightPos", &RenderSystem::lightDist, 0.f, 100.f);
+            ImGui::SliderFloat("LightPos", &RenderSystem::lightDist, -100.f, 100.f);
             /* Light ortho */
-            ImGui::SliderFloat2("H Bounds", glm::value_ptr(RenderSystem::shadowShader->hBounds), -50.f, 50.f);
-            ImGui::SliderFloat2("V Bounds", glm::value_ptr(RenderSystem::shadowShader->vBounds), -50.f, 50.f);
-            ImGui::SliderFloat("Far plane", &RenderSystem::shadowShader->fPlane, 50.f, 500.f);
+            glm::vec2 hBounds = RenderSystem::s_lightCamera->hBounds();
+            glm::vec2 vBounds = RenderSystem::s_lightCamera->vBounds();
+            float nPlane = RenderSystem::s_lightCamera->near();
+            float fPlane = RenderSystem::s_lightCamera->far();
+            float min[2] = { -100.f,   0.f };
+            float max[2] = {    0.f, 100.f };
+            ImGui::SliderFloat2("H Bounds", glm::value_ptr(hBounds), min, max);
+            ImGui::SliderFloat2("V Bounds", glm::value_ptr(vBounds), min, max);
+            ImGui::SliderFloat("Near plane", &nPlane, 0.01f, 2.f);
+            ImGui::SliderFloat("Far plane", &fPlane, 0.01f, 150.f);
+            RenderSystem::s_lightCamera->setOrthoBounds(hBounds, vBounds);
+            RenderSystem::s_lightCamera->setNearFar(nPlane, fPlane);
             /* Shadow map FBO */
             static int fSize = 256;
             ImGui::SliderInt("FBO", &fSize, 128, 1024);
-            ImGui::Image((ImTextureID)RenderSystem::shadowShader->getShadowMapTexture(), ImVec2(fSize, fSize));
+            ImGui::Image((ImTextureID)RenderSystem::getShadowMap(), ImVec2(fSize, fSize));
         }
     );
 
@@ -344,9 +353,9 @@ int main(int argc, char **argv) {
                 ImGui::End();
                 ImGui::Begin("Cell Shading");
                 for (int i = 0; i < cells; i++) {
-                    float vals[3];
                     float minBounds[3] = { -1.f,  0.f,  0.f };
                     float maxBounds[3] = {  1.f,  1.f,  1.f };
+                    float vals[3];
                     vals[0] = dShader->getCellIntensity(i);
                     vals[1] = dShader->getCellDiffuseScale(i);
                     vals[2] = dShader->getCellSpecularScale(i);
