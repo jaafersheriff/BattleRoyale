@@ -11,6 +11,9 @@
 ParticleShader::ParticleShader(const String & vertFile, const String & fragFile, const glm::vec3 & light) :
     Shader(vertFile, fragFile),
     lightDir(&light) {
+    cellIntensities.resize(1, 1.f);
+    cellDiffuseScales.resize(1, 1.f);
+    cellSpecularScales.resize(1, 1.f);
 }
 
 bool ParticleShader::init() {
@@ -43,6 +46,32 @@ bool ParticleShader::init() {
     addUniform("textureImage");
     addUniform("usesTexture");
 
+    addUniform("isToon");
+    addUniform("silAngle");
+    addUniform("numCells");
+    addUniform("cellIntensities");
+    addUniform("cellDiffuseScales");
+    addUniform("cellSpecularScales");
+
+    /* Generate 1D Textures with initial size of 16 floats */
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &cellIntensitiesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellIntensitiesTexture);
+    glTexStorage1D(GL_TEXTURE_1D, 1, GL_R32F, 16 * 4);
+    GLSL::checkError();
+
+    glGenTextures(1, &cellDiffuseScalesTexture);
+    glActiveTexture(GL_TEXTURE0 + cellDiffuseScalesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellDiffuseScalesTexture);
+    glTexStorage1D(GL_TEXTURE_1D, 1, GL_R32F, 16 * 4);
+    GLSL::checkError();
+
+    glGenTextures(1, &cellSpecularScalesTexture);
+    glActiveTexture(GL_TEXTURE0 + cellSpecularScalesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellSpecularScalesTexture);
+    glTexStorage1D(GL_TEXTURE_1D, 1, GL_R32F, 16 * 4);
+    GLSL::checkError();
+
     return true;
 }
 
@@ -61,6 +90,26 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
     loadVec3(getUniform("lightDir"), *lightDir);
     loadVec3(getUniform("camPos"), camera->gameObject().getSpatial()->position());
 
+    /* Toon shading */
+    loadFloat(getUniform("silAngle"), silAngle);
+    loadFloat(getUniform("numCells"), (float)numCells);
+    loadInt(getUniform("cellIntensities"), cellIntensitiesTexture);
+    loadInt(getUniform("cellDiffuseScales"), cellDiffuseScalesTexture);
+    loadInt(getUniform("cellSpecularScales"), cellSpecularScalesTexture);
+
+    // TODO : move cell intensities and scales to material and initialize it during json pass
+    // TODO : only upload this data once when the material is loaded in
+    glActiveTexture(GL_TEXTURE0 + cellIntensitiesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellIntensitiesTexture);
+    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellIntensities.size()), GL_RED, GL_FLOAT, cellIntensities.data());
+    glActiveTexture(GL_TEXTURE0 + cellDiffuseScalesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellDiffuseScalesTexture);
+    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellDiffuseScales.size()), GL_RED, GL_FLOAT, cellDiffuseScales.data());
+    glActiveTexture(GL_TEXTURE0 + cellSpecularScalesTexture);
+    glBindTexture(GL_TEXTURE_1D, cellSpecularScalesTexture);
+    glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellSpecularScales.size()), GL_RED, GL_FLOAT, cellSpecularScales.data());
+
+
     for (ParticleComponent * pc : ParticleSystem::s_particleComponents) {
         if (pc->getParticlePositions()->size() == 0) {
             break;
@@ -70,6 +119,15 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         if (pc->RandomMs().size() > pc->MAX_ORIENTATIONS + 1) {
             break;
         }
+
+        /* Toon shading */
+        if (showToon) {
+            loadBool(getUniform("isToon"), true);
+        }
+        else {
+            loadBool(getUniform("isToon"), false);
+        }
+
         bool r = (int)pc->RandomMs().size() != 1;
         loadBool(getUniform("randomOrientation"), r);
 
@@ -187,4 +245,29 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }    
+}
+
+
+void ParticleShader::setCells(unsigned int in) {
+    numCells = glm::min(in, (unsigned int)16);
+    cellIntensities.resize(numCells, 0.f);
+    cellDiffuseScales.resize(numCells, 0.f);
+    cellSpecularScales.resize(numCells, 0.f);
+    for (int i = 0; i < int(numCells); i++) {
+        float scale = 1.f - i / (float)numCells;
+        cellIntensities[i] = (scale - 0.5f) * 2.0f;
+        cellDiffuseScales[i] = scale;
+        cellSpecularScales[i] = scale;
+    }
+}
+
+void ParticleShader::setCellIntensity(unsigned int i, float f) {
+    cellIntensities[i] = (i == 0) ? f : glm::min(cellIntensities[i - 1], f);
+}
+
+void ParticleShader::setCellDiffuseScale(unsigned int i, float f) {
+    cellDiffuseScales[i] = (i == 0) ? f : glm::min(cellDiffuseScales[i - 1], f);
+}
+void ParticleShader::setCellSpecularScale(unsigned int i, float f) {
+    cellSpecularScales[i] = (i == 0) ? f : glm::min(cellSpecularScales[i - 1], f);
 }
