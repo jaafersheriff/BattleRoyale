@@ -333,15 +333,26 @@ std::pair<const BounderComponent *, Intersect> CollisionSystem::pick(const Ray &
 
     if (s_octree) {
         return s_octree->filter(ray, [& conditional](const Ray & ray, const BounderComponent * bounder) {
-            return conditional(*bounder) ? bounder->intersect(ray) : Intersect();
+            if (conditional(*bounder)) {
+                Intersect inter(bounder->intersect(ray));
+                if (inter.face) {
+                    return inter;
+                }
+            }
+            return Intersect();
         });
     }
     else {
         BounderComponent * bounder(nullptr);
         Intersect inter;
         for (BounderComponent * b : s_bounderComponents) {
-            if (!conditional(*b)) continue;
+            if (!conditional(*b)) {
+                continue;
+            }
             Intersect potential(b->intersect(ray));
+            if (!potential.face) {
+                continue;
+            }
             if (potential.dist < inter.dist) {
                 bounder = b;
                 inter = potential;

@@ -70,6 +70,10 @@ void startGame() {
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json", lighting::k_defAmbience);
     // Needs to be manually adjusted to fit level size
     CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
+    //GameObject & go(Scene::createGameObject());
+    //Scene::addComponent<SpatialComponent>(go);
+    //Scene::addComponentAs<SphereBounderComponent, BounderComponent>(go, 0, Sphere(glm::vec3(0.0f, 6.0f, 0.0f), 5.0f));
+
 
     // Setup Player
     player::setup(glm::vec3(0.0f, 6.0f, 0.0f));
@@ -84,7 +88,7 @@ void startGame() {
     SoundSystem::setCamera(player::camera);
 
     // Add Enemies
-    int nEnemies(3);
+    int nEnemies(0);
     for (int i(0); i < nEnemies; ++i) {
         enemies::basic::create(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f));
     }
