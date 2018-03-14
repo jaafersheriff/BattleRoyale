@@ -224,7 +224,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    if (!RenderSystem::createShader<ParticleShader>("particle_vert.glsl", "particle_frag.glsl", light::dir)) {
+    if (!RenderSystem::createShader<ParticleShader>("particle_vert.glsl", "diffuse_frag.glsl", light::dir)) {
         return EXIT_FAILURE;
     }
 

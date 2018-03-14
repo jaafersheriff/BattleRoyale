@@ -41,6 +41,6 @@ void main() {
     /* Base color */
     vec3 bColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib);
 
-    //color = vec4(bColor, 1.0);
-	color = vec4(diffuseColor * 0.85, 1.0);
+    color = vec4(bColor, 1.0);
+	//color = vec4(diffuseColor * 0.85, 1.0);
 }

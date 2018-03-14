@@ -11,8 +11,6 @@
 ParticleShader::ParticleShader(const String & vertFile, const String & fragFile, const glm::vec3 & light) :
     Shader(vertFile, fragFile),
     lightDir(&light) {
-    //cellIntensities.resize(1, 1.f);
-    //cellScales.resize(1, 1.f);
 }
 
 bool ParticleShader::init() {
@@ -115,7 +113,6 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         /* Do all the buffer stuff */
         glGenBuffers(1, &offsetBufId);
         glBindBuffer(GL_ARRAY_BUFFER, offsetBufId);
-        
         glBufferData(GL_ARRAY_BUFFER, positions->size() * sizeof(glm::vec3), &(*positions)[0], GL_STATIC_DRAW);
         glEnableVertexAttribArray(posPO);
         glVertexAttribPointer(posPO, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
@@ -123,7 +120,7 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         /* Update particle position attribute once per instance */
         glVertexAttribDivisor(posPO, 1);
 
-
+        /* Set Orientation IDs*/
         int randOrient = getAttribute("orientationID");
         unsigned int orientBufId;
         Vector<int> *orientations = pc->getParticleOrientationIDs();
@@ -133,7 +130,7 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         glBindBuffer(GL_ARRAY_BUFFER, orientBufId);
         glBufferData(GL_ARRAY_BUFFER, orientations->size() * sizeof(int), &(*orientations)[0], GL_STATIC_DRAW);
         glEnableVertexAttribArray(randOrient);
-        glVertexAttribPointer(randOrient, 1, GL_INT, GL_FALSE, 0, (const void *)0);
+        glVertexAttribIPointer(randOrient, 1, GL_INT, 0, (const void *)0);
         glVertexAttribDivisor(randOrient, 1);
 
 

@@ -23,10 +23,8 @@ out vec2 texCoords;
 
 void main() {
 	if(randomOrientation){
-		//worldPos = vec3(randomMs[orientationID + 1] * vec4(vertPos, 1.0f)) + particleOffset;
-		//fragNor = randomNs[orientationID + 1] * vertNor;
-		worldPos = vec3(randomMs[gl_InstanceID % 10 + 1] * vec4(vertPos, 1.0f)) + particleOffset;
-		fragNor = randomNs[gl_InstanceID % 10 + 1] * vertNor;
+		worldPos = vec3(randomMs[orientationID + 1] * vec4(vertPos, 1.0f)) + particleOffset;
+		fragNor = randomNs[orientationID + 1] * vertNor;
 	}
 	else{
 		worldPos = vec3(M * vec4(vertPos, 1.0f)) + particleOffset;

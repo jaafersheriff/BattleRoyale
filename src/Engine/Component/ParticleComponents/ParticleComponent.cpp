@@ -48,7 +48,7 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
             int n = 2000;
             float effectDuration = 5.0f;
             float particleDuration = 2.0f;
-            int orientations = 10;
+            int orientations = 20;
             bool randomDistribution = true; // Have a random distribution vs uniform distribution
             float variance = 0.0f;
             float rate = 100.0f;
@@ -86,8 +86,8 @@ void ParticleComponent::initRandomOrientations(glm::mat4 comp, glm::mat3 norm, i
         const glm::fmat4 & rot = glm::rotate(angle, axis);
         const glm::fvec3 & translation = glm::fvec3(0.0f);
         const glm::fvec3 & scale = glm::fvec3(getScaleFactor(m_effect));
-        //m_randomNs.emplace_back(glm::mat3(rot) * glm::mat3(glm::scale(glm::mat4(), 1.0f / scale)));
-        m_randomNs.emplace_back(norm);
+        m_randomNs.emplace_back(glm::mat3(rot) * glm::mat3(glm::scale(glm::mat4(), 1.0f / scale)));
+        //m_randomNs.emplace_back(norm);
         m_randomMs.emplace_back(Util::compositeTransform(scale, rot, translation));
     }
 }
