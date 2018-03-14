@@ -19,7 +19,7 @@ DiffuseShader * RenderSystem::diffuseShader = nullptr;
 BounderShader * RenderSystem::bounderShader = nullptr;
 RayShader * RenderSystem::rayShader = nullptr;
  
-float RenderSystem::lightDist = 1.f;
+float RenderSystem::lightDist = 15.f;
 
 void RenderSystem::init() {
     /* Init GL state */
@@ -35,15 +35,14 @@ void RenderSystem::init() {
     glm::vec3 w = glm::normalize(glm::vec3(-0.2f, 0.75f, 0.5f));
     glm::vec3 u = glm::normalize(glm::cross(w, glm::vec3(0.f, 1.f, 0.f)));
     glm::vec3 v = glm::normalize(glm::cross(u, w));
-    s_lightSpatial = &Scene::addComponent<SpatialComponent>(*s_lightObject, w * lightDist, glm::vec3(0.f), glm::mat3(u, v, w));
-    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, 45.f, 0.01f, 300.f);
+    s_lightSpatial = &Scene::addComponent<SpatialComponent>(*s_lightObject, w * lightDist, glm::vec3(2.f), glm::mat3(u, v, w));
+    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, glm::vec2(-75.f, 100.f), glm::vec2(-55.f, 100.f), 0.01f, 105.f);
+    //Scene::addComponent<DiffuseRenderComponent>(*s_lightObject, *Loader::getMesh("cube.obj"), ModelTexture(1.f, glm::vec3(1.f), glm::vec3(0.9f)), true, glm::vec2(1, 1));
 
     /* Init shadow shader */
     shadowShader = new ShadowDepthShader(
         EngineApp::RESOURCE_DIR + "shadow_vert.glsl",
-        EngineApp::RESOURCE_DIR + "shadow_frag.glsl",
-        1280,
-        960);
+        EngineApp::RESOURCE_DIR + "shadow_frag.glsl");
     if (!shadowShader->init()) {
         std::cerr << "Error initializing shadow shader" << std::endl;
         std::cin.get();
@@ -52,7 +51,7 @@ void RenderSystem::init() {
 
 void RenderSystem::update(float dt) {
     /* Update light */
-    s_lightSpatial->setPosition(getLightDir() * -lightDist);
+    s_lightSpatial->setPosition(getLightDir() * -lightDist + s_playerCamera->gameObject().getComponentByType<SpatialComponent>()->position());
 
     /* Render to shadow map */
     Vector<DiffuseRenderComponent *> shadowCasters = getFrustumComps(s_lightCamera);

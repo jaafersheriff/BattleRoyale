@@ -44,6 +44,10 @@ public:
     static void setLightDir(glm::vec3);
     static float lightDist;
 
+    /* Shadows */
+    static const glm::mat4 & getL() { return shadowShader->getL(); }
+    static const GLuint getShadowMap() { return shadowShader->getShadowMapTexture(); }
+
     /* Shaders */
     static ShadowDepthShader * shadowShader;
     static DiffuseShader * diffuseShader;
