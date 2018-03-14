@@ -7,16 +7,14 @@
 
 class ShadowDepthShader : public Shader {
     public:
-        ShadowDepthShader(const String & vertName, const String & fragName, int width, int height);
+        ShadowDepthShader(const String & vertName, const String & fragName);
 
         bool init();
 
         virtual void render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> &) override;
         
         GLuint getShadowMapTexture() { return fboTexture; }
-
-        glm::vec2 hBounds, vBounds;
-        float nPlane, fPlane;
+        const glm::mat4 & getL() { return L; }
     private:
         void initFBO();
         

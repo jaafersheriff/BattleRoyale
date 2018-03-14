@@ -6,14 +6,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-ShadowDepthShader::ShadowDepthShader(const String & vertName, const String & fragName, int width, int height) :
-    Shader(vertName, fragName),
-    mapWidth(width),
-    mapHeight(height) {
-    hBounds.x = vBounds.x = -10.f;
-    hBounds.y = vBounds.y =  10.f;
-    nPlane = 0.01f;
-    fPlane = 300.f;
+ShadowDepthShader::ShadowDepthShader(const String & vertName, const String & fragName) :
+    Shader(vertName, fragName) {
+    mapWidth = mapHeight = 8168;
 }
 
 bool ShadowDepthShader::init() {
@@ -40,8 +35,8 @@ void ShadowDepthShader::initFBO() {
     glBindTexture(GL_TEXTURE_2D, fboTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, mapWidth, mapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -54,19 +49,17 @@ void ShadowDepthShader::initFBO() {
 }
 
 void ShadowDepthShader::render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> & components) {
+    glViewport(0, 0, mapWidth, mapHeight);
     glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
     glClear(GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, mapWidth, mapHeight);
     glCullFace(GL_FRONT);
 
     bind();
 
     /* Calculate L */
     // TODO : make in relation to light camera
-    glm::mat4 LP = glm::ortho(hBounds.x, hBounds.y, vBounds.x, vBounds.y, nPlane, fPlane);
-    glm::mat4 LV = glm::lookAt(camera->gameObject().getComponentByType<SpatialComponent>()->position(),
-        glm::vec3(0, 0, 0),
-                               glm::vec3(0, 1, 0));
+    glm::mat4 LP = camera->getProj();
+    glm::mat4 LV = camera->getView();
 
     // TODO : store, getter/setter, only recompute on dirty 
     this->L = LP * LV;
