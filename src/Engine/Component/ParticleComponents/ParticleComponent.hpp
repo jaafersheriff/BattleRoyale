@@ -39,16 +39,18 @@ class ParticleComponent : public Component {
         glm::mat4 ModelMatrix() { return m_M; }
         glm::mat4 NormalMatrix() { return m_N; }
         Vector<glm::vec3> * getParticlePositions();
+        Vector<int> * getParticleOrientationIDs();
         int Count() { return m_activeEffect->Count(); }
         float Dead() {return m_activeEffect->Life() > m_activeEffect->Duration();}
         Vector<glm::mat4> RandomMs() { return m_randomMs; }
+        Vector<glm::mat3> RandomNs() { return m_randomNs; }
         
 
     private:
         ParticleEffect::EffectParams* getEffectParams(ParticleEffect::Effect effect);
         Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect);
         Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect effect);
-        Vector<glm::mat4> initRandomMs(glm::mat4 comp, int  count);
+        void initRandomOrientations(glm::mat4 comp, glm::mat3 norm, int count);
         float getScaleFactor(ParticleEffect::Effect effect);
     
     public:
@@ -60,5 +62,6 @@ class ParticleComponent : public Component {
         glm::mat4 m_M;
         glm::mat3 m_N;
         Vector<glm::mat4> m_randomMs;
+        Vector<glm::mat3> m_randomNs;
         
 };

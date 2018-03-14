@@ -24,13 +24,16 @@ bool ParticleShader::init() {
     addAttribute("vertNor");
     addAttribute("vertTex");
     addAttribute("particleOffset");
+    //addAttribute("orientationID");
 
     /* Add uniforms */
     addUniform("P");
-    addUniform("V");
     addUniform("M");
     addUniform("randomMs");
+    addUniform("V");
     addUniform("N");
+    addUniform("randomNs");
+    addUniform("randomOrientation");
 
     addUniform("lightDir");
     addUniform("camPos");
@@ -41,7 +44,6 @@ bool ParticleShader::init() {
     addUniform("shine");
     addUniform("textureImage");
     addUniform("usesTexture");
-    addUniform("orientations");
 
     return true;
 }
@@ -70,16 +72,18 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         if (pc->RandomMs().size() > pc->MAX_ORIENTATIONS + 1) {
             break;
         }
-
-        loadInt(getUniform("orientations"), (int)pc->RandomMs().size());
+        bool r = (int)pc->RandomMs().size() != 1;
+        loadBool(getUniform("randomOrientation"), r);
 
         /* Model matrix */
         
         /* Load Random Matrix Array */
-        loadMultiMat4(getUniform("randomMs"), &(pc->RandomMs()[0]), (int)pc->RandomMs().size());
         loadMat4(getUniform("M"), pc->ModelMatrix());
-        /* Normal matrix */
+        loadMultiMat4(getUniform("randomMs"), &(pc->RandomMs()[0]), (int)pc->RandomMs().size());
+        
+        /* Load Normal matrix */
         loadMat3(getUniform("N"), pc->NormalMatrix());
+        loadMultiMat3(getUniform("randomNs"), &(pc->RandomNs()[0]), (int)pc->RandomNs().size());
 
 
 
@@ -100,12 +104,9 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
             loadBool(getUniform("usesTexture"), false);
         }
 
-       
-
-
         /* Bind mesh */
         glBindVertexArray(pc->getMesh(0)->vaoId);
-            
+
         /*Set Particle positions*/
         int posPO = getAttribute("particleOffset");
         unsigned int offsetBufId;
@@ -115,13 +116,26 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
         glGenBuffers(1, &offsetBufId);
         glBindBuffer(GL_ARRAY_BUFFER, offsetBufId);
         
-        //glBufferData(GL_ARRAY_BUFFER, offsetBuf.size() * sizeof(float), &offsetBuf[0], GL_STATIC_DRAW);
         glBufferData(GL_ARRAY_BUFFER, positions->size() * sizeof(glm::vec3), &(*positions)[0], GL_STATIC_DRAW);
         glEnableVertexAttribArray(posPO);
         glVertexAttribPointer(posPO, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
 
         /* Update particle position attribute once per instance */
         glVertexAttribDivisor(posPO, 1);
+
+
+        /*int randOrient = getAttribute("orientationID");
+        unsigned int orientBufId;
+        Vector<int> *orientations = pc->getParticleOrientationIDs();*/
+
+        /* Do all the buffer stuff */
+        /*glGenBuffers(1, &orientBufId);
+        glBindBuffer(GL_ARRAY_BUFFER, orientBufId);
+        glBufferData(GL_ARRAY_BUFFER, orientations->size() * sizeof(int), &(*orientations)[0], GL_STATIC_DRAW);
+        glEnableVertexAttribArray(randOrient);
+        glVertexAttribPointer(randOrient, 1, GL_INT, GL_FALSE, 0, (const void *)0);
+        glVertexAttribDivisor(randOrient, 1);*/
+
 
         /* Bind vertex buffer VBO */
         int pos = getAttribute("vertPos");

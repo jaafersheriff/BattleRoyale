@@ -15,6 +15,7 @@ ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anc
     m_velocity(glm::vec3(0.0f, 0.0f, 0.0f)),
     m_particles(generateParticles()),
     m_activeParticlePositions(getActiveParticlePositions()),
+    m_activeParticleOrientationIDs(getActiveParticleOrientationIDs()),
     m_activeMap(getActiveMap()),
     m_nextActivation(getNextActivation()),
     m_life(0.0f)
@@ -28,6 +29,7 @@ ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anc
     m_velocity(glm::vec3(0.0f, 0.0f, 0.0f)),
     m_particles(generateParticles()),
     m_activeParticlePositions(getActiveParticlePositions()),
+    m_activeParticleOrientationIDs(getActiveParticleOrientationIDs()),
     m_activeMap(getActiveMap()),
     m_nextActivation(getNextActivation()),
     m_life(0.0f)
@@ -42,6 +44,7 @@ ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anc
     m_velocity(velocity),
     m_particles(generateParticles()),
     m_activeParticlePositions(getActiveParticlePositions()),
+    m_activeParticleOrientationIDs(getActiveParticleOrientationIDs()),
     m_activeMap(getActiveMap()),
     m_nextActivation(getNextActivation()),
     m_life(0.0f)
@@ -50,9 +53,6 @@ ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anc
 
 void ParticleEffect::update(float dt) {
     m_life += dt;
-
-    //Active Online Particles
-    
 
     if (m_life < m_effectParams->effectDuration) {
         updateActiveParticles(dt);
@@ -64,12 +64,12 @@ void ParticleEffect::update(float dt) {
 
         }
     }
-    // NOT UPDATED
     else if (m_effectParams->loop) {
         if (m_effectParams->rate == 0) {
             m_life = 0.0f;
             m_particles = generateParticles();
             m_activeParticlePositions = getActiveParticlePositions();
+            m_activeParticleOrientationIDs = getActiveParticleOrientationIDs();
             m_activeMap = getActiveMap();
             m_nextActivation = getNextActivation();
         }
@@ -128,12 +128,14 @@ void ParticleEffect::updateActiveParticles(float dt) {
 void ParticleEffect::removeActiveParticle(int i) {
     m_activeMap.erase(m_activeMap.begin() + i);
     m_activeParticlePositions->erase(m_activeParticlePositions->begin() + i);
+    m_activeParticleOrientationIDs->erase(m_activeParticleOrientationIDs->begin() + i);
 }
 
 //Will always add to end of vector
 void ParticleEffect::addActiveParticle(int i) {
-    m_activeParticlePositions->push_back(m_particles[i]->position);
     m_activeMap.push_back(i);
+    m_activeParticlePositions->push_back(m_particles[i]->position);
+    m_activeParticleOrientationIDs->push_back(m_particles[i]->orientationID);
 }
 
 void ParticleEffect::updatePosition(Particle *p, float dt) {
@@ -157,8 +159,7 @@ void ParticleEffect::sphereMotion(Particle* p) {
     }
 }
 
-//TO DO: ability to have upward starting y -vector
-//TO DO: Disk motion based on direction
+//TO DO: Disk motion based on direction - requires additional vector
 void ParticleEffect::diskMotion(Particle* p) {
     if (!m_effectParams->randomDistribution) {
         float theta = m_effectParams->angle * (p->i / (float)m_effectParams->n);
@@ -171,16 +172,14 @@ void ParticleEffect::diskMotion(Particle* p) {
 }
 
 
-// TO DO: Uniform distribution
+// NOTE: No Uniform distribution.
 void ParticleEffect::coneMotion(Particle* p) {
     glm::vec3 normalizedDirection = normalize(m_direction);
     glm::vec3 u = getU(normalizedDirection);
     glm::vec3 v = glm::cross(u, normalizedDirection);
     float angle = m_effectParams->angle;
     float phi = getRandom(-1 * glm::pi<float>(), glm::pi<float>());
-    //float phi = 2 * glm::pi<float>() * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) - glm::pi<float>(); //radomly from -pi to pi
     float z = getRandom(cos(angle), 1);
-    //float z = cos(angle) + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (1 - cos(angle)))); // randomly distributed from cos(theta) to 1
     float theta = acosf(z);
     p->velocity = sin(theta) * (cos(phi) * u + sin(phi) * v) + cos(theta) * normalizedDirection;
 }
@@ -209,10 +208,10 @@ Vector<ParticleEffect::Particle*> ParticleEffect::generateParticles() {
     return vp;
 }
 
+// This and the inits need to eventually be cleaned up
 ParticleEffect::Particle* ParticleEffect::makeParticle(int i) {
     Particle *p = new Particle();
     
-    //General Particle Initialization
     // TO DO: Multi texture/mesh particle effects
     initParticle(p, i, 0, 0);
 
@@ -224,12 +223,21 @@ ParticleEffect::Particle* ParticleEffect::makeParticle(int i) {
         p->active = false;
     }
 
+    if (m_effectParams->orientations == 0) {
+        p->orientationID = 0;
+    }
+    else {
+        p->orientationID = p->i % m_effectParams->orientations;
+    }
+    
+
     initPosition(p);
 
     initVelocity(p);
 
     return p;
 }
+
 void ParticleEffect::initParticle(Particle *p, int i, int meshID, int modelTextureID) {
     p->i = i;
     p->meshID = meshID;
@@ -251,8 +259,6 @@ void ParticleEffect::initVelocity(Particle *p) {
             coneMotion(p);
             break;
         }
-        default:
-            p->velocity = glm::vec3(0.0f);
     }
 
     //Add random variance if specified
@@ -277,6 +283,16 @@ Vector<glm::vec3> * ParticleEffect::getActiveParticlePositions() {
         }
     }
     return positions;
+}
+
+Vector<int> * ParticleEffect::getActiveParticleOrientationIDs() {
+    Vector<int> *orientationIDs = new Vector<int>();
+    for (int i = 0; i < m_effectParams->n; i++) {
+        if (m_particles[i]->active) {
+            orientationIDs->push_back(m_particles[i]->orientationID);
+        }
+    }
+    return orientationIDs;
 }
 
 Vector<int> ParticleEffect::getActiveMap() {
@@ -312,7 +328,7 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     int n,
     float effectDuration,
     float particleDuration,
-    int randomOrientations,
+    int orientations,
     bool randomDistribution,
     float variance,
     float rate,
@@ -328,7 +344,7 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     effectParams->n = n;
     effectParams->effectDuration = effectDuration;
     effectParams->particleDuration = particleDuration;
-    effectParams->randomOrientations = randomOrientations;
+    effectParams->orientations = orientations;
     effectParams->randomDistribution = randomDistribution;
     effectParams->variance = variance;
     effectParams->rate = rate;
@@ -347,16 +363,12 @@ int ParticleEffect::meshSelect(ParticleEffect::Effect effect, int i) {
     switch (effect) {
         case ParticleEffect::Effect::BLOOD_SPLAT:
             return 0;
-        default:
-            return 0;
     }
 }
 
 int ParticleEffect::modelTextureSelect(ParticleEffect::Effect effect, int i) {
     switch (effect) {
         case ParticleEffect::Effect::BLOOD_SPLAT:
-            return 0;
-        default:
             return 0;
     }
 }

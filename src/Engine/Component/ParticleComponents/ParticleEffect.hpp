@@ -13,15 +13,11 @@ class ParticleEffect {
         enum Type {
             SPHERE, 
             CONE, // NOT IMPLEMENTED
-            DISK, //NOT IMPLEMENTED
+            DISK //NOT IMPLEMENTED
         };
 
         enum Effect {
-            BLOOD_SPLAT,
-            EXPLOADING_GUTS, // NOT IMPLEMENTED
-            SIRACHA_FLAMETHROWER, // NOT IMPLEMENTED
-            SPICE_GRENADE, // NOT IMPLEMENTED
-            MUSTARD_SPLAT //NOT IMPLEMENTED
+            BLOOD_SPLAT
         };
 
         typedef struct {
@@ -30,6 +26,7 @@ class ParticleEffect {
             float life = 0.0f;
             glm::vec3 position;
             glm::vec3 velocity;
+            int orientationID;
             int meshID;
             int modelTextureID;
         }Particle;
@@ -39,7 +36,7 @@ class ParticleEffect {
             int n = 0; //Can be how many to spawn or, if rate is enable, the limit of particle count
             float effectDuration = 0.0f;
             float particleDuration = 0.0f;
-            int randomOrientations = 0; //How many different random orientations can the particle have, 0 means just base.
+            int orientations = 0; //How many different random orientations can the particle have, 0 means just base.
             bool randomDistribution = false;
             float variance = 0.0f; //randomness factor
             float rate = 0.0f; // rate at which particles spawn (particles/sec), 0 if all spawn at once
@@ -52,19 +49,19 @@ class ParticleEffect {
         }EffectParams;
 
     public:
-        //ParticleEffect();
         ParticleEffect(EffectParams *ep, const glm::vec3 & anchor);
         ParticleEffect(EffectParams *ep, const glm::vec3 & anchor, const glm::vec3 & direction);
         ParticleEffect(EffectParams *ep, const glm::vec3 & anchor, const glm::vec3 & direction, const glm::vec3 & velocity);
    
     private:
-        EffectParams *m_effectParams;
+        EffectParams * m_effectParams;
         glm::vec3 m_anchor;
         glm::vec3 m_direction;
         glm::vec3 m_velocity;
         Vector<Particle*> m_particles;
         float m_life;
-        Vector<glm::vec3> *m_activeParticlePositions;
+        Vector<glm::vec3> * m_activeParticlePositions;
+        Vector<int> * m_activeParticleOrientationIDs;
         Vector<int> m_activeMap;
         float m_nextActivation;
 
@@ -72,8 +69,9 @@ class ParticleEffect {
         void update(float dt);
         Mesh* getMesh(int i);
         ModelTexture* getModelTexture(int i);
-        int getOrientationCount() { return m_effectParams->randomOrientations; }
+        int getOrientationCount() { return m_effectParams->orientations; }
         Vector<glm::vec3> * ActiveParticlePositions() {return m_activeParticlePositions; }
+        Vector<int> * ActiveParticleOrientationIDs() { return m_activeParticleOrientationIDs; }
         glm::vec3   anchor()    { return m_anchor; }
         int         Count()     { return m_effectParams->n; }
         float       Life()      { return m_life; }
@@ -83,7 +81,7 @@ class ParticleEffect {
             int n,
             float effectDuration,
             float particleDuration,
-            int randomOrientations,
+            int orientations,
             bool randomDistribution,
             float variance,
             float rate,
@@ -106,6 +104,7 @@ class ParticleEffect {
         int modelTextureSelect(ParticleEffect::Effect effect, int i);
         Vector<ParticleEffect::Particle*> generateParticles();
         Vector<glm::vec3> * getActiveParticlePositions();
+        Vector<int> * getActiveParticleOrientationIDs();
         Vector<int> getActiveMap();
         float getNextActivation();
         void updatePosition(Particle* p, float dt);

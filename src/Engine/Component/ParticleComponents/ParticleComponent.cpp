@@ -13,7 +13,7 @@ void ParticleComponent::init() {
     m_M = comp;
     m_N = glm::mat3();
 
-    m_randomMs = initRandomMs(comp, m_activeEffect->getOrientationCount());
+    initRandomOrientations(comp, m_N, m_activeEffect->getOrientationCount());
 }   
 
 void ParticleComponent::update(float dt) {  
@@ -44,19 +44,17 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
 
     switch (effect) {
         case ParticleEffect::Effect::BLOOD_SPLAT: {
-            // UNIMPLEMENTED - angle
-            // IMPLEMENTED - Speed, n, accelerators, loop, getMeshes, getTextures, variance, rate, DISK, CONE
-            ParticleEffect::Type type = ParticleEffect::Type::DISK;
-            int n = 100;
-            float effectDuration = 1.0f;
-            float particleDuration = 1.0f;
-            int orientations = 0;
+            ParticleEffect::Type type = ParticleEffect::Type::SPHERE;
+            int n = 2000;
+            float effectDuration = 5.0f;
+            float particleDuration = 2.0f;
+            int orientations = 10;
             bool randomDistribution = true; // Have a random distribution vs uniform distribution
             float variance = 0.0f;
-            float rate = 0.0f;
-            float angle = glm::pi<float>()/4; // For Cones, must be limited to 0 -> pi
+            float rate = 100.0f;
+            float angle = glm::pi<float>()/8; // For Cones, must be limited to 0 -> pi
             bool loop = true;
-            float magnitude = 20.0f;
+            float magnitude = 10.0f;
             Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
             accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
             Vector<Mesh *> *meshes = getMeshes(effect);
@@ -64,8 +62,6 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
             return ParticleEffect::createEffectParams(type,n, effectDuration, particleDuration, orientations,
                 randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
         }
-        default:
-            return NULL;
     }
         
 }
@@ -74,9 +70,15 @@ Vector<glm::vec3> * ParticleComponent::getParticlePositions() {
     return m_activeEffect->ActiveParticlePositions();
 }
 
-Vector<glm::mat4> ParticleComponent::initRandomMs(glm::mat4 comp, int count) {
-    Vector<glm::mat4> randMs = Vector<glm::mat4>();
-    randMs.push_back(comp);
+Vector<int> * ParticleComponent::getParticleOrientationIDs() {
+    return m_activeEffect->ActiveParticleOrientationIDs();
+}
+
+void ParticleComponent::initRandomOrientations(glm::mat4 comp, glm::mat3 norm, int count) {
+    m_randomMs = Vector<glm::mat4>();
+    m_randomMs.push_back(comp);
+    m_randomNs = Vector<glm::mat3>();
+    m_randomNs.push_back(norm);
     for (int i = 0; i < count; i++) {
         float angle = 2 * glm::pi<float>() * static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         glm::fvec3 & axis = glm::ballRand(1.0f);
@@ -84,10 +86,10 @@ Vector<glm::mat4> ParticleComponent::initRandomMs(glm::mat4 comp, int count) {
         const glm::fmat4 & rot = glm::rotate(angle, axis);
         const glm::fvec3 & translation = glm::fvec3(0.0f);
         const glm::fvec3 & scale = glm::fvec3(getScaleFactor(m_effect));
-        randMs.emplace_back(Util::compositeTransform(scale, rot, translation));
+        //m_randomNs.emplace_back(glm::mat3(rot) * glm::mat3(glm::scale(glm::mat4(), 1.0f / scale)));
+        m_randomNs.emplace_back(norm);
+        m_randomMs.emplace_back(Util::compositeTransform(scale, rot, translation));
     }
-
-    return randMs;
 }
 
 Mesh* ParticleComponent::getMesh(int i) {
@@ -106,8 +108,6 @@ Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect) {
             meshes->push_back(Loader::getMesh("Hamburger.obj"));
             return meshes;
         }
-        default:
-            return NULL;
     }
 }
 
@@ -120,8 +120,6 @@ Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect ef
             textures->push_back(new ModelTexture(tex));
             return textures;
         }
-         default:
-            return NULL;
     }
 }
 
@@ -132,7 +130,5 @@ float ParticleComponent::getScaleFactor(ParticleEffect::Effect effect) {
     {
         return 0.1f;
     }
-    default:
-        return NULL;
     }
 }
