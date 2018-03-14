@@ -2,6 +2,8 @@
 
 
 
+#include "glm/glm.hpp"
+
 #include "Component/Component.hpp"
 
 
@@ -32,8 +34,31 @@ class ProjectileComponent : public Component {
 
     virtual void update(float dt) override {};
 
-    private:
+    protected:
 
     BounderComponent * m_bounder;
+
+};
+
+
+
+class GrenadeComponent : public ProjectileComponent {
+
+    friend Scene;
+
+    protected:
+
+    GrenadeComponent(GameObject & gameObject, float damage, float radius);
+
+    virtual void init() override;
+
+    protected:
+
+    void detonate();
+
+    protected:
+
+    float m_damage;
+    float m_radius;
 
 };

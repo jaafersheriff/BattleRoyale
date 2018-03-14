@@ -6,8 +6,8 @@
 #include "CameraComponents/CameraControllerComponent.hpp"
 #include "ImGuiComponents/ImGuiComponent.hpp"
 #include "PlayerComponents/PlayerControllerComponent.hpp"
-#include "ProjectileComponents/ProjectileComponent.hpp"
 #include "EnemyComponents/EnemyComponent.hpp"
+#include "ProjectileComponents/ProjectileComponent.hpp"
 // pathfinding
 #include "PathfindingComponents/PathfindingComponent.hpp"
 // spatial

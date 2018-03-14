@@ -250,7 +250,7 @@ void CollisionSystem::update(float dt) {
         }
         const GameObject & go(*pair.first);
         SpatialComponent & spat(*go.getSpatial());
-        spat.setPosition(spat.position() + pair.second, true);
+        spat.move(pair.second, true);
         for (Component * comp : go.getComponentsByType<BounderComponent>()) {
             BounderComponent & bounder(static_cast<BounderComponent &>(*comp));
             s_potentials.insert(&bounder);
@@ -309,7 +309,7 @@ void CollisionSystem::update(float dt) {
         const glm::vec3 & delta(pair.second);
         // set position rather than move because they are conceptually different
         // this will come into play if we do time step interpolation
-        spat.setPosition(spat.position() + delta, true);
+        spat.move(delta, true);
         for (Component * comp : gameObject->getComponentsByType<BounderComponent>()) {
             BounderComponent * bounder(static_cast<BounderComponent *>(comp));
             s_potentials.insert(bounder);

@@ -7,45 +7,54 @@
 
 namespace enemies {
 
-// File static stuff
-namespace {
+    namespace basic {
 
-    Vector<GameObject *> f_basicEnemies;
+        const String k_meshName = "bunny.obj";
+        const bool k_isToon = true;
+        const glm::vec3 k_scale = glm::vec3(0.75f);
+        const unsigned int k_weight = 5;
+        const float k_moveSpeed = 3.0f;
+        const float k_hp = 100.0f;
 
-}
+        Vector<GameObject *> list;
 
-    void createBasic(const glm::vec3 & position) {    
-        Mesh * mesh(Loader::getMesh("bunny.obj"));
-        DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
-        ModelTexture modelTex(lighting::k_defAmbience, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f));
-        bool toon(true);
-        glm::vec3 scale(0.75f);
-        unsigned int collisionWeight(5);
-        float moveSpeed(3.0f);
-
-        GameObject & obj(Scene::createGameObject());
-        SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, scale));
-        NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
-        GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
-        BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *mesh, false, true, false));
-        PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed, false));
-        DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, toon, glm::vec2(1.0f));   
-        EnemyComponent & enemyComp(Scene::addComponent<EnemyComponent>(obj));
+        void create(const glm::vec3 & position) {
+            const Mesh * mesh(Loader::getMesh(k_meshName));
+            const DiffuseShader * shader();
+            ModelTexture modelTex(lighting::k_defAmbience, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f));
+            GameObject & obj(Scene::createGameObject());
+            SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, k_scale));
+            NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
+            GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
+            BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *mesh, false, true, false));
+            PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, k_moveSpeed, false));
+            DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(
+                obj,
+                spatComp,
+                RenderSystem::getShader<DiffuseShader>()->pid,
+                *mesh,
+                modelTex,
+                k_isToon,
+                glm::vec2(1.0f)
+            );   
+            EnemyComponent & enemyComp(Scene::addComponentAs<BasicEnemyComponent, EnemyComponent>(obj, k_hp));
     
-        f_basicEnemies.push_back(&obj);
+            list.push_back(&obj);
+        }
+
     }
 
     void enablePathfinding() {
-        for (GameObject * enemy : f_basicEnemies) {
+        for (GameObject * enemy : basic::list) {
             PathfindingComponent * comp(enemy->getComponentByType<PathfindingComponent>());
             if (!comp) {
-                Scene::addComponent<PathfindingComponent>(*enemy, *player::gameObject, k_defBasicSpeed, false);
+                Scene::addComponent<PathfindingComponent>(*enemy, *player::gameObject, basic::k_moveSpeed, false);
             }
         }
     }
 
     void disablePathfinding() {
-        for (GameObject * enemy : f_basicEnemies) {
+        for (GameObject * enemy : basic::list) {
             PathfindingComponent * comp(enemy->getComponentByType<PathfindingComponent>());
             if (comp) {
                 Scene::removeComponent(*comp);

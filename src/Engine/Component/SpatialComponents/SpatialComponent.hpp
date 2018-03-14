@@ -72,6 +72,10 @@ class SpatialComponent : public Component, public Positionable, public Scaleable
 
     bool isChange() const { return Positionable::isChange() || Scaleable::isChange() || Orientable::isChange(); }
 
+    // This is not a true velocity, only a rough estimation based on just one frame
+    // Use NewtonianComponent for "physics" velocity
+    glm::vec3 effectiveVelocity() const;
+
     private:
 
     mutable glm::mat4 m_modelMatrix;
@@ -82,5 +86,6 @@ class SpatialComponent : public Component, public Positionable, public Scaleable
     mutable bool m_prevModelMatrixValid;
     mutable bool m_normalMatrixValid;
     mutable bool m_prevNormalMatrixValid;
+    float m_dt;
 
 };

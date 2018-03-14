@@ -64,7 +64,7 @@ void startGame() {
     Window::setCursorEnabled(false);
 
     // Set Gravity
-    //SpatialSystem::setGravity(k_defGravity);
+    SpatialSystem::setGravity(k_defGravity);
 
     // Load Level
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json", lighting::k_defAmbience);
@@ -86,7 +86,7 @@ void startGame() {
     // Add Enemies
     int nEnemies(5);
     for (int i(0); i < nEnemies; ++i) {
-        enemies::createBasic(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f));
+        enemies::basic::create(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f));
     }
 
     //--------------------------------------------------------------------------
@@ -233,7 +233,7 @@ void startGame() {
     // Remove all projectiles (right click)
     auto fireCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
-        if (msg.button == GLFW_MOUSE_BUTTON_1 && !msg.mods && msg.action == GLFW_PRESS) {
+        if (msg.button == GLFW_MOUSE_BUTTON_1 && !(msg.mods & GLFW_MOD_CONTROL) && msg.action == GLFW_PRESS) {
             weapons::grenade::firePlayer();
         }
         else if (msg.button == GLFW_MOUSE_BUTTON_2 && msg.action == GLFW_PRESS) {

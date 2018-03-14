@@ -37,12 +37,13 @@ class SpatialSystem {
 
     private:
 
+    static const float s_coefficientOfFriction;
+    static const float s_terminalVelocity;
+
     static const Vector<SpatialComponent *> & s_spatialComponents;
     static const Vector<NewtonianComponent *> & s_newtonianComponents;
     static const Vector<AcceleratorComponent *> & s_acceleratorComponents;
     static glm::vec3 s_gravityDir;
     static float s_gravityMag;
-    static const float s_coefficientOfFriction;
-    static const float s_terminalVelocity;
 
 };

@@ -8,9 +8,11 @@
 
 namespace enemies {
 
-    constexpr float k_defBasicSpeed = 3.0f;
+    namespace basic {
 
-    void createBasic(const glm::vec3 & position);
+        void create(const glm::vec3 & position);
+
+    }
 
     void enablePathfinding();
 
