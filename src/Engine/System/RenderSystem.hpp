@@ -13,7 +13,9 @@
 #include "Shaders/Shader.hpp"
 #include "Shaders/DiffuseShader.hpp"
 #include "Shaders/BounderShader.hpp"
+#include "Shaders/OctreeShader.hpp"
 #include "Shaders/RayShader.hpp"
+#include "Shaders/PostProcessShader.hpp"
 #include "Shaders/ShadowDepthShader.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 
@@ -32,11 +34,11 @@ public:
     /* Full render function including shadow maps, main render calls, and post-processing */
     static void update(float dt);
 
-    /* Camera stuff */
+    /* Camera */
     static void setCamera(const CameraComponent * camera);
     static const CameraComponent * s_playerCamera;
 
-    /* Light stuff */
+    /* Light */
     static GameObject * s_lightObject;
     static SpatialComponent * s_lightSpatial;
     static CameraComponent * s_lightCamera;
@@ -45,24 +47,38 @@ public:
     static float lightDist;
 
     /* Shadows */
-    static const glm::mat4 & getL() { return shadowShader->getL(); }
-    static const GLuint getShadowMap() { return shadowShader->getShadowMapTexture(); }
+    static const glm::mat4 & getL() { return s_shadowShader->getL(); }
+    static const GLuint getShadowMap() { return s_shadowShader->getShadowMapTexture(); }
 
     /* Shaders */
-    static ShadowDepthShader * shadowShader;
-    static DiffuseShader * diffuseShader;
+    static DiffuseShader * s_diffuseShader;
+    static BounderShader * s_bounderShader;
+    static RayShader * s_rayShader;
+    static ShadowDepthShader * s_shadowShader;
+    static OctreeShader * s_octreeShader;
+    static PostProcessShader * s_postProcessShader;
+    // TODO : templates
     static bool createDiffuseShader(String, String);
-    static BounderShader * bounderShader;
     static bool createBounderShader(String, String);
-    static RayShader * rayShader;
     static bool createRayShader(String, String);
+    static bool createOctreeShader(String, String);
+    static bool createPostProcessShader(String, String);
+    static bool createShadowShader(String, String);
+
+    /* FBO Stuff */
+    static GLuint getFBOTexture() { return s_fboColorTex; }
 
 private:
-    static bool initShader(Shader *);
-    static Vector<DiffuseRenderComponent *> getFrustumComps(const CameraComponent *);
+   static bool initShader(Shader *);
 
-    /* Render targets */
+    static Vector<DiffuseRenderComponent *> getFrustumComps(const CameraComponent *);
     static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
+
+    static void initFBO();
+    static void doResize();
+    static GLuint s_fbo;
+    static GLuint s_fboColorTex;
+    static bool s_wasResize;
 };
 
 #endif

@@ -45,7 +45,7 @@ class GameObject {
     // get all components;
     const Vector<Component *> & getComponents() const { return m_allComponents; }
     // get all components of a specific type
-    template <typename CompT> const Vector<Component *> & getComponentsByType() const;
+    template <typename CompT> const Vector<CompT *> & getComponentsByType() const;
 
     // get first component of a specific type
     template <typename CompT> CompT * getComponentByType() const;
@@ -77,15 +77,15 @@ void GameObject::addComponent(CompT & component) {
 }
 
 template <typename CompT>
-const Vector<Component *> & GameObject::getComponentsByType() const {
+const Vector<CompT *> & GameObject::getComponentsByType() const {
     static_assert(std::is_base_of<Component, CompT>::value, "CompT must be a component type");
     static_assert(!std::is_same<CompT, Component>::value, "CompT must be a derived component type");
 
-    static const Vector<Component *> s_emptyList;
+    static const Vector<CompT *> s_emptyList;
 
     auto it(m_compsByCompT.find(std::type_index(typeid(CompT))));
     if (it != m_compsByCompT.end()) {
-        return it->second;
+        return reinterpret_cast<const Vector<CompT *> &>(it->second);
     }
     return s_emptyList;
 }

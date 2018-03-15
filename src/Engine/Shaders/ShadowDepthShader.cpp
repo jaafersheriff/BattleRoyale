@@ -70,25 +70,27 @@ void ShadowDepthShader::render(const CameraComponent * camera, const Vector<Diff
         loadMat4(getUniform("M"), drc->gameObject().getSpatial()->modelMatrix());
 
         /* Bind mesh */
-        glBindVertexArray(drc->mesh->vaoId);
+        const Mesh & mesh(drc->mesh());
+        glBindVertexArray(mesh.vaoId);
             
         /* Bind vertex buffer VBO */
         int pos = getAttribute("vertPos");
         glEnableVertexAttribArray(pos);
-        glBindBuffer(GL_ARRAY_BUFFER, drc->mesh->vertBufId);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.vertBufId);
         glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
 
         /* Bind indices buffer VBO */
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drc->mesh->eleBufId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.eleBufId);
 
         /* DRAW */
-        glDrawElements(GL_TRIANGLES, (int)drc->mesh->eleBufSize, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, (int)mesh.eleBufSize, GL_UNSIGNED_INT, nullptr);
 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     unbind();
     glCullFace(GL_BACK);
