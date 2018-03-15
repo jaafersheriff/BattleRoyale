@@ -12,8 +12,7 @@
 
 ShadowDepthShader::ShadowDepthShader(const String & vertName, const String & fragName) :
     Shader(vertName, fragName),
-    s_mapWidth(DEFAULT_SIZE),
-    s_mapHeight(DEFAULT_SIZE)
+    s_mapSize(DEFAULT_SIZE)
 {}
 
 bool ShadowDepthShader::init() {
@@ -38,7 +37,7 @@ void ShadowDepthShader::initFBO() {
     // generate the texture
     glGenTextures(1, &s_fboTexture);
     glBindTexture(GL_TEXTURE_2D, s_fboTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, s_mapWidth, s_mapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, s_mapSize, s_mapSize, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -50,12 +49,20 @@ void ShadowDepthShader::initFBO() {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, s_fboTexture, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
+    glBindTexture(GL_TEXTURE_2D, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ShadowDepthShader::setMapSize(int size) {
+    s_mapSize = size;
+    glBindTexture(GL_TEXTURE_2D, s_fboTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, s_mapSize, s_mapSize, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void ShadowDepthShader::render(const CameraComponent * camera) {
     /* Reset shadow map */
-    glViewport(0, 0, s_mapWidth, s_mapHeight);
+    glViewport(0, 0, s_mapSize, s_mapSize);
     glBindFramebuffer(GL_FRAMEBUFFER, s_fboHandle);
     glClear(GL_DEPTH_BUFFER_BIT);
  

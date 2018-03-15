@@ -333,9 +333,10 @@ int main(int argc, char **argv) {
             RenderSystem::s_lightCamera->setOrthoBounds(hBounds, vBounds);
             RenderSystem::s_lightCamera->setNearFar(nPlane, fPlane);
             /* Shadow map FBO */
-            static int fSize = 256;
-            ImGui::SliderInt("FBO", &fSize, 128, 1024);
-            ImGui::Image((ImTextureID)RenderSystem::getShadowMap(), ImVec2(fSize, fSize));
+            int mapSize = RenderSystem::s_shadowShader->getMapSize();
+            ImGui::SliderInt("Shadow Map Size", &mapSize, 1024, 16384);
+            RenderSystem::s_shadowShader->setMapSize(mapSize);
+            ImGui::Image((ImTextureID)RenderSystem::getShadowMap(), ImVec2(256, 256));
         }
     );
 

@@ -15,13 +15,15 @@ class ShadowDepthShader : public Shader {
         
         GLuint getShadowMapTexture() { return s_fboTexture; }
         const glm::mat4 & getL() { return L; }
+        int getMapSize() { return s_mapSize; }
+        void setMapSize(int);
     private:
         void initFBO();
         
         glm::mat4 L;
         GLuint s_fboHandle;
         GLuint s_fboTexture;
-        int s_mapWidth, s_mapHeight;
+        int s_mapSize;
 };
 
 #endif
