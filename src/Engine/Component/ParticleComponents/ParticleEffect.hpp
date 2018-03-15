@@ -8,8 +8,11 @@
 #include "Model/Mesh.hpp"
 #include "Model/ModelTexture.hpp"
 
+class ParticleSystem;
 
 class ParticleEffect {
+    friend ParticleSystem;
+
     public:
         enum Type {
             SPHERE, 
@@ -25,7 +28,7 @@ class ParticleEffect {
             SIRACHA_FLAMETHROWER
         };
 
-        typedef struct {
+        struct Particle{
             int i;
             bool active = false;
             float life = 0.0f;
@@ -34,9 +37,9 @@ class ParticleEffect {
             int orientationID;
             int meshID;
             int modelTextureID;
-        }Particle;
+        };
 
-        typedef struct {
+        struct EffectParams {
             ParticleEffect::Type type;
             int n = 0; //Can be how many to spawn or, if rate is enable, the limit of particle count
             float effectDuration = 0.0f;
@@ -52,7 +55,7 @@ class ParticleEffect {
             Vector<glm::vec3>* accelerators;
             Vector<Mesh *>* meshes;
             Vector<ModelTexture *>* textures;
-        }EffectParams;
+        };
 
     public:
         ParticleEffect(EffectParams *ep, const glm::vec3 & anchor);

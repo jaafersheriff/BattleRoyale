@@ -52,6 +52,7 @@ ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & off
 {
 }
 
+
 void ParticleEffect::update(float dt, glm::vec3 anchor, glm::vec3 direction) {
     m_anchor = anchor;
     m_direction = direction;
@@ -69,7 +70,8 @@ void ParticleEffect::update(float dt) {
 
     if (m_life < m_effectParams->effectDuration) {
         updateActiveParticles(dt);
-        int attenuations = getAttenuations(dt);
+        int attenuations = (int)ceil((m_life - m_nextAttenuation) / m_attenuationRate);
+        m_nextAttenuation += attenuations * m_attenuationRate;
         float factor = 1.0f;
         if (attenuations != 0) {
             factor= pow(m_effectParams->attenuation, attenuations);
@@ -288,6 +290,7 @@ void ParticleEffect::initVelocity(Particle *p) {
             coneMotion(p);
             break;
         }
+        default: {}
     }
 
     //Add random variance if specified

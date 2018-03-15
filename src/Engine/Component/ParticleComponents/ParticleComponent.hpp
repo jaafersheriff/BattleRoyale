@@ -1,4 +1,5 @@
 #pragma once
+#include "util/Memory.hpp"
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/transform2.hpp>
 #include "glm/gtc/constants.hpp"
@@ -12,9 +13,12 @@
 #include "Model/ModelTexture.hpp"
 #include "Util/Util.hpp"
 
+class ParticleSystem;
+
 class ParticleComponent : public Component {
 
     friend Scene;
+    friend ParticleSystem;
 
     protected:
         ParticleComponent(GameObject & gameobject);
@@ -63,7 +67,7 @@ class ParticleComponent : public Component {
         static const int MAX_ORIENTATIONS = 20; // if changed, need to change vertex shader
 
     private:
-        ParticleEffect* m_activeEffect;
+        ParticleEffect *m_activeEffect;
         ParticleEffect::Effect m_effect;
         glm::mat4 m_M;
         glm::mat3 m_N;

@@ -9,12 +9,16 @@ ParticleComponent::ParticleComponent(GameObject & gameobject) :
 
 ParticleComponent::ParticleComponent(GameObject & gameobject, SpatialComponent * anchor) :
     Component(gameobject),
+    m_offsetBufferID(0),
+    m_orientationBufferID(0),
     m_anchor(anchor)
 {
 }
 
 ParticleComponent::ParticleComponent(GameObject & gameobject, SpatialComponent * anchor, SpatialComponent * directional) :
     Component(gameobject),
+    m_offsetBufferID(0),
+    m_orientationBufferID(0),
     m_anchor(anchor),
     m_directional(directional)
 {
@@ -132,8 +136,8 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
         case ParticleEffect::Effect::BODY_EXPLOSION: {
             ParticleEffect::Type type = ParticleEffect::Type::SPHERE;
             int n = 40;
-            float effectDuration = 1.5f;
-            float particleDuration = 1.5f;
+            float effectDuration = 2.0f;
+            float particleDuration = 2.0f;
             int orientations = 20;
             bool randomDistribution = true; 
             float variance = 0.0f;

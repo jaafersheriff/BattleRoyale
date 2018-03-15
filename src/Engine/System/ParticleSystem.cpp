@@ -9,7 +9,7 @@ void ParticleSystem::update(float dt) {
     for (auto &p : s_particleComponents) {
         p->update(dt);
         if (p->Dead()) {
-            Scene::removeComponent(p);
+            Scene::destroyGameObject(p->gameObject());
         }
     }
 }

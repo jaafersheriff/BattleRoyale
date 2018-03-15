@@ -3,6 +3,7 @@
 #include "Component/ParticleComponents/ParticleComponent.hpp"
 
 class ParticleShader;
+class ParticleComponent;
 
 class ParticleSystem {
 
