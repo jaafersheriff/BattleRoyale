@@ -26,7 +26,7 @@ namespace detail {
 
 	struct customCompare {
 
-		bool operator()(const glm::vec3& lhs, const glm::vec3& rhs)
+		bool operator()(const glm::vec3& lhs, const glm::vec3& rhs) const
 		{
 			float radius = 1.f;
 

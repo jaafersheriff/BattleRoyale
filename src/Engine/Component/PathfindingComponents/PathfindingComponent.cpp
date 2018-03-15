@@ -325,7 +325,7 @@ void PathfindingComponent::drawCup(glm::vec3 position) {
 
     GameObject & obj(Scene::createGameObject());
     SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, scale));
-    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, true, glm::vec2()));
+    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, true, glm::vec2()));
 /*
     const glm::vec3 & playerPos = m_player->getSpatial()->position();
     const glm::vec3 & pos = m_spatial->position();
