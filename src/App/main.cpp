@@ -103,6 +103,11 @@ namespace player {
         cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, k_fov, k_near, k_far);
         controllerComp = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_lookSpeed, k_moveSpeed, k_jumpSpeed, k_sprintSpeed);
 
+        SoundSystem::setBackgroundMusic("bgRock1.mp3", true);
+        SoundSystem::playBackgroundMusic();
+        SoundSystem::setBackgroundMusicVolume(0.05f);
+
+        SoundSystem::playSound3D("burp1.wav", glm::vec3(25, 15, -93), true);
         // An example of using object initialization message
         auto initCallback([&](const Message & msg) {            
             cameraComp->lookInDir(cameraComp->getLookDir());
@@ -421,15 +426,18 @@ int main(int argc, char **argv) {
         if (msg.button == GLFW_MOUSE_BUTTON_1 && !msg.mods && msg.action == GLFW_PRESS) {
             //createProjectile(player::spatialComp->position() + player::cameraComp->getLookDir() * 2.0f, player::cameraComp->getLookDir());
             //Remove later
-            createParticleEffect(ParticleEffect::BLOOD_SPLAT, 
-                player::spatialComp->position() + player::cameraComp->getLookDir() * 5.0f, 
-                player::cameraComp->getLookDir());
+            const glm::vec3 & up = glm::vec3(0, 1, 0);
+            createParticleEffect(ParticleEffect::SODA_GRENADE,
+                player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, up);
+            SoundSystem::playSound3D("woosh.mp3", player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, false);
+            //SoundSystem::playBackgroundMusic();
         }
         if (msg.button == GLFW_MOUSE_BUTTON_2 && msg.action == GLFW_PRESS) {
             for (GameObject * obj : f_projectiles) {
                 Scene::destroyGameObject(*obj);
             }
             f_projectiles.clear();
+            SoundSystem::pauseBackgroundMusic();
         }
     });
     Scene::addReceiver<MouseMessage>(nullptr, fireCallback);

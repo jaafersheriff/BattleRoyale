@@ -8,16 +8,21 @@
 #include "Model/Mesh.hpp"
 #include "Model/ModelTexture.hpp"
 
+
 class ParticleEffect {
     public:
         enum Type {
             SPHERE, 
-            CONE, // NOT IMPLEMENTED
-            DISK //NOT IMPLEMENTED
+            CONE,
+            DISK
         };
 
         enum Effect {
-            BLOOD_SPLAT
+            BLOOD_SPRAY,
+            WATER_FOUNTAIN,
+            SODA_GRENADE,
+            BODY_EXPLOSION,
+            SIRACHA_FLAMETHROWER
         };
 
         typedef struct {

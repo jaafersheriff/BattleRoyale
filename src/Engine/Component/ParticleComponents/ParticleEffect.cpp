@@ -360,15 +360,9 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
 
 
 int ParticleEffect::meshSelect(ParticleEffect::Effect effect, int i) {
-    switch (effect) {
-        case ParticleEffect::Effect::BLOOD_SPLAT:
-            return 0;
-    }
+    return 0;
 }
 
 int ParticleEffect::modelTextureSelect(ParticleEffect::Effect effect, int i) {
-    switch (effect) {
-        case ParticleEffect::Effect::BLOOD_SPLAT:
-            return 0;
-    }
+    return 0;
 }

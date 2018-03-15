@@ -5,6 +5,7 @@
 #include "glm/gtc/random.hpp"
 #include "Component/Component.hpp"
 #include "Component/SpatialComponents/PhysicsComponents.hpp"
+#include "System/SpatialSystem.hpp"
 #include "ParticleEffect.hpp"
 #include "Loader/Loader.hpp"
 #include "Model/Mesh.hpp"

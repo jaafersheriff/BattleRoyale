@@ -43,23 +43,61 @@ void ParticleComponent::spawnParticleEffect(ParticleEffect::Effect effect, const
 ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect::Effect effect) {
 
     switch (effect) {
-        case ParticleEffect::Effect::BLOOD_SPLAT: {
-            ParticleEffect::Type type = ParticleEffect::Type::SPHERE;
+        case ParticleEffect::Effect::BLOOD_SPRAY: {
+            ParticleEffect::Type type = ParticleEffect::Type::CONE;
             int n = 2000;
             float effectDuration = 5.0f;
-            float particleDuration = 2.0f;
-            int orientations = 20;
+            float particleDuration = 0.5f;
+            int orientations = 0;
+            bool randomDistribution = true; // Have a random distribution vs uniform distribution
+            float variance = 0.1f;
+            float rate = 1000.0f;
+            float angle = glm::pi<float>()/24; // For Cones, must be limited to 0 -> pi
+            bool loop = false;
+            float magnitude = 30.0f;
+            Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
+            //accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
+            Vector<Mesh *> *meshes = getMeshes(effect);
+            Vector<ModelTexture*> * textures = getTextures(effect);
+            return ParticleEffect::createEffectParams(type,n, effectDuration, particleDuration, orientations,
+                randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
+        }
+        case ParticleEffect::Effect::WATER_FOUNTAIN: {
+            ParticleEffect::Type type = ParticleEffect::Type::CONE;
+            int n = 600;
+            float effectDuration = 600.0f;
+            float particleDuration = 3.0f;
+            int orientations = 0;
             bool randomDistribution = true; // Have a random distribution vs uniform distribution
             float variance = 0.0f;
-            float rate = 100.0f;
-            float angle = glm::pi<float>()/8; // For Cones, must be limited to 0 -> pi
+            float rate = 300.0f;
+            float angle = glm::pi<float>() / 8; // For Cones, must be limited to 0 -> pi
             bool loop = true;
-            float magnitude = 10.0f;
+            float magnitude = 5.0f;
             Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
             accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
             Vector<Mesh *> *meshes = getMeshes(effect);
             Vector<ModelTexture*> * textures = getTextures(effect);
-            return ParticleEffect::createEffectParams(type,n, effectDuration, particleDuration, orientations,
+            return ParticleEffect::createEffectParams(type, n, effectDuration, particleDuration, orientations,
+                randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
+        }
+        case ParticleEffect::Effect::SODA_GRENADE: {
+            ParticleEffect::Type type = ParticleEffect::Type::SPHERE;
+            int n = 500;
+            float effectDuration = 0.5f;
+            float particleDuration = 0.5f;
+            int orientations = 20;
+            bool randomDistribution = true; // Have a random distribution vs uniform distribution
+            float variance = 0.2f;
+            float rate = 0.0f;
+            float angle = glm::pi<float>() / 4; // For Cones, must be limited to 0 -> pi
+            bool loop = false;
+            float magnitude = 40.0f;
+            Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
+            accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
+            Vector<Mesh *> *meshes = getMeshes(effect);
+            Vector<ModelTexture*> * textures = getTextures(effect);
+            return ParticleEffect::createEffectParams(type, n, effectDuration, particleDuration, orientations,
                 randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
         }
     }
@@ -103,7 +141,22 @@ ModelTexture* ParticleComponent::getModelTexture(int i) {
 Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect) {
     Vector<Mesh*> * meshes = new Vector<Mesh*>();
     switch (effect) {
-        case ParticleEffect::Effect::BLOOD_SPLAT:
+        case ParticleEffect::Effect::BLOOD_SPRAY:
+        {
+            meshes->push_back(Loader::getMesh("particles/Blood_Drop.obj"));
+            return meshes;
+        }
+        case ParticleEffect::Effect::WATER_FOUNTAIN:
+        {
+            meshes->push_back(Loader::getMesh("particles/Water_Drop.obj"));
+            return meshes;
+        }
+        case ParticleEffect::Effect::SODA_GRENADE:
+        {
+            meshes->push_back(Loader::getMesh("Hamburger.obj"));
+            return meshes;
+        }
+        case ParticleEffect::Effect::BODY_EXPLOSION:
         {
             meshes->push_back(Loader::getMesh("Hamburger.obj"));
             return meshes;
@@ -114,7 +167,25 @@ Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect) {
 Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect effect) {
     Vector<ModelTexture*> * textures = new Vector<ModelTexture*>();
     switch (effect) {
-        case ParticleEffect::Effect::BLOOD_SPLAT:
+        case ParticleEffect::Effect::BLOOD_SPRAY:
+        {
+            Texture * tex(Loader::getTexture("particles/Blood_Drop_Tex.png"));
+            textures->push_back(new ModelTexture(tex));
+            return textures;
+        }
+        case ParticleEffect::Effect::WATER_FOUNTAIN:
+        {
+            Texture * tex(Loader::getTexture("particles/Water_Drop_Tex.png"));
+            textures->push_back(new ModelTexture(tex));
+            return textures;
+        }
+        case ParticleEffect::Effect::SODA_GRENADE:
+        {
+            Texture * tex(Loader::getTexture("Hamburger_BaseColor.png"));
+            textures->push_back(new ModelTexture(tex));
+            return textures;
+        }
+        case ParticleEffect::Effect::BODY_EXPLOSION:
         {
             Texture * tex(Loader::getTexture("Hamburger_BaseColor.png"));
             textures->push_back(new ModelTexture(tex));
@@ -126,9 +197,21 @@ Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect ef
 //  TO DO: Multi Mesh scale support
 float ParticleComponent::getScaleFactor(ParticleEffect::Effect effect) {
     switch (effect) {
-    case ParticleEffect::Effect::BLOOD_SPLAT:
-    {
-        return 0.1f;
-    }
+        case ParticleEffect::Effect::BLOOD_SPRAY:
+        {
+            return 0.6f;
+        }
+        case ParticleEffect::Effect::WATER_FOUNTAIN:
+        {
+            return 0.5f;
+        }
+        case ParticleEffect::Effect::SODA_GRENADE:
+        {
+            return 0.1f;
+        }
+        case ParticleEffect::Effect::BODY_EXPLOSION:
+        {
+            return 0.1f;
+        }
     }
 }

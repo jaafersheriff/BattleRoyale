@@ -53,7 +53,9 @@ class SoundSystem {
 
     #ifdef HAVE_FMOD_LIBRARY
         static void playSound(String name);
+        static void playSound(String name, bool loop);
         static void playSound3D(String name, glm::vec3 pos);
+        static void playSound3D(String name, glm::vec3 pos, bool loop);
         static void setBackgroundMusic(String name, bool loop);
         static void pauseBackgroundMusic();
         static void unpauseBackgroundMusic();
