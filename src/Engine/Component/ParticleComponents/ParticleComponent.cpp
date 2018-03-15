@@ -1,7 +1,9 @@
 #include "ParticleComponent.hpp"
 
 ParticleComponent::ParticleComponent(GameObject & gameobject) :
-    Component(gameobject)
+    Component(gameobject),
+    m_offsetBufferID(0),
+    m_orientationBufferID(0)
 {  
 }
 

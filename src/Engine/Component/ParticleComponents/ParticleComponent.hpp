@@ -45,6 +45,8 @@ class ParticleComponent : public Component {
         float Dead() {return m_activeEffect->Life() > m_activeEffect->Duration();}
         Vector<glm::mat4> RandomMs() { return m_randomMs; }
         Vector<glm::mat3> RandomNs() { return m_randomNs; }
+        unsigned int  OffsetBufferID() { return m_offsetBufferID; }
+        unsigned int OrientationBufferID() { return m_orientationBufferID;  }
         
 
     private:
@@ -64,5 +66,7 @@ class ParticleComponent : public Component {
         glm::mat3 m_N;
         Vector<glm::mat4> m_randomMs;
         Vector<glm::mat3> m_randomNs;
+        GLuint m_offsetBufferID;
+        GLuint m_orientationBufferID;
         
 };

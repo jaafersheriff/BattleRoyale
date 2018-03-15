@@ -165,11 +165,13 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
 
         /*Set Particle positions*/
         int posPO = getAttribute("particleOffset");
-        unsigned int offsetBufId;
+        unsigned int offsetBufId = pc->OffsetBufferID();
         Vector<glm::vec3> *positions = pc->getParticlePositions();
 
         /* Do all the buffer stuff */
-        glGenBuffers(1, &offsetBufId);
+        if (offsetBufId == 0){
+            glGenBuffers(1, &offsetBufId);
+        }
         glBindBuffer(GL_ARRAY_BUFFER, offsetBufId);
         glBufferData(GL_ARRAY_BUFFER, positions->size() * sizeof(glm::vec3), &(*positions)[0], GL_STATIC_DRAW);
         glEnableVertexAttribArray(posPO);
@@ -180,11 +182,13 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
 
         /* Set Orientation IDs*/
         int randOrient = getAttribute("orientationID");
-        unsigned int orientBufId;
+        unsigned int orientBufId = pc->OrientationBufferID();
         Vector<int> *orientations = pc->getParticleOrientationIDs();
 
         /* Do all the buffer stuff */
-        glGenBuffers(1, &orientBufId);
+        if (orientBufId == 0) {
+            glGenBuffers(1, &orientBufId);
+        }
         glBindBuffer(GL_ARRAY_BUFFER, orientBufId);
         glBufferData(GL_ARRAY_BUFFER, orientations->size() * sizeof(int), &(*orientations)[0], GL_STATIC_DRAW);
         glEnableVertexAttribArray(randOrient);
@@ -242,7 +246,7 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
  
     }
 
-    if (showWireFrame) {
+    if(showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }    
 }
