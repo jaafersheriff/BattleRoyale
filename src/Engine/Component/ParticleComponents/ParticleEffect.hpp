@@ -113,8 +113,6 @@ class ParticleEffect {
         void initVelocity(Particle *p);
         void removeActiveParticle(int i);
         void addActiveParticle(int i);
-        int meshSelect(ParticleEffect::Effect effect, int i);
-        int modelTextureSelect(ParticleEffect::Effect effect, int i);
         Vector<ParticleEffect::Particle*> generateParticles();
         Vector<glm::vec3> * getActiveParticlePositions();
         Vector<int> * getActiveParticleOrientationIDs();

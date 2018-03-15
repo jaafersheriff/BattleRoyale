@@ -393,13 +393,3 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     effectParams->textures = textures;
     return effectParams;
  }
-
-
-
-int ParticleEffect::meshSelect(ParticleEffect::Effect effect, int i) {
-    return 0;
-}
-
-int ParticleEffect::modelTextureSelect(ParticleEffect::Effect effect, int i) {
-    return 0;
-}
