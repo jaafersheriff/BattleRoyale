@@ -204,21 +204,25 @@ int main(int argc, char **argv) {
 
     // Diffuse shader
     if (!RenderSystem::createShader<DiffuseShader>("diffuse_vert.glsl", "diffuse_frag.glsl", light::dir)) {
+        std::cin.get();
         return EXIT_FAILURE;
     }
 
     // Bounder shader
     if (!RenderSystem::createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
+        std::cin.get();
         return EXIT_FAILURE;
     }
 
     // Octree shader
     if (!RenderSystem::createShader<OctreeShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
+        std::cin.get();
         return EXIT_FAILURE;
     }
     
     // Ray shader
     if (!RenderSystem::createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) {
+        std::cin.get();
         return EXIT_FAILURE;
     }
 

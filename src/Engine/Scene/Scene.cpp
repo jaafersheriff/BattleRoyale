@@ -8,6 +8,7 @@
 #include "System/GameLogicSystem.hpp"
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"
+#include "System/MapExploreSystem.hpp"
 #include "System/CollisionSystem.hpp"
 #include "System/PostCollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
@@ -47,6 +48,7 @@ float Scene::soundMessagingDT;
 void Scene::init() {
     GameLogicSystem::init();
     PathfindingSystem::init();
+    MapExploreSystem::init();
     SpatialSystem::init();
     CollisionSystem::init();
     PostCollisionSystem::init();
@@ -79,6 +81,9 @@ void Scene::update(float dt) {
     pathfindingDT = float(watch.lap());
     relayMessages();
     pathfindingMessagingDT = float(watch.lap());
+
+    MapExploreSystem::update(dt);
+    relayMessages();
 
     SpatialSystem::update(dt); // needs to happen right before collision
     spatialDT = float(watch.lap());
