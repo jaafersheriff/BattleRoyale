@@ -15,7 +15,7 @@ class PostProcessShader : public Shader {
 
     virtual bool init() override;
 
-    virtual void render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> & components) override;
+    virtual void render(const CameraComponent * camera) override;
 
   private:
 

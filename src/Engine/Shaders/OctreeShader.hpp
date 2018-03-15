@@ -20,7 +20,7 @@ class OctreeShader : public Shader {
 
     bool init() override;
 
-    virtual void render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> &) override;
+    virtual void render(const CameraComponent * camera) override;
 
     private:
 

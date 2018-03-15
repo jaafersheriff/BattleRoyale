@@ -10,7 +10,7 @@ class DiffuseShader : public Shader {
         DiffuseShader(const String & vertFile, const String & fragFile);
 
         bool init();
-        virtual void render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> &) override;
+        virtual void render(const CameraComponent * camera) override;
 
         /* Wire frame */
         bool isWireFrame() const { return showWireFrame; }

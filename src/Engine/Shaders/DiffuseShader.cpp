@@ -79,7 +79,7 @@ bool DiffuseShader::init() {
     return true;
 }
 
-void DiffuseShader::render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> & components) {
+void DiffuseShader::render(const CameraComponent * camera) {
     if (!camera || !m_isEnabled) {
         return;
     }
@@ -123,7 +123,7 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<DiffuseR
     glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellSpecularScales.size()), GL_RED, GL_FLOAT, cellSpecularScales.data());
 
     /* Iterate through render targets */
-    for (auto drc : components) {
+    for (auto drc : RenderSystem::getFrustumComps(camera)) {
 
         /* Toon shading */
         if (showToon && drc->isToon()) {

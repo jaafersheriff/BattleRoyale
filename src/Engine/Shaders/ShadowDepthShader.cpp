@@ -4,6 +4,8 @@
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
+#include "System/RenderSystem.hpp"
+
 #include <glm/gtc/matrix_transform.hpp>
 
 ShadowDepthShader::ShadowDepthShader(const String & vertName, const String & fragName) :
@@ -48,7 +50,7 @@ void ShadowDepthShader::initFBO() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ShadowDepthShader::render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> & components) {
+void ShadowDepthShader::render(const CameraComponent * camera) {
     /* Reset shadow map */
     glViewport(0, 0, mapWidth, mapHeight);
     glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
@@ -70,7 +72,7 @@ void ShadowDepthShader::render(const CameraComponent * camera, const Vector<Diff
     this->L = LP * LV;
     loadMat4(getUniform("L"), L);
 
-    for (auto drc : components) {
+    for (auto drc : RenderSystem::getFrustumComps(camera)) {
     
         loadMat4(getUniform("M"), drc->gameObject().getSpatial()->modelMatrix());
 

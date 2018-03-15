@@ -84,8 +84,7 @@ void RenderSystem::update(float dt) {
     s_lightSpatial->setPosition(getLightDir() * -lightDist + s_playerCamera->gameObject().getComponentByType<SpatialComponent>()->position());
 
     /* Render shadow map */
-    Vector<DiffuseRenderComponent *> shadowCasters = getFrustumComps(s_lightCamera);
-    s_shadowShader->render(s_lightCamera, shadowCasters);
+    s_shadowShader->render(s_lightCamera);
 
     /* Set up post process FBO */
     glBindFramebuffer(GL_FRAMEBUFFER, s_fbo);
@@ -94,25 +93,22 @@ void RenderSystem::update(float dt) {
         return;
     }
     
-    /* Get components in frustum */
-    Vector<DiffuseRenderComponent *> compsToRender = getFrustumComps(s_playerCamera);
-
     /* Reset rendering display */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glm::ivec2 size = Window::getFrameSize();
     glViewport(0, 0, size.x, size.y);
 
     /* Render! */
-    s_diffuseShader->render(s_playerCamera, compsToRender);
-    s_rayShader->render(s_playerCamera, compsToRender);
-    s_bounderShader->render(s_playerCamera, compsToRender);
+    s_diffuseShader->render(s_playerCamera);
+    s_rayShader->render(s_playerCamera);
+    s_bounderShader->render(s_playerCamera);
 
     /* Rebind screen FBO */
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     /* Post processing */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    s_postProcessShader->render(nullptr, *((Vector<DiffuseRenderComponent *> *) nullptr));
+    s_postProcessShader->render(s_playerCamera);
 
 #ifdef DEBUG_MODE
     if (Window::isImGuiEnabled()) {
@@ -175,6 +171,7 @@ void RenderSystem::doResize() {
 
 /* Frustum culling */
 // TODO : return a reference?
+// TODO : is there a risk of this being called more than once per camera source per frame?
 Vector<DiffuseRenderComponent *> RenderSystem::getFrustumComps(const CameraComponent *camera) {
     Vector<DiffuseRenderComponent *> renderComps;
     for (auto comp : s_diffuseComponents) {

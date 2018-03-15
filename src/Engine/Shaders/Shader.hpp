@@ -37,7 +37,7 @@ class Shader {
         void unloadTexture(int);
 
         /* Render functions */
-        virtual void render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> & components) = 0;
+        virtual void render(const CameraComponent * camera) = 0;
 
         /* Parent load functions */
         void loadBool(const int, const bool) const;

@@ -55,7 +55,7 @@ bool PostProcessShader::init() {
     return true;
 }
 
-void PostProcessShader::render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> & components) {
+void PostProcessShader::render(const CameraComponent * camera) {
     bind();
 
     // Bind texture
