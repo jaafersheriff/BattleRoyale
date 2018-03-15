@@ -64,7 +64,7 @@ void PostProcessShader::render(const CameraComponent * camera, const Vector<Comp
     //glBindTexture(GL_TEXTURE_2D, RenderSystem::s_fboColorTex);
     glUniform1i(getUniform("f_texCol"), 0);
     glUniform1i(getUniform("f_bloomBlur"), 1);
-    glUniform1f(getUniform("exposure"), 2.f);
+    glUniform1f(getUniform("exposure"), 1.f);
     
     glBindVertexArray(s_vaoHandle);
 

@@ -71,9 +71,15 @@ void main() {
 
     color = vec4(edge * bColor, alpha);
 
-	float brightness = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
+	float brightness = max(((color.r+color.g+color.b)/3.0 - 0.6)/0.4, 0.0f);
+
+	BrightColor.rgb = vec3(brightness);
+	BrightColor.a = 1;
+
+	/*
     if(brightness > 0.6)
         BrightColor = vec4(color.rgb, 1.0);
     else
         BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+	*/
 }
