@@ -195,26 +195,22 @@ int main(int argc, char **argv) {
     // Shader Setup
 
     // Diffuse shader
-    if (!RenderSystem::createDiffuseShader("diffuse_vert.glsl", "diffuse_frag.glsl")) {
-        std::cin.get();
+    if (!(RenderSystem::s_diffuseShader = RenderSystem::createShader<DiffuseShader>("diffuse_vert.glsl", "diffuse_frag.glsl"))) {
         return EXIT_FAILURE;
     }
 
     // Bounder shader
-    if (!RenderSystem::createBounderShader("bounder_vert.glsl", "bounder_frag.glsl")) {
-        std::cin.get();
+    if (!(RenderSystem::s_bounderShader = RenderSystem::createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl"))) {
         return EXIT_FAILURE;
     }
 
     // Octree shader
-    if (!RenderSystem::createOctreeShader("bounder_vert.glsl", "bounder_frag.glsl")) {
-        std::cin.get();
+    if (!(RenderSystem::s_octreeShader = RenderSystem::createShader<OctreeShader>("bounder_vert.glsl", "bounder_frag.glsl"))) {
         return EXIT_FAILURE;
     }
     
     // Ray shader
-    if (!RenderSystem::createRayShader("ray_vert.glsl", "ray_frag.glsl")) {
-        std::cin.get();
+    if (!(RenderSystem::s_rayShader = RenderSystem::createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl"))) {
         return EXIT_FAILURE;
     }
 

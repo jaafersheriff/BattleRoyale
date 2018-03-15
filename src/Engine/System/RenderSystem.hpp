@@ -51,28 +51,21 @@ public:
     static const GLuint getShadowMap() { return s_shadowShader->getShadowMapTexture(); }
 
     /* Shaders */
+    template<typename ShaderT, typename... Args> static ShaderT * createShader(Args &&... args);
     static DiffuseShader * s_diffuseShader;
     static BounderShader * s_bounderShader;
     static RayShader * s_rayShader;
     static ShadowDepthShader * s_shadowShader;
     static OctreeShader * s_octreeShader;
     static PostProcessShader * s_postProcessShader;
-    // TODO : templates
-    static bool createDiffuseShader(String, String);
-    static bool createBounderShader(String, String);
-    static bool createRayShader(String, String);
-    static bool createOctreeShader(String, String);
-    static bool createPostProcessShader(String, String);
-    static bool createShadowShader(String, String);
 
     /* FBO Stuff */
     static GLuint getFBOTexture() { return s_fboColorTex; }
 
 private:
-   static bool initShader(Shader *);
-
     static Vector<DiffuseRenderComponent *> getFrustumComps(const CameraComponent *);
     static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
+
 
     static void initFBO();
     static void doResize();
@@ -80,5 +73,24 @@ private:
     static GLuint s_fboColorTex;
     static bool s_wasResize;
 };
+
+
+// TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
+
+template<typename ShaderT, typename... Args>
+ShaderT * RenderSystem::createShader(Args &&... args) {
+    ShaderT * shader = new ShaderT(std::forward<Args>(args)...);
+    if (shader->init()) {
+        return shader;
+    }
+    else {
+        std::cerr << "Failed to initialize shader:" << std::endl;
+        std::cerr << "\t" << shader->vShaderName << std::endl;
+        std::cerr << "\t" << shader->fShaderName << std::endl;
+        std::cin.get();
+        return nullptr;
+    }
+}
+
 
 #endif

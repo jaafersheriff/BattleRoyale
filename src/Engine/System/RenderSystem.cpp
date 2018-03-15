@@ -55,12 +55,12 @@ void RenderSystem::init() {
     //Scene::addComponent<DiffuseRenderComponent>(*s_lightObject, *Loader::getMesh("cube.obj"), ModelTexture(1.f, glm::vec3(1.f), glm::vec3(0.9f)), true, glm::vec2(1, 1));
 
     /* Init post process shader */
-    if (!createPostProcessShader("postprocess_vert.glsl", "postprocess_frag.glsl")) {
+    if (!(s_postProcessShader = createShader<PostProcessShader>("postprocess_vert.glsl", "postprocess_frag.glsl"))) {
         std::exit(EXIT_FAILURE);
     }
 
     /* Init shadow shader */
-    if (!createShadowShader("shadow_vert.glsl", "shadow_frag.glsl")) {
+    if (!(s_shadowShader = createShader<ShadowDepthShader>("shadow_vert.glsl", "shadow_frag.glsl"))) {
         std::exit(EXIT_FAILURE);
     }
 
@@ -183,55 +183,4 @@ Vector<DiffuseRenderComponent *> RenderSystem::getFrustumComps(const CameraCompo
         }
     }
     return renderComps;
-}
-
-
-
-
-
-
-
-
-
-
-
-bool RenderSystem::createDiffuseShader(String vert, String frag) {
-s_diffuseShader = new DiffuseShader(vert, frag);
-return initShader(s_diffuseShader);
-}
-
-bool RenderSystem::createBounderShader(String vert, String frag) {
-s_bounderShader = new BounderShader(vert, frag);
-return initShader(s_bounderShader);
-}
-
-bool RenderSystem::createRayShader(String vert, String frag) {
-s_rayShader = new RayShader(vert, frag);
-return initShader(s_rayShader);
-}
-
-bool RenderSystem::createOctreeShader(String vert, String frag) {
-s_octreeShader = new OctreeShader(vert, frag);
-return initShader(s_octreeShader);
-}
-
-bool RenderSystem::createPostProcessShader(String vert, String frag) {
-s_postProcessShader = new PostProcessShader(vert, frag);
-return initShader(s_postProcessShader);
-}
-
-bool RenderSystem::createShadowShader(String vert, String frag) {
-s_shadowShader = new ShadowDepthShader(vert, frag);
-return initShader(s_shadowShader);
-}
-bool RenderSystem::initShader(Shader *shader) {
-if (shader->init()) {
-return true;
-}
-
-std::cerr << "Failed to initialize shader:" << std::endl;
-std::cerr << "\t" << shader->vShaderName << std::endl;
-std::cerr << "\t" << shader->fShaderName << std::endl;
-std::cin.get();
-return false;
 }
