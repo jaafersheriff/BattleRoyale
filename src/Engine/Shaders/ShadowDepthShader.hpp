@@ -13,15 +13,15 @@ class ShadowDepthShader : public Shader {
 
         virtual void render(const CameraComponent * camera) override;
         
-        GLuint getShadowMapTexture() { return fboTexture; }
+        GLuint getShadowMapTexture() { return s_fboTexture; }
         const glm::mat4 & getL() { return L; }
     private:
         void initFBO();
         
         glm::mat4 L;
-        GLuint fboHandle;
-        GLuint fboTexture;
-        int mapWidth, mapHeight;
+        GLuint s_fboHandle;
+        GLuint s_fboTexture;
+        int s_mapWidth, s_mapHeight;
 };
 
 #endif

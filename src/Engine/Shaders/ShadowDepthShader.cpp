@@ -8,10 +8,13 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#define DEFAULT_SIZE 1024
+
 ShadowDepthShader::ShadowDepthShader(const String & vertName, const String & fragName) :
-    Shader(vertName, fragName) {
-    mapWidth = mapHeight = 8168;
-}
+    Shader(vertName, fragName),
+    s_mapWidth(DEFAULT_SIZE),
+    s_mapHeight(DEFAULT_SIZE)
+{}
 
 bool ShadowDepthShader::init() {
     if (!Shader::init()) {
@@ -30,12 +33,12 @@ bool ShadowDepthShader::init() {
 
 void ShadowDepthShader::initFBO() {
     // generate the FBO for the shadow depth
-    glGenFramebuffers(1, &fboHandle);
+    glGenFramebuffers(1, &s_fboHandle);
 
     // generate the texture
-    glGenTextures(1, &fboTexture);
-    glBindTexture(GL_TEXTURE_2D, fboTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, mapWidth, mapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glGenTextures(1, &s_fboTexture);
+    glBindTexture(GL_TEXTURE_2D, s_fboTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, s_mapWidth, s_mapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -43,8 +46,8 @@ void ShadowDepthShader::initFBO() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     // bind with framebuffer's depth buffer
-    glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, fboTexture, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, s_fboHandle);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, s_fboTexture, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -52,8 +55,8 @@ void ShadowDepthShader::initFBO() {
 
 void ShadowDepthShader::render(const CameraComponent * camera) {
     /* Reset shadow map */
-    glViewport(0, 0, mapWidth, mapHeight);
-    glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
+    glViewport(0, 0, s_mapWidth, s_mapHeight);
+    glBindFramebuffer(GL_FRAMEBUFFER, s_fboHandle);
     glClear(GL_DEPTH_BUFFER_BIT);
  
     if (!camera || !m_isEnabled) {
@@ -65,14 +68,12 @@ void ShadowDepthShader::render(const CameraComponent * camera) {
     glCullFace(GL_FRONT);
 
     /* Calculate L */
-    glm::mat4 LP = camera->getProj();
-    glm::mat4 LV = camera->getView();
-
-    // TODO : store, getter/setter, only recompute on dirty 
-    this->L = LP * LV;
+    this->L = camera->getProj() * camera->getView();
     loadMat4(getUniform("L"), L);
 
-    for (auto drc : RenderSystem::getFrustumComps(camera)) {
+    Vector<DiffuseRenderComponent *> components;
+    RenderSystem::getFrustumComps(camera, components);
+    for (auto drc : components) {
     
         loadMat4(getUniform("M"), drc->gameObject().getSpatial()->modelMatrix());
 

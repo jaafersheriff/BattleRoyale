@@ -62,10 +62,9 @@ public:
     /* FBO Stuff */
     static GLuint getFBOTexture() { return s_fboColorTex; }
 
-    static Vector<DiffuseRenderComponent *> getFrustumComps(const CameraComponent *);
+    static void getFrustumComps(const CameraComponent *, Vector<DiffuseRenderComponent *> &);
 private:
     static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
-
 
     static void initFBO();
     static void doResize();

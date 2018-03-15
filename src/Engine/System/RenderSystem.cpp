@@ -171,14 +171,10 @@ void RenderSystem::doResize() {
 }
 
 /* Frustum culling */
-// TODO : return a reference?
-// TODO : is there a risk of this being called more than once per camera source per frame?
-Vector<DiffuseRenderComponent *> RenderSystem::getFrustumComps(const CameraComponent *camera) {
-    Vector<DiffuseRenderComponent *> renderComps;
+void RenderSystem::getFrustumComps(const CameraComponent *camera, Vector<DiffuseRenderComponent *> &comps) {
     for (auto comp : s_diffuseComponents) {
         if (camera->sphereInFrustum(comp->enclosingSphere())) {
-            renderComps.push_back(comp);
+            comps.push_back(comp);
         }
     }
-    return renderComps;
 }

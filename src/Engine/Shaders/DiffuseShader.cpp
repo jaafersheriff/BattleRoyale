@@ -122,8 +122,12 @@ void DiffuseShader::render(const CameraComponent * camera) {
     glBindTexture(GL_TEXTURE_1D, cellSpecularScalesTexture);
     glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellSpecularScales.size()), GL_RED, GL_FLOAT, cellSpecularScales.data());
 
+    /* Get render targets */
+    Vector<DiffuseRenderComponent *> components;
+    RenderSystem::getFrustumComps(camera, components);
+
     /* Iterate through render targets */
-    for (auto drc : RenderSystem::getFrustumComps(camera)) {
+    for (auto drc : components) {
 
         /* Toon shading */
         if (showToon && drc->isToon()) {
