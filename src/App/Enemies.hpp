@@ -12,6 +12,8 @@ namespace enemies {
 
         void create(const glm::vec3 & position);
 
+        void spawn();
+
     }
 
     void enablePathfinding();

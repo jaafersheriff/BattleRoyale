@@ -18,7 +18,7 @@ namespace freecam {
         gameObject = &Scene::createGameObject();
         spatialComp = &Scene::addComponent<SpatialComponent>(*gameObject);
         cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, player::k_fov, player::k_near, player::k_far);
-        controllerComp = &Scene::addComponent<CameraControllerComponent>(*gameObject, player::k_lookSpeed, player::k_moveSpeed, 10.0f * player::k_moveSpeed);
+        controllerComp = &Scene::addComponent<CameraControllerComponent>(*gameObject, player::k_lookSpeed, 0.25f, 100.0f);
         controllerComp->setEnabled(false);
     }
 
@@ -85,7 +85,7 @@ void startGame() {
     SoundSystem::setCamera(player::camera);
 
     // Add Enemies
-    int nEnemies(0);
+    int nEnemies(3);
     for (int i(0); i < nEnemies; ++i) {
         enemies::basic::create(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f));
     }
@@ -253,6 +253,15 @@ void startGame() {
     });
     Scene::addReceiver<MouseMessage>(nullptr, fireCallback);
 
+    // Spawn enemy (1)
+    auto spawnEnemy([&](const Message & msg_) {
+        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
+        if (msg.key == GLFW_KEY_1 && msg.action == GLFW_PRESS) {
+            enemies::basic::spawn();
+        }
+    });
+    Scene::addReceiver<KeyMessage>(nullptr, spawnEnemy);
+
     // Shoot ray (ctrl-click)
     int rayDepth(100);
     Vector<glm::vec3> rayPositions;
@@ -263,7 +272,6 @@ void startGame() {
             rayPositions.push_back(player::spatial->position());
             glm::vec3 dir(player::camera->getLookDir());
             for (int i(0); i < rayDepth; ++i) {
-                float r(glm::distance(rayPositions.back(), glm::vec3(0.0f, 6.0f, 0.0f)));
                 auto pair(CollisionSystem::pick(Ray(rayPositions.back() + dir * 0.001f, dir)));
                 if (!pair.second.is) {
                     break;

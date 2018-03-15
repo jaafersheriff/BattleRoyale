@@ -22,12 +22,18 @@ void ProjectileComponent::init() {
 
 
 
+const int GrenadeComponent::k_maxBounces = 2;
+const float GrenadeComponent::k_maxFuseTime = 3.0f;
+
+
+
 GrenadeComponent::GrenadeComponent(GameObject & gameObject, float damage, float radius) :
     ProjectileComponent(gameObject),
     m_damage(damage),
     m_radius(radius),
     m_shouldDetonate(false),
-    m_nBounces(0)
+    m_nBounces(0),
+    m_fuseTime(0.0f)
 {}
 
 void GrenadeComponent::init() {
@@ -49,7 +55,7 @@ void GrenadeComponent::init() {
 
     auto bounceCallback([&] (const Message & msg_) {
         const BounceMessage & msg(static_cast<const BounceMessage &>(msg_));
-        if (++m_nBounces >= 3) {
+        if (++m_nBounces > k_maxBounces) {
             m_shouldDetonate = true;
         }
     });
@@ -57,6 +63,11 @@ void GrenadeComponent::init() {
 }
 
 void GrenadeComponent::update(float dt) {
+    m_fuseTime += dt;
+    if (m_fuseTime > k_maxFuseTime) {
+        m_shouldDetonate = true;
+    }
+
     if (m_shouldDetonate) {
         GameObject & blast(Scene::createGameObject());
         SpatialComponent & blastSpatial(Scene::addComponent<SpatialComponent>(blast, m_bounder->center()));

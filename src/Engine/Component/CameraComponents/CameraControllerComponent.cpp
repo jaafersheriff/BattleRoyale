@@ -24,6 +24,8 @@ void CameraControllerComponent::init() {
     if (!(m_camera = gameObject().getComponentByType<CameraComponent>())) assert(false);
 
     auto scrollCallback([&](const Message & msg_) {
+        static float s_percentage = 0.5f;
+
         const ScrollMessage & msg(static_cast<const ScrollMessage &>(msg_));
         if (!m_enabled) {
             return;
@@ -31,9 +33,8 @@ void CameraControllerComponent::init() {
         if (m_minMoveSpeed == m_maxMoveSpeed) {
             return;
         }
-        float percentage((m_moveSpeed - m_minMoveSpeed) / (m_maxMoveSpeed - m_minMoveSpeed));
-        percentage += msg.dy * 0.1f;
-        m_moveSpeed = glm::clamp(m_minMoveSpeed + (m_maxMoveSpeed - m_minMoveSpeed) * percentage, m_minMoveSpeed, m_maxMoveSpeed);
+        s_percentage = glm::clamp(s_percentage + msg.dy * 0.1f, 0.0f, 1.0f);
+        m_moveSpeed = glm::mix(m_minMoveSpeed, m_maxMoveSpeed, s_percentage * s_percentage);
     });
     Scene::addReceiver<ScrollMessage>(nullptr, scrollCallback);
 }

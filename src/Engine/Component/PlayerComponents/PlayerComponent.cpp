@@ -18,4 +18,7 @@ void PlayerComponent::update(float dt) {
     if (Util::isLE(m_health->value(), 0.0f)) {
         Scene::sendMessage<PlayerDeadMessage>(&gameObject(), *this);
     }
+
+    // passive heal, 10% per second
+    m_health->changeValue(m_health->maxValue() * 0.1f * dt);
 }

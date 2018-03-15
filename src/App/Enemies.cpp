@@ -43,6 +43,19 @@ namespace enemies {
             list.push_back(&obj);
         }
 
+        void spawn() {
+            glm::vec3 dir(-player::spatial->w());
+            dir = Util::safeNorm(glm::vec3(dir.x, 0.0f, dir.z));
+            if (dir == glm::vec3()) {
+                return;
+            }
+            auto pair(CollisionSystem::pickHeavy(Ray(player::spatial->position(), dir), UINT_MAX));
+            Intersect & inter(pair.second);
+            if (inter.dist > 20.0f) {
+                create(player::spatial->position() + dir * 20.0f);
+            }
+        }
+
     }
 
     void enablePathfinding() {

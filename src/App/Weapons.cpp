@@ -14,7 +14,7 @@ namespace weapons {
         const glm::vec3 k_scale = glm::vec3(1.0f);
         const unsigned int k_weight = 1;
         const float k_speed = 20.0f; 
-        const float k_damage = 100.0f;
+        const float k_damage = 50.0f;
         const float k_radius = 5.0f;
 
         void fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel) {

@@ -37,7 +37,7 @@ void BlastComponent::init() {
 
 void BlastComponent::update(float dt) {
     if (m_updated) {
-        //Scene::destroyGameObject(gameObject());
+        Scene::destroyGameObject(gameObject());
     }
 
     m_updated = true;

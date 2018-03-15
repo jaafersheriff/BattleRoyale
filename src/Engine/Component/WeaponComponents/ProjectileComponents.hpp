@@ -47,6 +47,11 @@ class GrenadeComponent : public ProjectileComponent {
 
     friend Scene;
 
+    public:
+
+    static const int k_maxBounces;
+    static const float k_maxFuseTime;
+
     protected:
 
     GrenadeComponent(GameObject & gameObject, float damage, float radius);
@@ -68,5 +73,6 @@ class GrenadeComponent : public ProjectileComponent {
     float m_radius;
     float m_shouldDetonate;
     int m_nBounces;
+    float m_fuseTime;
 
 };
