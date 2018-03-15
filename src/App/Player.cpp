@@ -12,6 +12,8 @@ namespace player {
     CapsuleBounderComponent * bounder;
     CameraComponent * camera;
     PlayerControllerComponent * controller;
+    PlayerComponent * playerComp;
+    HealthComponent * health;
 
     void setup(const glm::vec3 & position) {
         gameObject = &Scene::createGameObject();
@@ -23,12 +25,8 @@ namespace player {
         bounder = &Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(*gameObject, k_weight, playerCap);
         camera = &Scene::addComponent<CameraComponent>(*gameObject, k_fov, k_near, k_far);
         controller = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_lookSpeed, k_moveSpeed, k_jumpSpeed, k_sprintSpeed);
-
-        // An example of using object initialization message
-        auto initCallback([&](const Message & msg) {            
-            camera->lookInDir(camera->getLookDir());
-        });
-        Scene::addReceiver<ObjectInitMessage>(gameObject, initCallback);
+        playerComp = &Scene::addComponent<PlayerComponent>(*gameObject);
+        health = &Scene::addComponent<HealthComponent>(*gameObject, k_maxHP);
     }
 
 }

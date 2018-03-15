@@ -7,7 +7,7 @@
 const Vector<CameraComponent *> & GameLogicSystem::s_cameraComponents(Scene::getComponents<CameraComponent>());
 const Vector<CameraControllerComponent *> & GameLogicSystem::s_cameraControllerComponents(Scene::getComponents<CameraControllerComponent>());
 const Vector<PlayerControllerComponent *> & GameLogicSystem::s_playerControllers(Scene::getComponents<PlayerControllerComponent>());
-const Vector<ImGuiComponent *> & GameLogicSystem::s_imguiComponents(Scene::getComponents<ImGuiComponent>());
+const Vector<PlayerComponent *> & GameLogicSystem::s_playerComponents(Scene::getComponents<PlayerComponent>());
 const Vector<EnemyComponent *> & GameLogicSystem::s_enemyComponents(Scene::getComponents<EnemyComponent>());
 const Vector<ProjectileComponent *> & GameLogicSystem::s_projectileComponents(Scene::getComponents<ProjectileComponent>());
 const Vector<BlastComponent *> & GameLogicSystem::s_blastComponents(Scene::getComponents<BlastComponent>());
@@ -18,9 +18,6 @@ void GameLogicSystem::update(float dt) {
     for (auto & comp : Scene::getComponents<SpatialComponent>()) {
         comp->update(dt);
     }
-    for (auto & comp : s_imguiComponents) {
-        comp->update(dt);
-    }
     for (auto & comp : s_playerControllers) {
         comp->update(dt);
     }
@@ -28,6 +25,9 @@ void GameLogicSystem::update(float dt) {
         comp->update(dt);
     }
     for (auto & comp : s_cameraComponents) {
+        comp->update(dt);
+    }
+    for (auto & comp : s_playerComponents) {
         comp->update(dt);
     }
     for (auto & comp : s_enemyComponents) {

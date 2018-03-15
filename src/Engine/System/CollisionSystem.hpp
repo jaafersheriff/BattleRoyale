@@ -68,4 +68,8 @@ class CollisionSystem {
     static UnorderedSet<const BounderComponent *> s_adjusted;
     static UniquePtr<Octree<const BounderComponent *>> s_octree;
 
+    public:
+
+    static int s_nPicks;
+
 };

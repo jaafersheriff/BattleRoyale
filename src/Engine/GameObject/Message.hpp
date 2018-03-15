@@ -60,6 +60,7 @@ class GameObject;
 class SpatialComponent;
 class BounderComponent;
 class CameraComponent;
+class PlayerComponent;
 
 
 
@@ -197,6 +198,14 @@ struct ComponentRemovedMessage : public Message {
     UniquePtr<Component> comp;
     std::type_index typeI;
     ComponentRemovedMessage(UniquePtr<Component> && comp, std::type_index typeI) : comp(std::move(comp)), typeI(typeI) {}
+};
+
+
+
+// The player's health has fallen to 0
+struct PlayerDeadMessage : public Message {
+    const PlayerComponent & player;
+    PlayerDeadMessage(const PlayerComponent & player) : player(player) {}
 };
 
 

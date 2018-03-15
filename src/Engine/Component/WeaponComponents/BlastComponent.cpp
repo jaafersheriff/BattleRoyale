@@ -24,8 +24,12 @@ void BlastComponent::init() {
         const SpatialComponent * spat(go.getSpatial());
         HealthComponent * health(go.getComponentByType<HealthComponent>());
         if (health) {
-            float proximity(1.0f - glm::distance(spat->position(), m_bounder->center()) / m_bounder->transSphere().radius);
-            health->changeValue(-m_damage * proximity);
+            float d2(glm::distance2(spat->position(), m_bounder->center()));
+            float r(m_bounder->transSphere().radius);
+            if (d2 < r * r) {
+                float proximity(1.0f - std::sqrt(d2) / r);
+                health->changeValue(-m_damage * proximity);
+            }
         }
     });
     Scene::addReceiver<CollisionMessage>(&gameObject(), collisionCallback);

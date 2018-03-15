@@ -5,6 +5,7 @@
 #include "CameraComponents/CameraComponent.hpp"
 #include "CameraComponents/CameraControllerComponent.hpp"
 #include "ImGuiComponents/ImGuiComponent.hpp"
+#include "PlayerComponents/PlayerComponent.hpp"
 #include "PlayerComponents/PlayerControllerComponent.hpp"
 #include "EnemyComponents/EnemyComponent.hpp"
 #include "WeaponComponents/ProjectileComponents.hpp"

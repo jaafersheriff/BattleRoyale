@@ -38,7 +38,7 @@ class SpatialSystem {
     static const float k_terminalVelocity;
     static const float k_coefficientOfFriction;
     static const float k_elasticity;
-    static const float k_bounceCosThreshold;
+    static const float k_bounceVelThreshold;
 
     private:
 

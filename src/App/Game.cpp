@@ -70,9 +70,6 @@ void startGame() {
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json", lighting::k_defAmbience);
     // Needs to be manually adjusted to fit level size
     CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
-    //GameObject & go(Scene::createGameObject());
-    //Scene::addComponent<SpatialComponent>(go);
-    //Scene::addComponentAs<SphereBounderComponent, BounderComponent>(go, 0, Sphere(glm::vec3(0.0f, 6.0f, 0.0f), 5.0f));
 
 
     // Setup Player
@@ -131,6 +128,7 @@ void startGame() {
                 freecam::spatialComp->position().y,
                 freecam::spatialComp->position().z
             );
+            ImGui::Text("# Picks: %d", CollisionSystem::s_nPicks);
         }
     );
 
@@ -225,6 +223,15 @@ void startGame() {
             if (ImGui::Button("Active")) {
                 RenderSystem::getShader<RayShader>()->toggleEnabled();
             }
+        }
+    );
+
+    // Player health
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO,
+        "Player HP",
+        [&] () {
+            ImGui::ProgressBar(player::health->percentage());
         }
     );
 

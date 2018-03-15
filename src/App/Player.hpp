@@ -18,6 +18,7 @@ namespace player {
     constexpr float k_fov = 45.0f;
     constexpr float k_near = 0.1f;
     constexpr float k_far = 300.0f;
+    constexpr float k_maxHP = 100.0f;
 
     extern const glm::vec3 k_mainHandPosition;
 
@@ -27,6 +28,8 @@ namespace player {
     extern CapsuleBounderComponent * bounder;
     extern CameraComponent * camera;
     extern PlayerControllerComponent * controller;
+    extern PlayerComponent * playerComp;
+    extern HealthComponent * health;
 
     void setup(const glm::vec3 & position);
 

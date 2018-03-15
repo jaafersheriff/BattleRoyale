@@ -28,15 +28,10 @@ void NewtonianComponent::init() {
             return;
         }
 
-        if (m_isBouncy) {
-            // If angle of incidence with surface is above threshold, bounce
-            glm::vec3 velDir(glm::normalize(m_velocity));
-            float cosAngle(-glm::dot(velDir, msg.norm));
-            if (cosAngle >= SpatialSystem::k_bounceCosThreshold) {
-                m_velocity = glm::reflect(m_velocity, msg.norm) * SpatialSystem::k_elasticity;
-                Scene::sendMessage<BounceMessage>(&gameObject(), msg.norm);
-                return;
-            }
+        if (m_isBouncy && -glm::dot(m_spatial->effectiveVelocity(), msg.norm) >= SpatialSystem::k_bounceVelThreshold) {
+            m_velocity = glm::reflect(m_velocity, msg.norm) * SpatialSystem::k_elasticity;
+            Scene::sendMessage<BounceMessage>(&gameObject(), msg.norm);
+            return;
         }
 
         glm::vec3 v(m_velocity + y * msg.norm); // would-be velocity along surface

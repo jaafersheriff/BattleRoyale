@@ -95,6 +95,13 @@ void Scene::update(float dt) {
     relayMessages();
     postCollisionMessagingDT = float(watch.lap());
 
+#ifdef DEBUG_MODE
+    // Reports the state of the game, so should happen at end
+    // Needs to be before rendering
+    for (auto & comp : getComponents<ImGuiComponent>()) { comp->update(dt); }
+    watch.lap();
+#endif
+
     RenderSystem::update(dt); // rendering should be last
     renderDT = float(watch.lap());
     relayMessages();

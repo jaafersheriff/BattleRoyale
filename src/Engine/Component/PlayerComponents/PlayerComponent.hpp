@@ -10,17 +10,17 @@ class HealthComponent;
 
 
 
-class EnemyComponent : public Component {
+class PlayerComponent : public Component {
 
     friend Scene;
 
     protected: // only scene or friends can create component
 
-    EnemyComponent(GameObject & gameObject);
+    PlayerComponent(GameObject & gameObject);
 
     public:
 
-    EnemyComponent(EnemyComponent && other) = default;
+    PlayerComponent(PlayerComponent && other) = default;
 
     protected:
 
@@ -35,17 +35,5 @@ class EnemyComponent : public Component {
     protected:
 
     HealthComponent * m_health;
-
-};
-
-
-
-class BasicEnemyComponent : public EnemyComponent {
-
-    friend Scene;
-
-    protected:
-
-    BasicEnemyComponent(GameObject & gameObject);
 
 };

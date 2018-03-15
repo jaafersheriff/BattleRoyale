@@ -149,6 +149,7 @@ UnorderedSet<BounderComponent *> CollisionSystem::s_potentials;
 UnorderedSet<const BounderComponent *> CollisionSystem::s_collided;
 UnorderedSet<const BounderComponent *> CollisionSystem::s_adjusted;
 UniquePtr<Octree<const BounderComponent *>> CollisionSystem::s_octree;
+int CollisionSystem::s_nPicks = 0;
 
 void CollisionSystem::init() {
     auto compAddedCallback(
@@ -193,15 +194,15 @@ void CollisionSystem::init() {
 
 void CollisionSystem::update(float dt) {
     static UnorderedMap<const BounderComponent *, Vector<std::pair<int, glm::vec3>>> s_collisions;
-    static UnorderedMap<const GameObject *, UnorderedSet<const BounderComponent *>> s_criticals;
+    static UnorderedSet<const BounderComponent *> s_criticals;
+    static Vector<const BounderComponent *> s_yanked;
     static Vector<const BounderComponent *> s_zeroes;
     static UnorderedSet<const BounderComponent *> s_checked;
     static UnorderedMap<const GameObject *, glm::vec3> s_gameObjectDeltas;
     static Vector<const BounderComponent *> s_octreeResults;
     static UnorderedSet<GameObject *> s_outOfBounds;
 
-    s_collided.clear();
-    s_adjusted.clear();
+    s_nPicks = 0;
 
     // update all potential bounders
     for (BounderComponent * bounder : s_potentials) {
@@ -210,6 +211,7 @@ void CollisionSystem::update(float dt) {
 
     // update octree
     if (s_octree) {
+        s_outOfBounds.clear();
         for (BounderComponent * bounder : s_potentials) {
             if (!s_octree->set(bounder, bounder->enclosingAABox())) {
                 s_outOfBounds.insert(&bounder->gameObject());
@@ -223,41 +225,40 @@ void CollisionSystem::update(float dt) {
             }
             Scene::destroyGameObject(*go);
         }
-        s_outOfBounds.clear();
     }
 
     // determine all bounders with path intersections
+    s_criticals.clear();
     for (BounderComponent * bounder : s_potentials) {
         if (bounder->isCritical()) {
-            s_criticals[&bounder->gameObject()].insert(bounder);
+            s_criticals.insert(bounder);
         }
     }
     // determine path intersection corrections per game object
-    for (const auto & pair : s_criticals) {
-        for (const BounderComponent * bounder : pair.second) {
-            if (bounder->weight() == 0) {
-                continue;
+    s_gameObjectDeltas.clear();
+    for (const BounderComponent * bounder : s_criticals) {
+        if (bounder->weight() == 0) {
+            continue;
+        }
+        glm::vec3 delta(bounder->center() - bounder->prevCenter());
+        float dist(glm::length(delta));
+        Ray ray(bounder->prevCenter(), delta / dist);
+        auto pair(pickHeavy(
+            ray,
+            1,
+            // do not intersect other critical bounders. critical-critical collision hella unsupported
+            [&](const BounderComponent & b) {
+                return s_criticals.count(&b) == 0;
             }
-            glm::vec3 delta(bounder->center() - bounder->prevCenter());
-            float dist(glm::length(delta));
-            Ray ray(bounder->prevCenter(), delta / dist);
-            auto pair(pickHeavy(
-                ray,
-                1,
-                // do not intersect other critical bounders. critical-critical collision hella unsupported
-                [&](const BounderComponent & b) {
-                    auto it(s_criticals.find(&b.gameObject()));
-                    return it == s_criticals.end() || it->second.count(&b) == 0;
-                }
-            ));
-            Intersect & inter(pair.second);
-            if (inter.is && inter.dist * inter.dist < dist * dist) {
-                glm::vec3 & d(s_gameObjectDeltas[&bounder->gameObject()]);
-                d = compositeDeltas(d, pair.second.pos - bounder->center());
-            }
+        ));
+        Intersect & inter(pair.second);
+        if (inter.is && inter.dist * inter.dist < dist * dist) {
+            glm::vec3 & d(s_gameObjectDeltas[&bounder->gameObject()]);
+            d = compositeDeltas(d, pair.second.pos - bounder->center());
         }
     }
     // apply path intersection corrections
+    s_yanked.clear();
     for (auto & pair : s_gameObjectDeltas) {
         if (pair.second == glm::vec3()) {
             continue;
@@ -266,6 +267,7 @@ void CollisionSystem::update(float dt) {
         SpatialComponent & spat(*go.getSpatial());
         spat.move(pair.second, true);
         for (BounderComponent * bounder : go.getComponentsByType<BounderComponent>()) {
+            s_yanked.push_back(bounder);
             s_potentials.insert(bounder);
             bounder->update(dt);
             if (s_octree) {
@@ -274,35 +276,34 @@ void CollisionSystem::update(float dt) {
         }
     }
     // look for path collisions with 0 weight bounders
-    for (const auto & pair : s_criticals) {
-        for (const BounderComponent * bounder : pair.second) {
-            glm::vec3 delta(bounder->center() - bounder->prevCenter());
-            float dist(glm::length(delta));
-            Ray ray(bounder->prevCenter(), delta / dist);
-            s_zeroes.clear();
-            pickHeavy(
-                ray,
-                1,
-                // do not intersect other critical bounders. critical-critical collision hella unsupported
-                [&](const BounderComponent & b) {
-                    auto it(s_criticals.find(&b.gameObject()));
-                    return it == s_criticals.end() || it->second.count(&b) == 0;
-                },
-                &s_zeroes,
-                dist
-            );
-            for (const BounderComponent * b : s_zeroes) {
-                Scene::sendMessage<CollisionMessage>(&bounder->gameObject(), *bounder, *b);
-                Scene::sendMessage<CollisionMessage>(&b->gameObject(), *b, *bounder);
-            }
+    for (const BounderComponent * bounder : s_yanked) {
+        glm::vec3 delta(bounder->center() - bounder->prevCenter());
+        float dist(glm::length(delta));
+        Ray ray(bounder->prevCenter(), delta / dist);
+        s_zeroes.clear();
+        pickHeavy(
+            ray,
+            1,
+            // do not intersect other critical bounders. critical-critical collision hella unsupported
+            [&](const BounderComponent & b) {
+                return s_criticals.count(&b) == 0;
+            },
+            &s_zeroes,
+            dist
+        );
+        for (const BounderComponent * b : s_zeroes) {
+            Scene::sendMessage<CollisionMessage>(&bounder->gameObject(), *bounder, *b);
+            Scene::sendMessage<CollisionMessage>(&b->gameObject(), *b, *bounder);
         }
     }
-    s_criticals.clear();
-    s_gameObjectDeltas.clear();
-    s_zeroes.clear();
     
+
     // gather all collisions
+    s_collided.clear();
+    s_adjusted.clear();
+    s_checked.clear();
     for (BounderComponent * bounder : s_potentials) {
+        s_octreeResults.clear();
         s_checked.insert(bounder);
         const Vector<const BounderComponent *> * possible(&reinterpret_cast<const Vector<const BounderComponent *> &>(s_bounderComponents));
         if (s_octree) {
@@ -318,13 +319,12 @@ void CollisionSystem::update(float dt) {
                 Scene::sendMessage<CollisionMessage>(&other->gameObject(), *other, *bounder);
             }
         }
-        s_octreeResults.clear();
     }
-    s_potentials.clear();
-    s_checked.clear();    
+    s_potentials.clear(); 
     
     // composite deltas into a single delta per game object
     // additionally send norm messages
+    s_gameObjectDeltas.clear();
     for (auto & pair : s_collisions) {
         const BounderComponent & bounder(*pair.first);
         auto & weightDeltas(pair.second);
@@ -359,7 +359,6 @@ void CollisionSystem::update(float dt) {
             Scene::sendMessage<CollisionAdjustMessage>(gameObject, *gameObject, delta);
         }
     }
-    s_gameObjectDeltas.clear();
 }
 
 std::pair<const BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray) {
@@ -368,6 +367,8 @@ std::pair<const BounderComponent *, Intersect> CollisionSystem::pick(const Ray &
 
 std::pair<const BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray, const std::function<bool(const BounderComponent &)> & conditional) {
     static Vector<BounderComponent *> s_octreeResults;
+
+    ++s_nPicks;
 
     if (s_octree) {
         return s_octree->filter(ray, [& conditional](const Ray & ray, const BounderComponent * bounder) {
