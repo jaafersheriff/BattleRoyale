@@ -42,13 +42,13 @@ class ParticleEffect {
             float effectDuration = 0.0f;
             float particleDuration = 0.0f;
             int orientations = 0; //How many different random orientations can the particle have, 0 means just base.
-            bool randomDistribution = false;
-            float variance = 0.0f; //randomness factor
+            bool randomDistribution = false; // Random vector vs even distribution except for cone.
+            float variance = 0.0f; //random direction. keep low, like less than 0.5f
             float rate = 0.0f; // rate at which particles spawn (particles/sec), 0 if all spawn at once
             float angle = 2 * glm::pi<float>(); // default to 360 degrees
             bool loop = false;
             float magnitude = 1.0f;
-            float attenuation = 1.0f;
+            float attenuation = 1.0f; // Factor of how fast a particle decelerates. Keep high 0.8-1.0
             Vector<glm::vec3>* accelerators;
             Vector<Mesh *>* meshes;
             Vector<ModelTexture *>* textures;

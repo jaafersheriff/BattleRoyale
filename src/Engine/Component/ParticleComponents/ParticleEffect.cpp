@@ -211,9 +211,6 @@ void ParticleEffect::coneMotion(Particle* p) {
     float z = getRandom(cos(angle), 1);
     float theta = acosf(z);
     p->velocity = sin(theta) * (cos(phi) * u + sin(phi) * v) + cos(theta) * normalizedDirection;
-    /*if (m_effectParams->randomDistribution) {
-        p->velocity *= getRandom(0.0f, 1.0f);
-    }*/
 }
 
 glm::vec3 ParticleEffect::getU(glm::vec3 directionNorm) {
@@ -254,6 +251,7 @@ ParticleEffect::Particle* ParticleEffect::makeParticle(int i) {
         p->active = false;
     }
 
+    // Get Orientation ID
     if (m_effectParams->orientations == 0) {
         p->orientationID = 0;
     }
