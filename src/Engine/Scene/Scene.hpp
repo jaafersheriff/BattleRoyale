@@ -17,6 +17,7 @@
 #include "System/CollisionSystem.hpp"
 #include "System/PostCollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
+#include "System/ParticleSystem.hpp"
 #include "GameObject/GameObject.hpp"
 #include "GameObject/Message.hpp"
 #include "Component/Components.hpp"

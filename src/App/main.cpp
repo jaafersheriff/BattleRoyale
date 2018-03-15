@@ -143,6 +143,7 @@ namespace light {
 
 Vector<GameObject *> f_enemies;
 Vector<GameObject *> f_projectiles;
+Vector<GameObject *> f_particleEffects;
 
 void createEnemy(const glm::vec3 & position) {    
     Mesh * mesh(Loader::getMesh("bunny.obj"));
@@ -187,7 +188,29 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     f_projectiles.push_back(&obj);
 }
 
+void createParticleEffect(ParticleEffect::Effect effect, SpatialComponent * anchor, SpatialComponent * directional, const glm::vec3 & pos, const glm::vec3 & dir) {
+    GameObject & obj(Scene::createGameObject());
+    ParticleComponent & particleComp(Scene::addComponent<ParticleComponent>(obj, anchor, directional));
 
+    particleComp.spawnParticleEffect(effect, pos, dir);
+    f_particleEffects.push_back(&obj);
+}
+
+void createParticleEffect(ParticleEffect::Effect effect, SpatialComponent * anchor, const glm::vec3 & pos, const glm::vec3 & dir) {
+    GameObject & obj(Scene::createGameObject());
+    ParticleComponent & particleComp(Scene::addComponent<ParticleComponent>(obj, anchor));
+
+    particleComp.spawnParticleEffect(effect, pos, dir);
+    f_particleEffects.push_back(&obj);
+}
+
+void createParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & pos, const glm::vec3 & dir) {
+    GameObject & obj(Scene::createGameObject());
+    ParticleComponent & particleComp(Scene::addComponent<ParticleComponent>(obj));
+
+    particleComp.spawnParticleEffect(effect, pos, dir);
+    f_particleEffects.push_back(&obj);
+}
 
 }
 
@@ -196,7 +219,7 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
 int main(int argc, char **argv) {
     if (parseArgs(argc, argv) || EngineApp::init()) {
         std::cin.get(); // don't immediately close the console
-        return EXIT_FAILURE;
+        return EXIT_FAILURE; 
     }
 
     //--------------------------------------------------------------------------
@@ -223,6 +246,10 @@ int main(int argc, char **argv) {
     // Ray shader
     if (!RenderSystem::createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) {
         std::cin.get();
+        return EXIT_FAILURE;
+    }
+
+    if (!RenderSystem::createShader<ParticleShader>("particle_vert.glsl", "diffuse_frag.glsl", light::dir)) {
         return EXIT_FAILURE;
     }
 
@@ -409,8 +436,10 @@ int main(int argc, char **argv) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && !msg.mods && msg.action == GLFW_PRESS) {
             createProjectile(player::spatialComp->position() + player::cameraComp->getLookDir() * 2.0f, player::cameraComp->getLookDir());
+
         }
         if (msg.button == GLFW_MOUSE_BUTTON_2 && msg.action == GLFW_PRESS) {
+
             for (GameObject * obj : f_projectiles) {
                 Scene::destroyGameObject(*obj);
             }

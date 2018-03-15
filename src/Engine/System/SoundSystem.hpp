@@ -39,28 +39,29 @@ class SoundSystem {
         static String s_SOUND_DIR;
         static const Vector<SoundComponent *> & s_soundComponents;
         static CameraComponent* s_camera;
-    #ifdef HAVE_FMOD_LIBRARY
 
+    #ifdef HAVE_FMOD_LIBRARY
         static Sound* s_bgMusic;
+        static bool s_bgMusicActive;
         static Map<String, FMOD::Sound*> s_soundLibrary;
     #endif
 
     public:
         static void init();
         static void update(float dt);
-
         static void setCamera(CameraComponent *camera);
 
-    #ifdef HAVE_FMOD_LIBRARY
         static void playSound(String name);
+        static void playSound(String name, bool loop);
         static void playSound3D(String name, glm::vec3 pos);
+        static void playSound3D(String name, glm::vec3 pos, bool loop);
         static void setBackgroundMusic(String name, bool loop);
         static void pauseBackgroundMusic();
         static void unpauseBackgroundMusic();
         static void playBackgroundMusic();
         static void setBackgroundMusicVolume(float volume);
         static void setBackGroundLoop(bool loop);
-    #endif
+
 
 	private:
         static void added(Component & component) {};

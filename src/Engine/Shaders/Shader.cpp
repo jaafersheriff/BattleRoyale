@@ -119,3 +119,11 @@ void Shader::loadMat3(const int location, const glm::mat3 & m) const {
 void Shader::loadMat4(const int location, const glm::mat4 & m) const { 
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(m));
 }
+
+void Shader::loadMultiMat4(const int location, const glm::mat4 * m, int count) const {
+    glUniformMatrix4fv(location, count, GL_FALSE, glm::value_ptr(*m));
+}
+
+void Shader::loadMultiMat3(const int location, const glm::mat3 * m, int count) const {
+    glUniformMatrix3fv(location, count, GL_FALSE, glm::value_ptr(*m));
+}
