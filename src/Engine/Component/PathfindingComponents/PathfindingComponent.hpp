@@ -2,21 +2,20 @@
 #ifndef _PATHFINDING_COMPONENT
 #define _PATHFINDING_COMPONENT
 
-#include "Component/Component.hpp"
-#include "Component/SpatialComponents/SpatialComponent.hpp"
+#include <queue>
 
 #include "glm/glm.hpp"
 #include "glm/gtx/norm.hpp"
 #include "glm/gtx/string_cast.hpp"
-#include <iostream>
-#include <queue>
 
-#include "Loader/Loader.hpp"
+#include "Component/Component.hpp"
 
-//#include "System/PathfindingSystem.hpp"
 
-#include "Scene/Scene.hpp"
-#include "Util/Util.hpp"
+
+class Scene;
+class SpatialComponent;
+
+
 
 struct Node {
     glm::vec3 position;

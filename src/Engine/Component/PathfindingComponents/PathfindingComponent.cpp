@@ -1,5 +1,11 @@
 #include "PathfindingComponent.hpp"
 
+#include <iostream>
+
+#include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Util/Util.hpp"
+#include "Loader/Loader.hpp"
+
 
 PathfindingComponent::PathfindingComponent(GameObject & gameObject, GameObject & player, float ms) :
 	Component(gameObject),
@@ -95,8 +101,8 @@ void PathfindingComponent::update(float dt) {
 
 // Read in the graph from a specified file and fill out the vecToNode map
 void PathfindingComponent::readInGraph(String fileName) {
-    std::ifstream myfile (fileName);
-    String line;
+    std::ifstream myfile(fileName.c_str());
+    std::string line;
 
     if (myfile.is_open()) {
         while (getline(myfile, line)) {

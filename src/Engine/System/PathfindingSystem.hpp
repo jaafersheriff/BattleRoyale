@@ -3,6 +3,8 @@
 #include "System.hpp"
 #include "Component/PathfindingComponents/PathfindingComponent.hpp"
 
+class PathfindingComponent;
+
 // static class
 class PathfindingSystem {
 
