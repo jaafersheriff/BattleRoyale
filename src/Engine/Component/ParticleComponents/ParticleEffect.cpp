@@ -186,7 +186,7 @@ void ParticleEffect::sphereMotion(Particle* p) {
         p->velocity = glm::vec3(radius * cos(theta), radius * sin(theta), z);
     }
     else {
-        p->velocity = glm::ballRand(1.0f);
+        p->velocity = normalize(glm::ballRand(1.0f));
     }
 }
 
@@ -202,6 +202,7 @@ void ParticleEffect::diskMotion(Particle* p) {
 }
 
 void ParticleEffect::coneMotion(Particle* p) {
+    
     glm::vec3 normalizedDirection = normalize(m_direction);
     glm::vec3 u = getU(normalizedDirection);
     glm::vec3 v = glm::cross(u, normalizedDirection);
@@ -210,6 +211,9 @@ void ParticleEffect::coneMotion(Particle* p) {
     float z = getRandom(cos(angle), 1);
     float theta = acosf(z);
     p->velocity = sin(theta) * (cos(phi) * u + sin(phi) * v) + cos(theta) * normalizedDirection;
+    /*if (m_effectParams->randomDistribution) {
+        p->velocity *= getRandom(0.0f, 1.0f);
+    }*/
 }
 
 glm::vec3 ParticleEffect::getU(glm::vec3 directionNorm) {
@@ -290,8 +294,12 @@ void ParticleEffect::initVelocity(Particle *p) {
 
     //Add random variance if specified
     if (m_effectParams->variance != 0.0f) {
-        glm::vec3 randVec = glm::ballRand(m_effectParams->variance);
+        glm::vec3 randVec = m_effectParams->variance * normalize(glm::ballRand(1.0f));
         p->velocity += randVec;
+    }
+
+    if (m_effectParams->randomDistribution) {
+        p->velocity *= getRandom(0.25f, 1.0f);
     }
 
     //set speed

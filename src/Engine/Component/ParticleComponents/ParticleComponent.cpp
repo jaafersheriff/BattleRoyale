@@ -78,10 +78,9 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
             float rate = 1000.0f;
             float angle = glm::pi<float>()/24; 
             bool loop = false;
-            float magnitude = 30.0f;
+            float magnitude = 25.0f;
             float attenuation = 1.0f;
             Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
-            //accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
             Vector<Mesh *> *meshes = getMeshes(effect);
             Vector<ModelTexture*> * textures = getTextures(effect);
             return ParticleEffect::createEffectParams(type,n, effectDuration, particleDuration, orientations,
@@ -109,17 +108,17 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
         }
         case ParticleEffect::Effect::SODA_GRENADE: {
             ParticleEffect::Type type = ParticleEffect::Type::SPHERE;
-            int n = 500;
-            float effectDuration = 0.5f;
-            float particleDuration = 0.5f;
+            int n = 200;
+            float effectDuration = 3.0f;
+            float particleDuration = 3.0f;
             int orientations = 20;
             bool randomDistribution = true; 
             float variance = 0.2f;
             float rate = 0.0f;
             float angle = glm::pi<float>() / 4; 
             bool loop = false;
-            float magnitude = 40.0f;
-            float attenuation = 1.0f;
+            float magnitude = 80.0f;
+            float attenuation = 0.8f;
             Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
             accelerators->push_back(SpatialSystem::gravity());
             SpatialSystem::gravity();
@@ -131,18 +130,18 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
         case ParticleEffect::Effect::BODY_EXPLOSION: {
             ParticleEffect::Type type = ParticleEffect::Type::SPHERE;
             int n = 40;
-            float effectDuration = 2.0f;
-            float particleDuration = 2.0f;
+            float effectDuration = 1.5f;
+            float particleDuration = 1.5f;
             int orientations = 20;
             bool randomDistribution = true; 
-            float variance = 0.2f;
+            float variance = 0.0f;
             float rate = 0.0f;
             float angle = glm::pi<float>() / 4; 
             bool loop = false;
-            float magnitude = 40.0f;
-            float attenuation = 0.9f;
+            float magnitude = 50.0f;
+            float attenuation = 0.85f;
             Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
-            //accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
+            accelerators->push_back(SpatialSystem::gravity());
             Vector<Mesh *> *meshes = getMeshes(effect);
             Vector<ModelTexture*> * textures = getTextures(effect);
             return ParticleEffect::createEffectParams(type, n, effectDuration, particleDuration, orientations,
@@ -150,14 +149,14 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
         }
         case ParticleEffect::Effect::SIRACHA_FLAMETHROWER: {
             ParticleEffect::Type type = ParticleEffect::Type::CONE;
-            int n = 500;
+            int n = 2000;
             float effectDuration = 5.0f;
             float particleDuration = 2.0f;
-            int orientations = 20;
+            int orientations = 0;
             bool randomDistribution = true; 
-            float variance = 0.2f;
-            float rate = 0.0f;
-            float angle = glm::pi<float>() / 4; 
+            float variance = 0.0f;
+            float rate = 500.0f;
+            float angle = glm::pi<float>() / 16; 
             bool loop = false;
             float magnitude = 40.0f;
             float attenuation = 1.0f;
@@ -232,7 +231,7 @@ Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect) {
         }
         case ParticleEffect::Effect::SIRACHA_FLAMETHROWER:
         {
-            meshes->push_back(Loader::getMesh("particles/Gore_Chunk.obj"));
+            meshes->push_back(Loader::getMesh("particles/Blood_Drop.obj"));
             return meshes;
         }
         default:
@@ -269,7 +268,7 @@ Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect ef
         }
         case ParticleEffect::Effect::SIRACHA_FLAMETHROWER:
         {
-            Texture * tex(Loader::getTexture("particles/Gore_Chunk_Tex.png"));
+            Texture * tex(Loader::getTexture("particles/Blood_Drop_Tex.png"));
             textures->push_back(new ModelTexture(tex));
             return textures;
         }

@@ -437,15 +437,27 @@ int main(int argc, char **argv) {
         if (msg.button == GLFW_MOUSE_BUTTON_1 && !msg.mods && msg.action == GLFW_PRESS) {
             //createProjectile(player::spatialComp->position() + player::cameraComp->getLookDir() * 2.0f, player::cameraComp->getLookDir());
             //Remove later
-            //const glm::vec3 & up = glm::vec3(0, 1, 0);
-            createParticleEffect(ParticleEffect::BLOOD_SPRAY, player::spatialComp, player::spatialComp,
-                player::cameraComp->getLookDir() * 10.0f, player::cameraComp->getLookDir());
-            //createParticleEffect(ParticleEffect::BLOOD_SPRAY, player::spatialComp, player::spatialComp,
-            //        glm::vec3(0.0f), player::cameraComp->getLookDir());
-            //createParticleEffect(ParticleEffect::BODY_EXPLOSION,
+            const glm::vec3 & up = glm::vec3(0, 1, 0);
+
+            //createParticleEffect(ParticleEffect::BLOOD_SPRAY,
             //       player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, player::cameraComp->getLookDir());
+
+
+            //createParticleEffect(ParticleEffect::WATER_FOUNTAIN,
+            //       player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, up);
+
+            //createParticleEffect(ParticleEffect::SIRACHA_FLAMETHROWER, player::spatialComp, player::spatialComp,
+            //    glm::vec3(0), player::cameraComp->getLookDir());
+
+            //createParticleEffect(ParticleEffect::BODY_EXPLOSION,
+            //    player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, player::cameraComp->getLookDir());
+
+
+            //createParticleEffect(ParticleEffect::SODA_GRENADE,
+            //      player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, player::cameraComp->getLookDir());
         }
         if (msg.button == GLFW_MOUSE_BUTTON_2 && msg.action == GLFW_PRESS) {
+
             for (GameObject * obj : f_projectiles) {
                 Scene::destroyGameObject(*obj);
             }
