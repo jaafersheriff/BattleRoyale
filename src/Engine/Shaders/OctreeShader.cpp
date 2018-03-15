@@ -51,7 +51,7 @@ bool OctreeShader::init() {
 }
 
 void OctreeShader::render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> & components_) {
-    if (!camera || !CollisionSystem::s_octree) {
+    if (!camera || !m_isEnabled || !CollisionSystem::s_octree) {
         return;
     }
     

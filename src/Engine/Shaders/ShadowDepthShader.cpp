@@ -49,15 +49,20 @@ void ShadowDepthShader::initFBO() {
 }
 
 void ShadowDepthShader::render(const CameraComponent * camera, const Vector<DiffuseRenderComponent *> & components) {
+    /* Reset shadow map */
     glViewport(0, 0, mapWidth, mapHeight);
     glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
     glClear(GL_DEPTH_BUFFER_BIT);
-    glCullFace(GL_FRONT);
+ 
+    if (!camera || !m_isEnabled) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        return;
+    }
 
     bind();
+    glCullFace(GL_FRONT);
 
     /* Calculate L */
-    // TODO : make in relation to light camera
     glm::mat4 LP = camera->getProj();
     glm::mat4 LV = camera->getView();
 
@@ -92,7 +97,7 @@ void ShadowDepthShader::render(const CameraComponent * camera, const Vector<Diff
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    unbind();
     glCullFace(GL_BACK);
+    unbind();
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
