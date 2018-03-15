@@ -102,6 +102,7 @@ void RenderSystem::update(float dt) {
     s_diffuseShader->render(s_playerCamera);
     s_rayShader->render(s_playerCamera);
     s_bounderShader->render(s_playerCamera);
+    s_octreeShader->render(s_playerCamera);
 
     /* Rebind screen FBO */
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
