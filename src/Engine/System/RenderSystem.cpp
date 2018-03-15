@@ -17,7 +17,7 @@ const CameraComponent * RenderSystem::s_playerCamera = nullptr;
 GameObject * RenderSystem::s_lightObject = nullptr;
 CameraComponent * RenderSystem::s_lightCamera = nullptr;
 SpatialComponent * RenderSystem::s_lightSpatial = nullptr;
-float RenderSystem::lightDist = 15.f; // TODO : fix
+float RenderSystem::lightDist = 15.f;
 /* Shaders */
 ShadowDepthShader * RenderSystem::s_shadowShader = nullptr;
 DiffuseShader * RenderSystem::s_diffuseShader = nullptr;
