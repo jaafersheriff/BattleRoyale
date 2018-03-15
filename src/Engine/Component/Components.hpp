@@ -10,6 +10,8 @@
 #include "EnemyComponents/EnemyComponent.hpp"
 // pathfinding
 #include "PathfindingComponents/PathfindingComponent.hpp"
+// generate a graph from the map
+#include "MapExploreComponents/MapExploreComponent.hpp"
 // spatial
 #include "SpatialComponents/SpatialComponent.hpp"
 // collision

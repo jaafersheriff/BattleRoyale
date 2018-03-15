@@ -1,14 +1,5 @@
 #include "PathfindingComponent.hpp"
 
-#include "glm/gtx/norm.hpp"
-
-#include "System/PathfindingSystem.hpp"
-#include "Component/SpatialComponents/SpatialComponent.hpp"
-#include "Scene/Scene.hpp"
-#include "Util/Util.hpp"
-
-#include "glm/gtx/string_cast.hpp"
-
 
 PathfindingComponent::PathfindingComponent(GameObject & gameObject, GameObject & player, float ms) :
 	Component(gameObject),
@@ -30,233 +21,140 @@ PathfindingComponent::PathfindingComponent(GameObject & gameObject, GameObject &
 
 void PathfindingComponent::init() {
 
+    // Init graph
+    graph = detail::vecvectorMap();
+
+    // init spatial
     if (!(m_spatial = gameObject().getSpatial())) assert(false);
 
-    slowTime = 0;
+    vecToNode = std::unordered_map<glm::vec3, Node, detail::vecHash, detail::customVecCompare>();
 
-    visitedSet = std::unordered_set<glm::vec3, detail::vecHash, detail::customCompare>();
-    //visitedSet = Vector<glm::vec3>();
-    pos_queue = std::queue<glm::vec3>();
+    // Read in the graph of the map from a text file
+    readInGraph("map.txt");
 
-    auto pair(CollisionSystem::pick(Ray(curPos, glm::vec3(0,-1,0)), &gameObject()));
+    // init cameFrom map
+    cameFrom = detail::vecvecMap();
 
-    glm::vec3 tmpPos = gameObject().getSpatial()->position();
-    tmpPos = glm::vec3(tmpPos.x, tmpPos.y - pair.second.dist, tmpPos.z);
+    const glm::vec3 &playerPos = m_player->getSpatial()->position();
+    const glm::vec3 &pos = m_spatial->position();
 
-    // Node for the starting pos
-    visitedSet.insert(tmpPos);
+    aStarSearch(graph, pos, playerPos, cameFrom);
+    path = reconstructPath(pos, playerPos, cameFrom);
+    pathIT = path.begin();
 
-    // Set curPos to the objects initial pos
-    searchFromPos = tmpPos;
+    updatePath = false;
 
-    std::cout << "Start at: " << tmpPos.x << ", " << tmpPos.y << ", " << tmpPos.z << std::endl;
-
-    //drawCup(tmpPos);
-
-    validNeighbors = Vector<glm::vec3>();
-
-    // Flag for the enemy is on the ground
-    nonGroundCollision = false;
-
-    // Flag to stop update from writing out more than once
-    writeOut = true;
-
-    // Greater than 16 to start off the loop
-    dirIndex = 0;
-    yIndex = 0;
-    checkedDirections = (int *)std::calloc(8, sizeof(int));
-
-    // set m_cosCriticalAngle
-    m_cosCriticalAngle = std::cos(k_defCriticalAngle);
-
-    // Function called when the object collides with something
-    auto collisionCallback([&](const Message & msg_) {
-        const CollisionNormMessage & msg(static_cast<const CollisionNormMessage &>(msg_));
-        float dot(glm::dot(msg.norm, -SpatialSystem::gravityDir()));
-        if (dot >= m_cosCriticalAngle) {
-            m_potentialGroundNorm += msg.norm;
-        }
-
-        m_groundNorm = Util::safeNorm(m_potentialGroundNorm);
-        m_potentialGroundNorm = glm::vec3();
-
-        // if onGround
-        if (m_groundNorm != glm::vec3()) {
-        	//std::cout << "On ground" << std::endl;
-
-        }
-        else {
-        	//std::cout << "Not on ground" << std::endl;
-        	nonGroundCollision = true;
-        }
-    });
-
-    Scene::addReceiver<CollisionNormMessage>(&gameObject(), collisionCallback);
+    std::cout << "End Init" << std::endl;
 }
 
 void PathfindingComponent::update(float dt) {
-	const int xdir[] = {1, 1, 0, -1, -1, -1, 0, 1};
-	const int zdir[] = {0, 1, 1, 1, 0, -1, -1, -1};
-	const float ydir[] = {0, .55f};
-	float stepSize = 1.f;
-	float extension = 0.f;
-	glm::vec3 curPos;
-	float distance = 0.f;
-	
+/*
+    std::cout << "Update start" << std::endl;
+    const glm::vec3 & playerPos = m_player->getSpatial()->position();
+    const glm::vec3 & pos = m_spatial->position();
+    glm::vec3 dir = playerPos - pos;
 
+    // Could do a ray pick to see if the player is ahead unobstructed, but then what if the player is on the second floor railing
 
-	if (slowTime++ > 0) {
+    // if enemy is very close to the player just follow them
+    if (glm::length2(dir) < 1.0) {
+        std::cout << "close to player: " << glm::length2(dir) << std::endl;
+        gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
+    }
+    // probably don't need to update the path everytime, set flag when neccessary
+    else if (updatePath) {
+        std::cout << "update path" << std::endl;
+        aStarSearch(graph, pos, playerPos, cameFrom);
+        path = reconstructPath(pos, playerPos, cameFrom);
+        pathIT = path.begin();
 
-	curPos = gameObject().getSpatial()->position();
+        dir = *pathIT - pos;
+        gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
 
-	if (!nonGroundCollision && curPos != searchFromPos) {
+        updatePath = false;
+    }
+    else {
+        std::cout << "walk on path" << std::endl;
+        if (glm::length2(*pathIT - pos) < 1.0) {
+            pathIT++;
+        }
 
-		auto pair(CollisionSystem::pick(Ray(curPos, glm::vec3(0,-1,0)), &gameObject()));
-        if (pair.second.is) {       
+        dir = *pathIT - pos;
+        gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
 
-        	curPos = glm::vec3(curPos.x, curPos.y - pair.second.dist, curPos.z); 
-			
-			// curPos isn't in the visitedSet
-			//if (!findInVisited(curPos, stepSize)) {
-        	if (visitedSet.find(curPos) == visitedSet.end()) {
-				// Add curPos to the visitedSet and push it onto the queue to be searched
-				visitedSet.insert(curPos);
-				pos_queue.push(curPos);
+        if (pathCount++ > 50) {
+            updatePath = true;
+            pathCount = 0;
+        }
 
-				// add to searchFrom's validNeighbors
-				validNeighbors.push_back(curPos);
-				//std::cout << "added neighbor" << std::endl;
-				checkedDirections[(dirIndex - 1) / 2] = 1;
+        std::cout << "walked on path" << std::endl;
 
-				//std::cout << "Added: " << curPos.x << ", " << curPos.y << ", " << curPos.z << std::endl;
+    }
+    */
+}
 
-				//DEBUG
-				drawCup(curPos);
-			}
-			//else {
-			//	glm::vec3 closest = closestPos(curPos);
-				// add to searchFrom's validNeighbors
-			//	validNeighbors.push_back(closest);
-			//}
-		}
-	}
-	
-	nonGroundCollision = false;
+// Read in the graph from a specified file and fill out the vecToNode map
+void PathfindingComponent::readInGraph(String fileName) {
+    std::ifstream myfile (fileName);
+    String line;
 
-	if (yIndex < 2) {
-		if (dirIndex < 16) {
-			if (dirIndex % 2) {
-				gameObject().getSpatial()->setPosition(searchFromPos, false);
-			}
-			else {
-				// every other ticke is a move out from the center, divide by 2 to get the correct dirIndex
-				int index = dirIndex / 2;
-				if (!checkedDirections[index]) {
+    if (myfile.is_open()) {
+        while (getline(myfile, line)) {
+            std::istringstream iss(line);
+            std::string token;
+            float x, y, z;
 
-				// ydir == 0
-				if (ydir[yIndex] == 0) {
-					// Corner
-					if (xdir[index] && zdir[index]) {
-						//std::cout << "Corner" << std::endl;
-						distance = sqrt(2) * stepSize;
-					}
-					// Cardinal
-					else {
-						//std::cout << "Cardinal" << std::endl;
-						distance = stepSize;
-					}
-				}
-				else {
-					// Corner
-					if (xdir[index] && zdir[index]) {
-						//std::cout << "Top Corner" << std::endl;
-						distance = sqrt(pow(ydir[yIndex], 2) + 2 * stepSize * stepSize);
-					}
-					// Cardinal
-					else {
-						//std::cout << "Top Cardinal" << std::endl;
-						distance = sqrt(stepSize * stepSize + pow(ydir[yIndex], 2));
-					}
-				}
+            std::getline(iss, token, ',');
+            x = std::stof(token);
 
-				glm::vec3 dirStep = Util::safeNorm(glm::vec3(xdir[index], ydir[yIndex], zdir[index])) * distance;
-				glm::vec3 nextStep = searchFromPos + dirStep;
-				auto pair(CollisionSystem::pick(Ray(nextStep, glm::vec3(0,-1,0)), &gameObject()));
-        		if (pair.second.is) {  
+            std::getline(iss, token, ',');
+            y = std::stof(token);
 
-        			nextStep = glm::vec3(nextStep.x, nextStep.y - pair.second.dist, nextStep.z);
+            std::getline(iss, token, ',');
+            z = std::stof(token);
 
-					// If the point has been visited before, we don't need to check it again, can just add it and move on
-					if (visitedSet.find(nextStep) ==  visitedSet.end()) {
-						//std::cout << "new node" << std::endl;
-						//std::cout << "Move to: " << nextStep.x << ", " << nextStep.y << ", " << nextStep.z << std::endl;
-						gameObject().getSpatial()->move(dirStep);
-					}
-					else {
-						//glm::vec3 closest = closestPos(nextStep);
-						//if (!checkedDirections[index]) {
-							validNeighbors.push_back(nextStep);
-							//std::cout << "added neighbor" << std::endl;
-							checkedDirections[index] = 1;
-						//}
-						dirIndex++;
-					}
-				}
-			}
-			}
-			dirIndex++;
-		}
-		// Searched all neighbors, move to a new searchFromPos
-		else {
-			dirIndex = 0;
-			yIndex++;
-		}
-	}
-	else {
-		yIndex = 0;
+            glm::vec3 nodePos = glm::vec3(x, y, z);
 
-		if (validNeighbors.size() > 8) {
-			std::cout << "To many neighbors" << std::endl;
-		}
+            Vector<glm::vec3> neighbors = Vector<glm::vec3>();
 
-		std::fill_n(checkedDirections, 8, 0);
-		// create node and push it in to graph
-		graph.push_back(Node(searchFromPos, validNeighbors));
-		validNeighbors = Vector<glm::vec3>();
+            while (std::getline(iss, token, ',')) {
+                int pos = token.find("vec3");
+                if (pos != std::string::npos) {
 
-		if (!pos_queue.empty()) {
-		
-			searchFromPos = pos_queue.front();
-			pos_queue.pop();
-		}
-		else if (writeOut) {
-			writeOut = false;
-			std::cout << "Writing Out" << std::endl;
-			std::ofstream outFile;
-			outFile.open("testOut.txt");
+                    x = std::stof(token.substr(5, 8));
 
-			if (outFile) {
-				for (Node node : graph) {
-					outFile <<
-						node.position.x << "," <<
-						node.position.y << "," <<
-						node.position.z << "," <<
-						vectorToString(node.neighbors) << '\n';
+                    std::getline(iss, token, ',');
+                    y = std::stof(token.substr(1, 8));
 
-				}
-			}
+                    std::getline(iss, token, ',');
+                    z = std::stof(token.substr(1, 8));
 
-			std::cout << "Length of total first floor graph: " << graph.size() << std::endl;
-			searchFromPos = glm::vec3(0.f);
-		}
+                    neighbors.push_back(glm::vec3(x, y, z));
 
-		gameObject().getSpatial()->setPosition(searchFromPos, false);
+                }
+            }
 
-	}
+            graph.emplace(nodePos, neighbors);
+            vecToNode.emplace(nodePos, Node(nodePos, neighbors));
+        }
 
-	slowTime = 0;
+        myfile.close();
+/*
+        int graphCount = 0;
+        for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
+            graphCount++;
+            std::cout << "New Node" << std::endl;
+            std::cout << "Position: " << iter->first.x << ", " << iter->first.y << ", " << iter->first.z << std::endl;
+            std::cout << "Neighbors" << std::endl;
+            for (glm::vec3 neighbor : iter->second) {
+                std::cout << "Pos: " << neighbor.x << ", " << neighbor.y << ", " << neighbor.z << std::endl;
+            }
+            std::cout << std::endl;
+        }
 
-	}	
+        std::cout << "Size of map: " << graphCount << std::endl;
+*/
+    }
 
 }
 
@@ -303,7 +201,7 @@ bool PathfindingComponent::findInVisited(glm::vec3 vec, float stepSize) {
 	return false;
 }
 */
-
+/*
 void PathfindingComponent::print_queue(std::queue<glm::vec3> q)
 {
   while (!q.empty())
@@ -314,43 +212,83 @@ void PathfindingComponent::print_queue(std::queue<glm::vec3> q)
   std::cout << std::endl;
 }
 
-void PathfindingComponent::drawCup(glm::vec3 position) {
-	Mesh * mesh(Loader::getMesh("Cup.obj"));
-    DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
-    ModelTexture modelTex(.2f, glm::vec3(.20f, 1.0f, .20f), glm::vec3(1.0f));
-    bool toon(false);
-    glm::vec3 scale(.1f);
-    unsigned int collisionWeight(0);
-    float moveSpeed(0.0f);
+*/
 
-    GameObject & obj(Scene::createGameObject());
-    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, scale));
-    //DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, true, glm::vec2(1, 1)));
-    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, toon, glm::vec2(1,1));
-/*
-    const glm::vec3 & playerPos = m_player->getSpatial()->position();
-    const glm::vec3 & pos = m_spatial->position();
-    glm::vec3 dir = playerPos - pos;
-    if (glm::length2(dir) < 0.001f) {
-        return;
-    }
-
-    if (m_wander) {
-        glm::vec3 wanderNext;
-        wanderNext = Util::safeNorm(glm::vec3(
-            (float) ((rand() % 200) - 100), 
-            (float) ((rand() % 200) - 100),
-            (float) ((rand() % 200) - 100)
-        ));
-
-        m_wanderCurrent = Util::safeNorm(
-            m_wanderCurrentWeight * m_wanderCurrent +
-            (1.f - m_wanderCurrentWeight) * wanderNext
-        );
-
-        dir = dir * (1.f - m_wanderWeight) + m_wanderCurrent * m_wanderWeight;
-    }
-
-    gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
-    */
+inline double heuristic(glm::vec3 a, glm::vec3 b) {
+    return std::abs(a.x - b.x) + std::abs(a.y - b.y) + std::abs(a.z - b.z);
 }
+
+bool operator < (pathPair a , pathPair b) {
+    return a.priority < b.priority;
+}
+
+bool operator == (glm::vec3 a, glm::vec3 b) {
+    return glm::distance2(a, b) < .1f;
+}
+
+bool operator != (glm::vec3 a, glm::vec3 b) {
+    return !(a == b);
+}
+
+void PathfindingComponent::aStarSearch(detail::vecvectorMap &graph, glm::vec3 start, glm::vec3 end, detail::vecvecMap &cameFrom) {//, detail::vecdoubleMap &cost) {
+    //typedef std::pair<double, glm::vec3> pqElement;
+    detail::vecdoubleMap cost = detail::vecdoubleMap();
+    std::priority_queue<pathPair> frontier;
+    frontier.emplace(start, 0.0);
+
+    cameFrom[start] = start;
+    cost[start] = 0.0;
+
+    std::cout << "In A*" << std::endl;
+    while (!frontier.empty()) {
+        //std::cout << "LOOP" << std::endl;
+        glm::vec3 current = frontier.top().position;
+        frontier.pop();
+
+        if (current == end) {
+            break;
+        }
+
+        for (glm::vec3 next : graph[current]) {
+            // We aren't using a weighted graph so every step has a cost of 1
+            double newCost = cost[current] + 1;
+            if (cost.find(next) == cost.end() || newCost < cost[next]) {
+                cost[next] = newCost;
+                // get neighbor node
+                frontier.emplace(vecToNode[next].position, newCost + heuristic(next, end));
+                cameFrom[next] = current;
+            }
+        }
+    }
+
+    for (auto iter = cameFrom.begin(); iter != cameFrom.end(); ++iter) {
+         std::cout << "Postition: " << iter->first.x << ", " << iter->first.y << ", " << iter->first.z << std::endl;
+    }
+
+    std::cout << "leaving A*" << std::endl;
+
+}
+
+Vector<glm::vec3> PathfindingComponent::reconstructPath(glm::vec3 start, glm::vec3 end, detail::vecvecMap &cameFrom) {
+    std::cout << "Reconstructing Path" << std::endl;
+    Vector<glm::vec3> path;
+
+    glm::vec3 current = end;
+
+    std::cout << "Current: " << start.x << ", " << start.y << ", " << start.z << std::endl;
+    std::cout << "End: " << end.x << ", " << end.y << ", " << end.z << std::endl;
+    std::cout << "Size: " << cameFrom.size() << std::endl;
+
+    while (current != start) {
+        path.push_back(current);
+        current = cameFrom[current];
+        if (current != glm::vec3(0.0))
+            std::cout << "New Current: " << current.x << ", " << current.y << ", " << current.z << std::endl;
+    }
+    //path.push_back(start);
+    std::reverse(path.begin(), path.end());
+    std::cout << "Path constructed" << std::endl;
+    return path;
+}
+
+
