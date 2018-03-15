@@ -83,16 +83,18 @@ void RenderSystem::update(float dt) {
     /* Update light */
     s_lightSpatial->setPosition(getLightDir() * -lightDist + s_playerCamera->gameObject().getComponentByType<SpatialComponent>()->position());
 
+    if (!s_playerCamera) {
+        return;
+    }
+
     /* Render shadow map */
     s_shadowShader->render(s_lightCamera);
 
     /* Set up post process FBO */
-    glBindFramebuffer(GL_FRAMEBUFFER, s_fbo);
-
-    if (!s_playerCamera) {
-        return;
+    if (s_postProcessShader->isEnabled()) {
+        glBindFramebuffer(GL_FRAMEBUFFER, s_fbo);
     }
-    
+
     /* Reset rendering display */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glm::ivec2 size = Window::getFrameSize();
@@ -105,11 +107,11 @@ void RenderSystem::update(float dt) {
     s_octreeShader->render(s_playerCamera);
 
     /* Rebind screen FBO */
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    /* Post processing */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    s_postProcessShader->render(s_playerCamera);
+    if (s_postProcessShader->isEnabled()) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        s_postProcessShader->render(s_playerCamera);
+    }
 
 #ifdef DEBUG_MODE
     if (Window::isImGuiEnabled()) {

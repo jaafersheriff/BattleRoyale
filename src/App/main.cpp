@@ -342,15 +342,9 @@ int main(int argc, char **argv) {
     // Toon shading config
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
-        "Diffuse Shader",
+        "Toon Shading",
         [&]() {
             DiffuseShader * dShader = RenderSystem::s_diffuseShader;
-            if (ImGui::Button("Active")) {
-                dShader->toggleEnabled();
-            }
-            if (ImGui::Button("Wireframe")) {
-                dShader->toggleWireFrame();
-            }
             if (ImGui::Button("Toon")) {
                 dShader->toggleToon();
             }
@@ -364,9 +358,6 @@ int main(int argc, char **argv) {
                     dShader->setCells(cells);
                 }
 
-                /* Make a new pane to define cell values */
-                ImGui::End();
-                ImGui::Begin("Cell Shading");
                 for (int i = 0; i < cells; i++) {
                     float minBounds[3] = { -1.f,  0.f,  0.f };
                     float maxBounds[3] = {  1.f,  1.f,  1.f };
@@ -386,32 +377,25 @@ int main(int argc, char **argv) {
     // Bounder shader toggle
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
-        "Bounder Shader",
+        "Toggle Shaders",
         [&]() {
-            if (ImGui::Button("Active")) {
+            if (ImGui::Button("Diffuse")) {
+                RenderSystem::s_diffuseShader->toggleEnabled();
+            }
+            if (ImGui::Button("Shadows")) {
+                RenderSystem::s_shadowShader->toggleEnabled();
+            }
+            if (ImGui::Button("Bounder")) {
                 RenderSystem::s_bounderShader->toggleEnabled();
             }
-        }
-    );
-
-    // Octree shader toggle
-    Scene::addComponent<ImGuiComponent>(
-        imguiGO,
-        "Octree Shader",
-        [&]() {
-            if (ImGui::Button("Active")) {
+            if (ImGui::Button("Octree")) {
                 RenderSystem::s_octreeShader->toggleEnabled();
             }
-        }
-    );
-
-    // Ray shader toggle
-    Scene::addComponent<ImGuiComponent>(
-        imguiGO,
-        "Ray Shader",
-        [&]() {
-            if (ImGui::Button("Active")) {
+            if (ImGui::Button("Ray")) {
                 RenderSystem::s_rayShader->toggleEnabled();
+            }
+            if (ImGui::Button("Post Process")) {
+                RenderSystem::s_postProcessShader->toggleEnabled();
             }
         }
     );
