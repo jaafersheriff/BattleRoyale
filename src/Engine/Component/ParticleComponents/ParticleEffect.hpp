@@ -42,12 +42,13 @@ class ParticleEffect {
             float effectDuration = 0.0f;
             float particleDuration = 0.0f;
             int orientations = 0; //How many different random orientations can the particle have, 0 means just base.
-            bool randomDistribution = false;
-            float variance = 0.0f; //randomness factor
+            bool randomDistribution = false; // Random vector vs even distribution except for cone.
+            float variance = 0.0f; //random direction. keep low, like less than 0.5f
             float rate = 0.0f; // rate at which particles spawn (particles/sec), 0 if all spawn at once
             float angle = 2 * glm::pi<float>(); // default to 360 degrees
             bool loop = false;
             float magnitude = 1.0f;
+            float attenuation = 1.0f; // Factor of how fast a particle decelerates. Keep high 0.8-1.0
             Vector<glm::vec3>* accelerators;
             Vector<Mesh *>* meshes;
             Vector<ModelTexture *>* textures;
@@ -60,6 +61,7 @@ class ParticleEffect {
    
     private:
         EffectParams * m_effectParams;
+        glm::vec3 m_offset;
         glm::vec3 m_anchor;
         glm::vec3 m_direction;
         glm::vec3 m_velocity;
@@ -69,9 +71,14 @@ class ParticleEffect {
         Vector<int> * m_activeParticleOrientationIDs;
         Vector<int> m_activeMap;
         float m_nextActivation;
+        float m_attenuationRate;
+        float m_nextAttenuation;
+
 
     public:
         void update(float dt);
+        void update(float dt, glm::vec3 anchor);
+        void update(float dt, glm::vec3 anchor, glm::vec3 direction);
         Mesh* getMesh(int i);
         ModelTexture* getModelTexture(int i);
         int getOrientationCount() { return m_effectParams->orientations; }
@@ -93,6 +100,7 @@ class ParticleEffect {
             float angle,
             bool loop,
             float magnitude,
+            float attenuation,
             Vector<glm::vec3>* accelerators,
             Vector<Mesh *>* meshes,
             Vector<ModelTexture *>* textures
@@ -105,14 +113,13 @@ class ParticleEffect {
         void initVelocity(Particle *p);
         void removeActiveParticle(int i);
         void addActiveParticle(int i);
-        int meshSelect(ParticleEffect::Effect effect, int i);
-        int modelTextureSelect(ParticleEffect::Effect effect, int i);
         Vector<ParticleEffect::Particle*> generateParticles();
         Vector<glm::vec3> * getActiveParticlePositions();
         Vector<int> * getActiveParticleOrientationIDs();
         Vector<int> getActiveMap();
+        int getAttenuations(float dt);
         float getNextActivation();
-        void updatePosition(Particle* p, float dt);
+        void updatePosition(Particle* p, float dt, float attenuationFactor);
         void updateActiveParticles(float dt);
         void sphereMotion(Particle* p);
         void coneMotion(Particle* p);

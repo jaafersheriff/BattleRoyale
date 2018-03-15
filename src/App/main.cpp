@@ -103,11 +103,6 @@ namespace player {
         cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, k_fov, k_near, k_far);
         controllerComp = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_lookSpeed, k_moveSpeed, k_jumpSpeed, k_sprintSpeed);
 
-        SoundSystem::setBackgroundMusic("bgRock1.mp3", true);
-        SoundSystem::playBackgroundMusic();
-        SoundSystem::setBackgroundMusicVolume(0.05f);
-
-        SoundSystem::playSound3D("burp1.wav", glm::vec3(25, 15, -93), true);
         // An example of using object initialization message
         auto initCallback([&](const Message & msg) {            
             cameraComp->lookInDir(cameraComp->getLookDir());
@@ -191,6 +186,22 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     ProjectileComponent & projectileComp(Scene::addComponent<ProjectileComponent>(obj));
     
     f_projectiles.push_back(&obj);
+}
+
+void createParticleEffect(ParticleEffect::Effect effect, SpatialComponent * anchor, SpatialComponent * directional, const glm::vec3 & pos, const glm::vec3 & dir) {
+    GameObject & obj(Scene::createGameObject());
+    ParticleComponent & particleComp(Scene::addComponent<ParticleComponent>(obj, anchor, directional));
+
+    particleComp.spawnParticleEffect(effect, pos, dir);
+    f_particleEffects.push_back(&obj);
+}
+
+void createParticleEffect(ParticleEffect::Effect effect, SpatialComponent * anchor, const glm::vec3 & pos, const glm::vec3 & dir) {
+    GameObject & obj(Scene::createGameObject());
+    ParticleComponent & particleComp(Scene::addComponent<ParticleComponent>(obj, anchor));
+
+    particleComp.spawnParticleEffect(effect, pos, dir);
+    f_particleEffects.push_back(&obj);
 }
 
 void createParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & pos, const glm::vec3 & dir) {
@@ -424,20 +435,15 @@ int main(int argc, char **argv) {
     auto fireCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && !msg.mods && msg.action == GLFW_PRESS) {
-            //createProjectile(player::spatialComp->position() + player::cameraComp->getLookDir() * 2.0f, player::cameraComp->getLookDir());
-            //Remove later
-            const glm::vec3 & up = glm::vec3(0, 1, 0);
-            createParticleEffect(ParticleEffect::SODA_GRENADE,
-                player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, up);
-            SoundSystem::playSound3D("woosh.mp3", player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, false);
-            //SoundSystem::playBackgroundMusic();
+            createProjectile(player::spatialComp->position() + player::cameraComp->getLookDir() * 2.0f, player::cameraComp->getLookDir());
+
         }
         if (msg.button == GLFW_MOUSE_BUTTON_2 && msg.action == GLFW_PRESS) {
+
             for (GameObject * obj : f_projectiles) {
                 Scene::destroyGameObject(*obj);
             }
             f_projectiles.clear();
-            SoundSystem::pauseBackgroundMusic();
         }
     });
     Scene::addReceiver<MouseMessage>(nullptr, fireCallback);

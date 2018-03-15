@@ -18,6 +18,8 @@ class ParticleComponent : public Component {
 
     protected:
         ParticleComponent(GameObject & gameobject);
+        ParticleComponent(GameObject & gameobject, SpatialComponent * anchor);
+        ParticleComponent(GameObject & gameobject, SpatialComponent * anchor, SpatialComponent * directional);
 
     public:
         ParticleComponent(ParticleComponent && other) = default;
@@ -55,6 +57,7 @@ class ParticleComponent : public Component {
         Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect effect);
         void initRandomOrientations(glm::mat4 comp, glm::mat3 norm, int count);
         float getScaleFactor(ParticleEffect::Effect effect);
+
     
     public:
         static const int MAX_ORIENTATIONS = 20; // if changed, need to change vertex shader
@@ -68,5 +71,7 @@ class ParticleComponent : public Component {
         Vector<glm::mat3> m_randomNs;
         GLuint m_offsetBufferID;
         GLuint m_orientationBufferID;
+        SpatialComponent * m_anchor = NULL;
+        SpatialComponent * m_directional = NULL;
         
 };
