@@ -32,8 +32,24 @@ class CollisionSystem {
 
     static void update(float dt);
 
-    static std::pair<const BounderComponent *, Intersect> pick(const Ray & ray, const GameObject * ignore = nullptr);
+    // Casts a ray and returns the first bounder hit and its intersection
+    static std::pair<const BounderComponent *, Intersect> pick(const Ray & ray);
+    // Only bounders which pass the conditional are considered
     static std::pair<const BounderComponent *, Intersect> pick(const Ray & ray, const std::function<bool(const BounderComponent &)> & conditional);
+    // Ray will pass through bounders with weight less than specified and store them in r_passed, if not null
+    static std::pair<const BounderComponent *, Intersect> pickHeavy(
+        const Ray & ray,
+        unsigned int minWeight,
+        Vector<const BounderComponent *> * r_passed = nullptr,
+        float maxDist = Util::infinity()
+    );
+    static std::pair<const BounderComponent *, Intersect> pickHeavy(
+        const Ray & ray,
+        unsigned int minWeight,
+        const std::function<bool(const BounderComponent &)> & conditional,
+        Vector<const BounderComponent *> * r_passed = nullptr,
+        float maxDist = Util::infinity()
+    );
 
     static void setOctree(const glm::vec3 & min, const glm::vec3 & max, float minCellSize);
 

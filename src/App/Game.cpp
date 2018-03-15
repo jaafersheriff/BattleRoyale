@@ -257,7 +257,7 @@ void startGame() {
             glm::vec3 dir(player::camera->getLookDir());
             for (int i(0); i < rayDepth; ++i) {
                 float r(glm::distance(rayPositions.back(), glm::vec3(0.0f, 6.0f, 0.0f)));
-                auto pair(CollisionSystem::pick(Ray(rayPositions.back() + dir * 0.001f, dir), player::gameObject));
+                auto pair(CollisionSystem::pick(Ray(rayPositions.back() + dir * 0.001f, dir)));
                 if (!pair.second.is) {
                     break;
                 }
@@ -323,7 +323,7 @@ void startGame() {
     auto deleteCallback([&] (const Message & msg_) {
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
         if (msg.key == GLFW_KEY_DELETE && msg.action == GLFW_PRESS) {
-            auto pair(CollisionSystem::pick(Ray(player::spatial->position(), player::camera->getLookDir()), player::gameObject));
+            auto pair(CollisionSystem::pick(Ray(player::spatial->position(), player::camera->getLookDir())));
             if (pair.first) Scene::destroyGameObject(const_cast<GameObject &>(pair.first->gameObject()));
         }
     });
