@@ -28,7 +28,7 @@ class PlayerComponent : public Component {
 
     public:
 
-    virtual SystemID systemID() const override { return SystemID::gameLogic; };
+    virtual SystemID systemID() const override { return SystemID::game; };
 
     virtual void update(float dt) override;
 

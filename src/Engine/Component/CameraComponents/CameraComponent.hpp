@@ -15,7 +15,7 @@
 
 
 
-class GameLogicSystem;
+class GameSystem;
 class SpatialComponent;
 
 
@@ -43,7 +43,7 @@ class CameraComponent : public Component, public Orientable {
         
         /* Derived functions */
 
-        virtual SystemID systemID() const override { return SystemID::gameLogic; };
+        virtual SystemID systemID() const override { return SystemID::game; };
 
         void update(float dt);
 

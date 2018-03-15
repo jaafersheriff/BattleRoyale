@@ -10,7 +10,7 @@
 #include <typeindex>
 
 #include "Util/Memory.hpp"
-#include "System/GameLogicSystem.hpp"
+#include "System/GameSystem.hpp"
 #include "System/SoundSystem.hpp"
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"
@@ -90,8 +90,8 @@ class Scene {
     static float totalDT;
     static float initDT;
     static float killDT;
-    static float gameLogicDT;
-    static float gameLogicMessagingDT;
+    static float gameDT;
+    static float gameMessagingDT;
     static float spatialDT;
     static float spatialMessagingDT;
     static float pathfindingDT;

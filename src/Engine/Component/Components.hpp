@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Component.hpp"
-// game logic
+// game
 #include "CameraComponents/CameraComponent.hpp"
 #include "CameraComponents/CameraControllerComponent.hpp"
 #include "ImGuiComponents/ImGuiComponent.hpp"

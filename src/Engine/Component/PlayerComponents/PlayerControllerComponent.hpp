@@ -6,7 +6,7 @@
 
 
 
-class GameLogicSystem;
+class GameSystem;
 class CameraComponent;
 class SpatialComponent;
 class NewtonianComponent;
@@ -17,7 +17,7 @@ class GroundComponent;
 class PlayerControllerComponent : public Component {
 
     friend Scene;
-    friend GameLogicSystem;
+    friend GameSystem;
 
     protected: // only scene or friends can create component
 
@@ -33,7 +33,7 @@ class PlayerControllerComponent : public Component {
 
     public:
 
-    virtual SystemID systemID() const override { return SystemID::gameLogic; };
+    virtual SystemID systemID() const override { return SystemID::game; };
 
     virtual void update(float dt) override;
 

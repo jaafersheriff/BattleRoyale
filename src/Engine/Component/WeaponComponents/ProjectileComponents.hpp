@@ -32,7 +32,7 @@ class ProjectileComponent : public Component {
 
     public:
 
-    virtual SystemID systemID() const override { return SystemID::gameLogic; };
+    virtual SystemID systemID() const override { return SystemID::game; };
 
     protected:
 

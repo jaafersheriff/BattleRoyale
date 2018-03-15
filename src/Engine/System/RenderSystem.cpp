@@ -3,8 +3,6 @@
 #include <iostream>
 
 #include "IO/Window.hpp"
-#include "ThirdParty/imgui/imgui.h"
-#include "ThirdParty/imgui/imgui_impl_glfw_gl3.h"
 #include "Scene/Scene.hpp"
 
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
@@ -56,7 +54,6 @@ void RenderSystem::update(float dt) {
     glBindFramebuffer(GL_FRAMEBUFFER, s_fbo);
 
     static Vector<Component *> s_compsToRender;
-    static bool s_wasRender = true;
 
     // Update components
     for (DiffuseRenderComponent * comp : s_diffuseComponents) {
@@ -72,14 +69,10 @@ void RenderSystem::update(float dt) {
         }
     }
 
-    if (s_wasRender) {
-        /* Reset rendering display */
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        s_wasRender = false;
-    }
+    /* Reset rendering display */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (s_camera) {
-
         /* Loop through active shaders */
         for (auto &shader : s_shaders) {
             if (!shader.second->isEnabled()) {
@@ -91,8 +84,6 @@ void RenderSystem::update(float dt) {
             // guaranteed is the same as a pointer
             shader.second->render(s_camera, reinterpret_cast<const Vector<Component *> &>(s_compsToRender));
             shader.second->unbind();
-
-            s_wasRender = true;
         }
     }
 
@@ -107,14 +98,6 @@ void RenderSystem::update(float dt) {
     // hence the funny pointer business
     s_postProcessShader->render(nullptr, *((Vector<Component *> *) nullptr));
     s_postProcessShader->unbind();
-
-    /* ImGui */
-#ifdef DEBUG_MODE
-    if (Window::isImGuiEnabled()) {
-        ImGui::Render();
-        s_wasRender = true;
-    }
-#endif
 }
 
 void RenderSystem::setCamera(const CameraComponent * camera) {

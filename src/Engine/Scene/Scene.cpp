@@ -5,7 +5,7 @@
 #include "GLFW/glfw3.h"
 
 #include "IO/Keyboard.hpp"
-#include "System/GameLogicSystem.hpp"
+#include "System/GameSystem.hpp"
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"
 #include "System/CollisionSystem.hpp"
@@ -29,8 +29,8 @@ UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> Sce
 float Scene::totalDT;
 float Scene::initDT;
 float Scene::killDT;
-float Scene::gameLogicDT;
-float Scene::gameLogicMessagingDT;
+float Scene::gameDT;
+float Scene::gameMessagingDT;
 float Scene::spatialDT;
 float Scene::spatialMessagingDT;
 float Scene::pathfindingDT;
@@ -45,7 +45,7 @@ float Scene::soundDT;
 float Scene::soundMessagingDT;
 
 void Scene::init() {
-    GameLogicSystem::init();
+    GameSystem::init();
     PathfindingSystem::init();
     SpatialSystem::init();
     CollisionSystem::init();
@@ -70,10 +70,14 @@ void Scene::update(float dt) {
     relayMessages();
     initDT = float(watch.lap());
 
-    GameLogicSystem::update(dt);
-    gameLogicDT = float(watch.lap());
+    // This is here and not in SpatialSystem because this needs to happen right at the start of the game loop
+    for (SpatialComponent * comp : getComponents<SpatialComponent>()) { comp->update(dt); }
+    spatialDT = float(watch.lap());
+
+    GameSystem::update(dt);
+    gameDT = float(watch.lap());
     relayMessages();
-    gameLogicMessagingDT = float(watch.lap());
+    gameMessagingDT = float(watch.lap());
 
     PathfindingSystem::update(dt);
     pathfindingDT = float(watch.lap());
@@ -81,7 +85,7 @@ void Scene::update(float dt) {
     pathfindingMessagingDT = float(watch.lap());
 
     SpatialSystem::update(dt); // needs to happen right before collision
-    spatialDT = float(watch.lap());
+    spatialDT += float(watch.lap());
     relayMessages();
     spatialMessagingDT = float(watch.lap());
 
@@ -94,13 +98,6 @@ void Scene::update(float dt) {
     postCollisionDT = float(watch.lap());
     relayMessages();
     postCollisionMessagingDT = float(watch.lap());
-
-#ifdef DEBUG_MODE
-    // Reports the state of the game, so should happen at end
-    // Needs to be before rendering
-    for (auto & comp : getComponents<ImGuiComponent>()) { comp->update(dt); }
-    watch.lap();
-#endif
 
     RenderSystem::update(dt); // rendering should be last
     renderDT = float(watch.lap());
@@ -115,6 +112,12 @@ void Scene::update(float dt) {
     doKillQueue();
     relayMessages();
     killDT = float(watch.lap());
+
+#ifdef DEBUG_MODE
+    // Reports the state of the game, so should happen at end
+    for (ImGuiComponent * comp : getComponents<ImGuiComponent>()) comp->update(dt);
+    if (Window::isImGuiEnabled()) ImGui::Render();
+#endif
 
     totalDT = float(watch.total());
 }
