@@ -48,6 +48,7 @@ class ParticleEffect {
             float angle = 2 * glm::pi<float>(); // default to 360 degrees
             bool loop = false;
             float magnitude = 1.0f;
+            float attenuation = 1.0f;
             Vector<glm::vec3>* accelerators;
             Vector<Mesh *>* meshes;
             Vector<ModelTexture *>* textures;
@@ -60,6 +61,7 @@ class ParticleEffect {
    
     private:
         EffectParams * m_effectParams;
+        glm::vec3 m_offset;
         glm::vec3 m_anchor;
         glm::vec3 m_direction;
         glm::vec3 m_velocity;
@@ -69,9 +71,14 @@ class ParticleEffect {
         Vector<int> * m_activeParticleOrientationIDs;
         Vector<int> m_activeMap;
         float m_nextActivation;
+        float m_attenuationRate;
+        float m_nextAttenuation;
+
 
     public:
         void update(float dt);
+        void update(float dt, glm::vec3 anchor);
+        void update(float dt, glm::vec3 anchor, glm::vec3 direction);
         Mesh* getMesh(int i);
         ModelTexture* getModelTexture(int i);
         int getOrientationCount() { return m_effectParams->orientations; }
@@ -93,6 +100,7 @@ class ParticleEffect {
             float angle,
             bool loop,
             float magnitude,
+            float attenuation,
             Vector<glm::vec3>* accelerators,
             Vector<Mesh *>* meshes,
             Vector<ModelTexture *>* textures
@@ -111,8 +119,9 @@ class ParticleEffect {
         Vector<glm::vec3> * getActiveParticlePositions();
         Vector<int> * getActiveParticleOrientationIDs();
         Vector<int> getActiveMap();
+        int getAttenuations(float dt);
         float getNextActivation();
-        void updatePosition(Particle* p, float dt);
+        void updatePosition(Particle* p, float dt, float attenuationFactor);
         void updateActiveParticles(float dt);
         void sphereMotion(Particle* p);
         void coneMotion(Particle* p);

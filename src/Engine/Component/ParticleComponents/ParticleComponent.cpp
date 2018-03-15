@@ -5,6 +5,19 @@ ParticleComponent::ParticleComponent(GameObject & gameobject) :
 {  
 }
 
+ParticleComponent::ParticleComponent(GameObject & gameobject, SpatialComponent * anchor) :
+    Component(gameobject),
+    m_anchor(anchor)
+{
+}
+
+ParticleComponent::ParticleComponent(GameObject & gameobject, SpatialComponent * anchor, SpatialComponent * directional) :
+    Component(gameobject),
+    m_anchor(anchor),
+    m_directional(directional)
+{
+}
+
 void ParticleComponent::init() {
     const glm::fmat3 & rotation = glm::fmat3();
     const glm::fvec3 & translation = glm::fvec3(0.0f);
@@ -16,8 +29,19 @@ void ParticleComponent::init() {
     initRandomOrientations(comp, m_N, m_activeEffect->getOrientationCount());
 }   
 
-void ParticleComponent::update(float dt) {  
-   m_activeEffect->update(dt);
+void ParticleComponent::update(float dt) {
+    if (m_anchor != NULL) {
+        if (m_directional == NULL) {
+            m_activeEffect->update(dt, m_anchor->position());
+        }
+        else {
+            m_activeEffect->update(dt, m_anchor->position(), -m_directional->w());
+        }
+
+    }
+    else {
+        m_activeEffect->update(dt);
+    }
 }
 
 void ParticleComponent::spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & position, const glm::vec3 & direction, 
@@ -49,18 +73,19 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
             float effectDuration = 5.0f;
             float particleDuration = 0.5f;
             int orientations = 0;
-            bool randomDistribution = true; // Have a random distribution vs uniform distribution
+            bool randomDistribution = true; 
             float variance = 0.1f;
             float rate = 1000.0f;
-            float angle = glm::pi<float>()/24; // For Cones, must be limited to 0 -> pi
+            float angle = glm::pi<float>()/24; 
             bool loop = false;
             float magnitude = 30.0f;
+            float attenuation = 1.0f;
             Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
             //accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
             Vector<Mesh *> *meshes = getMeshes(effect);
             Vector<ModelTexture*> * textures = getTextures(effect);
             return ParticleEffect::createEffectParams(type,n, effectDuration, particleDuration, orientations,
-                randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
+                randomDistribution, variance, rate, angle, loop, magnitude, attenuation, accelerators, meshes, textures);
         }
         case ParticleEffect::Effect::WATER_FOUNTAIN: {
             ParticleEffect::Type type = ParticleEffect::Type::CONE;
@@ -68,18 +93,19 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
             float effectDuration = 600.0f;
             float particleDuration = 3.0f;
             int orientations = 0;
-            bool randomDistribution = true; // Have a random distribution vs uniform distribution
+            bool randomDistribution = true; 
             float variance = 0.0f;
             float rate = 300.0f;
-            float angle = glm::pi<float>() / 8; // For Cones, must be limited to 0 -> pi
+            float angle = glm::pi<float>() / 8; 
             bool loop = true;
             float magnitude = 5.0f;
+            float attenuation = 1.0f;
             Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
-            accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
+            accelerators->push_back(SpatialSystem::gravity());
             Vector<Mesh *> *meshes = getMeshes(effect);
             Vector<ModelTexture*> * textures = getTextures(effect);
             return ParticleEffect::createEffectParams(type, n, effectDuration, particleDuration, orientations,
-                randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
+                randomDistribution, variance, rate, angle, loop, magnitude, attenuation, accelerators, meshes, textures);
         }
         case ParticleEffect::Effect::SODA_GRENADE: {
             ParticleEffect::Type type = ParticleEffect::Type::SPHERE;
@@ -87,19 +113,63 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
             float effectDuration = 0.5f;
             float particleDuration = 0.5f;
             int orientations = 20;
-            bool randomDistribution = true; // Have a random distribution vs uniform distribution
+            bool randomDistribution = true; 
             float variance = 0.2f;
             float rate = 0.0f;
-            float angle = glm::pi<float>() / 4; // For Cones, must be limited to 0 -> pi
+            float angle = glm::pi<float>() / 4; 
             bool loop = false;
             float magnitude = 40.0f;
+            float attenuation = 1.0f;
             Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
-            accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
+            accelerators->push_back(SpatialSystem::gravity());
+            SpatialSystem::gravity();
             Vector<Mesh *> *meshes = getMeshes(effect);
             Vector<ModelTexture*> * textures = getTextures(effect);
             return ParticleEffect::createEffectParams(type, n, effectDuration, particleDuration, orientations,
-                randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
+                randomDistribution, variance, rate, angle, loop, magnitude, attenuation, accelerators, meshes, textures);
         }
+        case ParticleEffect::Effect::BODY_EXPLOSION: {
+            ParticleEffect::Type type = ParticleEffect::Type::SPHERE;
+            int n = 40;
+            float effectDuration = 2.0f;
+            float particleDuration = 2.0f;
+            int orientations = 20;
+            bool randomDistribution = true; 
+            float variance = 0.2f;
+            float rate = 0.0f;
+            float angle = glm::pi<float>() / 4; 
+            bool loop = false;
+            float magnitude = 40.0f;
+            float attenuation = 0.9f;
+            Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
+            //accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
+            Vector<Mesh *> *meshes = getMeshes(effect);
+            Vector<ModelTexture*> * textures = getTextures(effect);
+            return ParticleEffect::createEffectParams(type, n, effectDuration, particleDuration, orientations,
+                randomDistribution, variance, rate, angle, loop, magnitude, attenuation, accelerators, meshes, textures);
+        }
+        case ParticleEffect::Effect::SIRACHA_FLAMETHROWER: {
+            ParticleEffect::Type type = ParticleEffect::Type::CONE;
+            int n = 500;
+            float effectDuration = 5.0f;
+            float particleDuration = 2.0f;
+            int orientations = 20;
+            bool randomDistribution = true; 
+            float variance = 0.2f;
+            float rate = 0.0f;
+            float angle = glm::pi<float>() / 4; 
+            bool loop = false;
+            float magnitude = 40.0f;
+            float attenuation = 1.0f;
+            Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
+            accelerators->push_back(SpatialSystem::gravity());
+            Vector<Mesh *> *meshes = getMeshes(effect);
+            Vector<ModelTexture*> * textures = getTextures(effect);
+            return ParticleEffect::createEffectParams(type, n, effectDuration, particleDuration, orientations,
+                randomDistribution, variance, rate, angle, loop, magnitude, attenuation, accelerators, meshes, textures);
+        }
+        default:
+            return NULL;
     }
         
 }
@@ -125,7 +195,6 @@ void ParticleComponent::initRandomOrientations(glm::mat4 comp, glm::mat3 norm, i
         const glm::fvec3 & translation = glm::fvec3(0.0f);
         const glm::fvec3 & scale = glm::fvec3(getScaleFactor(m_effect));
         m_randomNs.emplace_back(glm::mat3(rot) * glm::mat3(glm::scale(glm::mat4(), 1.0f / scale)));
-        //m_randomNs.emplace_back(norm);
         m_randomMs.emplace_back(Util::compositeTransform(scale, rot, translation));
     }
 }
@@ -158,9 +227,16 @@ Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect) {
         }
         case ParticleEffect::Effect::BODY_EXPLOSION:
         {
-            meshes->push_back(Loader::getMesh("Hamburger.obj"));
+            meshes->push_back(Loader::getMesh("particles/Gore_Chunk.obj"));
             return meshes;
         }
+        case ParticleEffect::Effect::SIRACHA_FLAMETHROWER:
+        {
+            meshes->push_back(Loader::getMesh("particles/Gore_Chunk.obj"));
+            return meshes;
+        }
+        default:
+            return NULL;
     }
 }
 
@@ -187,10 +263,18 @@ Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect ef
         }
         case ParticleEffect::Effect::BODY_EXPLOSION:
         {
-            Texture * tex(Loader::getTexture("Hamburger_BaseColor.png"));
+            Texture * tex(Loader::getTexture("particles/Gore_Chunk_Tex.png"));
             textures->push_back(new ModelTexture(tex));
             return textures;
         }
+        case ParticleEffect::Effect::SIRACHA_FLAMETHROWER:
+        {
+            Texture * tex(Loader::getTexture("particles/Gore_Chunk_Tex.png"));
+            textures->push_back(new ModelTexture(tex));
+            return textures;
+        }
+        default :
+            return NULL;
     }
 }
 
@@ -211,7 +295,13 @@ float ParticleComponent::getScaleFactor(ParticleEffect::Effect effect) {
         }
         case ParticleEffect::Effect::BODY_EXPLOSION:
         {
-            return 0.1f;
+            return 1.0f;
         }
+        case ParticleEffect::Effect::SIRACHA_FLAMETHROWER:
+        {
+            return 1.0f;
+        }
+        default:
+            return NULL;
     }
 }

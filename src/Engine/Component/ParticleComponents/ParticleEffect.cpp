@@ -1,16 +1,9 @@
 #include "ParticleEffect.hpp"
 
-/*ParticleEffect::ParticleEffect() :
-    m_effectParams(NULL),
-    m_anchor(glm::vec3(0)),
-    m_particles(Vector<Particle*>()),
-    m_life(0.0f)
-{
-}*/
-
-ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anchor) :
+ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & offset) :
     m_effectParams(effectParams),
-    m_anchor(anchor),
+    m_anchor(glm::vec3(0)),
+    m_offset(offset),
     m_direction(glm::vec3(0.0f, 1.0f, 0.0f)),
     m_velocity(glm::vec3(0.0f, 0.0f, 0.0f)),
     m_particles(generateParticles()),
@@ -18,13 +11,16 @@ ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anc
     m_activeParticleOrientationIDs(getActiveParticleOrientationIDs()),
     m_activeMap(getActiveMap()),
     m_nextActivation(getNextActivation()),
+    m_attenuationRate(1 / 60.0f),
+    m_nextAttenuation(m_attenuationRate),
     m_life(0.0f)
 {
 }
 
-ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anchor, const glm::vec3 & direction) :
+ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & offset, const glm::vec3 & direction) :
     m_effectParams(effectParams),
-    m_anchor(anchor),
+    m_anchor(glm::vec3(0)),
+    m_offset(offset),
     m_direction(direction),
     m_velocity(glm::vec3(0.0f, 0.0f, 0.0f)),
     m_particles(generateParticles()),
@@ -32,14 +28,17 @@ ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anc
     m_activeParticleOrientationIDs(getActiveParticleOrientationIDs()),
     m_activeMap(getActiveMap()),
     m_nextActivation(getNextActivation()),
+    m_attenuationRate(1 / 60.0f),
+    m_nextAttenuation(m_attenuationRate),
     m_life(0.0f)
 {
 }
 
-ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anchor, const glm::vec3 & direction, 
+ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & offset, const glm::vec3 & direction, 
     const glm::vec3 & velocity) :
     m_effectParams(effectParams),
-    m_anchor(anchor),
+    m_anchor(glm::vec3(0)),
+    m_offset(offset),
     m_direction(direction),
     m_velocity(velocity),
     m_particles(generateParticles()),
@@ -47,8 +46,22 @@ ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anc
     m_activeParticleOrientationIDs(getActiveParticleOrientationIDs()),
     m_activeMap(getActiveMap()),
     m_nextActivation(getNextActivation()),
+    m_attenuationRate(1 / 60.0f),
+    m_nextAttenuation(m_attenuationRate),
     m_life(0.0f)
 {
+}
+
+void ParticleEffect::update(float dt, glm::vec3 anchor, glm::vec3 direction) {
+    m_anchor = anchor;
+    m_direction = direction;
+    
+    update(dt);
+}
+
+void ParticleEffect::update(float dt, glm::vec3 anchor) {
+    m_anchor = anchor;
+    update(dt);
 }
 
 void ParticleEffect::update(float dt) {
@@ -56,9 +69,14 @@ void ParticleEffect::update(float dt) {
 
     if (m_life < m_effectParams->effectDuration) {
         updateActiveParticles(dt);
+        int attenuations = getAttenuations(dt);
+        float factor = 1.0f;
+        if (attenuations != 0) {
+            factor= pow(m_effectParams->attenuation, attenuations);
+        }
         for (int i = 0; i < (int)m_activeParticlePositions->size(); i++) {
             Particle *p = m_particles[m_activeMap[i]];
-            updatePosition(p, dt);
+            updatePosition(p, dt, factor);
             m_activeParticlePositions->at(i) = p->position;
             p->life += dt;
 
@@ -72,6 +90,7 @@ void ParticleEffect::update(float dt) {
             m_activeParticleOrientationIDs = getActiveParticleOrientationIDs();
             m_activeMap = getActiveMap();
             m_nextActivation = getNextActivation();
+            m_nextAttenuation = 0.0f;
         }
         else {
             m_effectParams->effectDuration += m_life;
@@ -80,19 +99,18 @@ void ParticleEffect::update(float dt) {
     }
 }
 
+
+
 void ParticleEffect::updateActiveParticles(float dt) {
     
     if (m_effectParams->rate != 0.0f) {
-        // Check if particle duration is expired and remove from list if so
-        int i = 0;
-        // TO DO: Optimize based on  the fact that the expired particles will always be the first
-        while(i < (int)m_activeParticlePositions->size()) {
-            Particle *p = m_particles[m_activeMap[i]];
+        while ((int)m_activeParticlePositions->size() > 0) {
+            Particle *p = m_particles[m_activeMap[0]];
             if (p->life > m_effectParams->particleDuration) {
-                removeActiveParticle(i);
+                removeActiveParticle(0);
             }
             else {
-                i++;
+                break;
             }
         }
         // Activate new particles based on rate. Cap at n limit and Remove the oldest Particle
@@ -123,6 +141,27 @@ void ParticleEffect::updateActiveParticles(float dt) {
     }
 }
 
+void ParticleEffect::updatePosition(Particle *p, float dt, float attenuationFactor) {
+    p->velocity *= attenuationFactor;
+    for (int i = 0; i < (int)m_effectParams->accelerators->size(); i++) {
+        p->velocity += m_effectParams->accelerators->at(i) * dt;
+    }
+    p->position += p->velocity * dt; 
+}
+
+int ParticleEffect::getAttenuations(float dt) {
+    if (m_effectParams->attenuation == 1.0f) {
+        return 0;
+    }
+    else {
+        int attenuations = 0;
+        while (m_life > m_nextAttenuation) {
+            attenuations += 1;
+            m_nextAttenuation += m_attenuationRate;
+        }
+        return attenuations;
+    }
+}
 
  //Remove from specific location
 void ParticleEffect::removeActiveParticle(int i) {
@@ -138,14 +177,6 @@ void ParticleEffect::addActiveParticle(int i) {
     m_activeParticleOrientationIDs->push_back(m_particles[i]->orientationID);
 }
 
-void ParticleEffect::updatePosition(Particle *p, float dt) {
-    for (int i = 0; i < (int)m_effectParams->accelerators->size(); i++) {
-        p->velocity += m_effectParams->accelerators->at(i) * dt;
-    }
-    p->position += p->velocity * dt;
-}
-
-//TO DO: Random Distribution bool
 void ParticleEffect::sphereMotion(Particle* p) {
     if (!m_effectParams->randomDistribution) {
         float phi = glm::golden_ratio<float>();
@@ -159,7 +190,6 @@ void ParticleEffect::sphereMotion(Particle* p) {
     }
 }
 
-//TO DO: Disk motion based on direction - requires additional vector
 void ParticleEffect::diskMotion(Particle* p) {
     if (!m_effectParams->randomDistribution) {
         float theta = m_effectParams->angle * (p->i / (float)m_effectParams->n);
@@ -171,8 +201,6 @@ void ParticleEffect::diskMotion(Particle* p) {
     }
 }
 
-
-// NOTE: No Uniform distribution.
 void ParticleEffect::coneMotion(Particle* p) {
     glm::vec3 normalizedDirection = normalize(m_direction);
     glm::vec3 u = getU(normalizedDirection);
@@ -212,7 +240,6 @@ Vector<ParticleEffect::Particle*> ParticleEffect::generateParticles() {
 ParticleEffect::Particle* ParticleEffect::makeParticle(int i) {
     Particle *p = new Particle();
     
-    // TO DO: Multi texture/mesh particle effects
     initParticle(p, i, 0, 0);
 
     //Determine if active/inactive
@@ -272,7 +299,7 @@ void ParticleEffect::initVelocity(Particle *p) {
 }
 
 void ParticleEffect::initPosition(Particle *p) {
-    p->position = m_anchor + m_life * m_velocity;
+    p->position = m_anchor + m_offset + m_life * m_velocity;
 }
 
 Vector<glm::vec3> * ParticleEffect::getActiveParticlePositions() {
@@ -335,6 +362,7 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     float angle,
     bool loop,
     float magnitude,
+    float attenuation,
     Vector<glm::vec3>* accelerators,
     Vector<Mesh *>* meshes,
     Vector<ModelTexture *>* textures
@@ -351,6 +379,7 @@ ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
     effectParams->angle = angle;
     effectParams->loop = loop;
     effectParams->magnitude = magnitude;
+    effectParams->attenuation = attenuation;
     effectParams->accelerators = accelerators;
     effectParams->meshes = meshes;
     effectParams->textures = textures;
