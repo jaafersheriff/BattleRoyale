@@ -16,50 +16,66 @@ class ParticleComponent : public Component {
 
     friend Scene;
 
-    protected:
-        ParticleComponent(GameObject & gameobject);
-
     public:
+
+        ParticleComponent(GameObject & gameObject, ParticleEffect::Effect effect);
         ParticleComponent(ParticleComponent && other) = default;
     
-    protected:    
+    protected:
+
         virtual void init() override;
     
     public:
-        virtual SystemID systemID() const override { return SystemID::particle;  }
+
+        virtual SystemID systemID() const override { return SystemID::particle; }
+
         void update(float dt) override;
 
-        void spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & position, 
-            const glm::vec3 & direction, const glm::vec3 & velocity);
-        void spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & position,
-            const glm::vec3 & direction);
-        void spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & position);
+        void spawnParticleEffect(
+            ParticleEffect::Effect effect,
+            const glm::vec3 & position, 
+            const glm::vec3 & direction,
+            const glm::vec3 & velocity
+        );
+        void spawnParticleEffect(
+            ParticleEffect::Effect effect,
+            const glm::vec3 & position,
+            const glm::vec3 & direction
+        );
+        void spawnParticleEffect(
+            ParticleEffect::Effect effect,
+            const glm::vec3 & position
+        );
         
-        Mesh* getMesh(int i);
-        ModelTexture* getModelTexture(int i);
-        glm::mat4 ModelMatrix() { return m_M; }
-        glm::mat4 NormalMatrix() { return m_N; }
+        Mesh * getMesh(int i);
+        ModelTexture * getModelTexture(int i);
         Vector<glm::vec3> * getParticlePositions();
         Vector<int> * getParticleOrientationIDs();
-        int Count() { return m_activeEffect->Count(); }
-        float Dead() {return m_activeEffect->Life() > m_activeEffect->Duration();}
-        Vector<glm::mat4> RandomMs() { return m_randomMs; }
-        Vector<glm::mat3> RandomNs() { return m_randomNs; }
-        
+
+        int count() { return m_activeEffect->count(); }
+        float dead() {return m_activeEffect->life() > m_activeEffect->duration();}
+
+        const glm::mat4 & modelMatrix() { return m_M; }
+        const glm::mat3 & normalMatrix() { return m_N; }
+        const Vector<glm::mat4> & randomMs() { return m_randomMs; }
+        const Vector<glm::mat3> & randomNs() { return m_randomNs; }        
 
     private:
-        ParticleEffect::EffectParams* getEffectParams(ParticleEffect::Effect effect);
-        Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect);
-        Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect effect);
-        void initRandomOrientations(glm::mat4 comp, glm::mat3 norm, int count);
+
+        ParticleEffect::EffectParams * getEffectParams(ParticleEffect::Effect effect);
+        Vector<Mesh *> * ParticleComponent::getMeshes(ParticleEffect::Effect effect);
+        Vector<ModelTexture *> * ParticleComponent::getTextures(ParticleEffect::Effect effect);
+        void initRandomOrientations(const glm::mat4 & comp, const glm::mat3 & norm, int count);
         float getScaleFactor(ParticleEffect::Effect effect);
     
     public:
-        static const int MAX_ORIENTATIONS = 20; // if changed, need to change vertex shader
+
+        static const int k_maxOrientations;
 
     private:
-        ParticleEffect* m_activeEffect;
+
         ParticleEffect::Effect m_effect;
+        UniquePtr<ParticleEffect> m_activeEffect;
         glm::mat4 m_M;
         glm::mat3 m_N;
         Vector<glm::mat4> m_randomMs;

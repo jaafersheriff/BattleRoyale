@@ -1,8 +1,10 @@
 #pragma once
-#include "Engine/Scene/Scene.hpp"
-#include "Component/ParticleComponents/ParticleComponent.hpp"
+
+#include "Util/Memory.hpp"
 
 class ParticleShader;
+class ParticleComponent;
+class Scene;
 
 class ParticleSystem {
 
@@ -15,6 +17,7 @@ class ParticleSystem {
         static void update(float dt);
 
     private:
+
         static const Vector<ParticleComponent *> & s_particleComponents;
 
 };

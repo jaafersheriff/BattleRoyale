@@ -1,5 +1,7 @@
 #include "SoundSystem.hpp"
 
+#include "Scene/Scene.hpp"
+
 const Vector<SoundComponent *> & SoundSystem::s_soundComponents(Scene::getComponents<SoundComponent>());
 String SoundSystem::s_SOUND_DIR = EngineApp::RESOURCE_DIR + "/soundeffects/";
 CameraComponent* SoundSystem::s_camera = NULL;
@@ -190,7 +192,7 @@ FMOD::Sound* SoundSystem::createSound(String soundfilename, FMOD_MODE m)
     FMOD::Sound *sound = NULL;
     FMOD_RESULT result = s_system->createSound(path, m, 0, &sound);
     if (result != FMOD_OK) {
-	    printf("Failed to create sound.\n");
+        printf("Failed to create sound.\n");
     }
 
     return sound;

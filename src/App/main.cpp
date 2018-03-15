@@ -195,7 +195,7 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
 
 void createParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & pos, const glm::vec3 & dir) {
     GameObject & obj(Scene::createGameObject());
-    ParticleComponent & particleComp(Scene::addComponent<ParticleComponent>(obj));
+    ParticleComponent & particleComp(Scene::addComponent<ParticleComponent>(obj, effect));
 
     particleComp.spawnParticleEffect(effect, pos, dir);
     f_particleEffects.push_back(&obj);
@@ -427,7 +427,7 @@ int main(int argc, char **argv) {
             //createProjectile(player::spatialComp->position() + player::cameraComp->getLookDir() * 2.0f, player::cameraComp->getLookDir());
             //Remove later
             const glm::vec3 & up = glm::vec3(0, 1, 0);
-            createParticleEffect(ParticleEffect::SODA_GRENADE,
+            createParticleEffect(ParticleEffect::Effect::SODA_GRENADE,
                 player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, up);
             SoundSystem::playSound3D("woosh.mp3", player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, false);
             //SoundSystem::playBackgroundMusic();

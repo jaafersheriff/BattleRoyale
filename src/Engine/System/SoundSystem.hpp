@@ -5,8 +5,6 @@
 #include "System.hpp"
 #include "Component/SoundComponents/SoundComponent.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
-#include "Component/SpatialComponents/SpatialComponent.hpp"
-#include "Scene/Scene.hpp"
 
 #include "EngineApp/EngineApp.hpp"
 
@@ -64,7 +62,7 @@ class SoundSystem {
         static void setBackGroundLoop(bool loop);
     #endif
 
-	private:
+    private:
         static void added(Component & component) {};
         static void removed(Component & component) {};
     

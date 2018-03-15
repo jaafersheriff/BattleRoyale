@@ -1,6 +1,7 @@
 #include "GameLogicSystem.hpp"
 
 #include "Scene/Scene.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
 
 
 

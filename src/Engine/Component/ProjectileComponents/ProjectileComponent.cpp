@@ -4,6 +4,8 @@
 #include "GameObject/Message.hpp"
 #include "Component/CollisionComponents/BounderComponent.hpp"
 #include "Component/EnemyComponents/EnemyComponent.hpp"
+#include "Component/CollisionComponents/BounderComponent.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
 
 
 

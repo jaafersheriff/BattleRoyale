@@ -1,19 +1,25 @@
 #include "ParticleComponent.hpp"
 
-ParticleComponent::ParticleComponent(GameObject & gameobject) :
-    Component(gameobject)
-{  
-}
+const int ParticleComponent::k_maxOrientations = 20; // if changed, need to change vertex shader
+
+ParticleComponent::ParticleComponent(GameObject & gameObject, ParticleEffect::Effect effect) :
+    Component(gameObject),
+    m_effect(effect),
+    m_activeEffect(),
+    m_M(),
+    m_N(),
+    m_randomMs(),
+    m_randomNs()
+{}
 
 void ParticleComponent::init() {
     const glm::fmat3 & rotation = glm::fmat3();
     const glm::fvec3 & translation = glm::fvec3(0.0f);
     const glm::fvec3 & scale = glm::fvec3(getScaleFactor(m_effect));
-    glm::mat4 comp = Util::compositeTransform(scale, translation);
-    m_M = comp;
-    m_N = glm::mat3();
+    m_M = Util::compositeTransform(scale, translation);
+    m_N = glm::mat3(m_M);
 
-    initRandomOrientations(comp, m_N, m_activeEffect->getOrientationCount());
+    initRandomOrientations(m_M, m_N, m_activeEffect->getOrientationCount());
 }   
 
 void ParticleComponent::update(float dt) {  
@@ -23,20 +29,20 @@ void ParticleComponent::update(float dt) {
 void ParticleComponent::spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & position, const glm::vec3 & direction, 
     const glm::vec3 & velocity) {
     ParticleEffect::EffectParams *effectParams = getEffectParams(effect);
-    m_activeEffect = new ParticleEffect(effectParams, position, direction, velocity);
+    m_activeEffect = UniquePtr<ParticleEffect>::make(effectParams, position, direction, velocity);
     m_effect = effect;
 }
 
 void ParticleComponent::spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & position, const glm::vec3 & direction) {
     ParticleEffect::EffectParams *effectParams = getEffectParams(effect);
-    m_activeEffect = new ParticleEffect(effectParams, position, direction);
+    m_activeEffect = UniquePtr<ParticleEffect>::make(effectParams, position, direction);
     m_effect = effect;
 
 }
 
 void ParticleComponent::spawnParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & position) {
     ParticleEffect::EffectParams *effectParams = getEffectParams(effect);
-    m_activeEffect = new ParticleEffect(effectParams, position);
+    m_activeEffect = UniquePtr<ParticleEffect>::make(effectParams, position);
     m_effect = effect;
 }
 
@@ -59,7 +65,7 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
             //accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
             Vector<Mesh *> *meshes = getMeshes(effect);
             Vector<ModelTexture*> * textures = getTextures(effect);
-            return ParticleEffect::createEffectParams(type,n, effectDuration, particleDuration, orientations,
+            return new ParticleEffect::EffectParams(type,n, effectDuration, particleDuration, orientations,
                 randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
         }
         case ParticleEffect::Effect::WATER_FOUNTAIN: {
@@ -78,7 +84,7 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
             accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
             Vector<Mesh *> *meshes = getMeshes(effect);
             Vector<ModelTexture*> * textures = getTextures(effect);
-            return ParticleEffect::createEffectParams(type, n, effectDuration, particleDuration, orientations,
+            return new ParticleEffect::EffectParams(type, n, effectDuration, particleDuration, orientations,
                 randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
         }
         case ParticleEffect::Effect::SODA_GRENADE: {
@@ -97,10 +103,12 @@ ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect:
             accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
             Vector<Mesh *> *meshes = getMeshes(effect);
             Vector<ModelTexture*> * textures = getTextures(effect);
-            return ParticleEffect::createEffectParams(type, n, effectDuration, particleDuration, orientations,
+            return new ParticleEffect::EffectParams(type, n, effectDuration, particleDuration, orientations,
                 randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
         }
     }
+
+    return nullptr;
         
 }
 
@@ -112,7 +120,7 @@ Vector<int> * ParticleComponent::getParticleOrientationIDs() {
     return m_activeEffect->ActiveParticleOrientationIDs();
 }
 
-void ParticleComponent::initRandomOrientations(glm::mat4 comp, glm::mat3 norm, int count) {
+void ParticleComponent::initRandomOrientations(const glm::mat4 & comp, const glm::mat3 & norm, int count) {
     m_randomMs = Vector<glm::mat4>();
     m_randomMs.push_back(comp);
     m_randomNs = Vector<glm::mat3>();
@@ -162,6 +170,8 @@ Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect) {
             return meshes;
         }
     }
+
+    return nullptr;
 }
 
 Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect effect) {
@@ -192,6 +202,8 @@ Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect ef
             return textures;
         }
     }
+
+    return nullptr;
 }
 
 //  TO DO: Multi Mesh scale support
@@ -213,5 +225,6 @@ float ParticleComponent::getScaleFactor(ParticleEffect::Effect effect) {
         {
             return 0.1f;
         }
+        default: return 1.0f;
     }
 }

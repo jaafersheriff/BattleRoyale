@@ -1,10 +1,5 @@
 #include "Scene.hpp"
 
-#include <algorithm>
-
-#include "GLFW/glfw3.h"
-
-#include "IO/Keyboard.hpp"
 #include "System/GameLogicSystem.hpp"
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"

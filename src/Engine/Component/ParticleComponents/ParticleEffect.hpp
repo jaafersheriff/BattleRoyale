@@ -11,13 +11,13 @@
 
 class ParticleEffect {
     public:
-        enum Type {
+        enum class Type {
             SPHERE, 
             CONE,
             DISK
         };
 
-        enum Effect {
+        enum class Effect {
             BLOOD_SPRAY,
             WATER_FOUNTAIN,
             SODA_GRENADE,
@@ -25,7 +25,8 @@ class ParticleEffect {
             SIRACHA_FLAMETHROWER
         };
 
-        typedef struct {
+        struct Particle {
+
             int i;
             bool active = false;
             float life = 0.0f;
@@ -34,24 +35,44 @@ class ParticleEffect {
             int orientationID;
             int meshID;
             int modelTextureID;
-        }Particle;
 
-        typedef struct {
+        };
+
+        struct EffectParams {
+
             ParticleEffect::Type type;
-            int n = 0; //Can be how many to spawn or, if rate is enable, the limit of particle count
-            float effectDuration = 0.0f;
-            float particleDuration = 0.0f;
-            int orientations = 0; //How many different random orientations can the particle have, 0 means just base.
-            bool randomDistribution = false;
-            float variance = 0.0f; //randomness factor
-            float rate = 0.0f; // rate at which particles spawn (particles/sec), 0 if all spawn at once
-            float angle = 2 * glm::pi<float>(); // default to 360 degrees
-            bool loop = false;
-            float magnitude = 1.0f;
-            Vector<glm::vec3>* accelerators;
-            Vector<Mesh *>* meshes;
-            Vector<ModelTexture *>* textures;
-        }EffectParams;
+            int n;// = 0; //Can be how many to spawn or, if rate is enable, the limit of particle count
+            float effectDuration;// = 0.0f;
+            float particleDuration;// = 0.0f;
+            int orientations;// = 0; //How many different random orientations can the particle have, 0 means just base.
+            bool randomDistribution;// = false;
+            float variance;// = 0.0f; //randomness factor
+            float rate;// = 0.0f; // rate at which particles spawn (particles/sec), 0 if all spawn at once
+            float angle;// = 2 * glm::pi<float>(); // default to 360 degrees
+            bool loop;// = false;
+            float magnitude;// = 1.0f;
+            Vector<glm::vec3> * accelerators;
+            Vector<Mesh *> * meshes;
+            Vector<ModelTexture *> * textures;
+
+            EffectParams(
+                ParticleEffect::Type type,
+                int n,
+                float effectDuration,
+                float particleDuration,
+                int orientations,
+                bool randomDistribution,
+                float variance,
+                float rate,
+                float angle,
+                bool loop,
+                float magnitude,
+                Vector<glm::vec3> * accelerators,
+                Vector<Mesh *> * meshes,
+                Vector<ModelTexture *> * textures
+            );
+
+        };
 
     public:
         ParticleEffect(EffectParams *ep, const glm::vec3 & anchor);
@@ -78,25 +99,9 @@ class ParticleEffect {
         Vector<glm::vec3> * ActiveParticlePositions() {return m_activeParticlePositions; }
         Vector<int> * ActiveParticleOrientationIDs() { return m_activeParticleOrientationIDs; }
         glm::vec3   anchor()    { return m_anchor; }
-        int         Count()     { return m_effectParams->n; }
-        float       Life()      { return m_life; }
-        float       Duration()  { return m_effectParams->effectDuration; }
-        static EffectParams* createEffectParams(
-            ParticleEffect::Type type,
-            int n,
-            float effectDuration,
-            float particleDuration,
-            int orientations,
-            bool randomDistribution,
-            float variance,
-            float rate,
-            float angle,
-            bool loop,
-            float magnitude,
-            Vector<glm::vec3>* accelerators,
-            Vector<Mesh *>* meshes,
-            Vector<ModelTexture *>* textures
-            );
+        int         count()     { return m_effectParams->n; }
+        float       life()      { return m_life; }
+        float       duration()  { return m_effectParams->effectDuration; }
 
     private:
         Particle * makeParticle(int i);

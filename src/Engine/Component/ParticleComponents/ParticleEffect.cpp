@@ -1,12 +1,38 @@
 #include "ParticleEffect.hpp"
 
-/*ParticleEffect::ParticleEffect() :
-    m_effectParams(NULL),
-    m_anchor(glm::vec3(0)),
-    m_particles(Vector<Particle*>()),
-    m_life(0.0f)
-{
-}*/
+
+
+ParticleEffect::EffectParams::EffectParams(
+    ParticleEffect::Type type,
+    int n,
+    float effectDuration,
+    float particleDuration,
+    int orientations,
+    bool randomDistribution,
+    float variance,
+    float rate,
+    float angle,
+    bool loop,
+    float magnitude,
+    Vector<glm::vec3> * accelerators,
+    Vector<Mesh *> * meshes,
+    Vector<ModelTexture *> * textures
+) :
+    type(type),
+    n(n),
+    effectDuration(effectDuration),
+    particleDuration(particleDuration),
+    orientations(orientations),
+    randomDistribution(randomDistribution),
+    variance(variance),
+    rate(rate),
+    angle(angle),
+    loop(loop),
+    magnitude(magnitude),
+    accelerators(accelerators),
+    meshes(meshes),
+    textures(textures)
+{}
 
 ParticleEffect::ParticleEffect(EffectParams *effectParams, const glm::vec3 & anchor) :
     m_effectParams(effectParams),
@@ -247,15 +273,15 @@ void ParticleEffect::initParticle(Particle *p, int i, int meshID, int modelTextu
 
 void ParticleEffect::initVelocity(Particle *p) {
     switch (m_effectParams->type) {
-        case ParticleEffect::SPHERE : {
+        case ParticleEffect::Type::SPHERE : {
             sphereMotion(p);
             break;
         }
-        case ParticleEffect::DISK : {
+        case ParticleEffect::Type::DISK : {
             diskMotion(p);
             break;
         }
-        case ParticleEffect::CONE: {
+        case ParticleEffect::Type::CONE: {
             coneMotion(p);
             break;
         }
@@ -322,40 +348,6 @@ Mesh* ParticleEffect::getMesh(int i) {
 ModelTexture* ParticleEffect::getModelTexture(int i) {
     return m_effectParams->textures->at(i);
 }
-
-ParticleEffect::EffectParams* ParticleEffect::createEffectParams(
-    ParticleEffect::Type type,
-    int n,
-    float effectDuration,
-    float particleDuration,
-    int orientations,
-    bool randomDistribution,
-    float variance,
-    float rate,
-    float angle,
-    bool loop,
-    float magnitude,
-    Vector<glm::vec3>* accelerators,
-    Vector<Mesh *>* meshes,
-    Vector<ModelTexture *>* textures
-){
-    ParticleEffect::EffectParams *effectParams = new ParticleEffect::EffectParams();
-    effectParams->type = type;
-    effectParams->n = n;
-    effectParams->effectDuration = effectDuration;
-    effectParams->particleDuration = particleDuration;
-    effectParams->orientations = orientations;
-    effectParams->randomDistribution = randomDistribution;
-    effectParams->variance = variance;
-    effectParams->rate = rate;
-    effectParams->angle = angle;
-    effectParams->loop = loop;
-    effectParams->magnitude = magnitude;
-    effectParams->accelerators = accelerators;
-    effectParams->meshes = meshes;
-    effectParams->textures = textures;
-    return effectParams;
- }
 
 
 
