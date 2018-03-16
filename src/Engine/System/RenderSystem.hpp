@@ -16,6 +16,7 @@
 #include "Shaders/OctreeShader.hpp"
 #include "Shaders/RayShader.hpp"
 #include "Shaders/PostProcessShader.hpp"
+#include "Shaders/ShadowDepthShader.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 
 
@@ -24,82 +25,71 @@
 class RenderSystem {
 
     friend Scene;
-    friend PostProcessShader;
 
-    public:
-
+public:
     static constexpr SystemID ID = SystemID::render;
-
-    public:
 
     static void init();
 
-    /* Iterate through shaders map
-        * Bind individual shaders 
-        * Call shaders' render function with the appropriate render component list */
+    /* Full render function including shadow maps, main render calls, and post-processing */
     static void update(float dt);
 
-    // creates a new shader and initializes it
-    template<typename ShaderT, typename... Args> static bool createShader(Args &&... args);
-
-    // takes possession of shader and initializes it
-    template <typename ShaderT> static bool addShader(UniquePtr<ShaderT> shader);
-
-    // get shader of the specified type
-    template <typename ShaderT> static ShaderT * getShader();
-
+    /* Camera */
     static void setCamera(const CameraComponent * camera);
-    
-    private:
+    static const CameraComponent * s_playerCamera;
+
+    /* Light */
+    static GameObject * s_lightObject;
+    static SpatialComponent * s_lightSpatial;
+    static CameraComponent * s_lightCamera;
+    static glm::vec3 getLightDir();
+    static void setLightDir(glm::vec3);
+    static float lightDist;
+
+    /* Shadows */
+    static const glm::mat4 & getL() { return s_shadowShader->getL(); }
+    static const GLuint getShadowMap() { return s_shadowShader->getShadowMapTexture(); }
+
+    /* Shaders */
+    template<typename ShaderT, typename... Args> static ShaderT * createShader(Args &&... args);
+    static DiffuseShader * s_diffuseShader;
+    static BounderShader * s_bounderShader;
+    static RayShader * s_rayShader;
+    static ShadowDepthShader * s_shadowShader;
+    static OctreeShader * s_octreeShader;
+    static PostProcessShader * s_postProcessShader;
+
+    /* FBO Stuff */
+    static GLuint getFBOTexture() { return s_fboColorTex; }
+
+    static void getFrustumComps(const CameraComponent *, Vector<DiffuseRenderComponent *> &);
+private:
+    static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
 
     static void initFBO();
-
     static void doResize();
-
-    private:
-
-    static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
-    static UnorderedMap<std::type_index, UniquePtr<Shader>> s_shaders;
-    static UniquePtr<PostProcessShader> s_postProcessShader;
-    static const CameraComponent * s_camera;
     static GLuint s_fbo;
     static GLuint s_fboColorTex;
     static bool s_wasResize;
 };
 
+
 // TEMPLATE IMPLEMENTATION /////////////////////////////////////////////////////
 
 template<typename ShaderT, typename... Args>
-bool RenderSystem::createShader(Args &&... args) {
-    auto shader(UniquePtr<ShaderT>::make(std::forward<Args>(args)...));
-    std::type_index typeI(typeid(ShaderT));
-
-    auto it(s_shaders.find(typeI));
-    if (it != s_shaders.end()) {
-        return true;
-    }
+ShaderT * RenderSystem::createShader(Args &&... args) {
+    ShaderT * shader = new ShaderT(std::forward<Args>(args)...);
     if (shader->init()) {
-        s_shaders[typeI] = std::move(shader);
-        return true;
+        return shader;
     }
     else {
         std::cerr << "Failed to initialize shader:" << std::endl;
         std::cerr << "\t" << shader->vShaderName << std::endl;
         std::cerr << "\t" << shader->fShaderName << std::endl;
         std::cin.get();
-        return false;
-    }
-}
-
-template <typename ShaderT>
-ShaderT * RenderSystem::getShader() {
-    std::type_index typeI(typeid(ShaderT));
-    if (!s_shaders.count(typeI)) {
         return nullptr;
     }
-    return static_cast<ShaderT *>(s_shaders.at(typeI).get());
 }
-
 
 
 #endif

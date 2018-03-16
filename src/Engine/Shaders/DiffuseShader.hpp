@@ -7,12 +7,10 @@
 
 class DiffuseShader : public Shader {
     public:
-        DiffuseShader(const String & vertFile, const String & fragFile, const glm::vec3 & light);
+        DiffuseShader(const String & vertFile, const String & fragFile);
 
         bool init();
-        virtual void render(const CameraComponent * camera, const Vector<Component *> &) override;
-
-        const glm::vec3 * lightDir;
+        virtual void render(const CameraComponent * camera) override;
 
         /* Wire frame */
         bool isWireFrame() const { return showWireFrame; }
@@ -46,6 +44,9 @@ class DiffuseShader : public Shader {
         GLuint cellIntensitiesTexture;
         GLuint cellDiffuseScalesTexture;
         GLuint cellSpecularScalesTexture;
+
+        /* Shadows */
+        glm::mat4 * L;
 };
 
 #endif 

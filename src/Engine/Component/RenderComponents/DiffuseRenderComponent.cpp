@@ -44,11 +44,10 @@ Sphere DiffuseRenderComponent::detEnclosingSphere(const Mesh & mesh) {
 
 DiffuseRenderComponent::DiffuseRenderComponent(
     GameObject & gameObject, const SpatialComponent & spatial,
-    int pid, const Mesh & mesh, const ModelTexture & texture,
+    const Mesh & mesh, const ModelTexture & texture,
     bool toon, const glm::vec2 & tiling
 ) :
     Component(gameObject),
-    m_pid(pid),
     m_mesh(mesh),
     m_modelTexture(texture),
     m_isToon(toon),

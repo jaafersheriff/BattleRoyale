@@ -4,23 +4,26 @@
 #define _SHADOW_DEPTH_SHADER_HPP_
 
 #include "Shader.hpp"
+#include "Model/Texture.hpp"
 
 class ShadowDepthShader : public Shader {
     public:
-        ShadowDepthShader(const String & vertName, const String & fragName, int width, int height, glm::vec3 & lightdir);
+        ShadowDepthShader(const String & vertName, const String & fragName);
 
         bool init();
-        virtual void render(const CameraComponent * camera, const Vector<Component *> &) override;
+
+        virtual void render(const CameraComponent * camera) override;
         
+        GLuint getShadowMapTexture() { return s_shadowMap->textureId; }
+        const glm::mat4 & getL() { return L; }
+        int getMapSize() { return s_shadowMap->width; }
+        void setMapSize(int);
     private:
         void initFBO();
-
-        glm::vec3 & lightDir;
         
         glm::mat4 L;
-        GLuint fboHandle;
-        GLuint fboTexture;
-        int mapWidth, mapHeight;
+        GLuint s_fboHandle;
+        Texture * s_shadowMap;
 };
 
 #endif

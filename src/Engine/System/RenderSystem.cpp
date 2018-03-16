@@ -6,14 +6,28 @@
 #include "Scene/Scene.hpp"
 
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
-UnorderedMap<std::type_index, UniquePtr<Shader>> RenderSystem::s_shaders;
-UniquePtr<PostProcessShader> RenderSystem::s_postProcessShader;
-const CameraComponent * RenderSystem::s_camera = nullptr;
+/* FBO */
 GLuint RenderSystem::s_fbo = 0;
 GLuint RenderSystem::s_fboColorTex = 0;
 bool RenderSystem::s_wasResize = false;
+/* Camera and light */
+const CameraComponent * RenderSystem::s_playerCamera = nullptr;
+GameObject * RenderSystem::s_lightObject = nullptr;
+CameraComponent * RenderSystem::s_lightCamera = nullptr;
+SpatialComponent * RenderSystem::s_lightSpatial = nullptr;
+float RenderSystem::lightDist = 15.f;
+
+/* Shaders */
+ShadowDepthShader * RenderSystem::s_shadowShader = nullptr;
+DiffuseShader * RenderSystem::s_diffuseShader = nullptr;
+BounderShader * RenderSystem::s_bounderShader = nullptr;
+RayShader * RenderSystem::s_rayShader = nullptr;
+OctreeShader * RenderSystem::s_octreeShader = nullptr;
+PostProcessShader * RenderSystem::s_postProcessShader = nullptr;
+ 
 
 void RenderSystem::init() {
+    /* Init GL state */
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -21,7 +35,9 @@ void RenderSystem::init() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0.2f, 0.3f, 0.4f, 1.f);
 
-    auto sizeCallback([&] (const Message & msg_) {
+    /* Init GL window */
+    glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
+    auto sizeCallback([&](const Message & msg_) {
         const WindowFrameSizeMessage & msg(static_cast<const WindowFrameSizeMessage &>(msg_));
         s_wasResize = true;
     });
@@ -60,77 +76,91 @@ void RenderSystem::init() {
     s_postProcessShader = UniquePtr<PostProcessShader>::make("postprocess_vert.glsl", "postprocess_frag.glsl");
     if (!s_postProcessShader->init()) {
         std::cin.get();
+    /* Init light */
+    s_lightObject = &Scene::createGameObject();
+    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, 45.f, 0.01f, 300.f);
+    glm::vec3 w = glm::normalize(glm::vec3(-0.2f, 0.75f, 0.5f));
+    glm::vec3 u = glm::normalize(glm::cross(w, glm::vec3(0.f, 1.f, 0.f)));
+    glm::vec3 v = glm::normalize(glm::cross(u, w));
+    s_lightSpatial = &Scene::addComponent<SpatialComponent>(*s_lightObject, w * lightDist, glm::vec3(2.f), glm::mat3(u, v, w));
+    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, glm::vec2(-75.f, 100.f), glm::vec2(-55.f, 100.f), 0.01f, 105.f);
+    //Scene::addComponent<DiffuseRenderComponent>(*s_lightObject, *Loader::getMesh("cube.obj"), ModelTexture(1.f, glm::vec3(1.f), glm::vec3(0.9f)), true, glm::vec2(1, 1));
+
+    /* Init shaders */
+    if (!(s_diffuseShader = createShader<DiffuseShader>("diffuse_vert.glsl", "diffuse_frag.glsl")) ||
+        !(s_bounderShader = createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl")) ||
+        !(s_octreeShader = createShader<OctreeShader>("bounder_vert.glsl", "bounder_frag.glsl")) ||
+        !(s_rayShader = createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) ||
+        !(s_postProcessShader = createShader<PostProcessShader>("postprocess_vert.glsl", "postprocess_frag.glsl")) ||
+        !(s_shadowShader = createShader<ShadowDepthShader>("shadow_vert.glsl", "shadow_frag.glsl"))) {
         std::exit(EXIT_FAILURE);
     }
-    
-    glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
+
+    /* Init FBO */
     initFBO();
 }
 
-///////////////////////////  TODO  ///////////////////////////
-// pass a list of render components that are specific       //
-// to this shader -- right now we are passing the entire    //
-// list and expecting each shader to filter through         //
-//////////////////////////////////////////////////////////////
 void RenderSystem::update(float dt) {
+    /* Handle window resize */
     if (s_wasResize) {
         doResize();
         s_wasResize = false;
     }
 
-    // Make it so that rendering is not done to the computer screen
-    // but to the framebuffer in squareShader->fboHandle
-    glBindFramebuffer(GL_FRAMEBUFFER, s_fbo);
-
-    static Vector<Component *> s_compsToRender;
-
-    // Update components
+    /* Update render components */
     for (DiffuseRenderComponent * comp : s_diffuseComponents) {
         comp->update(dt);
     }
-    // Frustum culling
-    s_compsToRender.clear();
-    if (s_camera) {
-        for (DiffuseRenderComponent * comp : s_diffuseComponents) {
-            if (s_camera->sphereInFrustum(comp->enclosingSphere())) {
-                s_compsToRender.push_back(comp);
-            }
-        }
+
+    /* Update light */
+    s_lightSpatial->setPosition(getLightDir() * -lightDist + s_playerCamera->gameObject().getComponentByType<SpatialComponent>()->position());
+
+    if (!s_playerCamera) {
+        return;
+    }
+
+    /* Render shadow map */
+    s_shadowShader->render(s_lightCamera);
+
+    /* Set up post process FBO */
+    if (s_postProcessShader->isEnabled()) {
+        glBindFramebuffer(GL_FRAMEBUFFER, s_fbo);
     }
 
     /* Reset rendering display */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glm::ivec2 size = Window::getFrameSize();
+    glViewport(0, 0, size.x, size.y);
 
-    if (s_camera) {
-        /* Loop through active shaders */
-        for (auto &shader : s_shaders) {
-            if (!shader.second->isEnabled()) {
-                continue;
-            }
+    /* Render! */
+    s_diffuseShader->render(s_playerCamera);
+    s_rayShader->render(s_playerCamera);
+    s_bounderShader->render(s_playerCamera);
+    s_octreeShader->render(s_playerCamera);
 
-            shader.second->bind();
-            // this reinterpret_cast business works because unique_ptr's data is
-            // guaranteed is the same as a pointer
-            shader.second->render(s_camera, reinterpret_cast<const Vector<Component *> &>(s_compsToRender));
-            shader.second->unbind();
-        }
+    /* Rebind screen FBO */
+    if (s_postProcessShader->isEnabled()) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        s_postProcessShader->render(s_playerCamera);
     }
 
-    // Make it so that rendering is done to the computer screen
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    // Reset rendering display
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    s_postProcessShader->bind();
-    // The second parameter is passed by reference (not by pointer),
-    // hence the funny pointer business
-    s_postProcessShader->render(nullptr, *((Vector<Component *> *) nullptr));
-    s_postProcessShader->unbind();
+#ifdef DEBUG_MODE
+    if (Window::isImGuiEnabled()) {
+        ImGui::Render();
+    }
+#endif
+}
+void RenderSystem::setCamera(const CameraComponent * camera) {
+    s_playerCamera = camera;
 }
 
-void RenderSystem::setCamera(const CameraComponent * camera) {
-    s_camera = camera;
+glm::vec3 RenderSystem::getLightDir() {
+    return s_lightCamera->getLookDir();
+}
+
+void RenderSystem::setLightDir(glm::vec3 in) {
+    s_lightCamera->lookInDir(in);
 }
 
 void RenderSystem::initFBO() {
@@ -164,11 +194,6 @@ void RenderSystem::initFBO() {
     glBindRenderbuffer(GL_RENDERBUFFER, fboDepthRB);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, fboDepthRB);
-    // Using a texture instead
-    //glGenTextures(1, &depthTexture);
-    //glBindTexture(GL_TEXTURE_2D, depthTexture);
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, size.x, size.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -177,4 +202,13 @@ void RenderSystem::initFBO() {
 void RenderSystem::doResize() {
     glViewport(0, 0, Window::getFrameSize().x, Window::getFrameSize().y);
     initFBO();
+}
+
+/* Frustum culling */
+void RenderSystem::getFrustumComps(const CameraComponent *camera, Vector<DiffuseRenderComponent *> &comps) {
+    for (auto comp : s_diffuseComponents) {
+        if (camera->sphereInFrustum(comp->enclosingSphere())) {
+            comps.push_back(comp);
+        }
+    }
 }

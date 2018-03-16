@@ -29,7 +29,7 @@ class DiffuseRenderComponent : public Component {
 
         DiffuseRenderComponent(
             GameObject & gameObject, const SpatialComponent & spatial,
-            int pid, const Mesh & mesh, const ModelTexture & texture,
+            const Mesh & mesh, const ModelTexture & texture,
             bool toon, const glm::vec2 & tiling
         );
 
@@ -53,7 +53,6 @@ class DiffuseRenderComponent : public Component {
 
     private:
 
-        int m_pid;
         const Mesh & m_mesh;
         ModelTexture m_modelTexture;
         bool m_isToon;
