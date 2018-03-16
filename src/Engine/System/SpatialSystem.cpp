@@ -1,6 +1,8 @@
 #include "SpatialSystem.hpp"
 
 #include "Scene/Scene.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Component/SpatialComponents/PhysicsComponents.hpp"
 
 
 

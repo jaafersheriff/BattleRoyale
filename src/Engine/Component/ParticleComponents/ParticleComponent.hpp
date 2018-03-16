@@ -179,8 +179,6 @@ class ParticleComponent : public Component {
     
     public:
 
-        virtual SystemID systemID() const override { return SystemID::particle; }
-
         virtual void update(float dt) override;
 
         int count() { return int(m_particles.size()); }

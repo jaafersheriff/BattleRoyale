@@ -33,8 +33,6 @@ class PlayerControllerComponent : public Component {
 
     public:
 
-    virtual SystemID systemID() const override { return SystemID::game; };
-
     virtual void update(float dt) override;
 
     void setEnabled(bool enabled);

@@ -1,11 +1,15 @@
 #pragma once
 #ifndef _FILE_READER_HPP_
 #define _FILE_READER_HPP_
-#include <fstream>
 
 #include "ThirdParty/rapidjson/document.h"
 #include "ThirdParty/rapidjson/filereadstream.h"
-#include "EngineApp/EngineApp.hpp"
+
+#include "Util/Memory.hpp"
+
+class GameObject;
+class SpatialComponent;
+class DiffuseRenderComponent;
 
 class FileReader {
 public:

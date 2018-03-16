@@ -1,7 +1,6 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "glm/gtc/constants.hpp"
 
 #include "Component/Component.hpp"
 
@@ -17,10 +16,6 @@ class SpatialComponent;
 class NewtonianComponent : public Component {
 
     friend Scene;
-
-  public:
-
-    virtual SystemID systemID() const override { return SystemID::spatial; };
 
   protected: // only scene or friends can create component
 
@@ -85,8 +80,6 @@ class AcceleratorComponent : public Component {
     virtual void init() override;
 
   public:
-
-    virtual SystemID systemID() const override { return SystemID::spatial; };
 
     virtual void update(float dt) override;
 

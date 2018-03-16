@@ -1,8 +1,11 @@
 #include "SoundSystem.hpp"
 
-#include "Scene/Scene.hpp"
+#include <fstream>
 
-const Vector<SoundComponent *> & SoundSystem::s_soundComponents(Scene::getComponents<SoundComponent>());
+#include "Scene/Scene.hpp"
+#include "Component/CameraComponents/CameraComponent.hpp"
+#include "EngineApp/EngineApp.hpp"
+
 String SoundSystem::s_SOUND_DIR = EngineApp::RESOURCE_DIR + "/soundeffects/";
 const CameraComponent* SoundSystem::s_camera = NULL;
 #ifdef HAVE_FMOD_LIBRARY

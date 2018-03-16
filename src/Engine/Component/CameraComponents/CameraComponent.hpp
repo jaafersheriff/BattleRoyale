@@ -44,8 +44,6 @@ class CameraComponent : public Component, public Orientable {
         
         /* Derived functions */
 
-        virtual SystemID systemID() const override { return SystemID::game; };
-
         void update(float dt);
 
         // sets the camera to look at p

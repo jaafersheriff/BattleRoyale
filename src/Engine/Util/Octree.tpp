@@ -45,8 +45,8 @@ inline float maxCompNonInf(glm::vec3 v) {
     if (v.y < v.x) { temp = v.x; v.x = v.y; v.y = temp; }
     if (v.z < v.y) { temp = v.y; v.y = v.z; v.z = temp; }
     if (v.y < v.x) { temp = v.x; v.x = v.y; v.y = temp; }
-    if (v.z != Util::infinity()) return v.z;
-    if (v.y != Util::infinity()) return v.y;
+    if (v.z != std::numeric_limits<float>::infinity()) return v.z;
+    if (v.y != std::numeric_limits<float>::infinity()) return v.y;
     return v.x;
 }
 

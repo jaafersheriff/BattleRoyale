@@ -26,8 +26,6 @@ class PathfindingComponent : public Component {
 
     public:
 
-    virtual SystemID systemID() const override { return SystemID::pathfinding; };
-
     virtual void update(float) override;
 
     // TODO : just add enable/disable options for all components?

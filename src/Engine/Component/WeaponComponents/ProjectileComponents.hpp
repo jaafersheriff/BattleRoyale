@@ -30,10 +30,6 @@ class ProjectileComponent : public Component {
 
     virtual void init() override;
 
-    public:
-
-    virtual SystemID systemID() const override { return SystemID::game; };
-
     protected:
 
     BounderComponent * m_bounder;

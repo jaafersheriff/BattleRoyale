@@ -4,7 +4,6 @@
 #define _PARTICLE_SHADER_HPP_
 
 #include "Shader.hpp"
-#include "System/ParticleSystem.hpp"
 
 class ParticleShader : public Shader {
 
@@ -35,8 +34,8 @@ class ParticleShader : public Shader {
 
     private:
 
-        GLuint particlesVAO;
-        GLuint instanceVBO;
+        unsigned int particlesVAO;
+        unsigned int instanceVBO;
 
         /* Wire frame */
         bool showWireFrame = false;
@@ -49,9 +48,9 @@ class ParticleShader : public Shader {
         Vector<float> cellIntensities;
         Vector<float> cellDiffuseScales;
         Vector<float> cellSpecularScales;
-        GLuint cellIntensitiesTexture;
-        GLuint cellDiffuseScalesTexture;
-        GLuint cellSpecularScalesTexture;
+        unsigned int cellIntensitiesTexture;
+        unsigned int cellDiffuseScalesTexture;
+        unsigned int cellSpecularScalesTexture;
 };
 
 #endif 

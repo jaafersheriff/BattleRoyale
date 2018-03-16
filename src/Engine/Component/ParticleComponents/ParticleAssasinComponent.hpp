@@ -26,9 +26,5 @@ class ParticleAssasinComponent : public Component {
                 Scene::destroyGameObject(gameObject());
             }
         }
-    
-    public:
-
-        virtual SystemID systemID() const override { return SystemID::particle; }
         
 };

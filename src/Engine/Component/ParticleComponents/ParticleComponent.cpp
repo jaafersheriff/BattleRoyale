@@ -9,6 +9,7 @@
 #include "Util/Util.hpp"
 #include "System/SpatialSystem.hpp"
 #include "Loader/Loader.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
 
 
 

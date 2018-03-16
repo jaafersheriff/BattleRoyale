@@ -23,8 +23,6 @@ class ImGuiComponent : public Component {
 
         ImGuiComponent(ImGuiComponent && other) = default;
 
-        virtual SystemID systemID() const override { return SystemID::game; };
-
         void update(float);
 
     private:

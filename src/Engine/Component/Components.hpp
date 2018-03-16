@@ -15,6 +15,7 @@
 #include "PathfindingComponents/PathfindingComponent.hpp"
 // spatial
 #include "SpatialComponents/SpatialComponent.hpp"
+#include "SpatialComponents/PhysicsComponents.hpp"
 // collision
 #include "CollisionComponents/BounderComponent.hpp"
 // post collision

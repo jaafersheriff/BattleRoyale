@@ -6,6 +6,8 @@
 #include "Shader.hpp"
 #include "Model/Texture.hpp"
 
+class Texture;
+
 class ShadowDepthShader : public Shader {
     public:
         ShadowDepthShader(const String & vertName, const String & fragName);

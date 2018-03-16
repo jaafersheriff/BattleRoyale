@@ -7,6 +7,7 @@
 #include "CameraComponent.hpp"
 #include "GameObject/Message.hpp"
 #include "Scene/Scene.hpp"
+#include "Util/Util.hpp"
 
 CameraControllerComponent::CameraControllerComponent(GameObject & gameObject, float lookSpeed, float minMoveSpeed, float maxMoveSpeed) :
     Component(gameObject),

@@ -5,7 +5,12 @@
 #include "glm/glm.hpp"
 
 #include "System.hpp"
-#include "Component/PostCollisionComponents/GroundComponent.hpp"
+#include "Util/Memory.hpp"
+
+
+
+class Scene;
+class GroundComponent;
 
 
 
@@ -13,10 +18,6 @@
 class PostCollisionSystem {
 
     friend Scene;
-
-    public:
-
-    static constexpr SystemID ID = SystemID::postCollision;
 
     public:
 

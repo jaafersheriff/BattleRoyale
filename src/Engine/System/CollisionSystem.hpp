@@ -2,16 +2,21 @@
 
 
 
+#include <functional>
+
 #include "System.hpp"
-#include "Component/CollisionComponents/BounderComponent.hpp"
+#include "Util/Geometry.hpp"
+#include "Util/Memory.hpp"
 
 
 
-struct Ray;
-struct Intersect;
+class Scene;
+class BounderComponent;
 class BounderShader;
 template <typename T> class Octree;
 class OctreeShader;
+class Mesh;
+class GameObject;
 
 
 
@@ -21,10 +26,6 @@ class CollisionSystem {
     friend Scene;
     friend BounderShader;
     friend OctreeShader;
-
-    public:
-
-    static constexpr SystemID ID = SystemID::collision;
 
     public:
 
@@ -41,14 +42,14 @@ class CollisionSystem {
         const Ray & ray,
         unsigned int minWeight,
         Vector<const BounderComponent *> * r_passed = nullptr,
-        float maxDist = Util::infinity()
+        float maxDist = std::numeric_limits<float>::infinity()
     );
     static std::pair<const BounderComponent *, Intersect> pickHeavy(
         const Ray & ray,
         unsigned int minWeight,
         const std::function<bool(const BounderComponent &)> & conditional,
         Vector<const BounderComponent *> * r_passed = nullptr,
-        float maxDist = Util::infinity()
+        float maxDist = std::numeric_limits<float>::infinity()
     );
 
     static void setOctree(const glm::vec3 & min, const glm::vec3 & max, float minCellSize);

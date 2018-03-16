@@ -1,5 +1,7 @@
 #include "FileReader.hpp"
 
+#include <fstream>
+#include "EngineApp/EngineApp.hpp"
 #include "System/RenderSystem.hpp"
 #include "System/CollisionSystem.hpp"
 

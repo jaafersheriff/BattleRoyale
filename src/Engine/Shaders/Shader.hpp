@@ -4,13 +4,9 @@
 #ifndef _SHADER_HPP_
 #define _SHADER_HPP_
 
-#define GLEW_STATIC
-#include <GL/glew.h>
 #include "glm/glm.hpp"
-#include "glm/gtc/type_ptr.hpp"
 
 #include "Util/Memory.hpp"
-#include "GLSL.hpp"
 
 class CameraComponent;
 class DiffuseRenderComponent;
@@ -51,13 +47,13 @@ class Shader {
         void loadMultiMat3(const int, const glm::mat3 *, int) const;
 
         /* Get shader location */
-        GLint getAttribute(const String &);
-        GLint getUniform(const String &);
+        int getAttribute(const String &);
+        int getUniform(const String &);
 
          /* GLSL shader names */
         const String vShaderName;
         const String fShaderName;
-        GLuint pid = 0;
+        unsigned int pid = 0;
 
         bool isEnabled() const { return m_isEnabled; }
         void setEnabled(bool enabled) { m_isEnabled = enabled; }
@@ -70,10 +66,10 @@ class Shader {
         void addUniform(const String &);
     private:    
         /* GLSL shader attributes */
-        GLint vShaderId;
-        GLint fShaderId;
-        UnorderedMap<String, GLint> attributes;
-        UnorderedMap<String, GLint> uniforms;
+        int vShaderId;
+        int fShaderId;
+        UnorderedMap<String, int> attributes;
+        UnorderedMap<String, int> uniforms;
 };
 
 #endif

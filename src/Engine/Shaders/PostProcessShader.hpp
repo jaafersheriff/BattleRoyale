@@ -19,9 +19,9 @@ class PostProcessShader : public Shader {
 
   private:
 
-    GLuint s_vaoHandle;
-    GLuint s_vboHandle;
-    GLuint s_iboHandle;
+    unsigned int s_vaoHandle;
+    unsigned int s_vboHandle;
+    unsigned int s_iboHandle;
 };
 
 #endif

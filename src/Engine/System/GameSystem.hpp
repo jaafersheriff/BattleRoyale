@@ -5,15 +5,7 @@
 
 
 #include "System.hpp"
-#include "Component/CameraComponents/CameraComponent.hpp"
-#include "Component/CameraComponents/CameraControllerComponent.hpp"
-#include "Component/PlayerComponents/PlayerControllerComponent.hpp"
-#include "Component/ImGuiComponents/ImGuiComponent.hpp"
-#include "Component/PlayerComponents/PlayerComponent.hpp"
-#include "Component/EnemyComponents/EnemyComponent.hpp"
-#include "Component/WeaponComponents/ProjectileComponents.hpp"
-#include "Component/WeaponComponents/BlastComponent.hpp"
-#include "Component/CollisionComponents/BounderComponent.hpp"
+#include "Component/Components.hpp"
 
 
 
@@ -21,10 +13,6 @@
 class GameSystem {
 
     friend Scene;
-
-    public:
-
-    static constexpr SystemID ID = SystemID::game;
 
     private:
 

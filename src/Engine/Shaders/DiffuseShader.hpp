@@ -41,9 +41,9 @@ class DiffuseShader : public Shader {
         Vector<float> cellIntensities;
         Vector<float> cellDiffuseScales;
         Vector<float> cellSpecularScales;
-        GLuint cellIntensitiesTexture;
-        GLuint cellDiffuseScalesTexture;
-        GLuint cellSpecularScalesTexture;
+        unsigned int cellIntensitiesTexture;
+        unsigned int cellDiffuseScalesTexture;
+        unsigned int cellSpecularScalesTexture;
 
         /* Shadows */
         glm::mat4 * L;

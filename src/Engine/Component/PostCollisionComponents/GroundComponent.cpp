@@ -1,10 +1,14 @@
 #include "GroundComponent.hpp"
 
+#include "glm/gtc/constants.hpp"
+
 #include "Scene/Scene.hpp"
 #include "System/SpatialSystem.hpp"
 #include "Util/Util.hpp"
 
 
+
+const float GroundComponent::k_defCriticalAngle = glm::pi<float>() * 0.25f; // 45 degrees
 
 GroundComponent::GroundComponent(GameObject & gameObject, float criticalAngle) :
     Component(gameObject),

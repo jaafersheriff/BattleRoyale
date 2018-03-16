@@ -30,8 +30,6 @@ class Component {
     virtual void init() {}
 
     public:
-
-        virtual SystemID systemID() const = 0;
         
         virtual void update(float) {};
 

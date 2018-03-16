@@ -31,8 +31,6 @@ class SpatialComponent : public Component, public Positionable, public Scaleable
 
     SpatialComponent(SpatialComponent && other) = default;
 
-    virtual SystemID systemID() const override { return SystemID::spatial; };
-
     public:
 
     virtual void update(float dt) override;

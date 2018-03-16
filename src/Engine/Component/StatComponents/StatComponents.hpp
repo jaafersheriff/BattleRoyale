@@ -26,8 +26,6 @@ class StatComponent : public Component {
 
     public:
 
-    virtual SystemID systemID() const override { return SystemID::game; };
-
     void setValue(T value) {
         m_value = glm::clamp(value, m_minValue, m_maxValue);
     }

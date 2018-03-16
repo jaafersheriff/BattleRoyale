@@ -1,14 +1,15 @@
 #include "DiffuseShader.hpp"
 
 #include "glm/gtc/matrix_transform.hpp"
+#include "GLSL.hpp"
 
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/BounderComponent.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
-
 #include "System/CollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
+#include "Model/Mesh.hpp"
 
 DiffuseShader::DiffuseShader(const String & vertFile, const String & fragFile) :
     Shader(vertFile, fragFile) {

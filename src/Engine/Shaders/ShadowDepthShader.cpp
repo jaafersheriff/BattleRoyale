@@ -1,12 +1,14 @@
 #include "ShadowDepthShader.hpp"
 
+#define GLEW_STATIC
+#include "GL/glew.h"
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "Component/CameraComponents/CameraComponent.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
-
 #include "System/RenderSystem.hpp"
-
-#include <glm/gtc/matrix_transform.hpp>
+#include "Model/Mesh.hpp"
 
 #define DEFAULT_SIZE 1024
 

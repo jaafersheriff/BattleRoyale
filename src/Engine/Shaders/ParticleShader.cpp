@@ -1,13 +1,18 @@
 #include "ParticleShader.hpp"
 
+#define GLEW_STATIC
+#include "GL/glew.h"
+#include "GLSL.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "System/ParticleSystem.hpp"
 #include "System/CollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/BounderComponent.hpp"
 #include "Component/ParticleComponents/ParticleComponent.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
+#include "Model/Mesh.hpp"
 
 ParticleShader::ParticleShader(const String & vertFile, const String & fragFile) :
     Shader(vertFile, fragFile),

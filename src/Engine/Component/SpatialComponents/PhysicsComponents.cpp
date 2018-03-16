@@ -1,6 +1,7 @@
 #include "PhysicsComponents.hpp"
 
 #include "glm/gtx/norm.hpp"
+#include "glm/gtc/constants.hpp"
 
 #include "SpatialComponent.hpp"
 #include "Scene/Scene.hpp"

@@ -10,7 +10,6 @@
 
 #include "System.hpp"
 
-#include "Shaders/Shader.hpp"
 #include "Shaders/DiffuseShader.hpp"
 #include "Shaders/BounderShader.hpp"
 #include "Shaders/OctreeShader.hpp"
@@ -28,8 +27,6 @@ class RenderSystem {
     friend Scene;
 
 public:
-
-    static constexpr SystemID ID = SystemID::render;
 
     static void init();
 

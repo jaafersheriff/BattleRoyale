@@ -3,6 +3,11 @@
 #include <fstream>
 #include <iostream>
 
+#define GLEW_STATIC
+#include <GL/glew.h>
+#include "GLSL.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 #include "EngineApp/EngineApp.hpp"
 
 bool Shader::init() {

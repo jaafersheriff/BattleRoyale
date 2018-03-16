@@ -8,6 +8,9 @@
 #include "System/RenderSystem.hpp"
 #include "System/SoundSystem.hpp"
 #include "System/ParticleSystem.hpp"
+#include "Util/Util.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "IO/Window.hpp"
 
 
 

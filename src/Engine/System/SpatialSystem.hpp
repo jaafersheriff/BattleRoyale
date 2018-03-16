@@ -5,8 +5,14 @@
 #include "glm/glm.hpp"
 
 #include "System.hpp"
-#include "Component/SpatialComponents/SpatialComponent.hpp"
-#include "Component/SpatialComponents/PhysicsComponents.hpp"
+#include "Util/Memory.hpp"
+
+
+
+class Scene;
+class SpatialComponent;
+class NewtonianComponent;
+class AcceleratorComponent;
 
 
 
@@ -14,10 +20,6 @@
 class SpatialSystem {
 
     friend Scene;
-
-    public:
-
-    static constexpr SystemID ID = SystemID::spatial;
 
     public:
 

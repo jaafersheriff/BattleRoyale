@@ -2,15 +2,16 @@
 #ifndef _SOUND_SYSTEM_HPP_
 #define _SOUND_SYSTEM_HPP_
 
-#include "System.hpp"
-#include "Component/SoundComponents/SoundComponent.hpp"
-#include "Component/CameraComponents/CameraComponent.hpp"
+#include "glm/glm.hpp"
 
-#include "EngineApp/EngineApp.hpp"
+#include "System.hpp"
+#include "Util/Memory.hpp"
 
 #ifdef HAVE_FMOD_LIBRARY 
 #include <fmod.hpp>
 #include <fmod_studio.hpp>
+
+class CameraComponent;
 
 typedef struct {
     FMOD::Sound* sound = NULL;
@@ -19,14 +20,11 @@ typedef struct {
 } Sound;
 #endif
 
-class SoundComponent;
+class Scene;
 
 class SoundSystem {
 
     friend Scene;
-
-    public:
-        static constexpr SystemID ID = SystemID::sound;
 
     public:
     #ifdef HAVE_FMOD_LIBRARY
@@ -35,7 +33,6 @@ class SoundSystem {
 
     private:
         static String s_SOUND_DIR;
-        static const Vector<SoundComponent *> & s_soundComponents;
         static const CameraComponent* s_camera;
     #ifdef HAVE_FMOD_LIBRARY
 
