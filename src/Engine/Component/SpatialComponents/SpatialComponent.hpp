@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Component/Component.hpp"
-
 #include "glm/glm.hpp"
+
+#include "Component/Component.hpp"
 
 #include "Positionable.hpp"
 #include "Scaleable.hpp"

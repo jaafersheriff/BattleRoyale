@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Component/Component.hpp"
+#include <iostream>
 
 #include "glm/glm.hpp"
-#include <iostream>
+
+#include "Component/Component.hpp"
 
 class PathfindingSystem;
 

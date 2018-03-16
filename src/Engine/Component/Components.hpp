@@ -21,3 +21,5 @@
 #include "PostCollisionComponents/GroundComponent.hpp"
 // render
 #include "RenderComponents/DiffuseRenderComponent.hpp"
+// particle
+#include "ParticleComponents/ParticleComponent.hpp"

@@ -5,8 +5,6 @@
 #include "System.hpp"
 #include "Component/SoundComponents/SoundComponent.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
-#include "Component/SpatialComponents/SpatialComponent.hpp"
-#include "Scene/Scene.hpp"
 
 #include "EngineApp/EngineApp.hpp"
 
@@ -53,7 +51,9 @@ class SoundSystem {
 
     #ifdef HAVE_FMOD_LIBRARY
         static void playSound(String name);
+        static void playSound(String name, bool loop);
         static void playSound3D(String name, glm::vec3 pos);
+        static void playSound3D(String name, glm::vec3 pos, bool loop);
         static void setBackgroundMusic(String name, bool loop);
         static void pauseBackgroundMusic();
         static void unpauseBackgroundMusic();
@@ -62,7 +62,7 @@ class SoundSystem {
         static void setBackGroundLoop(bool loop);
     #endif
 
-	private:
+    private:
         static void added(Component & component) {};
         static void removed(Component & component) {};
     

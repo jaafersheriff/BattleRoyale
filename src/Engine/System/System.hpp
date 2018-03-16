@@ -16,7 +16,8 @@ enum class SystemID {
     collision,
     postCollision,
     render,
-    sound
+    sound,
+    particle
 };
 
 

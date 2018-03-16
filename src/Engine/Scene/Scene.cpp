@@ -1,17 +1,13 @@
 #include "Scene.hpp"
 
-#include <algorithm>
-
-#include "GLFW/glfw3.h"
-
-#include "IO/Keyboard.hpp"
-#include "System/GameSystem.hpp"
+#include "System/GameLogicSystem.hpp"
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"
 #include "System/CollisionSystem.hpp"
 #include "System/PostCollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
 #include "System/SoundSystem.hpp"
+#include "System/ParticleSystem.hpp"
 
 
 
@@ -51,6 +47,7 @@ void Scene::init() {
     CollisionSystem::init();
     PostCollisionSystem::init();
     PathfindingSystem::init();
+    ParticleSystem::init();
     GameSystem::init();
 }
 
@@ -98,6 +95,10 @@ void Scene::update(float dt) {
     postCollisionDT = float(watch.lap());
     relayMessages();
     postCollisionMessagingDT = float(watch.lap());
+
+    // TO DO: Timing
+    ParticleSystem::update(dt);
+    relayMessages();
 
     RenderSystem::update(dt); // rendering should be last
     renderDT = float(watch.lap());

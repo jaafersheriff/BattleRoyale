@@ -20,6 +20,17 @@ struct Util {
 
     static constexpr float epsilon = std::numeric_limits<float>::epsilon();
 
+    // Random float between 0 and 1
+    static float random() {
+        constexpr float k_inv_max(1.0f / float(RAND_MAX));
+        return float(std::rand()) * k_inv_max;
+    }
+
+    // Random float between min and max
+    static float random(float min, float max) {
+        return random() * (max - min) + min;
+    }
+
     static inline void printVector(const String & name, const glm::vec3 & vec) {
         std::cout << name << ": <" <<
             vec.x << ", " << vec.y << " " << vec.z << ">" << std::endl;
@@ -84,6 +95,12 @@ struct Util {
     }
     static glm::mat4 compositeTransform(const glm::fvec3 & scale, const glm::fvec3 & translation) {
         return glm::scale(glm::translate(glm::mat4(), translation), scale);
+    }
+    static glm::mat4 compositeTransform(const glm::vec3 & scale, const glm::fmat3 & rotation) {
+        return compositeTransform(scale, glm::mat4(rotation));
+    }
+    static glm::mat4 compositeTransform(const glm::vec3 & scale, const glm::fmat4 & rotation) {
+        return glm::scale(rotation, scale);
     }
 
     // rad is the sphere's radius

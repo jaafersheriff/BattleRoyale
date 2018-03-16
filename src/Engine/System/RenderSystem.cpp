@@ -4,6 +4,7 @@
 
 #include "IO/Window.hpp"
 #include "Scene/Scene.hpp"
+#include "Component/CameraComponents/CameraComponent.hpp"
 
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 /* FBO */
