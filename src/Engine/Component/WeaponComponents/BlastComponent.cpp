@@ -5,6 +5,8 @@
 #include "Scene/Scene.hpp"
 #include "Component/StatComponents/StatComponents.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "System/ParticleSystem.hpp"
+#include "Component/ParticleComponents/ParticleAssasinComponent.hpp"
 
 
 
@@ -37,7 +39,10 @@ void BlastComponent::init() {
 
 void BlastComponent::update(float dt) {
     if (m_updated) {
-        Scene::destroyGameObject(gameObject());
+        Scene::removeComponent<BlastComponent>(*this);
+        Scene::removeComponent(static_cast<BounderComponent &>(*m_bounder));
+        ParticleSystem::addSodaGrenadePC(*gameObject().getSpatial());
+        Scene::addComponent<ParticleAssasinComponent>(gameObject());
     }
 
     m_updated = true;

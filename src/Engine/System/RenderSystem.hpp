@@ -59,6 +59,7 @@ public:
     static UniquePtr<ShadowDepthShader> s_shadowShader;
     static UniquePtr<OctreeShader> s_octreeShader;
     static UniquePtr<PostProcessShader> s_postProcessShader;
+    static UniquePtr<ParticleShader> s_particleShader;
 
     /* FBO Stuff */
     static GLuint getFBOTexture() { return s_fboColorTex; }

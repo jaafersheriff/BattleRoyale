@@ -2,17 +2,18 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "System/CollisionSystem.hpp"
+#include "System/RenderSystem.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/BounderComponent.hpp"
 #include "Component/ParticleComponents/ParticleComponent.hpp"
-#include "System/CollisionSystem.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 
-ParticleShader::ParticleShader(const String & vertFile, const String & fragFile, const glm::vec3 & light) :
+ParticleShader::ParticleShader(const String & vertFile, const String & fragFile) :
     Shader(vertFile, fragFile),
     particlesVAO(0),
-    instanceVBO(0),
-    lightDir(&light) {
+    instanceVBO(0)
+{
     cellIntensities.resize(1, 1.f);
     cellDiffuseScales.resize(1, 1.f);
     cellSpecularScales.resize(1, 1.f);
@@ -121,10 +122,12 @@ bool ParticleShader::init() {
     return true;
 }
 
-void ParticleShader::render(const CameraComponent * camera, const Vector<Component *> & components) {
+void ParticleShader::render(const CameraComponent * camera) {
     if (!camera) {
         return;
     }
+
+    bind();
 
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -133,7 +136,7 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
     /* Bind uniforms */
     loadMat4(getUniform("P"), camera->getProj());
     loadMat4(getUniform("V"), camera->getView());
-    loadVec3(getUniform("lightDir"), *lightDir);
+    loadVec3(getUniform("lightDir"), RenderSystem::getLightDir());
     loadVec3(getUniform("camPos"), camera->gameObject().getSpatial()->position());
 
     /* Toon shading */
@@ -162,7 +165,7 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
     glBindVertexArray(particlesVAO);
 
     for (ParticleComponent * pc : ParticleSystem::s_particleComponents) {
-        if (pc->dead() || pc->m_particles.size() == 0) {
+        if (pc->finished()) {
             continue;
         }
 
@@ -245,7 +248,9 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
 
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    }    
+    } 
+
+    unbind();   
 }
 
 

@@ -184,10 +184,7 @@ class ParticleComponent : public Component {
         virtual void update(float dt) override;
 
         int count() { return int(m_particles.size()); }
-        bool dead() { return !m_loop && m_particles.empty(); }
-        
-        const Mesh & mesh() const { return m_mesh; }
-        const ModelTexture & modelTexture() const { return m_modelTexture; }
+        bool finished() { return !m_loop && m_particles.empty(); }
 
     protected:
 

@@ -1,4 +1,6 @@
-#include "GameLogicSystem.hpp"
+#pragma once
+
+#include "GameSystem.hpp"
 #include "RenderSystem.hpp"
 #include "SpatialSystem.hpp"
 #include "CollisionSystem.hpp"

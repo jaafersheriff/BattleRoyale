@@ -13,6 +13,7 @@ class ParticleComponent;
 class Scene;
 class GameObject;
 class SpatialComponent;
+class ParticleAssasinComponent;
 
 
 
@@ -33,6 +34,7 @@ class ParticleSystem {
         static const float k_minScaleFactor;
         static const float k_maxScaleFactor;
 
+        // Adds a particle effect anchored to the given spatial
         static ParticleComponent & addBodyExplosionPC(SpatialComponent & spatial);
         static ParticleComponent & addWaterFountainPC(SpatialComponent & spatial);
         static ParticleComponent & addSodaGrenadePC(SpatialComponent & spatial);
@@ -40,6 +42,7 @@ class ParticleSystem {
     private:
 
         static const Vector<ParticleComponent *> & s_particleComponents;
+        static const Vector<ParticleAssasinComponent *> & s_particleAssasinComponents;
         static Vector<glm::mat4> m_variationMs;
         static Vector<glm::mat3> m_variationNs;
 

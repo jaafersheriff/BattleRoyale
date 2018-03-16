@@ -1,6 +1,9 @@
 #include "GameSystem.hpp"
 
 #include "Scene/Scene.hpp"
+#include "Systems.hpp"
+#include "Shaders/Shaders.hpp"
+#include "Component/CollisionComponents/BounderComponent.hpp"
 
 
 
@@ -245,15 +248,17 @@ void GameSystem::init() {
     // Set octree. Needs to be manually adjusted to fit level size
     CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
 
+    // Start background music
+    SoundSystem::setBackgroundMusic("bgRock1.mp3", true);
+    SoundSystem::playBackgroundMusic();
+    SoundSystem::setBackgroundMusicVolume(0.05f);
+
     // Set message callbacks
     Scene::addReceiver<MouseMessage>(nullptr, fireCallback);
     Scene::addReceiver<KeyMessage>(nullptr, spawnEnemy);
     Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);
     Scene::addReceiver<KeyMessage>(nullptr, camSwitchCallback);
     Scene::addReceiver<KeyMessage>(nullptr, gravCallback);
-
-    // Enable shaders
-    //RenderSystem::s_diffuseShader->setEnabled(true);
 
     setupImGui();
 }
@@ -393,18 +398,6 @@ void GameSystem::setupImGui() {
         [&]() {
             ImGui::Text("FPS: %d, dt: %f", EngineApp::fps, EngineApp::timeStep);
             ImGui::NewLine();
-            ImGui::Text("Workload by System (Update, Messaging)");
-            float factor(100.0f / Scene::totalDT);
-            ImGui::Text("    Init Queue: %5.2f%%", Scene::initDT * factor);
-            ImGui::Text("          Game: %5.2f%%, %5.2f%%", Scene::         gameDT * factor, Scene::         gameMessagingDT * factor);
-            ImGui::Text("   Pathfinding: %5.2f%%, %5.2f%%", Scene::  pathfindingDT * factor, Scene::  pathfindingMessagingDT * factor);
-            ImGui::Text("       Spatial: %5.2f%%, %5.2f%%", Scene::      spatialDT * factor, Scene::      spatialMessagingDT * factor);
-            ImGui::Text("     Collision: %5.2f%%, %5.2f%%", Scene::    collisionDT * factor, Scene::    collisionMessagingDT * factor);
-            ImGui::Text("Post Collision: %5.2f%%, %5.2f%%", Scene::postCollisionDT * factor, Scene::postCollisionMessagingDT * factor);
-            ImGui::Text("        Render: %5.2f%%, %5.2f%%", Scene::       renderDT * factor, Scene::       renderMessagingDT * factor);
-            ImGui::Text("         Sound: %5.2f%%, %5.2f%%", Scene::        soundDT * factor, Scene::        soundMessagingDT * factor);
-            ImGui::Text("    Kill Queue: %5.2f%%", Scene::killDT * factor);
-            ImGui::NewLine();
             ImGui::Text("Player Pos");
             ImGui::Text("%f %f %f",
                 Player::spatial->position().x,
@@ -417,7 +410,29 @@ void GameSystem::setupImGui() {
                 Freecam::spatialComp->position().y,
                 Freecam::spatialComp->position().z
             );
+            ImGui::NewLine();
+            ImGui::Text("Workload by System (Update, Messaging)");
+            float factor(100.0f / Scene::totalDT);
+            ImGui::Text("    Init Queue: %5.2f%%", Scene::initDT * factor);
+            ImGui::Text("          Game: %5.2f%%, %5.2f%%", Scene::         gameDT * factor, Scene::         gameMessagingDT * factor);
+            ImGui::Text("   Pathfinding: %5.2f%%, %5.2f%%", Scene::  pathfindingDT * factor, Scene::  pathfindingMessagingDT * factor);
+            ImGui::Text("       Spatial: %5.2f%%, %5.2f%%", Scene::      spatialDT * factor, Scene::      spatialMessagingDT * factor);
+            ImGui::Text("     Collision: %5.2f%%, %5.2f%%", Scene::    collisionDT * factor, Scene::    collisionMessagingDT * factor);
+            ImGui::Text("Post Collision: %5.2f%%, %5.2f%%", Scene::postCollisionDT * factor, Scene::postCollisionMessagingDT * factor);
+            ImGui::Text("        Render: %5.2f%%, %5.2f%%", Scene::       renderDT * factor, Scene::       renderMessagingDT * factor);
+            ImGui::Text("         Sound: %5.2f%%, %5.2f%%", Scene::        soundDT * factor, Scene::        soundMessagingDT * factor);
+            ImGui::Text("    Kill Queue: %5.2f%%", Scene::killDT * factor);
+            ImGui::NewLine();
             ImGui::Text("# Picks: %d", CollisionSystem::s_nPicks);
+            ImGui::NewLine();
+            ImGui::Text("Game Objects: %d", Scene::getGameObjects().size());
+            ImGui::Text("Components");
+            ImGui::Text("     Spatial: %d", Scene::getComponents<SpatialComponent>().size());
+            ImGui::Text("     Diffuse: %d", Scene::getComponents<DiffuseRenderComponent>().size());
+            ImGui::Text("     Bounder: %d", Scene::getComponents<BounderComponent>().size());
+            ImGui::Text("    Particle: %d", Scene::getComponents<ParticleComponent>().size());
+            ImGui::Text("       Enemy: %d", Scene::getComponents<EnemyComponent>().size());
+            ImGui::Text("  Projectile: %d", Scene::getComponents<ProjectileComponent>().size());
         }
     );
 

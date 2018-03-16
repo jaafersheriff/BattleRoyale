@@ -1,6 +1,6 @@
 #include "Scene.hpp"
 
-#include "System/GameLogicSystem.hpp"
+#include "System/GameSystem.hpp"
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"
 #include "System/CollisionSystem.hpp"

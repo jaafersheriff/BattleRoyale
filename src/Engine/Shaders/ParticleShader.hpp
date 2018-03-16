@@ -10,12 +10,10 @@ class ParticleShader : public Shader {
 
     public:
 
-        ParticleShader(const String & vertFile, const String & fragFile, const glm::vec3 & light);
+        ParticleShader(const String & vertFile, const String & fragFile);
 
         bool init();
-        virtual void render(const CameraComponent * camera, const Vector<Component *> &) override;
-
-        const glm::vec3 * lightDir;
+        virtual void render(const CameraComponent * camera) override;
 
         /* Wire frame */
         bool isWireFrame() const { return showWireFrame; }

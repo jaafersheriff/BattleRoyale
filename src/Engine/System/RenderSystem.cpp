@@ -5,6 +5,7 @@
 #include "IO/Window.hpp"
 #include "Scene/Scene.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
 
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 /* FBO */
@@ -25,6 +26,7 @@ UniquePtr<BounderShader> RenderSystem::s_bounderShader;
 UniquePtr<RayShader> RenderSystem::s_rayShader;
 UniquePtr<OctreeShader> RenderSystem::s_octreeShader;
 UniquePtr<PostProcessShader> RenderSystem::s_postProcessShader;
+UniquePtr<ParticleShader> RenderSystem::s_particleShader;
  
 
 void RenderSystem::init() {
@@ -60,7 +62,8 @@ void RenderSystem::init() {
         !(     s_octreeShader = UniquePtr<     OctreeShader>::make(    "bounder_vert.glsl",     "bounder_frag.glsl")) ||
         !(        s_rayShader = UniquePtr<        RayShader>::make(        "ray_vert.glsl",         "ray_frag.glsl")) ||
         !(s_postProcessShader = UniquePtr<PostProcessShader>::make("postprocess_vert.glsl", "postprocess_frag.glsl")) ||
-        !(     s_shadowShader = UniquePtr<ShadowDepthShader>::make(     "shadow_vert.glsl",      "shadow_frag.glsl"))
+        !(     s_shadowShader = UniquePtr<ShadowDepthShader>::make(     "shadow_vert.glsl",      "shadow_frag.glsl")) ||
+        !(   s_particleShader = UniquePtr<   ParticleShader>::make(   "particle_vert.glsl",    "particle_frag.glsl"))
     ) {
         std::cin.get();
         std::exit(EXIT_FAILURE);
@@ -71,6 +74,7 @@ void RenderSystem::init() {
     s_rayShader->init();
     s_postProcessShader->init();
     s_shadowShader->init();
+    s_particleShader->init();
 
     /* Init FBO */
     initFBO();
@@ -110,9 +114,10 @@ void RenderSystem::update(float dt) {
 
     /* Render! */
     s_diffuseShader->render(s_playerCamera);
-    s_rayShader->render(s_playerCamera);
+    s_particleShader->render(s_playerCamera);
     s_bounderShader->render(s_playerCamera);
     s_octreeShader->render(s_playerCamera);
+    s_rayShader->render(s_playerCamera);
 
     /* Rebind screen FBO */
     if (s_postProcessShader->isEnabled()) {

@@ -4,6 +4,7 @@
 #include "glm/gtc/constants.hpp"
 #include "glm/gtx/transform.hpp"
 
+#include "Scene/Scene.hpp"
 #include "System/ParticleSystem.hpp"
 #include "Util/Util.hpp"
 #include "System/SpatialSystem.hpp"
@@ -154,6 +155,9 @@ void ParticleComponent::update(float dt) {
 
     // Don't create new particles if this is not the first spawn
     if (!m_loop && !m_firstSpawn) {
+        if (m_particles.empty()) {
+            Scene::removeComponent(*this);
+        }
         return;
     }
 

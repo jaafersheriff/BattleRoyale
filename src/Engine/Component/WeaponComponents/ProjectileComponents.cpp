@@ -8,6 +8,7 @@
 #include "Component/SpatialComponents/PhysicsComponents.hpp"
 #include "BlastComponent.hpp"
 #include "Component/StatComponents/StatComponents.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
 
 
 

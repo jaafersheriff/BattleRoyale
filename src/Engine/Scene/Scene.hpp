@@ -126,6 +126,7 @@ void Scene::removeComponent(CompT & component) {
     static_assert(std::is_base_of<Component, CompT>::value, "CompT must be a component type");
     static_assert(!std::is_same<CompT, Component>::value, "CompT must be a derived component type");
 
+    assert(s_components.count(typeid(CompT))); // trying to remove a type of component that was never added
     s_componentKillQueue.emplace_back(typeid(CompT), static_cast<Component *>(&component));
 }
 

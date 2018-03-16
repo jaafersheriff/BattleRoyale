@@ -5,6 +5,7 @@
 
 #include "Scene/Scene.hpp"
 #include "Component/ParticleComponents/ParticleComponent.hpp"
+#include "Component/ParticleComponents/ParticleAssasinComponent.hpp"
 #include "Loader/Loader.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Util/Util.hpp"
@@ -17,6 +18,7 @@ const float ParticleSystem::k_minScaleFactor = 0.5f;
 const float ParticleSystem::k_maxScaleFactor = 1.5f;
 
 const Vector<ParticleComponent *> & ParticleSystem::s_particleComponents(Scene::getComponents<ParticleComponent>());
+const Vector<ParticleAssasinComponent *> & ParticleSystem::s_particleAssasinComponents(Scene::getComponents<ParticleAssasinComponent>());
 Vector<glm::mat4> ParticleSystem::m_variationMs = Vector<glm::mat4>(k_maxVariations);
 Vector<glm::mat3> ParticleSystem::m_variationNs = Vector<glm::mat3>(k_maxVariations);
 
@@ -32,8 +34,11 @@ void ParticleSystem::init() {
 }
 
 void ParticleSystem::update(float dt) {
-    for (ParticleComponent * p : s_particleComponents) {
-        p->update(dt);
+    for (ParticleComponent * comp : s_particleComponents) {
+        comp->update(dt);
+    }
+    for (ParticleAssasinComponent * comp : s_particleAssasinComponents) {
+        comp->update(dt);
     }
 }
 

@@ -1,6 +1,7 @@
 #include "EnemyComponent.hpp"
 
 #include "Scene/Scene.hpp"
+#include "Util/Util.hpp"
 #include "Component/StatComponents/StatComponents.hpp"
 
 

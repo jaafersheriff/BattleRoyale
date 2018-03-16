@@ -3,6 +3,7 @@
 #include "Scene/Scene.hpp"
 #include "Component/StatComponents/StatComponents.hpp"
 #include "GameObject/Message.hpp"
+#include "Util/Util.hpp"
 
 
 
