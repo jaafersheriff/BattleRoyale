@@ -5,10 +5,11 @@
 #include "System/MapExploreSystem.hpp"
 #include "System/CollisionSystem.hpp"
 
-MapExploreComponent::MapExploreComponent(GameObject & gameObject, float ms) :
+MapExploreComponent::MapExploreComponent(GameObject & gameObject, float ms, String filename) :
 	Component(gameObject),
 	m_spatial(nullptr),
-	m_moveSpeed(ms)
+	m_moveSpeed(ms),
+	filename(filename)
 {}
 
 void MapExploreComponent::init() {
@@ -100,7 +101,9 @@ void MapExploreComponent::update(float dt) {
 			auto pair(CollisionSystem::pick(Ray(curPos, glm::vec3(0,-1,0)), &gameObject()));
 	        if (pair.second.is) {       
 
-	        	curPos = glm::vec3(curPos.x, curPos.y - pair.second.dist, curPos.z); 
+	        	float y = curPos.y - pair.second.dist;
+	        	if (y < -1.7) y = -1.68;
+	        	curPos = glm::vec3(curPos.x, y, curPos.z); 
 				
 				//std::cout << "CurPos: " << curPos.x << ", " << curPos.y << ", " << curPos.z << std::endl;
 
@@ -206,7 +209,7 @@ void MapExploreComponent::update(float dt) {
 			graph.emplace(searchFromPos, validNeighbors);
 			validNeighbors = Vector<glm::vec3>();
 
-			if (!pos_queue.empty() && nodeCount < 640) {
+			if (!pos_queue.empty() && nodeCount < 64) {
 
 				std::cout << "Count: " << nodeCount++ << std::endl;
 				searchFromPos = pos_queue.front();
@@ -215,19 +218,21 @@ void MapExploreComponent::update(float dt) {
 			else if (writeOut) {
 				writeOut = false;
 				std::cout << "Writing Out" << std::endl;
-				std::ofstream outFile;
-				outFile.open("testOut.txt");
+				// std::ofstream outFile;
+				// outFile.open("testOut.txt");
 
-				if (outFile) {
-					for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
-						outFile <<
-							iter->first.x << "," <<
-							iter->first.y << "," <<
-							iter->first.z << "," <<
-							vectorToString(iter->second) << '\n';
+				// if (outFile) {
+				// 	for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
+				// 		outFile <<
+				// 			iter->first.x << "," <<
+				// 			iter->first.y << "," <<
+				// 			iter->first.z << "," <<
+				// 			vectorToString(iter->second) << '\n';
 
-					}
-				}
+				// 	}
+				// }
+
+				writeToFile(graph);
 
 				std::cout << "Length of total first floor graph: " << graph.size() << std::endl;
 				searchFromPos = glm::vec3(0.f);
@@ -247,8 +252,9 @@ void MapExploreComponent::update(float dt) {
 
 }
 
-void MapExploreComponent::writeToFile(String filename, vecvectorMap &graph) {
+void MapExploreComponent::writeToFile(vecvectorMap &graph) {
 	std::ofstream outFile;
+
 	outFile.open(filename);
 
 	if (outFile) {

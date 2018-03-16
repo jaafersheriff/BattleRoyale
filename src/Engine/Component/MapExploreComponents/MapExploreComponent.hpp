@@ -31,7 +31,7 @@ class MapExploreComponent : public Component {
     
     protected: // only scene or friends can create component
 
-    MapExploreComponent(GameObject & gameObject, float ms);
+    MapExploreComponent(GameObject & gameObject, float ms, String filename);
 
     public:
 
@@ -49,7 +49,7 @@ class MapExploreComponent : public Component {
     //void readInGraph(String fileName); 
     //void print_queue(std::queue<glm::vec3> q);
     //void drawCup(glm::vec3 position);
-    void writeToFile(String filename, vecvectorMap &graph); 
+    void writeToFile(vecvectorMap &graph); 
     bool findInVisited(glm::vec3 vec, float stepSize);
     std::string vectorToString(Vector<glm::vec3> vec);
     glm::vec3 closestPos(glm::vec3 vec);
@@ -67,6 +67,8 @@ class MapExploreComponent : public Component {
     // TODO : just add enable/disable options for all components?
     void setMoveSpeed(float f) { this->m_moveSpeed = f; }
 
+    //static String FILENAME; // filename of the graph to be written in the build dir
+
     private:
 
     //typedef std::unordered_map<glm::vec3, glm::vec3, detail::vecHash, detail::customVecCompare> vecvecMap;
@@ -75,6 +77,7 @@ class MapExploreComponent : public Component {
     SpatialComponent * m_spatial;
     GameObject * m_player;
     float m_moveSpeed;
+    String filename;
 
     glm::vec3 m_groundNorm;
     glm::vec3 m_potentialGroundNorm;

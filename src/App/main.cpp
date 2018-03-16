@@ -18,56 +18,6 @@ extern "C" {
 
 namespace {
 
-
-
-void printUsage() {
-    std::cout << "Valid arguments: " << std::endl;
-
-    std::cout << "\t-h\n\t\tPrint help" << std::endl;
-    
-    std::cout << "\t-v\n\t\tSet verbose nature logging" << std::endl;
-
-    std::cout << "\t-r <resource_dir>" << std::endl;
-    std::cout << "\t\tSet the resource directory" << std::endl;
-
-    std::cout << "\t-n <application_name>" << std::endl;
-    std::cout << "\t\tSet the application name" << std::endl;
-}
-
-int parseArgs(int argc, char **argv) {
-    /* Process cmd line args */
-    for (int i = 0; i < argc; i++) {
-        /* Help */
-        if (!strcmp(argv[i], "-h")) {
-            printUsage();
-            return 1;
-        }
-        /* Verbose */
-        if (!strcmp(argv[i], "-v")) {
-            EngineApp::verbose = true;
-        }
-        /* Set resource dir */
-        if (!strcmp(argv[i], "-r")) {
-            if (i + 1 >= argc) {
-                printUsage();
-                return 1;
-            }
-            EngineApp::RESOURCE_DIR = argv[i + 1];
-        }
-        /* Set application name */
-        if (!strcmp(argv[i], "-n")) {
-            if (i + 1 >= argc) {
-                printUsage();
-                return 1;
-            }
-            EngineApp::APP_NAME = argv[i + 1];
-        }
-    }
-    return 0;
-}
-
-
-
 // Constants
 const float k_ambience = 0.2f;
 const float k_fov = 45.0f;
@@ -141,10 +91,15 @@ namespace light {
 
 }
 
+namespace pathfinding {
+    bool createGraph = false;
+    String graphFilename = "testMap.txt";
+}
+
 Vector<GameObject *> f_enemies;
 Vector<GameObject *> f_projectiles;
 
-void createEnemy(const glm::vec3 & position) {    
+void createEnemy(const glm::vec3 & position, bool pathfinding) {    
     Mesh * mesh(Loader::getMesh("bunny.obj"));
     DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
     ModelTexture modelTex(k_ambience, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f));
@@ -158,8 +113,12 @@ void createEnemy(const glm::vec3 & position) {
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
     //GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
     BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *mesh, false, true, false));
-    PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed));
-    //MapExploreComponent & mapComp(Scene::addComponent<MapExploreComponent>(obj, moveSpeed));
+    if (pathfinding) {
+        PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed));
+    }
+    else {
+        MapExploreComponent & mapComp(Scene::addComponent<MapExploreComponent>(obj, moveSpeed, pathfinding::graphFilename));
+    }
     DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, toon, glm::vec2(1,1));   
     EnemyComponent & enemyComp(Scene::addComponent<EnemyComponent>(obj));
     
@@ -186,6 +145,64 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     ProjectileComponent & projectileComp(Scene::addComponent<ProjectileComponent>(obj));
     
     f_projectiles.push_back(&obj);
+}
+
+void printUsage() {
+    std::cout << "Valid arguments: " << std::endl;
+
+    std::cout << "\t-h\n\t\tPrint help" << std::endl;
+    
+    std::cout << "\t-v\n\t\tSet verbose nature logging" << std::endl;
+
+    std::cout << "\t-r <resource_dir>" << std::endl;
+    std::cout << "\t\tSet the resource directory" << std::endl;
+
+    std::cout << "\t-n <application_name>" << std::endl;
+    std::cout << "\t\tSet the application name" << std::endl;
+
+    std::cout << "\t-m <file_name>" << std::endl;
+    std::cout << "\t\tCreate graph representation of the map, filename of said graph" << std::endl;
+}
+
+int parseArgs(int argc, char **argv) {
+    /* Process cmd line args */
+    for (int i = 0; i < argc; i++) {
+        /* Help */
+        if (!strcmp(argv[i], "-h")) {
+            printUsage();
+            return 1;
+        }
+        /* Verbose */
+        if (!strcmp(argv[i], "-v")) {
+            EngineApp::verbose = true;
+        }
+        /* Set resource dir */
+        if (!strcmp(argv[i], "-r")) {
+            if (i + 1 >= argc) {
+                printUsage();
+                return 1;
+            }
+            EngineApp::RESOURCE_DIR = argv[i + 1];
+        }
+        /* Set application name */
+        if (!strcmp(argv[i], "-n")) {
+            if (i + 1 >= argc) {
+                printUsage();
+                return 1;
+            }
+            EngineApp::APP_NAME = argv[i + 1];
+        }
+        /* Create graph of map for pathfinding */
+        if (!strcmp(argv[i], "-m")) {
+            if (i + 1 >= argc) {
+                printUsage();
+                return 1;
+            }
+            pathfinding::graphFilename = argv[i + 1];
+            pathfinding::createGraph = true;
+        }
+    }
+    return 0;
 }
 
 
@@ -253,11 +270,17 @@ int main(int argc, char **argv) {
     // Set Sound camera
     SoundSystem::setCamera(player::cameraComp);
 
+    // If command line arg -m
+    if (pathfinding::createGraph) {
+        createEnemy(glm::vec3(0, -1.5f, -20.f), false);
+    }
     // Add Enemies
-    int nEnemies(1);
-    for (int i(0); i < 1; ++i) {
-        //createEnemy(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f));
-        createEnemy(glm::vec3(0, -1.5f, -20.f));
+    else {
+        
+        int nEnemies(1);
+        for (int i(0); i < 1; ++i) {
+            createEnemy(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f), true);
+        }
     }
 
     //--------------------------------------------------------------------------
