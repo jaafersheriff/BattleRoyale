@@ -5,7 +5,22 @@
 
 
 #include "System.hpp"
-#include "Component/Components.hpp"
+#include "Model/Material.hpp"
+
+
+
+class SpatialComponent;
+class NewtonianComponent;
+class CapsuleBounderComponent;
+class CameraComponent;
+class PlayerControllerComponent;
+class PlayerComponent;
+class HealthComponent;
+class CameraControllerComponent;
+class ImGuiComponent;
+class EnemyComponent;
+class ProjectileComponent;
+class BlastComponent;
 
 
 
@@ -22,6 +37,7 @@ class GameSystem {
     struct Lighting {
 
         static const float k_defAmbience;
+        static const Material k_defMaterial;
         static const glm::vec3 k_defLightDir;
 
     };
@@ -67,6 +83,7 @@ class GameSystem {
         struct Basic {
 
             static const String k_defMeshName;
+            static const String k_defTextureName;
             static const bool k_defIsToon;
             static const glm::vec3 k_defScale;
             static const unsigned int k_defWeight;
@@ -134,6 +151,8 @@ class GameSystem {
     static void init();
 
     static void update(float dt);
+
+    static float getAmbience() { return Lighting::k_defAmbience; }
 
     private:
 

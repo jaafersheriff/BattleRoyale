@@ -7,10 +7,10 @@ in vec2 texCoords;
 
 uniform sampler2D shadowMap;
 
-uniform float matAmbient;
+uniform float ambience;
 uniform vec3 matDiffuse;
 uniform vec3 matSpecular;
-uniform float shine;
+uniform float matShine;
 
 uniform vec3 camPos;
 uniform vec3 lightDir;
@@ -44,14 +44,14 @@ void main() {
 
     /* Base color */
     vec3 diffuseColor = matDiffuse;
-	float alpha = 1.0;
+    float alpha = 1.0;
     if (usesTexture) {
         vec4 texColor = vec4(texture(textureImage, texCoords));
-		if (texColor.a < 0.1) {
-			discard; 
-		}
-		diffuseColor = texColor.xyz;
-		alpha = texColor.a;
+        if (texColor.a < 0.1) {
+            discard; 
+        }
+        diffuseColor = texColor.xyz;
+        alpha = texColor.a;
     }
 
     float lambert = dot(L, N);
@@ -62,7 +62,7 @@ void main() {
         for(int i = 0; i < numCells; i++) {
             if(lambert > texelFetch(cellIntensities, i, 0).r) {
                 diffuseContrib = texelFetch(cellDiffuseScales, i, 0).r;
-                specularContrib = pow(texelFetch(cellSpecularScales, i, 0).r, shine);
+                specularContrib = pow(texelFetch(cellSpecularScales, i, 0).r, matShine);
                 break;
             }
         }
@@ -70,8 +70,8 @@ void main() {
     /* Blinn-Phong shading */
     else {
         vec3 H = (L + V) / 2.0;
-        diffuseContrib = clamp(lambert, matAmbient, 1.0);
-        specularContrib = pow(max(dot(H, N), 0.0), shine);
+        diffuseContrib = clamp(lambert, ambience, 1.0);
+        specularContrib = pow(max(dot(H, N), 0.0), matShine);
     }
 
     /* Base color + shadow */
@@ -80,7 +80,7 @@ void main() {
     if (shift.x >= 0.0 && shift.x <= 1.0 && shift.y >= 0.0 && shift.y <= 1.0) {
         shade = inShade(shift, 0.01);
     }
-    vec3 bColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib) * max((1 - shade), matAmbient);
+    vec3 bColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib) * max((1 - shade), ambience);
 
     /* Silhouettes */
     float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;

@@ -11,30 +11,33 @@
 #include "glm/glm.hpp"
 
 class ModelTexture {
+
     public:
+
         /* Constructors */
         ModelTexture() :
             texture(nullptr),
-            material(0.f, glm::vec3(0.f), glm::vec3(0.f))
+            material()
         {}
-        ModelTexture(const Texture *texture) :
-            texture(texture),
-            material(0.f, glm::vec3(0.f), glm::vec3(1.f))
-        {}
-        ModelTexture(const float ambient, const glm::vec3 & diffuse, const glm::vec3 & specular) :
+        ModelTexture(const Material & material) :
             texture(nullptr),
-            material(ambient, diffuse, specular)
+            material(material)
         {}
-        ModelTexture(const Texture *texture, const float ambient, const glm::vec3 & diffuse, const glm::vec3 & specular) :
+        ModelTexture(const Texture * texture) :
             texture(texture),
-            material(ambient, diffuse, specular)
+            material()
+        {}
+        ModelTexture(const Texture * texture, const Material & material) :
+            texture(texture),
+            material(material)
         {}
 
         /* Texture properties */
-        const Texture *texture;
+        const Texture * texture;
 
         /* Material */
         Material material;
+
 };
 
 #endif

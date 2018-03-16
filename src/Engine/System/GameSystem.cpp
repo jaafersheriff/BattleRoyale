@@ -5,6 +5,7 @@
 #include "Scene/Scene.hpp"
 #include "Systems.hpp"
 #include "Shaders/Shaders.hpp"
+#include "Component/Components.hpp"
 #include "Loader/Loader.hpp"
 #include "Util/Util.hpp"
 #include "IO/Window.hpp"
@@ -16,6 +17,7 @@
 // LIGHTING
 
 const float GameSystem::Lighting::k_defAmbience = 0.3f;
+const Material GameSystem::Lighting::k_defMaterial = Material(glm::vec3(1.0f), glm::vec3(1.0f), 16.0f);
 const glm::vec3 GameSystem::Lighting::k_defLightDir = glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f));
 
 
@@ -69,7 +71,8 @@ void GameSystem::Player::init() {
 //------------------------------------------------------------------------------
 // Basic
 
-const String GameSystem::Enemies::Basic::k_defMeshName = "bunny.obj";
+const String GameSystem::Enemies::Basic::k_defMeshName = "characters/Enemy.obj";
+const String GameSystem::Enemies::Basic::k_defTextureName = "characters/Enemy_Tex.png";
 const bool GameSystem::Enemies::Basic::k_defIsToon = true;
 const glm::vec3 GameSystem::Enemies::Basic::k_defScale = glm::vec3(0.75f);
 const unsigned int GameSystem::Enemies::Basic::k_defWeight = 5;
@@ -78,8 +81,9 @@ const float GameSystem::Enemies::Basic::k_defMaxHP = 100.0f;
 
 void GameSystem::Enemies::Basic::create(const glm::vec3 & position) {
     const Mesh * mesh(Loader::getMesh(k_defMeshName));
+    const Texture * texture(Loader::getTexture(k_defTextureName));
     const DiffuseShader * shader();
-    ModelTexture modelTex(Lighting::k_defAmbience, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f));
+    ModelTexture modelTex(texture, Lighting::k_defMaterial);
     GameObject & obj(Scene::createGameObject());
     SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, k_defScale));
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, false));
@@ -154,7 +158,7 @@ const float GameSystem::Weapons::Grenade::k_defRadius = 5.0f;
 void GameSystem::Weapons::Grenade::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel) {
     const Mesh * mesh(Loader::getMesh(k_defMeshName));
     const Texture * tex(Loader::getTexture(k_defTexName));
-    ModelTexture modelTex(tex, Lighting::k_defAmbience, glm::vec3(1.0f), glm::vec3(1.0f));
+    ModelTexture modelTex(tex, Lighting::k_defMaterial);
     GameObject & obj(Scene::createGameObject());
     SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_defScale));
     BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, k_defWeight, *mesh, false, true, false));
@@ -249,7 +253,7 @@ void GameSystem::init() {
     SoundSystem::setCamera(Player::camera);
 
     // Load Level
-    Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json", Lighting::k_defAmbience);
+    Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json");
     // Set octree. Needs to be manually adjusted to fit level size
     CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
 

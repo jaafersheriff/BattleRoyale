@@ -9,6 +9,7 @@
 #include "BlastComponent.hpp"
 #include "Component/StatComponents/StatComponents.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Component/PlayerComponents/PlayerComponent.hpp"
 
 
 
@@ -46,8 +47,8 @@ void GrenadeComponent::init() {
     auto collisionCallback([&](const Message & msg_) {
         const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
         if (&msg.bounder1 == m_bounder) {
-            // If collided with something with health, detonate
-            if (msg.bounder2.gameObject().getComponentByType<HealthComponent>()) {
+            // If collided with something with health that's not the player, detonate
+            if (msg.bounder2.gameObject().getComponentByType<HealthComponent>() && !msg.bounder2.gameObject().getComponentByType<PlayerComponent>()) {
                 m_shouldDetonate = true;
             }
         }

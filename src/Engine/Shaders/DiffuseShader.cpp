@@ -12,6 +12,7 @@
 #include "Model/Mesh.hpp"
 #include "System/ParticleSystem.hpp"
 #include "Component/ParticleComponents/ParticleComponent.hpp"
+#include "System/GameSystem.hpp"
 
 DiffuseShader::DiffuseShader(const String & vertFile, const String & fragFile) :
     Shader(vertFile, fragFile) {
@@ -43,10 +44,10 @@ bool DiffuseShader::init() {
     addUniform("lightDir");
     addUniform("camPos");
 
-    addUniform("matAmbient");
+    addUniform("ambience");
     addUniform("matDiffuse");
     addUniform("matSpecular");
-    addUniform("shine");
+    addUniform("matShine");
     addUniform("textureImage");
     addUniform("usesTexture");
 
@@ -163,6 +164,7 @@ void DiffuseShader::render(const CameraComponent * camera) {
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightDir"), RenderSystem::getLightDir());
     loadVec3(getUniform("camPos"), camera->gameObject().getSpatial()->position());
+    loadFloat(getUniform("ambience"), GameSystem::getAmbience());
 
     /* Shadows */
     loadMat4(getUniform("L"), RenderSystem::getL());
@@ -218,10 +220,9 @@ void DiffuseShader::render(const CameraComponent * camera) {
 
         /* Bind materials */
         const ModelTexture modelTexture(drc->modelTexture());
-        loadFloat(getUniform("matAmbient"), modelTexture.material.ambient);
         loadVec3(getUniform("matDiffuse"), modelTexture.material.diffuse);
         loadVec3(getUniform("matSpecular"), modelTexture.material.specular);
-        loadFloat(getUniform("shine"), modelTexture.material.shineDamper);
+        loadFloat(getUniform("matShine"), modelTexture.material.shine);
    
         /* Load texture */
         if(modelTexture.texture && modelTexture.texture->textureId != 0) {
@@ -313,10 +314,9 @@ void DiffuseShader::render(const CameraComponent * camera) {
         loadFloat(getUniform("particleMaxLife"), pc->m_duration);
 
         /* Bind materials */
-        loadFloat(getUniform("matAmbient"), pc->m_modelTexture.material.ambient);
         loadVec3(getUniform("matDiffuse"), pc->m_modelTexture.material.diffuse);
         loadVec3(getUniform("matSpecular"), pc->m_modelTexture.material.specular);
-        loadFloat(getUniform("shine"), pc->m_modelTexture.material.shineDamper);
+        loadFloat(getUniform("matShine"), pc->m_modelTexture.material.shine);
    
         /* Load texture */
         if(pc->m_modelTexture.texture && pc->m_modelTexture.texture->textureId != 0) {

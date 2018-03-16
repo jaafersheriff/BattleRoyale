@@ -11,6 +11,7 @@
 #include "Util/Util.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "IO/Window.hpp"
+#include "Component/ImGuiComponents/ImGuiComponent.hpp"
 
 
 
