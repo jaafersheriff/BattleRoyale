@@ -26,7 +26,7 @@ void PathfindingComponent::init() {
     //vecToNode = std::unordered_map<glm::vec3, Node, vecHash, customVecCompare>();
 
     // Read in the graph of the map from a text file
-    readInGraph("map.txt");
+    readInGraph("../resources/map.txt");
 
     // init cameFrom map
     cameFrom = vecvecMap();
