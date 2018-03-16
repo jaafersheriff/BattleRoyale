@@ -107,7 +107,22 @@ class GameSystem {
 
     struct Weapons {
 
-        struct Grenade {
+        struct PizzaSlice {
+
+            static const String k_defMeshName;
+            static const String k_defTexName;
+            static const bool k_defIsToon;
+            static const glm::vec3 k_defScale;
+            static const unsigned int k_defWeight;
+            static const float k_defSpeed; 
+            static const float k_defDamage;
+
+            static void fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel);
+            static void fireFromPlayer();
+
+        };
+
+        struct SodaGrenade {
 
             static const String k_defMeshName;
             static const String k_defTexName;
@@ -143,6 +158,23 @@ class GameSystem {
         static void init();
 
     };
+
+    //--------------------------------------------------------------------------
+    // Music
+
+    struct Music {
+
+        static const String k_defMusic;
+
+        static bool s_playing;
+
+        static void stop();
+
+        static void start();
+
+        static void toggle();
+
+    };
     
     //--------------------------------------------------------------------------
 
@@ -156,11 +188,7 @@ class GameSystem {
 
     private:
 
-    static void fireCallback(const Message & msg);
-    static void spawnEnemy(const Message & msg);
-    static void rayPickCallback(const Message & msg);
-    static void camSwitchCallback(const Message & msg);
-    static void gravCallback(const Message & msg);
+    static void setupMessageCallbacks();
 
     static void setupImGui();
 

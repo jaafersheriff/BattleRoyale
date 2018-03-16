@@ -10,6 +10,7 @@
 #include "Component/StatComponents/StatComponents.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/PlayerComponents/PlayerComponent.hpp"
+#include "System/SoundSystem.hpp"
 
 
 
@@ -20,14 +21,46 @@ ProjectileComponent::ProjectileComponent(GameObject & gameObject) :
 
 void ProjectileComponent::init() {
     if (!(m_bounder = gameObject().getComponentByType<BounderComponent>())) assert(false);
+    if (!(m_newtonian = gameObject().getComponentByType<NewtonianComponent>())) assert(false);
+}
+
+
+
+BulletComponent::BulletComponent(GameObject & gameObject, float damage) :
+    ProjectileComponent(gameObject),
+    m_damage(damage)
+{}
+
+void BulletComponent::init() {
+    ProjectileComponent::init();
+
+    auto collisionCallback([&](const Message & msg_) {
+        const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
+        if (&msg.bounder1 == m_bounder) {
+            // If collided with something with health that's not the player, detonate
+            HealthComponent * health;
+            bool destroy(false);
+            if ((health = msg.bounder2.gameObject().getComponentByType<HealthComponent>()) && !msg.bounder2.gameObject().getComponentByType<PlayerComponent>()) {
+                health->changeValue(-m_damage);
+                destroy = true;
+            }
+            // If collided with static geometry, destroy bullet
+            if (msg.bounder2.weight() == UINT_MAX) {
+                destroy = true;
+            }
+            if (destroy) {
+                Scene::destroyGameObject(gameObject());
+                SoundSystem::playSound3D("burp2.wav", gameObject().getSpatial()->position());
+            }
+        }
+    });
+    Scene::addReceiver<CollisionMessage>(&gameObject(), collisionCallback);
 }
 
 
 
 const int GrenadeComponent::k_maxBounces = 2;
 const float GrenadeComponent::k_maxFuseTime = 3.0f;
-
-
 
 GrenadeComponent::GrenadeComponent(GameObject & gameObject, float damage, float radius) :
     ProjectileComponent(gameObject),
@@ -42,7 +75,6 @@ void GrenadeComponent::init() {
     ProjectileComponent::init();
 
     if (!(m_ground = gameObject().getComponentByType<GroundComponent>())) assert(false);
-    if (!(m_newtonian = gameObject().getComponentByType<NewtonianComponent>())) assert(false);
 
     auto collisionCallback([&](const Message & msg_) {
         const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
@@ -75,6 +107,8 @@ void GrenadeComponent::update(float dt) {
         SpatialComponent & blastSpatial(Scene::addComponent<SpatialComponent>(blast, m_bounder->center()));
         SphereBounderComponent & blastSphere(Scene::addComponentAs<SphereBounderComponent, BounderComponent>(blast, 0, Sphere(glm::vec3(), m_radius)));
         BlastComponent & blastBlast(Scene::addComponent<BlastComponent>(blast, m_damage));
+
+        SoundSystem::playSound3D("splash4.wav", gameObject().getSpatial()->position());
 
         Scene::destroyGameObject(gameObject());
     }

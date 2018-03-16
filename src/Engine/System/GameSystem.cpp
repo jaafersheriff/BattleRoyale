@@ -144,18 +144,56 @@ void GameSystem::Enemies::disablePathfinding() {
 // WEAPONS
 
 //------------------------------------------------------------------------------
+// Pizza Slice
+
+const String GameSystem::Weapons::PizzaSlice::k_defMeshName = "weapons/Pizza_Slice.obj";
+const String GameSystem::Weapons::PizzaSlice::k_defTexName = "weapons/Pizza_Tex.png";
+const bool GameSystem::Weapons::PizzaSlice::k_defIsToon = true;
+const glm::vec3 GameSystem::Weapons::PizzaSlice::k_defScale = glm::vec3(1.0f);
+const unsigned int GameSystem::Weapons::PizzaSlice::k_defWeight = 0;
+const float GameSystem::Weapons::PizzaSlice::k_defSpeed = 30.0f; 
+const float GameSystem::Weapons::PizzaSlice::k_defDamage = 25.0f;
+
+void GameSystem::Weapons::PizzaSlice::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel) {
+    const Mesh * mesh(Loader::getMesh(k_defMeshName));
+    const Texture * tex(Loader::getTexture(k_defTexName));
+    ModelTexture modelTex(tex, Lighting::k_defMaterial);
+    GameObject & obj(Scene::createGameObject());
+    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_defScale));
+    BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, k_defWeight, *mesh, false, true, false, 0.5f));
+    NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, true));
+    GroundComponent & groundComp(Scene::addComponent<GroundComponent>(obj));
+    newtComp.addVelocity(initDir * k_defSpeed + srcVel);
+    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj,
+        spatComp,
+        *mesh,
+        modelTex,
+        k_defIsToon,
+        glm::vec2(1.0f)
+    ));
+    ProjectileComponent & weaponComp(Scene::addComponentAs<BulletComponent, ProjectileComponent>(obj, k_defDamage));
+
+    SoundSystem::playSound3D("splash2.wav", spatComp.position());
+}
+
+void GameSystem::Weapons::PizzaSlice::fireFromPlayer() {
+    glm::vec3 initPos(Player::camera->orientMatrix() * Player::k_defMainHandPosition + Player::spatial->position());
+    fire(initPos, Player::camera->getLookDir(), Player::spatial->effectiveVelocity());
+}
+
+//------------------------------------------------------------------------------
 // Grenade
 
-const String GameSystem::Weapons::Grenade::k_defMeshName = "weapons/SodaCan.obj";
-const String GameSystem::Weapons::Grenade::k_defTexName = "weapons/SodaCan_Tex.png";
-const bool GameSystem::Weapons::Grenade::k_defIsToon = true;
-const glm::vec3 GameSystem::Weapons::Grenade::k_defScale = glm::vec3(1.0f);
-const unsigned int GameSystem::Weapons::Grenade::k_defWeight = 1;
-const float GameSystem::Weapons::Grenade::k_defSpeed = 20.0f; 
-const float GameSystem::Weapons::Grenade::k_defDamage = 50.0f;
-const float GameSystem::Weapons::Grenade::k_defRadius = 5.0f;
+const String GameSystem::Weapons::SodaGrenade::k_defMeshName = "weapons/SodaCan.obj";
+const String GameSystem::Weapons::SodaGrenade::k_defTexName = "weapons/SodaCan_Tex.png";
+const bool GameSystem::Weapons::SodaGrenade::k_defIsToon = true;
+const glm::vec3 GameSystem::Weapons::SodaGrenade::k_defScale = glm::vec3(1.0f);
+const unsigned int GameSystem::Weapons::SodaGrenade::k_defWeight = 1;
+const float GameSystem::Weapons::SodaGrenade::k_defSpeed = 20.0f; 
+const float GameSystem::Weapons::SodaGrenade::k_defDamage = 50.0f;
+const float GameSystem::Weapons::SodaGrenade::k_defRadius = 5.0f;
 
-void GameSystem::Weapons::Grenade::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel) {
+void GameSystem::Weapons::SodaGrenade::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel) {
     const Mesh * mesh(Loader::getMesh(k_defMeshName));
     const Texture * tex(Loader::getTexture(k_defTexName));
     ModelTexture modelTex(tex, Lighting::k_defMaterial);
@@ -174,9 +212,11 @@ void GameSystem::Weapons::Grenade::fire(const glm::vec3 & initPos, const glm::ve
         glm::vec2(1.0f)
     ));
     ProjectileComponent & weaponComp(Scene::addComponentAs<GrenadeComponent, ProjectileComponent>(obj, k_defDamage, k_defRadius));
+
+    SoundSystem::playSound3D("sword_slash.wav", spatComp.position());
 }
 
-void GameSystem::Weapons::Grenade::fireFromPlayer() {
+void GameSystem::Weapons::SodaGrenade::fireFromPlayer() {
     glm::vec3 initPos(Player::camera->orientMatrix() * Player::k_defMainHandPosition + Player::spatial->position());
     fire(initPos, Player::camera->getLookDir(), Player::spatial->effectiveVelocity());
 }
@@ -212,6 +252,33 @@ void GameSystem::Freecam::init() {
     cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, Player::k_defFOV, Player::k_defNear, Player::k_defFar);
     controllerComp = &Scene::addComponent<CameraControllerComponent>(*gameObject, Player::k_defLookSpeed, k_defMinSpeed, k_defMaxSpeed);
     controllerComp->setEnabled(false);
+}
+
+
+
+//==============================================================================
+// MUSIC
+
+const String GameSystem::Music::k_defMusic = "bgRock1.mp3";
+
+bool GameSystem::Music::s_playing = false;
+
+void GameSystem::Music::start() {
+    SoundSystem::setBackgroundMusic(k_defMusic, true);
+    SoundSystem::playBackgroundMusic();
+    SoundSystem::setBackgroundMusicVolume(0.05f);
+    s_playing = true;
+}
+
+void GameSystem::Music::stop() {
+    SoundSystem::pauseBackgroundMusic();
+    s_playing = false;
+}
+
+void GameSystem::Music::toggle() {
+    s_playing = !s_playing;
+    if (s_playing) start();
+    else stop();
 }
 
 
@@ -257,19 +324,19 @@ void GameSystem::init() {
     // Set octree. Needs to be manually adjusted to fit level size
     CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
 
-    // Start background music
-    SoundSystem::setBackgroundMusic("bgRock1.mp3", true);
-    SoundSystem::playBackgroundMusic();
-    SoundSystem::setBackgroundMusicVolume(0.05f);
+    // Start music
+    Music::start();
 
     // Set message callbacks
-    Scene::addReceiver<MouseMessage>(nullptr, fireCallback);
-    Scene::addReceiver<KeyMessage>(nullptr, spawnEnemy);
-    Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);
-    Scene::addReceiver<KeyMessage>(nullptr, camSwitchCallback);
-    Scene::addReceiver<KeyMessage>(nullptr, gravCallback);
-
+    setupMessageCallbacks();
+    
+    // Setup ImGui
     setupImGui();
+
+    // Disable certain shaders
+    RenderSystem::s_bounderShader->setEnabled(false);
+    RenderSystem::s_octreeShader->setEnabled(false);
+    RenderSystem::s_rayShader->setEnabled(false);
 }
 
 void GameSystem::update(float dt) {
@@ -301,93 +368,113 @@ void GameSystem::update(float dt) {
 //==============================================================================
 // Message Handling
 
-// Fire projectile (click)
-// Remove all projectiles (right click)
-void GameSystem::fireCallback(const Message & msg_) {
-    const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
-    if (msg.button == GLFW_MOUSE_BUTTON_1 && !(msg.mods & GLFW_MOD_CONTROL) && msg.action == GLFW_PRESS) {
-        Weapons::Grenade::fireFromPlayer();
-    }
-    else if (msg.button == GLFW_MOUSE_BUTTON_2 && msg.action == GLFW_PRESS) {
-        Weapons::destroyAllProjectiles();
-    }
-};
 
-// Spawn enemy (1)
-void GameSystem::spawnEnemy(const Message & msg_) {
-    const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
-    if (msg.key == GLFW_KEY_1 && msg.action == GLFW_PRESS) {
-        Enemies::Basic::spawn();
-    }
-};
+void GameSystem::setupMessageCallbacks() {
 
-// Shoot ray (ctrl-click)
-int rayDepth(100);
-Vector<glm::vec3> rayPositions;
-void GameSystem::rayPickCallback(const Message & msg_) {
-    const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
-    if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.mods & GLFW_MOD_CONTROL && msg.action == GLFW_PRESS) {
-        rayPositions.clear();
-        rayPositions.push_back(Player::spatial->position());
-        glm::vec3 dir(Player::camera->getLookDir());
-        for (int i(0); i < rayDepth; ++i) {
-            auto pair(CollisionSystem::pick(Ray(rayPositions.back() + dir * 0.001f, dir)));
-            if (!pair.second.is) {
-                break;
+    // Shoot pizza slice (click) or fire soda grenade (right-click)
+    auto fireCallback([&](const Message & msg_) {
+        const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
+        if (msg.button == GLFW_MOUSE_BUTTON_1 && !(msg.mods & GLFW_MOD_CONTROL) && msg.action == GLFW_PRESS) {
+            Weapons::PizzaSlice::fireFromPlayer();
+        }
+        else if (msg.button == GLFW_MOUSE_BUTTON_2 && !(msg.mods & GLFW_MOD_CONTROL) && msg.action == GLFW_PRESS) {
+            Weapons::SodaGrenade::fireFromPlayer();
+        }
+    });
+    Scene::addReceiver<MouseMessage>(nullptr, fireCallback);
+
+    // Spawn enemy (1)
+    auto spawnEnemyCallback([&](const Message & msg_) {
+        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
+        if (msg.key == GLFW_KEY_1 && msg.action == GLFW_PRESS) {
+            Enemies::Basic::spawn();
+        }
+    });
+    Scene::addReceiver<KeyMessage>(nullptr, spawnEnemyCallback);
+
+    // Shoot ray (ctrl-click)
+    auto rayPickCallback([&](const Message & msg_) {
+        static const int rayDepth(100);
+        static Vector<glm::vec3> rayPositions;
+
+        const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
+        if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.mods & GLFW_MOD_CONTROL && msg.action == GLFW_PRESS) {
+            rayPositions.clear();
+            rayPositions.push_back(Player::spatial->position());
+            glm::vec3 dir(Player::camera->getLookDir());
+            for (int i(0); i < rayDepth; ++i) {
+                auto pair(CollisionSystem::pick(Ray(rayPositions.back() + dir * 0.001f, dir)));
+                if (!pair.second.is) {
+                    break;
+                }
+                rayPositions.push_back(pair.second.pos);
+                dir = glm::normalize(glm::reflect(dir, pair.second.face ? pair.second.norm : -pair.second.norm));
             }
-            rayPositions.push_back(pair.second.pos);
-            dir = glm::normalize(glm::reflect(dir, pair.second.face ? pair.second.norm : -pair.second.norm));
+            RenderSystem::s_rayShader->setPositions(rayPositions);
         }
-        RenderSystem::s_rayShader->setPositions(rayPositions);
-    }
-};
+    });
+    Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);
 
-// Toggle Freecam (ctrl-tab)
-void GameSystem::camSwitchCallback(const Message & msg_) {
-    static bool free = false;
+    // Toggle Freecam (ctrl-tab)
+    auto camSwitchCallback([&](const Message & msg_) {
+        static bool free = false;
 
-    const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
-    if (msg.key == GLFW_KEY_TAB && msg.action == GLFW_PRESS && msg.mods & GLFW_MOD_CONTROL) {
-        if (free) {
-            // disable camera controller
-            Freecam::controllerComp->setEnabled(false);
-            // enable player controller
-            Player::controller->setEnabled(true);
-            RenderSystem::setCamera(Player::camera);
+        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
+        if (msg.key == GLFW_KEY_TAB && msg.action == GLFW_PRESS && msg.mods & GLFW_MOD_CONTROL) {
+            if (free) {
+                // disable camera controller
+                Freecam::controllerComp->setEnabled(false);
+                // enable player controller
+                Player::controller->setEnabled(true);
+                RenderSystem::setCamera(Player::camera);
+            }
+            else {
+                // disable player controller
+                Player::controller->setEnabled(false);
+                // enable camera object
+                Freecam::controllerComp->setEnabled(true);
+                // set camera object camera to player camera
+                Freecam::spatialComp->setPosition(Player::spatial->position());
+                Freecam::spatialComp->setUVW(Player::spatial->u(), Player::spatial->v(), Player::spatial->w());
+                Freecam::cameraComp->lookInDir(Player::camera->getLookDir());
+                RenderSystem::setCamera(Freecam::cameraComp);
+            }
+            free = !free;
         }
-        else {
-            // disable player controller
-            Player::controller->setEnabled(false);
-            // enable camera object
-            Freecam::controllerComp->setEnabled(true);
-            // set camera object camera to player camera
-            Freecam::spatialComp->setPosition(Player::spatial->position());
-            Freecam::spatialComp->setUVW(Player::spatial->u(), Player::spatial->v(), Player::spatial->w());
-            Freecam::cameraComp->lookInDir(Player::camera->getLookDir());
-            RenderSystem::setCamera(Freecam::cameraComp);
-        }
-        free = !free;
-    }
-};
+    });
+    Scene::addReceiver<KeyMessage>(nullptr, camSwitchCallback);
 
-// Toggle gravity (ctrl-g), flip gravity (alt-g)
-void GameSystem::gravCallback(const Message & msg_) {
-    static glm::vec3 s_gravity = k_defGravity;
+    // Toggle gravity (ctrl-g), flip gravity (alt-g)
+    auto gravCallback([&](const Message & msg_) {
+        static glm::vec3 s_gravity = k_defGravity;
 
-    const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
-    if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_CONTROL) {
-        if (Util::isZero(SpatialSystem::gravity())) {
-            SpatialSystem::setGravity(s_gravity);
+        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
+        if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_CONTROL) {
+            if (Util::isZero(SpatialSystem::gravity())) {
+                SpatialSystem::setGravity(s_gravity);
+            }
+            else {
+                s_gravity = SpatialSystem::gravity();
+                SpatialSystem::setGravity(glm::vec3());
+            }
         }
-        else {
-            s_gravity = SpatialSystem::gravity();
-            SpatialSystem::setGravity(glm::vec3());
+        else if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_ALT) {
+            s_gravity *= -1.0f;
+            SpatialSystem::setGravity(-SpatialSystem::gravity());
         }
-    }
-    else if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS && msg.mods == GLFW_MOD_ALT) {
-        s_gravity *= -1.0f;
-        SpatialSystem::setGravity(-SpatialSystem::gravity());
-    }
+    });
+    Scene::addReceiver<KeyMessage>(nullptr, gravCallback);
+
+    // Toggle background music (m)
+    auto musicCallback([&](const Message & msg_) {
+        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
+
+        if (msg.key == GLFW_KEY_M && !msg.mods && msg.action == GLFW_PRESS) {
+            Music::toggle();
+        }
+    });
+    Scene::addReceiver<KeyMessage>(nullptr, musicCallback);
+
 };
 
 
@@ -451,8 +538,9 @@ void GameSystem::setupImGui() {
         "Misc",
         [&]() {
             /* Light dir */
-            // TODO: temporarily disabled until jaafer's pr
-            //ImGui::SliderFloat3("LightDir", glm::value_ptr(lighting::lightDir), -1.f, 1.f);
+            glm::vec3 lightDir(RenderSystem::getLightDir());
+            ImGui::SliderFloat3("LightDir", glm::value_ptr(lightDir), -1.f, 1.f);
+            RenderSystem::setLightDir(lightDir);
             /* VSync */
             if (ImGui::Button("VSync")) {
                 Window::toggleVSync();

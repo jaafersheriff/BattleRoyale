@@ -111,15 +111,15 @@ ParticleComponent & ParticleSystem::addSodaGrenadePC(SpatialComponent & spatial)
     bool randomDistrib(true);
     auto initializer(UniquePtr<SphereParticleInitializer>::make(minSpeed, maxSpeed, randomDistrib));
     auto updater(UniquePtr<AttenuationParticleUpdater>::make(5.0f));
-    Mesh & mesh(*Loader::getMesh("Hamburger.obj"));
+    Mesh & mesh(*Loader::getMesh("particles/Blood_Drop.obj"));
     int maxN(500);
     float rate(4000.0f);
     float duration(0.25f);
     bool loop(false);
-    float scale(0.05f);
+    float scale(1.0f);
     bool variation(true);
     bool fade(true);
-    ModelTexture modelTexture(Loader::getTexture("Hamburger_BaseColor.png"));
+    ModelTexture modelTexture(Loader::getTexture("Blood_Drop_Tex.png"));
     return Scene::addComponent<ParticleComponent>(spatial.gameObject(),
         std::move(initializer),
         std::move(updater),
@@ -135,130 +135,3 @@ ParticleComponent & ParticleSystem::addSodaGrenadePC(SpatialComponent & spatial)
         fade
     );
 }
-/*
-ParticleEffect::EffectParams* ParticleComponent::getEffectParams(ParticleEffect::Effect effect) {
-
-    switch (effect) {
-        case ParticleEffect::Effect::BLOOD_SPRAY: {
-            ParticleEffect::Type type = ParticleEffect::Type::CONE;
-            int n = 2000;
-            float effectDuration = 5.0f;
-            float particleDuration = 0.5f;
-            int orientations = 0;
-            bool randomDistribution = true; // Have a random distribution vs uniform distribution
-            float variance = 0.1f;
-            float rate = 1000.0f;
-            float angle = glm::pi<float>()/24; // For Cones, must be limited to 0 -> pi
-            bool loop = false;
-            float magnitude = 30.0f;
-            Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
-            //accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
-            Vector<Mesh *> *meshes = getMeshes(effect);
-            Vector<ModelTexture*> * textures = getTextures(effect);
-            return new ParticleEffect::EffectParams(type,n, effectDuration, particleDuration, orientations,
-                randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
-        }
-        case ParticleEffect::Effect::WATER_FOUNTAIN: {
-            ParticleEffect::Type type = ParticleEffect::Type::CONE;
-            int n = 600;
-            float effectDuration = 600.0f;
-            float particleDuration = 3.0f;
-            int orientations = 0;
-            bool randomDistribution = true; // Have a random distribution vs uniform distribution
-            float variance = 0.0f;
-            float rate = 300.0f;
-            float angle = glm::pi<float>() / 8; // For Cones, must be limited to 0 -> pi
-            bool loop = true;
-            float magnitude = 5.0f;
-            Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
-            accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
-            Vector<Mesh *> *meshes = getMeshes(effect);
-            Vector<ModelTexture*> * textures = getTextures(effect);
-            return new ParticleEffect::EffectParams(type, n, effectDuration, particleDuration, orientations,
-                randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
-        }
-        case ParticleEffect::Effect::SODA_GRENADE: {
-            ParticleEffect::Type type = ParticleEffect::Type::SPHERE;
-            int n = 500;
-            float effectDuration = 0.5f;
-            float particleDuration = 0.5f;
-            int orientations = 20;
-            bool randomDistribution = true; // Have a random distribution vs uniform distribution
-            float variance = 0.2f;
-            float rate = 0.0f;
-            float angle = glm::pi<float>() / 4; // For Cones, must be limited to 0 -> pi
-            bool loop = false;
-            float magnitude = 40.0f;
-            Vector<glm::vec3> * accelerators = new Vector<glm::vec3>();
-            accelerators->push_back(glm::vec3(0.0f, -9.8f, 0.0f));
-            Vector<Mesh *> *meshes = getMeshes(effect);
-            Vector<ModelTexture*> * textures = getTextures(effect);
-            return new ParticleEffect::EffectParams(type, n, effectDuration, particleDuration, orientations,
-                randomDistribution, variance, rate, angle, loop, magnitude, accelerators, meshes, textures);
-        }
-    }
-
-    return nullptr;
-        
-}
-
-Vector<Mesh*> * ParticleComponent::getMeshes(ParticleEffect::Effect effect) {
-    Vector<Mesh*> * meshes = new Vector<Mesh*>();
-    switch (effect) {
-        case ParticleEffect::Effect::BLOOD_SPRAY:
-        {
-            meshes->push_back(Loader::getMesh("particles/Blood_Drop.obj"));
-            return meshes;
-        }
-        case ParticleEffect::Effect::WATER_FOUNTAIN:
-        {
-            meshes->push_back(Loader::getMesh("particles/Water_Drop.obj"));
-            return meshes;
-        }
-        case ParticleEffect::Effect::SODA_GRENADE:
-        {
-            meshes->push_back(Loader::getMesh("Hamburger.obj"));
-            return meshes;
-        }
-        case ParticleEffect::Effect::BODY_EXPLOSION:
-        {
-            meshes->push_back(Loader::getMesh("Hamburger.obj"));
-            return meshes;
-        }
-    }
-
-    return nullptr;
-}
-
-Vector<ModelTexture*> * ParticleComponent::getTextures(ParticleEffect::Effect effect) {
-    Vector<ModelTexture*> * textures = new Vector<ModelTexture*>();
-    switch (effect) {
-        case ParticleEffect::Effect::BLOOD_SPRAY:
-        {
-            Texture * tex(Loader::getTexture("particles/Blood_Drop_Tex.png"));
-            textures->push_back(new ModelTexture(tex));
-            return textures;
-        }
-        case ParticleEffect::Effect::WATER_FOUNTAIN:
-        {
-            Texture * tex(Loader::getTexture("particles/Water_Drop_Tex.png"));
-            textures->push_back(new ModelTexture(tex));
-            return textures;
-        }
-        case ParticleEffect::Effect::SODA_GRENADE:
-        {
-            Texture * tex(Loader::getTexture("Hamburger_BaseColor.png"));
-            textures->push_back(new ModelTexture(tex));
-            return textures;
-        }
-        case ParticleEffect::Effect::BODY_EXPLOSION:
-        {
-            Texture * tex(Loader::getTexture("Hamburger_BaseColor.png"));
-            textures->push_back(new ModelTexture(tex));
-            return textures;
-        }
-    }
-
-    return nullptr;
-}
-    */

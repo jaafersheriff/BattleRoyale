@@ -39,6 +39,24 @@ class ProjectileComponent : public Component {
 
 
 
+class BulletComponent : public ProjectileComponent {
+
+    friend Scene;
+
+    protected:
+
+    BulletComponent(GameObject & gameObject, float damage);
+
+    virtual void init() override;
+
+    protected:
+
+    float m_damage;
+
+};
+
+
+
 class GrenadeComponent : public ProjectileComponent {
 
     friend Scene;
