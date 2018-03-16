@@ -111,7 +111,7 @@ ParticleComponent & ParticleSystem::addSodaGrenadePC(SpatialComponent & spatial)
     bool randomDistrib(true);
     auto initializer(UniquePtr<SphereParticleInitializer>::make(minSpeed, maxSpeed, randomDistrib));
     auto updater(UniquePtr<AttenuationParticleUpdater>::make(5.0f));
-    Mesh & mesh(*Loader::getMesh("particles/Blood_Drop.obj"));
+    Mesh & mesh(*Loader::getMesh("particles/Soda_2.obj"));
     int maxN(500);
     float rate(4000.0f);
     float duration(0.25f);
@@ -119,7 +119,7 @@ ParticleComponent & ParticleSystem::addSodaGrenadePC(SpatialComponent & spatial)
     float scale(1.0f);
     bool variation(true);
     bool fade(true);
-    ModelTexture modelTexture(Loader::getTexture("Blood_Drop_Tex.png"));
+    ModelTexture modelTexture(Loader::getTexture("particles/Soda_Tex.png"));
     return Scene::addComponent<ParticleComponent>(spatial.gameObject(),
         std::move(initializer),
         std::move(updater),
