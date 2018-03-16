@@ -73,7 +73,8 @@ void main() {
 
 	float brightness = max(((color.r+color.g+color.b)/3.0 - 0.6)/0.4, 0.0f);
 
-	BrightColor.rgb = vec3(brightness);
+	BrightColor.rgb = vec3(brightness);;
+
 	BrightColor.a = 1;
 
 	/*

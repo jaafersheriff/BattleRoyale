@@ -112,18 +112,21 @@ void RenderSystem::update(float dt) {
 
     //Blur bright frags
     bool horizontal = true, first_iteration = true;
+    
+    //How much we want to blur the bloom image
     unsigned int amount = 10;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
     // Reset rendering display
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glActiveTexture(GL_TEXTURE0);
     
+    //This is where the actual blurring occurs
     s_BlurShader->bind();
     for (unsigned int i = 0; i < amount; i++) {
         glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
         s_BlurShader->s_Horizontal = horizontal;
-        //glBindTexture(GL_TEXTURE_2D, colorBuffers[1]);
         glBindTexture(GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongColorbuffers[!horizontal]); // bind texture of other framebuffer (or scene if first iteration)
         s_BlurShader->render(nullptr, *((Vector<Component *> *) nullptr));
         horizontal = !horizontal;
@@ -174,7 +177,7 @@ void RenderSystem::initFBO() {
 
     glm::ivec2 size = Window::getFrameSize();
 
-    //Create 2 color buffers
+    //Create 2 color buffers (One for normal view, the other for frags with a high luminosity )
     glGenTextures(2, colorBuffers);
     for (unsigned int i = 0; i < 2; i++)
     {
@@ -192,25 +195,6 @@ void RenderSystem::initFBO() {
         );
     }
 
-    /*
-    // Set the first texture unit as active
-    glActiveTexture(GL_TEXTURE0);
-
-    // Attach color to the framebuffer
-    glGenTextures(1, &s_fboColorTex);
-    glBindTexture(GL_TEXTURE_2D, s_fboColorTex);
-
-    glTexImage2D(
-        GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL
-    );
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glFramebufferTexture2D(
-        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, s_fboColorTex, 0
-    );
-    */
 
     //Create depth and stencil buffers
     RenderSystem::CreateRenderBuffer(size);
@@ -222,6 +206,7 @@ void RenderSystem::initFBO() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // ping-pong-framebuffer for blurring
+    //Used for performing the vertical and horizontal blur
     glGenFramebuffers(2, pingpongFBO);
     glGenTextures(2, pingpongColorbuffers);
     for (unsigned int i = 0; i < 2; i++)
@@ -231,7 +216,7 @@ void RenderSystem::initFBO() {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, size.x, size.y, 0, GL_RGB, GL_FLOAT, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongColorbuffers[i], 0);
         // also check if framebuffers are complete (no need for depth buffer)
