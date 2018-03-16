@@ -26,6 +26,9 @@ class ShadowDepthShader : public Shader {
         glm::mat4 L;
         GLuint s_fboHandle;
         Texture * s_shadowMap;
+
+        GLuint s_particlesVAO;
+        GLuint s_particlesVBO;
 };
 
 #endif

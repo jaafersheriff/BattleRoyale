@@ -8,19 +8,21 @@
 
 
 
-class ParticleShader;
 class ParticleComponent;
 class Scene;
 class GameObject;
 class SpatialComponent;
 class ParticleAssasinComponent;
+class DiffuseShader;
+class ShadowDepthShader;
 
 
 
 class ParticleSystem {
 
     friend Scene;
-    friend ParticleShader;
+    friend DiffuseShader;
+    friend ShadowDepthShader;
 
     public:
 

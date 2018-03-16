@@ -47,6 +47,10 @@ class DiffuseShader : public Shader {
 
         /* Shadows */
         glm::mat4 * L;
+
+        // Particles
+        unsigned int particlesVAO;
+        unsigned int particlesVBO;
 };
 
 #endif 

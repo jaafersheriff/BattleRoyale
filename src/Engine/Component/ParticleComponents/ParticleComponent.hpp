@@ -8,7 +8,8 @@
 
 
 class Mesh;
-class ParticleShader;
+class DiffuseShader;
+class ShadowDepthShader;
 
 
 
@@ -151,7 +152,8 @@ class AttenuationParticleUpdater : public ParticleUpdater {
 class ParticleComponent : public Component {
 
         friend Scene;
-        friend ParticleShader;
+        friend DiffuseShader;
+        friend ShadowDepthShader;
 
     public:
 

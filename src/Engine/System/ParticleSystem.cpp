@@ -13,7 +13,7 @@
 
 
 const int ParticleSystem::k_maxNParticles = 8192;
-const int ParticleSystem::k_maxVariations = 20; // if changed, need to change vertex shader
+const int ParticleSystem::k_maxVariations = 20; // if changed, need to change diffuse shader and shadow shader
 const float ParticleSystem::k_minScaleFactor = 0.5f;
 const float ParticleSystem::k_maxScaleFactor = 1.5f;
 

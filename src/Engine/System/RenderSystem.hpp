@@ -13,7 +13,6 @@
 #include "Shaders/DiffuseShader.hpp"
 #include "Shaders/BounderShader.hpp"
 #include "Shaders/OctreeShader.hpp"
-#include "Shaders/ParticleShader.hpp"
 #include "Shaders/RayShader.hpp"
 #include "Shaders/PostProcessShader.hpp"
 #include "Shaders/ShadowDepthShader.hpp"
@@ -56,7 +55,6 @@ public:
     static UniquePtr<ShadowDepthShader> s_shadowShader;
     static UniquePtr<OctreeShader> s_octreeShader;
     static UniquePtr<PostProcessShader> s_postProcessShader;
-    static UniquePtr<ParticleShader> s_particleShader;
 
     /* FBO Stuff */
     static GLuint getFBOTexture() { return s_fboColorTex; }

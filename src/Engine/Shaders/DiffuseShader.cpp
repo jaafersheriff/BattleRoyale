@@ -10,6 +10,8 @@
 #include "System/CollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
 #include "Model/Mesh.hpp"
+#include "System/ParticleSystem.hpp"
+#include "Component/ParticleComponents/ParticleComponent.hpp"
 
 DiffuseShader::DiffuseShader(const String & vertFile, const String & fragFile) :
     Shader(vertFile, fragFile) {
@@ -77,6 +79,71 @@ bool DiffuseShader::init() {
     glBindTexture(GL_TEXTURE_1D, 0);
     GLSL::checkError();
 
+    //--------------------------------------------------------------------------
+    // Particles
+
+    /* Add attributes */
+    addAttribute("particlePosition");
+    addAttribute("particleMatrixID");
+    addAttribute("particleVelocity");
+    addAttribute("particleLife");
+
+    /* Add uniforms */
+    addUniform("particles");
+    addUniform("variationMs");
+    addUniform("variationNs");
+    addUniform("particleScale");
+    addUniform("particleVariation");
+    addUniform("particleFade");
+    addUniform("particleMaxLife");
+
+    // Init particles buffers
+    glGenVertexArrays(1, &particlesVAO);
+    glBindVertexArray(particlesVAO);
+
+    glGenBuffers(1, &particlesVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, particlesVBO);
+    glBufferData(GL_ARRAY_BUFFER, ParticleSystem::k_maxNParticles * sizeof(Particle), nullptr, GL_STREAM_DRAW);
+    // Position
+    int positionAI(getAttribute("particlePosition"));
+    if (positionAI != -1) {
+        glEnableVertexAttribArray(positionAI);
+        glVertexAttribPointer(positionAI, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *)0);
+        glVertexAttribDivisor(positionAI, 1);
+    }
+    // Matrix ID
+    int matrixIDAI(getAttribute("particleMatrixID"));
+    if (matrixIDAI != -1) {
+        glEnableVertexAttribArray(matrixIDAI);
+        glVertexAttribIPointer(matrixIDAI, 1, GL_UNSIGNED_INT, sizeof(Particle), (void *)12);
+        glVertexAttribDivisor(matrixIDAI, 1);
+    }
+    // Velocity
+    int velocityAI(getAttribute("particleVelocity"));
+    if (velocityAI != -1) {
+        glEnableVertexAttribArray(velocityAI);
+        glVertexAttribPointer(velocityAI, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *)16);
+        glVertexAttribDivisor(velocityAI, 1);
+    }
+    // Life
+    int lifeAI(getAttribute("particleLife"));
+    if (lifeAI != -1) {
+        glEnableVertexAttribArray(lifeAI);
+        glVertexAttribPointer(lifeAI, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *)28);
+        glVertexAttribDivisor(lifeAI, 1);
+    }
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Load particle variation matrices
+    bind();
+    loadMultiMat4(getUniform("variationMs"), ParticleSystem::m_variationMs.data(), ParticleSystem::k_maxVariations);        
+    loadMultiMat3(getUniform("variationNs"), ParticleSystem::m_variationNs.data(), ParticleSystem::k_maxVariations);
+    unbind();
+
+    GLSL::checkError();
+
     return true;
 }
 
@@ -110,6 +177,9 @@ void DiffuseShader::render(const CameraComponent * camera) {
     loadInt(getUniform("cellIntensities"), cellIntensitiesTexture);
     loadInt(getUniform("cellDiffuseScales"), cellDiffuseScalesTexture);
     loadInt(getUniform("cellSpecularScales"), cellSpecularScalesTexture);
+
+    // Not doing particles yet
+    loadBool(getUniform("particles"), false);
 
     // TODO : move cell intensities and scales to material and initialize it during json pass
     // TODO : only upload this data once when the material is loaded in
@@ -217,6 +287,91 @@ void DiffuseShader::render(const CameraComponent * camera) {
         }
  
     }
+
+    //--------------------------------------------------------------------------
+    // Particles
+    
+    loadBool(getUniform("particles"), true);
+
+    /* Toon shading */
+    loadBool(getUniform("isToon"), showToon);
+
+    /* Tiling amount */
+    loadVec2(getUniform("tiling"), glm::vec2(1.0f));
+    
+    glBindVertexArray(particlesVAO);
+
+    for (ParticleComponent * pc : ParticleSystem::s_particleComponents) {
+        if (pc->finished()) {
+            continue;
+        }
+
+        // Load particle uniforms
+        loadFloat(getUniform("particleScale"), pc->m_scale);
+        loadBool(getUniform("particleVariation"), pc->m_variation);
+        loadBool(getUniform("particleFade"), pc->m_fade);
+        loadFloat(getUniform("particleMaxLife"), pc->m_duration);
+
+        /* Bind materials */
+        loadFloat(getUniform("matAmbient"), pc->m_modelTexture.material.ambient);
+        loadVec3(getUniform("matDiffuse"), pc->m_modelTexture.material.diffuse);
+        loadVec3(getUniform("matSpecular"), pc->m_modelTexture.material.specular);
+        loadFloat(getUniform("shine"), pc->m_modelTexture.material.shineDamper);
+   
+        /* Load texture */
+        if(pc->m_modelTexture.texture && pc->m_modelTexture.texture->textureId != 0) {
+            loadBool(getUniform("usesTexture"), true);
+            loadInt(getUniform("textureImage"), pc->m_modelTexture.texture->textureId);
+            glActiveTexture(GL_TEXTURE0 + pc->m_modelTexture.texture->textureId);
+            glBindTexture(GL_TEXTURE_2D, pc->m_modelTexture.texture->textureId);
+        }
+        else {
+            loadBool(getUniform("usesTexture"), false);
+        }
+
+        // Buffer instance data
+        glBindBuffer(GL_ARRAY_BUFFER, particlesVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, pc->m_particles.size() * sizeof(Particle), pc->m_particles.data());
+
+        /* Bind vertex buffer VBO */
+        int pos = getAttribute("vertPos");
+        glBindBuffer(GL_ARRAY_BUFFER, pc->m_mesh.vertBufId);
+        glEnableVertexAttribArray(pos);
+        glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
+
+        /* Bind normal buffer VBO */
+        pos = getAttribute("vertNor");
+        if (pos != -1 && pc->m_mesh.norBufId != 0) {
+            glBindBuffer(GL_ARRAY_BUFFER, pc->m_mesh.norBufId);
+            glEnableVertexAttribArray(pos);
+            glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
+        }
+
+        /* Bind texture coordinate buffer VBO */
+        pos = getAttribute("vertTex");
+        if (pos != -1 && pc->m_mesh.texBufId != 0) {
+            glBindBuffer(GL_ARRAY_BUFFER, pc->m_mesh.texBufId);
+            glEnableVertexAttribArray(pos);
+            glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, 0, (const void *)0);
+        }
+
+        /* Bind indices buffer VBO */
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pc->m_mesh.eleBufId);
+
+        /* DRAW */
+        glDrawElementsInstanced(GL_TRIANGLES, (int)pc->m_mesh.eleBufSize, GL_UNSIGNED_INT, nullptr, int(pc->m_particles.size()));
+
+        /* Unload texture */
+        if (pc->m_modelTexture.texture) {
+            glActiveTexture(GL_TEXTURE0 + pc->m_modelTexture.texture->textureId);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+ 
+    }
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
