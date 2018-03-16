@@ -18,12 +18,12 @@ SpatialComponent * RenderSystem::s_lightSpatial = nullptr;
 float RenderSystem::lightDist = 15.f;
 
 /* Shaders */
-ShadowDepthShader * RenderSystem::s_shadowShader = nullptr;
-DiffuseShader * RenderSystem::s_diffuseShader = nullptr;
-BounderShader * RenderSystem::s_bounderShader = nullptr;
-RayShader * RenderSystem::s_rayShader = nullptr;
-OctreeShader * RenderSystem::s_octreeShader = nullptr;
-PostProcessShader * RenderSystem::s_postProcessShader = nullptr;
+UniquePtr<ShadowDepthShader> RenderSystem::s_shadowShader;;
+UniquePtr<DiffuseShader> RenderSystem::s_diffuseShader;
+UniquePtr<BounderShader> RenderSystem::s_bounderShader;
+UniquePtr<RayShader> RenderSystem::s_rayShader;
+UniquePtr<OctreeShader> RenderSystem::s_octreeShader;
+UniquePtr<PostProcessShader> RenderSystem::s_postProcessShader;
  
 
 void RenderSystem::init() {
@@ -43,39 +43,6 @@ void RenderSystem::init() {
     });
     Scene::addReceiver<WindowFrameSizeMessage>(nullptr, sizeCallback);
 
-    //--------------------------------------------------------------------------
-    // Shader Setup
-
-    // Diffuse shader
-    // TODO: temporary until jaafer's pr is merged
-    glm::vec3 lightDir(glm::normalize(glm::vec3(1.0f)));
-    if (!RenderSystem::createShader<DiffuseShader>("diffuse_vert.glsl", "diffuse_frag.glsl", lightDir)) {
-        std::cin.get();
-        std::exit(EXIT_FAILURE);
-    }
-
-    // Bounder shader
-    if (!RenderSystem::createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
-        std::cin.get();
-        std::exit(EXIT_FAILURE);
-    }
-
-    // Octree shader
-    if (!RenderSystem::createShader<OctreeShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
-        std::cin.get();
-        std::exit(EXIT_FAILURE);
-    }
-    
-    // Ray shader
-    if (!RenderSystem::createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) {
-        std::cin.get();
-        std::exit(EXIT_FAILURE);
-    }
-
-    // Setup square shader
-    s_postProcessShader = UniquePtr<PostProcessShader>::make("postprocess_vert.glsl", "postprocess_frag.glsl");
-    if (!s_postProcessShader->init()) {
-        std::cin.get();
     /* Init light */
     s_lightObject = &Scene::createGameObject();
     s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, 45.f, 0.01f, 300.f);
@@ -87,14 +54,22 @@ void RenderSystem::init() {
     //Scene::addComponent<DiffuseRenderComponent>(*s_lightObject, *Loader::getMesh("cube.obj"), ModelTexture(1.f, glm::vec3(1.f), glm::vec3(0.9f)), true, glm::vec2(1, 1));
 
     /* Init shaders */
-    if (!(s_diffuseShader = createShader<DiffuseShader>("diffuse_vert.glsl", "diffuse_frag.glsl")) ||
-        !(s_bounderShader = createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl")) ||
-        !(s_octreeShader = createShader<OctreeShader>("bounder_vert.glsl", "bounder_frag.glsl")) ||
-        !(s_rayShader = createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) ||
-        !(s_postProcessShader = createShader<PostProcessShader>("postprocess_vert.glsl", "postprocess_frag.glsl")) ||
-        !(s_shadowShader = createShader<ShadowDepthShader>("shadow_vert.glsl", "shadow_frag.glsl"))) {
+    if (!(    s_diffuseShader = UniquePtr<    DiffuseShader>::make(    "diffuse_vert.glsl",     "diffuse_frag.glsl")) ||
+        !(    s_bounderShader = UniquePtr<    BounderShader>::make(    "bounder_vert.glsl",     "bounder_frag.glsl")) ||
+        !(     s_octreeShader = UniquePtr<     OctreeShader>::make(    "bounder_vert.glsl",     "bounder_frag.glsl")) ||
+        !(        s_rayShader = UniquePtr<        RayShader>::make(        "ray_vert.glsl",         "ray_frag.glsl")) ||
+        !(s_postProcessShader = UniquePtr<PostProcessShader>::make("postprocess_vert.glsl", "postprocess_frag.glsl")) ||
+        !(     s_shadowShader = UniquePtr<ShadowDepthShader>::make(     "shadow_vert.glsl",      "shadow_frag.glsl"))
+    ) {
+        std::cin.get();
         std::exit(EXIT_FAILURE);
     }
+    s_diffuseShader->init();
+    s_bounderShader->init();
+    s_octreeShader->init();
+    s_rayShader->init();
+    s_postProcessShader->init();
+    s_shadowShader->init();
 
     /* Init FBO */
     initFBO();
@@ -144,12 +119,6 @@ void RenderSystem::update(float dt) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         s_postProcessShader->render(s_playerCamera);
     }
-
-#ifdef DEBUG_MODE
-    if (Window::isImGuiEnabled()) {
-        ImGui::Render();
-    }
-#endif
 }
 void RenderSystem::setCamera(const CameraComponent * camera) {
     s_playerCamera = camera;
