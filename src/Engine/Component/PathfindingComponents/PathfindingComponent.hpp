@@ -88,7 +88,6 @@ class PathfindingComponent : public Component {
     //glm::vec3 closestPos(glm::vec3 vec);
 
     void readInGraph(String);
-    bool aStarSearch(vecvectorMap &graph, glm::vec3 start, glm::vec3 playerPos, vecvecMap &cameFrom);
     Vector<glm::vec3> reconstructPath(glm::vec3 start, glm::vec3 playerPos, vecvecMap &cameFrom);
     glm::vec3 closestPos(vecvectorMap &graph, glm::vec3 pos);
 
@@ -101,6 +100,8 @@ class PathfindingComponent : public Component {
     virtual SystemID systemID() const override { return SystemID::pathfinding; };
 
     virtual void update(float) override;
+
+    static bool aStarSearch(vecvectorMap &graph, glm::vec3 start, glm::vec3 playerPos, vecvecMap &cameFrom);
 
     // TODO : just add enable/disable options for all components?
     void setMoveSpeed(float f) { this->m_moveSpeed = f; }
@@ -130,6 +131,7 @@ class PathfindingComponent : public Component {
     //Vector<glm::vec3> visitedSet;
     bool updatePath;
     int pathCount;
+    bool noPath = false;
 
     vecvectorMap graph;
     //std::unordered_map<glm::vec3, Node, vecHash, customVecCompare> vecToNode;

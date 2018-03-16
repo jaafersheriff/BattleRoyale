@@ -231,6 +231,16 @@ void MapExploreComponent::update(float dt) {
 				}
 			}
 
+			//-20, 4.05946, -181
+			//40, 4.05946, 15
+			vecvecMap cameFrom = vecvecMap();
+			if (PathfindingComponent::aStarSearch(graph, glm::vec3(-20, 4.05946, -181), glm::vec3(40, 4.05946, 15), cameFrom)) {
+				std::cout << "A* found a path between the test points" << std::endl;
+			}
+			else {
+				std::cout << "A* didn't find a path between the test points" << std::endl;
+			}
+
 			std::cout << "Write Out" << std::endl;
 			writeToFile(graph);
 

@@ -74,11 +74,11 @@ void PathfindingComponent::update(float dt) {
     // if enemy is very close to the player just follow them
     //std::cout << "Dir length: " << glm::length2(dir) << std::endl;
     if (glm::length2(dir) < 5.0) {
-        std::cout << "close to player: " << glm::length2(dir) << std::endl;
+        //std::cout << "close to player: " << glm::length2(dir) << std::endl;
         gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
     }
     // probably don't need to update the path everytime, set flag when neccessary
-    else if (updatePath) {
+    else if (updatePath || noPath) {
         std::cout << "update path" << std::endl;
 
         // place the positions on the graph so we don't get weird behavior
@@ -89,10 +89,13 @@ void PathfindingComponent::update(float dt) {
             path = reconstructPath(graphPos, end, cameFrom);
             pathIT = path.begin();
 
+            noPath = false;
+
             dir = *pathIT - graphPos;
         }
         else {
             std::cout << "***************aStart didn't find a path" << std::endl;
+            noPath = true;
         }
         gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
         updatePath = false;
@@ -106,7 +109,7 @@ void PathfindingComponent::update(float dt) {
         dir = *pathIT - pos;
         gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
 
-        if (pathCount++ > 50) {
+        if (pathCount++ > 20) {
             updatePath = true;
             pathCount = 0;
         }
@@ -278,11 +281,12 @@ Vector<glm::vec3> PathfindingComponent::reconstructPath(glm::vec3 start, glm::ve
     std::cout << "Current: " << end.x << ", " << end.y << ", " << end.z << std::endl;
     //std::cout << "Size: " << cameFrom.size() << std::endl;
 
-    while (current != start) {
+    while (current != start && count < cameFrom.size()) {
+        count++;
         path.push_back(current);
         current = cameFrom[current];
-        if (current != glm::vec3(0.0))
-            std::cout << "New Current: " << current.x << ", " << current.y << ", " << current.z << std::endl;
+        //if (current != glm::vec3(0.0))
+        //    std::cout << "New Current: " << current.x << ", " << current.y << ", " << current.z << std::endl;
     }
     path.push_back(start);
     std::reverse(path.begin(), path.end());
@@ -307,8 +311,9 @@ glm::vec3 PathfindingComponent::closestPos(vecvectorMap &graph, glm::vec3 pos) {
         }
     }
 
-    if (minPos == glm::vec3())
+    if (minPos == glm::vec3()) {
         std::cout << "Something is off: PathfindingComponent::closestPos" << std::endl;
+    }
 
     std::cout << "out closestPos" << std::endl;
 

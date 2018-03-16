@@ -90,6 +90,7 @@ class MapExploreComponent : public Component {
     bool nonGroundCollision;
     bool writeOut;
     bool oneUpdate = false;
+    
 
     int secondFloorWidth = 97;
     int secondFloorDepth = 208;
