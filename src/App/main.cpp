@@ -158,7 +158,8 @@ void createEnemy(const glm::vec3 & position) {
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
     //GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
     BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *mesh, false, true, false));
-    PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed, false));
+    PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed));
+    //MapExploreComponent & mapComp(Scene::addComponent<MapExploreComponent>(obj, moveSpeed));
     DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, toon, glm::vec2(1,1));   
     EnemyComponent & enemyComp(Scene::addComponent<EnemyComponent>(obj));
     
@@ -241,7 +242,7 @@ int main(int argc, char **argv) {
     CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
 
     // Setup Player
-    player::setup(glm::vec3(0.0f, 6.0f, 0.0f));
+    player::setup(glm::vec3(0.0f, 4.0f, -10.0f));
 
     // Setup Free Cam
     freecam::setup();
@@ -256,7 +257,7 @@ int main(int argc, char **argv) {
     int nEnemies(1);
     for (int i(0); i < 1; ++i) {
         //createEnemy(glm::vec3(-(nEnemies - 1) * 0.5f + i, 5.0f, -10.0f));
-        createEnemy(glm::vec3(0, -1.7f, -20.f));
+        createEnemy(glm::vec3(0, -1.5f, -20.f));
     }
 
     //--------------------------------------------------------------------------

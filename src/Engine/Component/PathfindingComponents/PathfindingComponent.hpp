@@ -1,81 +1,64 @@
 #pragma once
-#ifndef _PATHFINDING_COMPONENT
-#define _PATHFINDING_COMPONENT
-
-#include <queue>
-
-#include "glm/glm.hpp"
-#include "glm/gtx/norm.hpp"
-#include "glm/gtx/string_cast.hpp"
 
 #include "Component/Component.hpp"
 
+#include "glm/glm.hpp"
+#include "glm/gtx/norm.hpp"
+#include <iostream>
+#include <queue>
+
+#include "Loader/Loader.hpp"
+
+class PathfindingSystem;
 
 
-class Scene;
-class SpatialComponent;
+struct vecHash
+{
+  size_t operator()(const glm::vec3 &v) const {
+  	size_t h1 = std::hash<int>()(round(v.x));
+	size_t h2 = std::hash<int>()(round(v.y));
+	size_t h3 = std::hash<int>()(round(v.z));
+	return (h1 ^ (h2 << 1)) ^ h3;
+  }
+};
 
+
+struct customVecCompare {
+
+    bool operator()(const glm::vec3& lhs, const glm::vec3& rhs) const
+    {
+        if (glm::distance2(lhs, rhs) < 1.f) {
+            return true;
+        }
+        return false;
+    }
+};
+
+
+typedef std::unordered_map<glm::vec3, glm::vec3, vecHash, customVecCompare> vecvecMap;
+typedef std::unordered_map<glm::vec3, double, vecHash, customVecCompare> vecdoubleMap;
+typedef std::unordered_map<glm::vec3, Vector<glm::vec3>, vecHash, customVecCompare> vecvectorMap;
 
 
 struct Node {
-    glm::vec3 position;
-    Vector<glm::vec3> neighbors;
+	glm::vec3 position;
+	Vector<glm::vec3> neighbors;
 
-    Node () :
-        position(glm::vec3(0.0)),
-        neighbors(Vector<glm::vec3>())
-    {}
-
-    Node(glm::vec3 pos, Vector<glm::vec3> neighbors) :
-        position(pos),
-        neighbors(neighbors)
-    {}
+	Node(glm::vec3 pos, Vector<glm::vec3> neighbors) :
+		position(pos),
+		neighbors(neighbors)
+	{}
 };
 
-namespace detail {
+struct pathPair {
+    glm::vec3 position;
+    double priority;
 
-    struct vecHash
-    {
-      size_t operator()(const glm::vec3 &v) const {
-        size_t h1 = std::hash<int>()(round(v.x));
-        size_t h2 = std::hash<int>()(round(v.y));
-        size_t h3 = std::hash<int>()(round(v.z));
-        return (h1 ^ (h2 << 1)) ^ h3;
-      }
-    };
-
-    struct nodeHash
-    {
-        size_t operator()(const Node &n) const {
-            size_t h1 = std::hash<int>()(round(n.position.x));
-            size_t h2 = std::hash<int>()(round(n.position.y));
-            size_t h3 = std::hash<int>()(round(n.position.z));
-            return (h1 ^ (h2 << 1)) ^ h3;
-        }
-    };
-
-
-    struct customVecCompare {
-
-        bool operator()(const glm::vec3& lhs, const glm::vec3& rhs) const
-        {
-            float radius = 1.f;
-
-            if (glm::distance2(lhs, rhs) > radius * radius) {
-                return false;
-            }
-            return true;
-        }
-    };
-
-    typedef std::unordered_map<glm::vec3, glm::vec3, vecHash, customVecCompare> vecvecMap;
-    typedef std::unordered_map<glm::vec3, double, vecHash, customVecCompare> vecdoubleMap;
-    typedef std::unordered_map<glm::vec3, Vector<glm::vec3>, vecHash, customVecCompare> vecvectorMap;
-
-}
-
-
-class PathfindingSystem;
+    pathPair(glm::vec3 pos, double pri) :
+        position(pos),
+        priority(pri)
+    {}
+};
 
 
 class PathfindingComponent : public Component {
@@ -85,7 +68,7 @@ class PathfindingComponent : public Component {
     protected: // only scene or friends can create component
 
     PathfindingComponent(GameObject & gameObject, GameObject & player, float ms);
-    PathfindingComponent(GameObject & gameObject, GameObject & player, float ms, bool wander);
+    //PathfindingComponent(GameObject & gameObject, GameObject & player, float ms, bool wander);
 
     public:
 
@@ -98,14 +81,17 @@ class PathfindingComponent : public Component {
 
     virtual void init() override;
 
-    void aStarSearch(detail::vecvectorMap &graph, glm::vec3 start, glm::vec3 end, detail::vecvecMap &cameFrom);//, detail::vecdoubleMap &cost);
-    Vector<glm::vec3> reconstructPath(glm::vec3 start, glm::vec3 end, detail::vecvecMap &cameFrom);
-    void readInGraph(String fileName); 
-    void print_queue(std::queue<glm::vec3> q);
-    void drawCup(glm::vec3 position);
-    bool findInVisited(glm::vec3 vec, float stepSize);
+    //void print_queue(std::queue<glm::vec3> q);
+    //void drawCup(glm::vec3 position);
+    //bool findInVisited(glm::vec3 vec, float stepSize);
     std::string vectorToString(Vector<glm::vec3> vec);
-    glm::vec3 closestPos(glm::vec3 vec);
+    //glm::vec3 closestPos(glm::vec3 vec);
+
+    void readInGraph(String);
+    bool aStarSearch(vecvectorMap &graph, glm::vec3 start, glm::vec3 playerPos, vecvecMap &cameFrom);
+    Vector<glm::vec3> reconstructPath(glm::vec3 start, glm::vec3 playerPos, vecvecMap &cameFrom);
+    glm::vec3 closestPos(vecvectorMap &graph, glm::vec3 pos);
+
 
     // cosine of most severe angle that can still be considered "ground"
     float m_cosCriticalAngle;
@@ -121,45 +107,40 @@ class PathfindingComponent : public Component {
 
     private:
 
-    //typedef std::unordered_map<glm::vec3, glm::vec3, detail::vecHash, detail::customVecCompare> vecvecMap;
-    //typedef std::unordered_map<glm::vec3, double, detail::vecHash, detail::customVecCompare> vecdoubleMap;
-
     SpatialComponent * m_spatial;
     GameObject * m_player;
     float m_moveSpeed;
 
-    glm::vec3 m_groundNorm;
-    glm::vec3 m_potentialGroundNorm;
+    //glm::vec3 m_groundNorm;
+    //glm::vec3 m_potentialGroundNorm;
 
-    glm::vec3 curPos;
-    glm::vec3 searchFromPos;
-    bool nonGroundCollision;
-    bool writeOut;
+    //glm::vec3 curPos;
+    //glm::vec3 searchFromPos;
+    //bool nonGroundCollision;
+    //bool writeOut;
+
+    //int slowTime;
+    //int dirIndex;
+    //int yIndex; 
+    //int *checkedDirections;
+
+    //glm::vec3 prevMove;
+    //std::queue<glm::vec3> pos_queue;
+    //std::unordered_set<glm::vec3, vecHash, customVecCompare> visitedSet;
+    //Vector<glm::vec3> visitedSet;
     bool updatePath;
     int pathCount;
 
-    detail::vecvecMap cameFrom;
+    vecvectorMap graph;
+    //std::unordered_map<glm::vec3, Node, vecHash, customVecCompare> vecToNode;
+    vecvecMap cameFrom;
     Vector<glm::vec3> path;
     std::vector<glm::vec3>::iterator pathIT;
 
-    int slowTime;
-    int dirIndex;
-    int yIndex; 
-    int *checkedDirections;
+    //Vector<glm::vec3> validNeighbors;
 
-    glm::vec3 prevMove;
-    std::queue<glm::vec3> pos_queue;
-    std::unordered_set<glm::vec3, detail::vecHash, detail::customVecCompare> visitedSet;
-    //Vector<glm::vec3> visitedSet;
-    detail::vecvectorMap graph;
-    Vector<glm::vec3> validNeighbors;
-
-    std::unordered_map<glm::vec3, Node, detail::vecHash, detail::customVecCompare> vecToNode;
-
-    bool m_wander;
-    glm::vec3 m_wanderCurrent;
-    float m_wanderCurrentWeight;
-    float m_wanderWeight;
+    //bool m_wander;
+    //glm::vec3 m_wanderCurrent;
+    //float m_wanderCurrentWeight;
+    //float m_wanderWeight;
 };
-
-#endif

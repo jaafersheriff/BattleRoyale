@@ -3,8 +3,7 @@
 #define _MAPEXPLORE_COMPONENT
 
 #include "Component/Component.hpp"
-#include "Component/SpatialComponents/SpatialComponent.hpp"
-//#include "Component/PathfindingComponents/PathfindingComponent.hpp"
+#include "Component/PathfindingComponents/PathfindingComponent.hpp"
 
 #include "glm/glm.hpp"
 #include "glm/gtx/norm.hpp"
@@ -15,15 +14,15 @@
 
 #include "Loader/Loader.hpp"
 
-//#include "System/MapExploreSystem.hpp"
-//#include "System/PathfindingSystem.hpp"
-
-//#include "Scene/Scene.hpp"
 #include "Util/Util.hpp"
 
 
 
+
+class Scene;
+class SpatialComponent;
 class MapExploreSystem;
+class CollisionSystem;
 
 
 class MapExploreComponent : public Component {
@@ -32,7 +31,7 @@ class MapExploreComponent : public Component {
     
     protected: // only scene or friends can create component
 
-    MapExploreComponent(GameObject & gameObject, GameObject & player, float ms);
+    MapExploreComponent(GameObject & gameObject, float ms);
 
     public:
 
@@ -50,6 +49,7 @@ class MapExploreComponent : public Component {
     //void readInGraph(String fileName); 
     //void print_queue(std::queue<glm::vec3> q);
     //void drawCup(glm::vec3 position);
+    void writeToFile(String filename, vecvectorMap &graph); 
     bool findInVisited(glm::vec3 vec, float stepSize);
     std::string vectorToString(Vector<glm::vec3> vec);
     glm::vec3 closestPos(glm::vec3 vec);
@@ -83,12 +83,10 @@ class MapExploreComponent : public Component {
     glm::vec3 searchFromPos;
     bool nonGroundCollision;
     bool writeOut;
-    bool updatePath;
-    int pathCount;
+    bool oneUpdate = false;
 
-    detail::vecvecMap cameFrom;
-    Vector<glm::vec3> path;
-    std::vector<glm::vec3>::iterator pathIT;
+    int nodeCount = 0;
+
 
     int slowTime;
     int dirIndex;
@@ -97,17 +95,12 @@ class MapExploreComponent : public Component {
 
     glm::vec3 prevMove;
     std::queue<glm::vec3> pos_queue;
-    std::unordered_set<glm::vec3, detail::vecHash, detail::customVecCompare> visitedSet;
-    //Vector<glm::vec3> visitedSet;
-    detail::vecvectorMap graph;
+    std::unordered_set<glm::vec3, vecHash, customVecCompare> visitedSet;
+    vecvectorMap graph;
     Vector<glm::vec3> validNeighbors;
 
-    std::unordered_map<glm::vec3, Node, detail::vecHash, detail::customVecCompare> vecToNode;
 
-    bool m_wander;
-    glm::vec3 m_wanderCurrent;
-    float m_wanderCurrentWeight;
-    float m_wanderWeight;
+
 };
 
 #endif
