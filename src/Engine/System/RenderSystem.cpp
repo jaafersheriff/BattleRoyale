@@ -18,6 +18,7 @@ GameObject * RenderSystem::s_lightObject = nullptr;
 CameraComponent * RenderSystem::s_lightCamera = nullptr;
 SpatialComponent * RenderSystem::s_lightSpatial = nullptr;
 float RenderSystem::lightDist = 15.f;
+
 /* Shaders */
 ShadowDepthShader * RenderSystem::s_shadowShader = nullptr;
 DiffuseShader * RenderSystem::s_diffuseShader = nullptr;
@@ -54,13 +55,13 @@ void RenderSystem::init() {
     s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, glm::vec2(-75.f, 100.f), glm::vec2(-55.f, 100.f), 0.01f, 105.f);
     //Scene::addComponent<DiffuseRenderComponent>(*s_lightObject, *Loader::getMesh("cube.obj"), ModelTexture(1.f, glm::vec3(1.f), glm::vec3(0.9f)), true, glm::vec2(1, 1));
 
-    /* Init post process shader */
-    if (!(s_postProcessShader = createShader<PostProcessShader>("postprocess_vert.glsl", "postprocess_frag.glsl"))) {
-        std::exit(EXIT_FAILURE);
-    }
-
-    /* Init shadow shader */
-    if (!(s_shadowShader = createShader<ShadowDepthShader>("shadow_vert.glsl", "shadow_frag.glsl"))) {
+    /* Init shaders */
+    if (!(s_diffuseShader = createShader<DiffuseShader>("diffuse_vert.glsl", "diffuse_frag.glsl")) ||
+        !(s_bounderShader = createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl")) ||
+        !(s_octreeShader = createShader<OctreeShader>("bounder_vert.glsl", "bounder_frag.glsl")) ||
+        !(s_rayShader = createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) ||
+        !(s_postProcessShader = createShader<PostProcessShader>("postprocess_vert.glsl", "postprocess_frag.glsl")) ||
+        !(s_shadowShader = createShader<ShadowDepthShader>("shadow_vert.glsl", "shadow_frag.glsl"))) {
         std::exit(EXIT_FAILURE);
     }
 

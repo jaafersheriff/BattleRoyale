@@ -138,7 +138,6 @@ Vector<GameObject *> f_projectiles;
 
 void createEnemy(const glm::vec3 & position) {    
     Mesh * mesh(Loader::getMesh("bunny.obj"));
-    DiffuseShader * shader(RenderSystem::s_diffuseShader);
     ModelTexture modelTex(k_ambience, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f));
     bool toon(true);
     glm::vec3 scale(0.75f);
@@ -159,7 +158,6 @@ void createEnemy(const glm::vec3 & position) {
 
 void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     Mesh * mesh(Loader::getMesh("Hamburger.obj"));
-    DiffuseShader * shader(RenderSystem::s_diffuseShader);
     Texture * tex(Loader::getTexture("Hamburger_BaseColor.png"));
     ModelTexture modelTex(tex, k_ambience, glm::vec3(1.0f), glm::vec3(1.0f));
     bool toon(true);
@@ -188,29 +186,6 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
 int main(int argc, char **argv) {
     if (parseArgs(argc, argv) || EngineApp::init()) {
         std::cin.get(); // don't immediately close the console
-        return EXIT_FAILURE;
-    }
-
-    //--------------------------------------------------------------------------
-    // Shader Setup
-
-    // Diffuse shader
-    if (!(RenderSystem::s_diffuseShader = RenderSystem::createShader<DiffuseShader>("diffuse_vert.glsl", "diffuse_frag.glsl"))) {
-        return EXIT_FAILURE;
-    }
-
-    // Bounder shader
-    if (!(RenderSystem::s_bounderShader = RenderSystem::createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl"))) {
-        return EXIT_FAILURE;
-    }
-
-    // Octree shader
-    if (!(RenderSystem::s_octreeShader = RenderSystem::createShader<OctreeShader>("bounder_vert.glsl", "bounder_frag.glsl"))) {
-        return EXIT_FAILURE;
-    }
-    
-    // Ray shader
-    if (!(RenderSystem::s_rayShader = RenderSystem::createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl"))) {
         return EXIT_FAILURE;
     }
 
