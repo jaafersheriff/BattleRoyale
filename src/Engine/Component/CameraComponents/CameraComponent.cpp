@@ -20,12 +20,35 @@ CameraComponent::CameraComponent(GameObject & gameObject, float fov, float near,
     m_fov(fov),
     m_near(near),
     m_far(far),
+    m_isOrtho(false),
+    m_hBounds(),
+    m_vBounds(),
     m_viewMat(),
     m_projMat(),
     m_viewMatValid(false),
     m_projMatValid(false),
     m_frustumValid(false)
 {}
+
+CameraComponent::CameraComponent(GameObject & gameObject, glm::vec2 horiz, glm::vec2 vert, float near, float far) :
+    Component(gameObject),
+    Orientable(),
+    m_spatial(nullptr),
+    m_theta(0.0f),
+    m_phi(glm::pi<float>() * 0.5f),
+    m_fov(0.0f),
+    m_near(near),
+    m_far(far),
+    m_isOrtho(true),
+    m_hBounds(horiz),
+    m_vBounds(vert),
+    m_viewMat(),
+    m_projMat(),
+    m_viewMatValid(false),
+    m_projMatValid(false),
+    m_frustumValid(false)
+{}
+
 
 void CameraComponent::init() {
     if (!(m_spatial = gameObject().getComponentByType<SpatialComponent>())) assert(false);
@@ -53,11 +76,13 @@ void CameraComponent::init() {
     Scene::addReceiver<SpatialRotatedMessage>(&gameObject(), spatRotationCallback);
     Scene::addReceiver<CollisionAdjustMessage>(&gameObject(), spatTransformCallback); // necessary as collision sets position silently
 
-    auto windowSizeCallback([&] (const Message & msg_) {
-        m_projMatValid = false;
-        m_frustumValid = false;
-    });
-    Scene::addReceiver<WindowFrameSizeMessage>(nullptr, windowSizeCallback);
+    if (!m_isOrtho) {
+        auto windowSizeCallback([&] (const Message & msg_) {
+            m_projMatValid = false;
+            m_frustumValid = false;
+        });
+        Scene::addReceiver<WindowFrameSizeMessage>(nullptr, windowSizeCallback);
+    }
 }
 
 void CameraComponent::update(float dt) {
@@ -108,6 +133,13 @@ void CameraComponent::setFOV(float fov) {
 void CameraComponent::setNearFar(float near, float far) {
     m_near = near;
     m_far = far;
+    m_projMatValid = false;
+    m_frustumValid = false;
+}
+
+void CameraComponent::setOrthoBounds(glm::vec2 h, glm::vec2 v) {
+    m_hBounds = h;
+    m_vBounds = v;
     m_projMatValid = false;
     m_frustumValid = false;
 }
@@ -165,7 +197,12 @@ void CameraComponent::detView() const {
 }
 
 void CameraComponent::detProj() const {
-    m_projMat = glm::perspective(m_fov, Window::getAspectRatio(), m_near, m_far);
+    if (m_isOrtho) {
+        m_projMat = glm::ortho(m_hBounds.x, m_hBounds.y, m_vBounds.x, m_vBounds.y, m_near, m_far);
+    }
+    else {
+        m_projMat = glm::perspective(m_fov, Window::getAspectRatio(), m_near, m_far);
+    }
     m_projMatValid = true;
 }
 

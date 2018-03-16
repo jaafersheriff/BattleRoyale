@@ -5,12 +5,13 @@
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/BounderComponent.hpp"
-#include "System/CollisionSystem.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 
-DiffuseShader::DiffuseShader(const String & vertFile, const String & fragFile, const glm::vec3 & light) :
-    Shader(vertFile, fragFile),
-    lightDir(&light) {
+#include "System/CollisionSystem.hpp"
+#include "System/RenderSystem.hpp"
+
+DiffuseShader::DiffuseShader(const String & vertFile, const String & fragFile) :
+    Shader(vertFile, fragFile) {
     cellIntensities.resize(1, 1.f);
     cellDiffuseScales.resize(1, 1.f);
     cellSpecularScales.resize(1, 1.f);
@@ -31,6 +32,9 @@ bool DiffuseShader::init() {
     addUniform("M");
     addUniform("N");
     
+    addUniform("L");
+    addUniform("shadowMap");
+
     addUniform("tiling");
 
     addUniform("lightDir");
@@ -75,10 +79,12 @@ bool DiffuseShader::init() {
     return true;
 }
 
-void DiffuseShader::render(const CameraComponent * camera, const Vector<Component *> & components) {
-    if (!camera) {
+void DiffuseShader::render(const CameraComponent * camera) {
+    if (!camera || !m_isEnabled) {
         return;
     }
+
+    bind();
 
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -87,8 +93,15 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     /* Bind uniforms */
     loadMat4(getUniform("P"), camera->getProj());
     loadMat4(getUniform("V"), camera->getView());
-    loadVec3(getUniform("lightDir"), *lightDir);
+    loadVec3(getUniform("lightDir"), RenderSystem::getLightDir());
     loadVec3(getUniform("camPos"), camera->gameObject().getSpatial()->position());
+
+    /* Shadows */
+    loadMat4(getUniform("L"), RenderSystem::getL());
+    GLuint shadowMap = RenderSystem::getShadowMap();
+    glActiveTexture(GL_TEXTURE0 + shadowMap);
+    glBindTexture(GL_TEXTURE_2D, shadowMap);
+    loadInt(getUniform("shadowMap"), shadowMap);
 
     /* Toon shading */
     loadFloat(getUniform("silAngle"), silAngle);
@@ -109,12 +122,12 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     glBindTexture(GL_TEXTURE_1D, cellSpecularScalesTexture);
     glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellSpecularScales.size()), GL_RED, GL_FLOAT, cellSpecularScales.data());
 
-    for (Component * comp : components) {
-        // TODO : component list should be passed in as diffuserendercomponent
-        DiffuseRenderComponent *drc;
-        if (!(drc = dynamic_cast<DiffuseRenderComponent *>(comp)) || drc->m_pid != this->pid) {
-            continue;
-        }
+    /* Get render targets */
+    Vector<DiffuseRenderComponent *> components;
+    RenderSystem::getFrustumComps(camera, components);
+
+    /* Iterate through render targets */
+    for (auto drc : components) {
 
         /* Toon shading */
         if (showToon && drc->isToon()) {
@@ -192,9 +205,9 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
         if (pos != -1) {
             glDisableVertexAttribArray(pos);
         }
-        glBindTexture(GL_TEXTURE_1D, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindTexture(GL_TEXTURE_1D, 0);
 
         /* Unload texture */
         if (modelTexture.texture) {
@@ -207,6 +220,8 @@ void DiffuseShader::render(const CameraComponent * camera, const Vector<Componen
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }    
+
+    unbind();
 }
 
 void DiffuseShader::setCells(unsigned int in) {

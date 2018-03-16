@@ -50,14 +50,12 @@ bool OctreeShader::init() {
     return true;
 }
 
-void OctreeShader::render(const CameraComponent * camera, const Vector<Component *> & components_) {
-    if (!camera) {
+void OctreeShader::render(const CameraComponent * camera) {
+    if (!camera || !m_isEnabled || !CollisionSystem::s_octree) {
         return;
     }
-    if (!CollisionSystem::s_octree) {
-        return;
-    }
-
+    
+    bind();
     glBindVertexArray(m_aabVAO);
 
     loadMat4(getUniform("u_viewMat"), camera->getView());
@@ -68,6 +66,7 @@ void OctreeShader::render(const CameraComponent * camera, const Vector<Component
     renderNode(camera, CollisionSystem::s_octree->m_root.get(), 0, maxDepth);
 
     glBindVertexArray(0);
+    unbind();
 }
 
 void OctreeShader::renderNode(const CameraComponent * camera, const void * node_, int depth, int maxDepth) {

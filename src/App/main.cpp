@@ -109,7 +109,6 @@ namespace player {
         });
         Scene::addReceiver<ObjectInitMessage>(gameObject, initCallback);
     }
-
 }
 
 // Freecam data and functions
@@ -134,19 +133,11 @@ namespace freecam {
 
 }
 
-// Light data and functions
-namespace light {
-
-    glm::vec3 dir = glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f));
-
-}
-
 Vector<GameObject *> f_enemies;
 Vector<GameObject *> f_projectiles;
 
 void createEnemy(const glm::vec3 & position) {    
     Mesh * mesh(Loader::getMesh("bunny.obj"));
-    DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
     ModelTexture modelTex(k_ambience, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f));
     bool toon(true);
     glm::vec3 scale(0.75f);
@@ -159,7 +150,7 @@ void createEnemy(const glm::vec3 & position) {
     GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
     BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, collisionWeight, *mesh, false, true, false));
     PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *player::gameObject, moveSpeed, false));
-    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, toon, glm::vec2(1,1));   
+    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, *mesh, modelTex, toon, glm::vec2(1,1));   
     EnemyComponent & enemyComp(Scene::addComponent<EnemyComponent>(obj));
     
     f_enemies.push_back(&obj);
@@ -167,7 +158,6 @@ void createEnemy(const glm::vec3 & position) {
 
 void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     Mesh * mesh(Loader::getMesh("Hamburger.obj"));
-    DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
     Texture * tex(Loader::getTexture("Hamburger_BaseColor.png"));
     ModelTexture modelTex(tex, k_ambience, glm::vec3(1.0f), glm::vec3(1.0f));
     bool toon(true);
@@ -181,7 +171,7 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj));
     Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj);
     newtComp.addVelocity(dir * speed);
-    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, true, glm::vec2(1,1)));
+    DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, *mesh, modelTex, true, glm::vec2(1,1)));
     ProjectileComponent & projectileComp(Scene::addComponent<ProjectileComponent>(obj));
     
     f_projectiles.push_back(&obj);
@@ -196,33 +186,6 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
 int main(int argc, char **argv) {
     if (parseArgs(argc, argv) || EngineApp::init()) {
         std::cin.get(); // don't immediately close the console
-        return EXIT_FAILURE;
-    }
-
-    //--------------------------------------------------------------------------
-    // Shader Setup
-
-    // Diffuse shader
-    if (!RenderSystem::createShader<DiffuseShader>("diffuse_vert.glsl", "diffuse_frag.glsl", light::dir)) {
-        std::cin.get();
-        return EXIT_FAILURE;
-    }
-
-    // Bounder shader
-    if (!RenderSystem::createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
-        std::cin.get();
-        return EXIT_FAILURE;
-    }
-
-    // Octree shader
-    if (!RenderSystem::createShader<OctreeShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
-        std::cin.get();
-        return EXIT_FAILURE;
-    }
-    
-    // Ray shader
-    if (!RenderSystem::createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) {
-        std::cin.get();
         return EXIT_FAILURE;
     }
 
@@ -304,8 +267,6 @@ int main(int argc, char **argv) {
         imguiGO,
         "Misc",
         [&]() {
-            /* Light dir */
-            ImGui::SliderFloat3("LightDir", glm::value_ptr(light::dir), -1.f, 1.f);
             /* VSync */
             if (ImGui::Button("VSync")) {
                 Window::toggleVSync();
@@ -321,45 +282,69 @@ int main(int argc, char **argv) {
             }
         }
     );
+    
+    // Shadows 
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO,
+        "Shadows",
+        [&]() {
+            /* Light dir */
+            glm::vec3 lightDir = RenderSystem::getLightDir();
+            ImGui::SliderFloat3("LightDir", glm::value_ptr(lightDir), -1.f, 1.f);
+            RenderSystem::setLightDir(lightDir);
+            /* Light distance */
+            ImGui::SliderFloat("LightPos", &RenderSystem::lightDist, -100.f, 100.f);
+            /* Light ortho */
+            glm::vec2 hBounds = RenderSystem::s_lightCamera->hBounds();
+            glm::vec2 vBounds = RenderSystem::s_lightCamera->vBounds();
+            float nPlane = RenderSystem::s_lightCamera->near();
+            float fPlane = RenderSystem::s_lightCamera->far();
+            float min[2] = { -100.f,   0.f };
+            float max[2] = {    0.f, 100.f };
+            ImGui::SliderFloat2("H Bounds", glm::value_ptr(hBounds), min, max);
+            ImGui::SliderFloat2("V Bounds", glm::value_ptr(vBounds), min, max);
+            ImGui::SliderFloat("Near plane", &nPlane, 0.01f, 2.f);
+            ImGui::SliderFloat("Far plane", &fPlane, 0.01f, 150.f);
+            RenderSystem::s_lightCamera->setOrthoBounds(hBounds, vBounds);
+            RenderSystem::s_lightCamera->setNearFar(nPlane, fPlane);
+            /* Shadow map FBO */
+            int mapSize = RenderSystem::s_shadowShader->getMapSize();
+            ImGui::SliderInt("Shadow Map Size", &mapSize, 1024, 16384);
+            RenderSystem::s_shadowShader->setMapSize(mapSize);
+            ImGui::Image((ImTextureID)RenderSystem::getShadowMap(), ImVec2(256, 256));
+        }
+    );
 
     // Toon shading config
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
-        "Diffuse Shader",
+        "Toon Shading",
         [&]() {
-            if (ImGui::Button("Active")) {
-                RenderSystem::getShader<DiffuseShader>()->toggleEnabled();
-            }
-            if (ImGui::Button("Wireframe")) {
-                RenderSystem::getShader<DiffuseShader>()->toggleWireFrame();
-            }
+            DiffuseShader * dShader = RenderSystem::s_diffuseShader;
             if (ImGui::Button("Toon")) {
-                RenderSystem::getShader<DiffuseShader>()->toggleToon();
+                dShader->toggleToon();
             }
-            if (RenderSystem::getShader<DiffuseShader>()->isToon()) {
-                float angle = RenderSystem::getShader<DiffuseShader>()->getSilAngle();
+            if (dShader->isToon()) {
+                float angle = dShader->getSilAngle();
                 ImGui::SliderFloat("Silhouette Angle", &angle, 0.f, 1.f);
-                RenderSystem::getShader<DiffuseShader>()->setSilAngle(angle);
+                dShader->setSilAngle(angle);
                 
-                int cells = RenderSystem::getShader<DiffuseShader>()->getCells();
+                int cells = dShader->getCells();
                 if (ImGui::SliderInt("Cells", &cells, 1, 15)) {
-                    RenderSystem::getShader<DiffuseShader>()->setCells(cells);
+                    dShader->setCells(cells);
                 }
 
-                /* Make a new pane to define cell values */
-                ImGui::End();
-                ImGui::Begin("Cell Shading");
                 for (int i = 0; i < cells; i++) {
-                    float vals[3];
                     float minBounds[3] = { -1.f,  0.f,  0.f };
                     float maxBounds[3] = {  1.f,  1.f,  1.f };
-                    vals[0] = RenderSystem::getShader<DiffuseShader>()->getCellIntensity(i);
-                    vals[1] = RenderSystem::getShader<DiffuseShader>()->getCellDiffuseScale(i);
-                    vals[2] = RenderSystem::getShader<DiffuseShader>()->getCellSpecularScale(i);
+                    float vals[3];
+                    vals[0] = dShader->getCellIntensity(i);
+                    vals[1] = dShader->getCellDiffuseScale(i);
+                    vals[2] = dShader->getCellSpecularScale(i);
                     ImGui::SliderFloat3(("Cell " + std::to_string(i)).c_str(), vals, minBounds, maxBounds);
-                    RenderSystem::getShader<DiffuseShader>()->setCellIntensity(i, vals[0]);
-                    RenderSystem::getShader<DiffuseShader>()->setCellDiffuseScale(i, vals[1]);
-                    RenderSystem::getShader<DiffuseShader>()->setCellSpecularScale(i, vals[2]);
+                    dShader->setCellIntensity(i, vals[0]);
+                    dShader->setCellDiffuseScale(i, vals[1]);
+                    dShader->setCellSpecularScale(i, vals[2]);
                 }
             }
         }
@@ -368,32 +353,25 @@ int main(int argc, char **argv) {
     // Bounder shader toggle
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
-        "Bounder Shader",
+        "Toggle Shaders",
         [&]() {
-            if (ImGui::Button("Active")) {
-                RenderSystem::getShader<BounderShader>()->toggleEnabled();
+            if (ImGui::Button("Diffuse")) {
+                RenderSystem::s_diffuseShader->toggleEnabled();
             }
-        }
-    );
-
-    // Octree shader toggle
-    Scene::addComponent<ImGuiComponent>(
-        imguiGO,
-        "Octree Shader",
-        [&]() {
-            if (ImGui::Button("Active")) {
-                RenderSystem::getShader<OctreeShader>()->toggleEnabled();
+            if (ImGui::Button("Shadows")) {
+                RenderSystem::s_shadowShader->toggleEnabled();
             }
-        }
-    );
-
-    // Ray shader toggle
-    Scene::addComponent<ImGuiComponent>(
-        imguiGO,
-        "Ray Shader",
-        [&]() {
-            if (ImGui::Button("Active")) {
-                RenderSystem::getShader<RayShader>()->toggleEnabled();
+            if (ImGui::Button("Bounder")) {
+                RenderSystem::s_bounderShader->toggleEnabled();
+            }
+            if (ImGui::Button("Octree")) {
+                RenderSystem::s_octreeShader->toggleEnabled();
+            }
+            if (ImGui::Button("Ray")) {
+                RenderSystem::s_rayShader->toggleEnabled();
+            }
+            if (ImGui::Button("Post Process")) {
+                RenderSystem::s_postProcessShader->toggleEnabled();
             }
         }
     );
@@ -436,7 +414,7 @@ int main(int argc, char **argv) {
                 rayPositions.push_back(pair.second.pos);
                 dir = glm::reflect(dir, pair.second.norm);
             }
-            RenderSystem::getShader<RayShader>()->setPositions(rayPositions);
+            RenderSystem::s_rayShader->setPositions(rayPositions);
         }
     });
     Scene::addReceiver<MouseMessage>(nullptr, rayPickCallback);

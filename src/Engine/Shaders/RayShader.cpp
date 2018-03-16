@@ -45,13 +45,12 @@ bool RayShader::init() {
     return glGetError() == GL_NO_ERROR;
 }
 
-void RayShader::render(const CameraComponent * camera, const Vector<Component *> & components_) {
-    if (!camera) {
+void RayShader::render(const CameraComponent * camera) {
+    if (!camera || !m_isEnabled || m_positions.size() < 2) {
         return;
     }
-    if (m_positions.size() < 2) {
-        return;
-    }
+
+    bind();
 
     if (!m_positionsValid) {
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
@@ -66,7 +65,9 @@ void RayShader::render(const CameraComponent * camera, const Vector<Component *>
 
     glBindVertexArray(m_vao);
     glDrawArrays(GL_LINE_STRIP, 0, int(m_positions.size()));
+
     glBindVertexArray(0);
+    unbind();
 }
 
 void RayShader::setPositions(const Vector<glm::vec3> & positions) {
