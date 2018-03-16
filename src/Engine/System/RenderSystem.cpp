@@ -25,7 +25,36 @@ void RenderSystem::init() {
         const WindowFrameSizeMessage & msg(static_cast<const WindowFrameSizeMessage &>(msg_));
         s_wasResize = true;
     });
-    Scene::addReceiver<WindowFrameSizeMessage>(nullptr, sizeCallback);    
+    Scene::addReceiver<WindowFrameSizeMessage>(nullptr, sizeCallback);
+
+    //--------------------------------------------------------------------------
+    // Shader Setup
+
+    // Diffuse shader
+    // TODO: temporary until jaafer's pr is merged
+    glm::vec3 lightDir(glm::normalize(glm::vec3(1.0f)));
+    if (!RenderSystem::createShader<DiffuseShader>("diffuse_vert.glsl", "diffuse_frag.glsl", lightDir)) {
+        std::cin.get();
+        std::exit(EXIT_FAILURE);
+    }
+
+    // Bounder shader
+    if (!RenderSystem::createShader<BounderShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
+        std::cin.get();
+        std::exit(EXIT_FAILURE);
+    }
+
+    // Octree shader
+    if (!RenderSystem::createShader<OctreeShader>("bounder_vert.glsl", "bounder_frag.glsl")) {
+        std::cin.get();
+        std::exit(EXIT_FAILURE);
+    }
+    
+    // Ray shader
+    if (!RenderSystem::createShader<RayShader>("ray_vert.glsl", "ray_frag.glsl")) {
+        std::cin.get();
+        std::exit(EXIT_FAILURE);
+    }
 
     // Setup square shader
     s_postProcessShader = UniquePtr<PostProcessShader>::make("postprocess_vert.glsl", "postprocess_frag.glsl");

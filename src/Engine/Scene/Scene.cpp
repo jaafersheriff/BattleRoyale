@@ -45,13 +45,13 @@ float Scene::soundDT;
 float Scene::soundMessagingDT;
 
 void Scene::init() {
-    GameSystem::init();
-    PathfindingSystem::init();
+    RenderSystem::init();
+    SoundSystem::init();
     SpatialSystem::init();
     CollisionSystem::init();
     PostCollisionSystem::init();
-    RenderSystem::init();
-    SoundSystem::init();
+    PathfindingSystem::init();
+    GameSystem::init();
 }
 
 GameObject & Scene::createGameObject() {

@@ -13,6 +13,7 @@
 #include "Component/EnemyComponents/EnemyComponent.hpp"
 #include "Component/WeaponComponents/ProjectileComponents.hpp"
 #include "Component/WeaponComponents/BlastComponent.hpp"
+#include "Component/CollisionComponents/BounderComponent.hpp"
 
 
 
@@ -42,6 +43,7 @@ class GameSystem {
 
     struct Player {
 
+        static const glm::vec3 k_defPosition;
         static const float k_defHeight;
         static const float k_defWidth;
         static const unsigned int k_defWeight;
@@ -65,7 +67,7 @@ class GameSystem {
         static PlayerComponent * playerComp;
         static HealthComponent * health;
 
-        static void init(const glm::vec3 & position);
+        static void init();
 
     };
 
@@ -147,6 +149,16 @@ class GameSystem {
 
     private:
 
+    static void fireCallback(const Message & msg);
+    static void spawnEnemy(const Message & msg);
+    static void rayPickCallback(const Message & msg);
+    static void camSwitchCallback(const Message & msg);
+    static void gravCallback(const Message & msg);
+
+    static void setupImGui();
+
+    private:
+
     static const glm::vec3 k_defGravity;
 
     static const Vector<CameraComponent *> & s_cameraComponents;
@@ -157,11 +169,6 @@ class GameSystem {
     static const Vector<EnemyComponent *> & s_enemyComponents;
     static const Vector<ProjectileComponent *> & s_projectileComponents;
     static const Vector<BlastComponent *> & s_blastComponents;
-
-    // Main/ImGui helper functions
-    public:
-
-    static const glm::vec3 & lightDir() { return Lighting:: }
 
 };
 
