@@ -55,6 +55,9 @@ class MapExploreComponent : public Component {
     glm::vec3 closestPos(glm::vec3 vec);
     void drawCup(glm::vec3 position);
 
+    bool validNeighbor(glm::vec3 curPos, glm::vec3 candidate);
+    Vector<glm::vec3> gridFind(std::unordered_set<glm::vec3, vecHash, customVecCompare> &graphSet, int xPos, int zPos);
+
     // cosine of most severe angle that can still be considered "ground"
     float m_cosCriticalAngle;
 
@@ -88,6 +91,34 @@ class MapExploreComponent : public Component {
     bool writeOut;
     bool oneUpdate = false;
 
+    int secondFloorWidth = 97;
+    int secondFloorDepth = 208;
+
+    int firstFloorWidth = 73;
+    int firstFloorDepth = 190;
+
+    int xIndex = 0;
+    int zIndex = 0;
+
+    int secondFloorStart_x = -48;
+    int secondFloorStart_z = -186;
+    int firstFloorStart_x = -35;
+    int firstFloorStart_z = -179;
+
+    int secondFloorHeight = 10;
+    int firstFloorHeight = 2;
+
+    bool secondFloorPass = true;
+    bool firstFloorPass = false;
+    bool collisionCheck = false;
+    bool findNeighbors = false;
+
+    int collisionCount = 0;
+    std::unordered_set<glm::vec3, vecHash, customVecCompare>::iterator visitIterator;
+    glm::vec3 collisionTestPoint;
+    std::unordered_set<glm::vec3, vecHash, customVecCompare> visitedSet;
+    std::unordered_set<glm::vec3, vecHash, customVecCompare> graphSet;
+
     int nodeCount = 0;
 
 
@@ -98,7 +129,7 @@ class MapExploreComponent : public Component {
 
     glm::vec3 prevMove;
     std::queue<glm::vec3> pos_queue;
-    std::unordered_set<glm::vec3, vecHash, customVecCompare> visitedSet;
+    
     vecvectorMap graph;
     Vector<glm::vec3> validNeighbors;
 

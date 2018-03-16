@@ -256,7 +256,7 @@ int main(int argc, char **argv) {
     // Load Level
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json", k_ambience);
     // Needs to be manually adjusted to fit level size
-    CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
+    //CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
 
     // Setup Player
     player::setup(glm::vec3(0.0f, 4.0f, -10.0f));
@@ -445,7 +445,7 @@ int main(int argc, char **argv) {
     Scene::addReceiver<MouseMessage>(nullptr, fireCallback);
 
     // Shoot ray (ctrl-click)
-    int rayDepth(100);
+    int rayDepth(1);
     Vector<glm::vec3> rayPositions;
     auto rayPickCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
@@ -458,6 +458,7 @@ int main(int argc, char **argv) {
                 if (!pair.second.is) {
                     break;
                 }
+                std::cout << "Ray Pick Dist: " << pair.second.dist << std::endl;
                 rayPositions.push_back(pair.second.pos);
                 dir = glm::reflect(dir, pair.second.norm);
             }
@@ -471,7 +472,7 @@ int main(int argc, char **argv) {
         static bool free = false;
 
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
-        if (msg.key == GLFW_KEY_TAB && msg.action == GLFW_PRESS && msg.mods & GLFW_MOD_CONTROL) {
+        if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS) {
             if (free) {
                 // disable camera controller
                 freecam::controllerComp->setEnabled(false);

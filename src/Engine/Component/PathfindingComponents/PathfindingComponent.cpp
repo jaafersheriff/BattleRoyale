@@ -36,6 +36,8 @@ void PathfindingComponent::init() {
 
     std::cout << "Start: " << pos.x << ", " << pos.y << ", " << pos.z << std::endl;
 
+    std::cout << "Distance: " << glm::distance(glm::vec3(0, 0, 0), glm::vec3(1, 0, 1)) << std::endl;
+
     //glm::vec3 test = glm::vec3(4, -1.68, -16);
 
     // place the positions on the graph so we don't get weird behavior
@@ -70,7 +72,7 @@ void PathfindingComponent::update(float dt) {
     // Could do a ray pick to see if the player is ahead unobstructed, but then what if the player is on the second floor railing
 
     // if enemy is very close to the player just follow them
-    std::cout << "Dir length: " << glm::length2(dir) << std::endl;
+    //std::cout << "Dir length: " << glm::length2(dir) << std::endl;
     if (glm::length2(dir) < 5.0) {
         std::cout << "close to player: " << glm::length2(dir) << std::endl;
         gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
@@ -90,13 +92,13 @@ void PathfindingComponent::update(float dt) {
             dir = *pathIT - graphPos;
         }
         else {
-            std::cout << "aStart didn't find a path" << std::endl;
+            std::cout << "***************aStart didn't find a path" << std::endl;
         }
         gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
         updatePath = false;
     }
     else {
-        std::cout << "walk on path" << std::endl;
+        //std::cout << "walk on path" << std::endl;
         if (glm::length2(*pathIT - pos) < 1.0) {
             pathIT++;
         }
@@ -109,7 +111,7 @@ void PathfindingComponent::update(float dt) {
             pathCount = 0;
         }
 
-        std::cout << "walked on path" << std::endl;
+        //std::cout << "walked on path" << std::endl;
 
     }
     
@@ -157,11 +159,17 @@ void PathfindingComponent::readInGraph(String fileName) {
                 }
             }
 
+            if (neighbors.size()) {
+                std::cout << "More Than 8 neighbors" << std::endl;
+            }
+
             graph.emplace(nodePos, neighbors);
             //vecToNode.emplace(nodePos, Node(nodePos, neighbors));
         }
 
         myfile.close();
+
+        std::cout << "Size: " << graph.size() << std::endl;
 /*
         int graphCount = 0;
         for (auto iter = graph.begin(); iter != graph.end(); ++iter) {

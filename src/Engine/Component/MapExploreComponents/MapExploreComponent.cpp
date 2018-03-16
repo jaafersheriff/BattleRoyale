@@ -19,6 +19,7 @@ void MapExploreComponent::init() {
     slowTime = 0;
 
     visitedSet = std::unordered_set<glm::vec3, vecHash, customVecCompare>();
+    graphSet = std::unordered_set<glm::vec3, vecHash, customVecCompare>();
     //visitedSet = Vector<glm::vec3>();
     pos_queue = std::queue<glm::vec3>();
     //curPos = m_spatial->position();
@@ -30,7 +31,7 @@ void MapExploreComponent::init() {
     //tmpPos = glm::vec3(tmpPos.x, tmpPos.y - pair.second.dist, tmpPos.z);
 
     // Node for the starting pos
-    visitedSet.insert(tmpPos);
+    //visitedSet.insert(tmpPos);
 
     // Set curPos to the objects initial pos
     searchFromPos = tmpPos;
@@ -81,175 +82,194 @@ void MapExploreComponent::init() {
 }
 
 void MapExploreComponent::update(float dt) {
-	// let everything have at least one update
+	int xPos;
+	int zPos;
+	glm::vec3 testPoint;
+
 	if (oneUpdate) {
-		const int xdir[] = {1, 1, 0, -1, -1, -1, 0, 1};
-		const int zdir[] = {0, 1, 1, 1, 0, -1, -1, -1};
-		const float ydir[] = {0, .55f};
-		float stepSize = 1.f;
-		float extension = 0.f;
 		glm::vec3 curPos;
-		float distance = 0.f;
 
+		glm::vec3 nextStep;
 
-	if (slowTime++ > 1) {
 
 		curPos = gameObject().getSpatial()->position();
 
-		if (!nonGroundCollision && curPos != searchFromPos) {
-
-			auto pair(CollisionSystem::pick(Ray(curPos, glm::vec3(0,-1,0)), &gameObject()));
-	        if (pair.second.is) {       
-
-	        	float y = curPos.y - pair.second.dist;
-	        	if (y < -1.7) y = -1.68;
-	        	curPos = glm::vec3(curPos.x, y, curPos.z); 
-				
-				//std::cout << "CurPos: " << curPos.x << ", " << curPos.y << ", " << curPos.z << std::endl;
-
-				// curPos isn't in the visitedSet
-	        	if (visitedSet.find(curPos) == visitedSet.end()) {
-					// Add curPos to the visitedSet and push it onto the queue to be searched
-					visitedSet.insert(curPos);
-					pos_queue.push(curPos);
-
-					// add to searchFrom's validNeighbors
-					validNeighbors.push_back(curPos);
-					//std::cout << "added neighbor" << std::endl;
-					checkedDirections[(dirIndex - 1) / 2] = 1;
-
-					//std::cout << "Added: " << curPos.x << ", " << curPos.y << ", " << curPos.z << std::endl;
-
-					//DEBUG
-					drawCup(curPos);
-				}
+		// While checking collisions and has only a ground collision
+		if (collisionCheck && !nonGroundCollision) {
+			if (graphSet.find(collisionTestPoint) == graphSet.end()) {
+				graphSet.insert(collisionTestPoint);
+				//drawCup(collisionTestPoint);
 			}
 		}
-	
 		nonGroundCollision = false;
 
-		if (yIndex < 2) {
-			if (dirIndex < 16) {
-				if (dirIndex % 2) {
-					gameObject().getSpatial()->setPosition(searchFromPos, false);
-				}
-				else {
-					// every other ticke is a move out from the center, divide by 2 to get the correct dirIndex
-					int index = dirIndex / 2;
-					if (!checkedDirections[index]) {
+		// Grid position, the map is contained in a rectangle 97 x 207
 
-						// ydir == 0
-						if (ydir[yIndex] == 0) {
-							// Corner
-							if (xdir[index] && zdir[index]) {
-								//std::cout << "Corner" << std::endl;
-								distance = sqrt(2) * stepSize;
-							}
-							// Cardinal
-							else {
-								//std::cout << "Cardinal" << std::endl;
-								distance = stepSize;
-							}
-						}
-						else {
-							// Corner
-							if (xdir[index] && zdir[index]) {
-								//std::cout << "Top Corner" << std::endl;
-								distance = sqrt(pow(ydir[yIndex], 2) + 2 * stepSize * stepSize);
-							}
-							// Cardinal
-							else {
-								//std::cout << "Top Cardinal" << std::endl;
-								distance = sqrt(stepSize * stepSize + pow(ydir[yIndex], 2));
-							}
-						}
+		// Second floor height pass
+		if (secondFloorPass) {
+			if (zIndex < secondFloorDepth) {
+				if (xIndex < secondFloorWidth) {
+					xPos = xIndex++ + secondFloorStart_x;
+					zPos = zIndex + secondFloorStart_z;
 
-						glm::vec3 dirStep = Util::safeNorm(glm::vec3(xdir[index], ydir[yIndex], zdir[index])) * distance;
-						glm::vec3 nextStep = searchFromPos + dirStep;
-						auto pair(CollisionSystem::pick(Ray(nextStep, glm::vec3(0,-1,0)), &gameObject()));
-		        		if (pair.second.is) {  
+					//std::cout << "Pos: " << xPos << ", " << zPos << std::endl;
 
-		        			nextStep = glm::vec3(nextStep.x, nextStep.y - pair.second.dist, nextStep.z);
+					auto pair(CollisionSystem::pick(Ray(glm::vec3(xPos, secondFloorHeight, zPos), glm::vec3(0, -1, 0)), &gameObject()));
+					if (pair.second.is) {
+						testPoint = glm::vec3(xPos, secondFloorHeight - pair.second.dist, zPos);
 
-							// If the point has been visited before, we don't need to check it again, can just add it and move on
-							if (visitedSet.find(nextStep) ==  visitedSet.end()) {
-								//std::cout << "new node" << std::endl;
-								//std::cout << "Move to: " << nextStep.x << ", " << nextStep.y << ", " << nextStep.z << std::endl;
-								gameObject().getSpatial()->move(dirStep);
-							}
-							else {
-								//glm::vec3 closest = closestPos(nextStep);
-								//if (!checkedDirections[index]) {
-									validNeighbors.push_back(nextStep);
-									//std::cout << "added neighbor" << std::endl;
-									checkedDirections[index] = 1;
-								//}
-								dirIndex++;
-							}
+						if (visitedSet.find(testPoint) == visitedSet.end()) {
+							visitedSet.insert(testPoint);
+							//drawCup(testPoint);
 						}
 					}
 				}
-				dirIndex++;
+				else {
+					xIndex = 0;
+					zIndex++;
+				}
 			}
-			// Searched all neighbors, move to a new searchFromPos
 			else {
-				dirIndex = 0;
-				yIndex++;
+				std::cout << "Second Floor Done: " << visitedSet.size() << std::endl;
+				secondFloorPass = false;
+				firstFloorPass = true;
+				zIndex = 0;
+				xIndex = 0;
 			}
 		}
-		else {
-			yIndex = 0;
+		// First floor height pass
+		else if (firstFloorPass) {
+			if (zIndex < firstFloorDepth) {
+				if (xIndex < firstFloorWidth) {
+					xPos = xIndex++ + firstFloorStart_x;
+					zPos = zIndex + firstFloorStart_z;
 
-			if (validNeighbors.size() > 8) {
-				std::cout << "To many neighbors" << std::endl;
+					auto pair(CollisionSystem::pick(Ray(glm::vec3(xPos, firstFloorHeight, zPos), glm::vec3(0, -1, 0)), &gameObject()));
+					if (pair.second.is) {
+						testPoint = glm::vec3(xPos, firstFloorHeight - pair.second.dist, zPos);
+
+						if (visitedSet.find(testPoint) == visitedSet.end()) {
+							visitedSet.insert(testPoint);
+							//drawCup(testPoint);
+						}
+					}
+				}
+				else {
+					xIndex = 0;
+					zIndex++;
+				}
+			}
+			else {
+				std::cout << "First Floor Done: " << visitedSet.size() << std::endl;
+				firstFloorPass = false;
+				collisionCheck = true;
+				visitIterator = visitedSet.begin();
+			}
+		}
+		else if (collisionCheck) {
+			if (visitIterator != visitedSet.end()) {
+				collisionCount++;
+				gameObject().getSpatial()->setPosition(*visitIterator, false);
+				collisionTestPoint = *visitIterator;
+				visitIterator++;
+			}
+			else {
+				std::cout << "Collision Check Done: " << graphSet.size() << std::endl;
+				std::cout << "Count: " << collisionCount << std::endl;
+				collisionCheck = false;
+				findNeighbors = true;
+			}
+		}
+		else if (findNeighbors) {
+			const int xdir[] = {1, 1, 0, -1, -1, -1, 0, 1};
+			const int zdir[] = {0, 1, 1, 1, 0, -1, -1, -1};
+			Vector<glm::vec3> possibleNeighbors;
+			Vector<glm::vec3> neighbors;
+
+			// iterate through the graphSet and find the neighbors of each position
+			for (auto iter = graphSet.begin(); iter != graphSet.end(); ++iter) {
+				curPos = *iter;
+				neighbors = Vector<glm::vec3>();
+
+				for (int dir = 0; dir < 8; dir++) {
+					possibleNeighbors = gridFind(graphSet, xdir[dir], zdir[dir]);
+
+					//walkways
+					if (possibleNeighbors.size() == 2) {
+						if (possibleNeighbors[0].y == curPos.y) {
+
+							if (validNeighbor(curPos, possibleNeighbors[0])) {
+								neighbors.push_back(possibleNeighbors[0]);
+							}
+						}
+						else {
+							if (validNeighbor(curPos, possibleNeighbors[1])) {
+								neighbors.push_back(possibleNeighbors[1]);
+							}
+						}
+					}
+					else if (possibleNeighbors.size() == 1) {
+						if (validNeighbor(curPos, possibleNeighbors[0])) {
+							neighbors.push_back(possibleNeighbors[0]);
+						}
+
+					}
+					else if (possibleNeighbors.size() > 0) {
+						std::cout << "Not sure, something is probably wrong" << std::endl;
+					}
+				}
+
+				graph.emplace(curPos, neighbors);
 			}
 
-			std::fill_n(checkedDirections, 8, 0);
-			// create node and push it in to graph
-			graph.emplace(searchFromPos, validNeighbors);
-			validNeighbors = Vector<glm::vec3>();
+			std::cout << "Find Neighbors Done: " << graph.size() << std::endl;
 
-			if (!pos_queue.empty() && nodeCount < 64) {
-
-				std::cout << "Count: " << nodeCount++ << std::endl;
-				searchFromPos = pos_queue.front();
-				pos_queue.pop();
-			}
-			else if (writeOut) {
-				writeOut = false;
-				std::cout << "Writing Out" << std::endl;
-				// std::ofstream outFile;
-				// outFile.open("testOut.txt");
-
-				// if (outFile) {
-				// 	for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
-				// 		outFile <<
-				// 			iter->first.x << "," <<
-				// 			iter->first.y << "," <<
-				// 			iter->first.z << "," <<
-				// 			vectorToString(iter->second) << '\n';
-
-				// 	}
-				// }
-
-				writeToFile(graph);
-
-				std::cout << "Length of total first floor graph: " << graph.size() << std::endl;
-				searchFromPos = glm::vec3(0.f);
+			for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
+				drawCup(iter->first);
+				for (auto iter2 = iter->second.begin(); iter2 != iter->second.end(); ++iter2) {
+					drawCup(*iter2);
+				}
 			}
 
-			gameObject().getSpatial()->setPosition(searchFromPos, false);
+			std::cout << "Write Out" << std::endl;
+			writeToFile(graph);
 
+			findNeighbors = false;
 		}
 
-	slowTime = 0;
-
-	}	
 	}
 	else {
 		oneUpdate = true;
 	}
+}
 
+// Checks if there is something between the two points and if they are close enough
+bool MapExploreComponent::validNeighbor(glm::vec3 curPos, glm::vec3 candidate) {
+	glm::vec3 direction = Util::safeNorm(curPos - candidate);
+
+	auto pair(CollisionSystem::pick(Ray(curPos, direction), &gameObject()));
+	if (pair.second.is) {
+		if (pair.second.dist > glm::distance(curPos, candidate)) {
+			// must be close or it is a drop
+			if (glm::distance(curPos, candidate) < 1.5 || curPos.y > candidate.y) 
+				return true;
+		}
+	}
+
+	return false;
+}
+
+// Find the pos with given x and z coords, could return 0, 1, or 2 because of the raised walkways
+Vector<glm::vec3> MapExploreComponent::gridFind(std::unordered_set<glm::vec3, vecHash, customVecCompare> &graphSet, int xPos, int zPos) {
+	Vector<glm::vec3> found = Vector<glm::vec3>();
+
+	for (auto iter = graphSet.begin(); iter != graphSet.end(); ++iter) {
+		if (iter->x == xPos && iter->z == zPos) {
+			found.push_back(*iter);
+		}
+	}
+
+	return found;
 }
 
 void MapExploreComponent::writeToFile(vecvectorMap &graph) {
