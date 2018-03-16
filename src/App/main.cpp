@@ -148,7 +148,6 @@ namespace light {
 
 Vector<GameObject *> f_enemies;
 Vector<GameObject *> f_projectiles;
-Vector<GameObject *> f_particleEffects;
 
 void createEnemy(const glm::vec3 & position) {    
     Mesh * mesh(Loader::getMesh("bunny.obj"));
@@ -193,12 +192,13 @@ void createProjectile(const glm::vec3 & initPos, const glm::vec3 & dir) {
     f_projectiles.push_back(&obj);
 }
 
-void createParticleEffect(ParticleEffect::Effect effect, const glm::vec3 & pos, const glm::vec3 & dir) {
+void createParticleEffect(const glm::vec3 & pos, const glm::vec3 & dir) {
     GameObject & obj(Scene::createGameObject());
-    ParticleComponent & particleComp(Scene::addComponent<ParticleComponent>(obj, effect));
+    SpatialComponent & spatial(Scene::addComponent<SpatialComponent>(obj));
+    spatial.setPosition(pos, true);
 
-    particleComp.spawnParticleEffect(effect, pos, dir);
-    f_particleEffects.push_back(&obj);
+    ParticleComponent & particleComp (ParticleSystem::addSodaGrenadePC(*player::spatialComp));
+    
 }
 
 }
@@ -255,6 +255,12 @@ int main(int argc, char **argv) {
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json", k_ambience);
     // Needs to be manually adjusted to fit level size
     CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
+    //GameObject & blah(Scene::createGameObject());
+    //Scene::addComponent<SpatialComponent>(blah);
+    //Scene::addComponentAs<AABBounderComponent, BounderComponent>(blah, UINT_MAX, AABox(glm::vec3(-10.0f, -1.0f, -10.0f), glm::vec3(10.0f, 0.0f, 10.0f)));
+    //Scene::addComponentAs<AABBounderComponent, BounderComponent>(blah, UINT_MAX, AABox(glm::vec3(-10.0f, 1.0f, -10.0f), glm::vec3(10.0f, 2.0f, 10.0f)));
+    //CollisionSystem::setOctree(glm::vec3(-10.0f, -1.0f, -10.0f), glm::vec3(10.0f, 1.0f, 10.0f), 1.0f);
+
 
     // Setup Player
     player::setup(glm::vec3(0.0f, 6.0f, 0.0f));
@@ -426,9 +432,7 @@ int main(int argc, char **argv) {
         if (msg.button == GLFW_MOUSE_BUTTON_1 && !msg.mods && msg.action == GLFW_PRESS) {
             //createProjectile(player::spatialComp->position() + player::cameraComp->getLookDir() * 2.0f, player::cameraComp->getLookDir());
             //Remove later
-            const glm::vec3 & up = glm::vec3(0, 1, 0);
-            createParticleEffect(ParticleEffect::Effect::SODA_GRENADE,
-                player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, up);
+            createParticleEffect(player::spatialComp->position() + player::cameraComp->getLookDir() * 5.0f, player::cameraComp->getLookDir());
             SoundSystem::playSound3D("woosh.mp3", player::spatialComp->position() + player::cameraComp->getLookDir() * 10.0f, false);
             //SoundSystem::playBackgroundMusic();
         }
@@ -443,14 +447,14 @@ int main(int argc, char **argv) {
     Scene::addReceiver<MouseMessage>(nullptr, fireCallback);
 
     // Shoot ray (ctrl-click)
-    int rayDepth(100);
+    int rayDepth(1);
     Vector<glm::vec3> rayPositions;
     auto rayPickCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.mods & GLFW_MOD_CONTROL && msg.action == GLFW_PRESS) {
             rayPositions.clear();
-            rayPositions.push_back(player::spatialComp->position());
-            glm::vec3 dir(player::cameraComp->getLookDir());
+            rayPositions.push_back(freecam::spatialComp->position());
+            glm::vec3 dir(freecam::cameraComp->getLookDir());
             for (int i(0); i < rayDepth; ++i) {
                 auto pair(CollisionSystem::pick(Ray(rayPositions.back(), dir), player::gameObject));
                 if (!pair.second.is) {

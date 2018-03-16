@@ -7,7 +7,9 @@
 #include "System/ParticleSystem.hpp"
 
 class ParticleShader : public Shader {
+
     public:
+
         ParticleShader(const String & vertFile, const String & fragFile, const glm::vec3 & light);
 
         bool init();
@@ -34,6 +36,10 @@ class ParticleShader : public Shader {
         void setCellSpecularScale(unsigned int i, float f);
 
     private:
+
+        GLuint particlesVAO;
+        GLuint instanceVBO;
+
         /* Wire frame */
         bool showWireFrame = false;
 

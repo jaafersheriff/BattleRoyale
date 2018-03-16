@@ -10,6 +10,8 @@
 
 ParticleShader::ParticleShader(const String & vertFile, const String & fragFile, const glm::vec3 & light) :
     Shader(vertFile, fragFile),
+    particlesVAO(0),
+    instanceVBO(0),
     lightDir(&light) {
     cellIntensities.resize(1, 1.f);
     cellDiffuseScales.resize(1, 1.f);
@@ -24,17 +26,61 @@ bool ParticleShader::init() {
     addAttribute("vertPos");
     addAttribute("vertNor");
     addAttribute("vertTex");
-    addAttribute("particleOffset");
-    addAttribute("orientationID");
+    addAttribute("particlePosition");
+    addAttribute("particleMatrixID");
+    addAttribute("particleVelocity");
+    addAttribute("particleLife");
+
+    // Init particles buffers
+    glGenVertexArrays(1, &particlesVAO);
+    glBindVertexArray(particlesVAO);
+
+    // Instancing OpenGL Stuff
+    glGenBuffers(1, &instanceVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+    glBufferData(GL_ARRAY_BUFFER, ParticleSystem::k_maxNParticles * sizeof(Particle), nullptr, GL_STREAM_DRAW);
+    // Position
+    int positionAI(getAttribute("particlePosition"));
+    if (positionAI != -1) {
+        glEnableVertexAttribArray(positionAI);
+        glVertexAttribPointer(positionAI, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *)0);
+        glVertexAttribDivisor(positionAI, 1);
+    }
+    // Matrix ID
+    int matrixIDAI(getAttribute("particleMatrixID"));
+    if (matrixIDAI != -1) {
+        glEnableVertexAttribArray(matrixIDAI);
+        glVertexAttribIPointer(matrixIDAI, 1, GL_UNSIGNED_INT, sizeof(Particle), (void *)12);
+        glVertexAttribDivisor(matrixIDAI, 1);
+    }
+    // Velocity
+    int velocityAI(getAttribute("particleVelocity"));
+    if (velocityAI != -1) {
+        glEnableVertexAttribArray(velocityAI);
+        glVertexAttribPointer(velocityAI, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *)16);
+        glVertexAttribDivisor(velocityAI, 1);
+    }
+    // Life
+    int lifeAI(getAttribute("particleLife"));
+    if (lifeAI != -1) {
+        glEnableVertexAttribArray(lifeAI);
+        glVertexAttribPointer(lifeAI, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *)28);
+        glVertexAttribDivisor(lifeAI, 1);
+    }
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 
     /* Add uniforms */
     addUniform("P");
-    addUniform("M");
-    addUniform("randomMs");
     addUniform("V");
-    addUniform("N");
-    addUniform("randomNs");
-    addUniform("randomOrientation");
+    addUniform("variationMs");
+    addUniform("variationNs");
+    addUniform("particleScale");
+    addUniform("particleVariation");
+    addUniform("particleFade");
+    addUniform("particleMaxLife");
 
     addUniform("lightDir");
     addUniform("camPos");
@@ -108,16 +154,16 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
     glActiveTexture(GL_TEXTURE0 + cellSpecularScalesTexture);
     glBindTexture(GL_TEXTURE_1D, cellSpecularScalesTexture);
     glTexSubImage1D(GL_TEXTURE_1D, 0, 0, int(cellSpecularScales.size()), GL_RED, GL_FLOAT, cellSpecularScales.data());
-
+    
+    // Load variation matrices
+    loadMultiMat4(getUniform("variationMs"), ParticleSystem::m_variationMs.data(), ParticleSystem::k_maxVariations);        
+    loadMultiMat3(getUniform("variationNs"), ParticleSystem::m_variationNs.data(), ParticleSystem::k_maxVariations);
+    
+    glBindVertexArray(particlesVAO);
 
     for (ParticleComponent * pc : ParticleSystem::s_particleComponents) {
-        if (pc->dead() || pc->getParticlePositions()->size() == 0) {
+        if (pc->dead() || pc->m_particles.size() == 0) {
             continue;
-        }
-
-        // The reason there is a plus one is that there has to always be at least one element in RandomMs even if unused.
-        if (pc->randomMs().size() > pc->k_maxOrientations + 1) {
-            break;
         }
 
         /* Toon shading */
@@ -128,119 +174,74 @@ void ParticleShader::render(const CameraComponent * camera, const Vector<Compone
             loadBool(getUniform("isToon"), false);
         }
 
-        bool r = (int)pc->randomMs().size() != 1;
-        loadBool(getUniform("randomOrientation"), r);
-
-        /* Model matrix */
-        
-        /* Load Random Matrix Array */
-        loadMat4(getUniform("M"), pc->modelMatrix());
-        loadMultiMat4(getUniform("randomMs"), &(pc->randomMs()[0]), (int)pc->randomMs().size());
-        
-        /* Load Normal matrix */
-        loadMat3(getUniform("N"), pc->normalMatrix());
-        loadMultiMat3(getUniform("randomNs"), &(pc->randomNs()[0]), (int)pc->randomNs().size());
-
-
+        // Load particle uniforms
+        loadFloat(getUniform("particleScale"), pc->m_scale);
+        loadBool(getUniform("particleVariation"), pc->m_variation);
+        loadBool(getUniform("particleFade"), pc->m_fade);
+        loadFloat(getUniform("particleMaxLife"), pc->m_duration);
 
         /* Bind materials */
-        loadFloat(getUniform("matAmbient"), pc->getModelTexture(0)->material.ambient);
-        loadVec3(getUniform("matDiffuse"), pc->getModelTexture(0)->material.diffuse);
-        loadVec3(getUniform("matSpecular"), pc->getModelTexture(0)->material.specular);
-        loadFloat(getUniform("shine"), pc->getModelTexture(0)->material.shineDamper);
+        loadFloat(getUniform("matAmbient"), pc->m_modelTexture.material.ambient);
+        loadVec3(getUniform("matDiffuse"), pc->m_modelTexture.material.diffuse);
+        loadVec3(getUniform("matSpecular"), pc->m_modelTexture.material.specular);
+        loadFloat(getUniform("shine"), pc->m_modelTexture.material.shineDamper);
    
         /* Load texture */
-        if(pc->getModelTexture(0)->texture && pc->getModelTexture(0)->texture->textureId != 0) {
+        if(pc->m_modelTexture.texture && pc->m_modelTexture.texture->textureId != 0) {
             loadBool(getUniform("usesTexture"), true);
-            loadInt(getUniform("textureImage"), pc->getModelTexture(0)->texture->textureId);
-            glActiveTexture(GL_TEXTURE0 + pc->getModelTexture(0)->texture->textureId);
-            glBindTexture(GL_TEXTURE_2D, pc->getModelTexture(0)->texture->textureId);
+            loadInt(getUniform("textureImage"), pc->m_modelTexture.texture->textureId);
+            glActiveTexture(GL_TEXTURE0 + pc->m_modelTexture.texture->textureId);
+            glBindTexture(GL_TEXTURE_2D, pc->m_modelTexture.texture->textureId);
         }
         else {
             loadBool(getUniform("usesTexture"), false);
         }
 
-        /* Bind mesh */
-        glBindVertexArray(pc->getMesh(0)->vaoId);
-
-        /*Set Particle positions*/
-        int posPO = getAttribute("particleOffset");
-        unsigned int offsetBufId;
-        Vector<glm::vec3> *positions = pc->getParticlePositions();
-
-        /* Do all the buffer stuff */
-        glGenBuffers(1, &offsetBufId);
-        glBindBuffer(GL_ARRAY_BUFFER, offsetBufId);
-        glBufferData(GL_ARRAY_BUFFER, positions->size() * sizeof(glm::vec3), &(*positions)[0], GL_STATIC_DRAW);
-        glEnableVertexAttribArray(posPO);
-        glVertexAttribPointer(posPO, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
-
-        /* Update particle position attribute once per instance */
-        glVertexAttribDivisor(posPO, 1);
-
-        /* Set Orientation IDs*/
-        int randOrient = getAttribute("orientationID");
-        unsigned int orientBufId;
-        Vector<int> *orientations = pc->getParticleOrientationIDs();
-
-        /* Do all the buffer stuff */
-        glGenBuffers(1, &orientBufId);
-        glBindBuffer(GL_ARRAY_BUFFER, orientBufId);
-        glBufferData(GL_ARRAY_BUFFER, orientations->size() * sizeof(int), &(*orientations)[0], GL_STATIC_DRAW);
-        glEnableVertexAttribArray(randOrient);
-        glVertexAttribIPointer(randOrient, 1, GL_INT, 0, (const void *)0);
-        glVertexAttribDivisor(randOrient, 1);
-
+        // Buffer instance data
+        glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, pc->m_particles.size() * sizeof(Particle), pc->m_particles.data());
 
         /* Bind vertex buffer VBO */
         int pos = getAttribute("vertPos");
+        glBindBuffer(GL_ARRAY_BUFFER, pc->m_mesh.vertBufId);
         glEnableVertexAttribArray(pos);
-        glBindBuffer(GL_ARRAY_BUFFER, pc->getMesh(0)->vertBufId);
         glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
 
         /* Bind normal buffer VBO */
         pos = getAttribute("vertNor");
-        if (pos != -1 && pc->getMesh(0)->norBufId != 0) {
+        if (pos != -1 && pc->m_mesh.norBufId != 0) {
+            glBindBuffer(GL_ARRAY_BUFFER, pc->m_mesh.norBufId);
             glEnableVertexAttribArray(pos);
-            glBindBuffer(GL_ARRAY_BUFFER, pc->getMesh(0)->norBufId);
             glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
         }
 
         /* Bind texture coordinate buffer VBO */
         pos = getAttribute("vertTex");
-        if (pos != -1 && pc->getMesh(0)->texBufId != 0) {
+        if (pos != -1 && pc->m_mesh.texBufId != 0) {
+            glBindBuffer(GL_ARRAY_BUFFER, pc->m_mesh.texBufId);
             glEnableVertexAttribArray(pos);
-            glBindBuffer(GL_ARRAY_BUFFER, pc->getMesh(0)->texBufId);
             glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, 0, (const void *)0);
         }
 
         /* Bind indices buffer VBO */
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pc->getMesh(0)->eleBufId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pc->m_mesh.eleBufId);
 
         /* DRAW */
-        glDrawElementsInstanced(GL_TRIANGLES, (int)pc->getMesh(0)->eleBufSize, GL_UNSIGNED_INT, nullptr, (GLsizei)positions->size());
-
-        /* Unload mesh */
-        glDisableVertexAttribArray(getAttribute("vertPos"));
-        pos = getAttribute("vertNor");
-        if (pos != -1) {
-            glDisableVertexAttribArray(pos);
-        }
-        pos = getAttribute("vertTex");
-        if (pos != -1) {
-            glDisableVertexAttribArray(pos);
-        }
-        glBindTexture(GL_TEXTURE_1D, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glDrawElementsInstanced(GL_TRIANGLES, (int)pc->m_mesh.eleBufSize, GL_UNSIGNED_INT, nullptr, int(pc->m_particles.size()));
 
         /* Unload texture */
-        if (pc->getModelTexture(0)->texture) {
-            glActiveTexture(GL_TEXTURE0 + pc->getModelTexture(0)->texture->textureId);
+        if (pc->m_modelTexture.texture) {
+            glActiveTexture(GL_TEXTURE0 + pc->m_modelTexture.texture->textureId);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
  
     }
+
+    glBindTexture(GL_TEXTURE_1D, 0);
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     if (showWireFrame) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
