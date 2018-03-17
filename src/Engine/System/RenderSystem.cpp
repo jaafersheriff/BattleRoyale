@@ -47,7 +47,7 @@ void RenderSystem::init() {
 
     /* Init light */
     s_lightObject = &Scene::createGameObject();
-    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, 45.f, 0.01f, 300.f);
+    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, 45.f, -150.0f, 150.0f);
     glm::vec3 w = glm::normalize(glm::vec3(-0.2f, 0.75f, 0.5f));
     glm::vec3 u = glm::normalize(glm::cross(w, glm::vec3(0.f, 1.f, 0.f)));
     glm::vec3 v = glm::normalize(glm::cross(u, w));

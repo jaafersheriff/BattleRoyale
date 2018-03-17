@@ -13,7 +13,7 @@
 #include "System/ParticleSystem.hpp"
 #include "Component/ParticleComponents/ParticleComponent.hpp"
 
-#define DEFAULT_SIZE 1024
+#define DEFAULT_SIZE 8192
 
 ShadowDepthShader::ShadowDepthShader(const String & vertName, const String & fragName) :
     Shader(vertName, fragName) {
@@ -91,7 +91,7 @@ bool ShadowDepthShader::init() {
 
     // Load particle variation matrices
     bind();
-    loadMultiMat4(getUniform("variationMs"), ParticleSystem::m_variationMs.data(), ParticleSystem::k_maxVariations);
+    loadMultiMat4(getUniform("variationMs"), ParticleSystem::s_variationMs.data(), ParticleSystem::k_maxVariations);
     unbind();
 
     GLSL::checkError();

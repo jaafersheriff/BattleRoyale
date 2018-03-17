@@ -139,8 +139,8 @@ bool DiffuseShader::init() {
 
     // Load particle variation matrices
     bind();
-    loadMultiMat4(getUniform("variationMs"), ParticleSystem::m_variationMs.data(), ParticleSystem::k_maxVariations);        
-    loadMultiMat3(getUniform("variationNs"), ParticleSystem::m_variationNs.data(), ParticleSystem::k_maxVariations);
+    loadMultiMat4(getUniform("variationMs"), ParticleSystem::s_variationMs.data(), ParticleSystem::k_maxVariations);        
+    loadMultiMat3(getUniform("variationNs"), ParticleSystem::s_variationNs.data(), ParticleSystem::k_maxVariations);
     unbind();
 
     GLSL::checkError();

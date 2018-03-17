@@ -19,8 +19,8 @@ const float ParticleSystem::k_maxScaleFactor = 1.5f;
 
 const Vector<ParticleComponent *> & ParticleSystem::s_particleComponents(Scene::getComponents<ParticleComponent>());
 const Vector<ParticleAssasinComponent *> & ParticleSystem::s_particleAssasinComponents(Scene::getComponents<ParticleAssasinComponent>());
-Vector<glm::mat4> ParticleSystem::m_variationMs = Vector<glm::mat4>(k_maxVariations);
-Vector<glm::mat3> ParticleSystem::m_variationNs = Vector<glm::mat3>(k_maxVariations);
+Vector<glm::mat4> ParticleSystem::s_variationMs = Vector<glm::mat4>(k_maxVariations);
+Vector<glm::mat3> ParticleSystem::s_variationNs = Vector<glm::mat3>(k_maxVariations);
 
 void ParticleSystem::init() {
     // Init variation matrices
@@ -28,8 +28,8 @@ void ParticleSystem::init() {
         glm::vec3 scaleVec(Util::random(k_minScaleFactor, k_maxScaleFactor));
         float angle(Util::random() * 2.0f * glm::pi<float>());
         glm::fvec3 & axis(glm::sphericalRand(1.0f));
-        m_variationMs.push_back(Util::compositeTransform(scaleVec, glm::rotate(angle, axis)));
-        m_variationNs.push_back(glm::mat3(m_variationMs.back()) * glm::mat3(glm::scale(glm::mat4(), 1.0f / scaleVec)));
+        s_variationMs[i] = Util::compositeTransform(scaleVec, glm::rotate(angle, axis));
+        s_variationNs[i] = glm::mat3(s_variationMs.back()) * glm::mat3(glm::scale(glm::mat4(), 1.0f / scaleVec));
     }
 }
 
@@ -74,20 +74,20 @@ ParticleComponent & ParticleSystem::addBodyExplosionPC(SpatialComponent & spatia
 }
 
 ParticleComponent & ParticleSystem::addWaterFountainPC(SpatialComponent & spatial) {
-    float minSpeed(10.0f);
-    float maxSpeed(15.0f);
-    float angle(glm::radians(15.0f));
+    float minSpeed(2.0f);
+    float maxSpeed(5.0f);
+    float angle(glm::radians(40.0f));
     bool randomDistrib(true);
     auto initializer(UniquePtr<ConeParticleInitializer>::make(minSpeed, maxSpeed, angle, randomDistrib));
     auto updater(UniquePtr<GravityParticleUpdater>::make());
     Mesh & mesh(*Loader::getMesh("particles/Blood_Drop.obj"));
-    ModelTexture modelTexture(Loader::getTexture("Blood_Drop_Tex.png"));
+    ModelTexture modelTexture(Loader::getTexture("particles/Blood_Drop_Tex.png"));
     int maxN(2000);
     float rate(1000.0f);
-    float duration(1.0f);
+    float duration(2.0f);
     bool loop(true);
     float scale(1.0f);
-    bool variation(false);
+    bool variation(true);
     bool fade(true);
     return Scene::addComponent<ParticleComponent>(spatial.gameObject(),
         std::move(initializer),

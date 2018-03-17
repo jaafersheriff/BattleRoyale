@@ -337,6 +337,12 @@ void GameSystem::init() {
     RenderSystem::s_bounderShader->setEnabled(false);
     RenderSystem::s_octreeShader->setEnabled(false);
     RenderSystem::s_rayShader->setEnabled(false);
+
+    // Water fountain
+    GameObject & fountain(Scene::createGameObject());
+    SpatialComponent & fountainSpat(Scene::addComponent<SpatialComponent>(fountain, glm::vec3(1.0f, 7.6f, -51.0f)));
+    fountainSpat.setUVW(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f), true);
+    ParticleSystem::addWaterFountainPC(fountainSpat);
 }
 
 void GameSystem::update(float dt) {
@@ -572,8 +578,8 @@ void GameSystem::setupImGui() {
             float max[2] = {    0.f, 100.f };
             ImGui::SliderFloat2("H Bounds", glm::value_ptr(hBounds), min, max);
             ImGui::SliderFloat2("V Bounds", glm::value_ptr(vBounds), min, max);
-            ImGui::SliderFloat("Near plane", &nPlane, 0.01f, 2.f);
-            ImGui::SliderFloat("Far plane", &fPlane, 0.01f, 150.f);
+            ImGui::SliderFloat("Near plane", &nPlane, -150.0f, 150.0f);
+            ImGui::SliderFloat("Far plane", &fPlane, 100.0f, 300.0f);
             RenderSystem::s_lightCamera->setOrthoBounds(hBounds, vBounds);
             RenderSystem::s_lightCamera->setNearFar(nPlane, fPlane);
             /* Shadow map FBO */

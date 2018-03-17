@@ -45,7 +45,7 @@ class ParticleSystem {
 
         static const Vector<ParticleComponent *> & s_particleComponents;
         static const Vector<ParticleAssasinComponent *> & s_particleAssasinComponents;
-        static Vector<glm::mat4> m_variationMs;
-        static Vector<glm::mat3> m_variationNs;
+        static Vector<glm::mat4> s_variationMs;
+        static Vector<glm::mat3> s_variationNs;
 
 };
