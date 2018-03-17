@@ -5,6 +5,9 @@
 #include "IO/Window.hpp"
 #include "Loader/Loader.hpp"
 #include "Scene/Scene.hpp"
+#include "System/Systems.hpp"
+#include "Component/Components.hpp"
+#include "Shaders/Shaders.hpp"
 
 // static class
 class EngineApp {

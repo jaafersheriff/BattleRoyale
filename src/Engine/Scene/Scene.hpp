@@ -10,16 +10,9 @@
 #include <typeindex>
 
 #include "Util/Memory.hpp"
-#include "System/GameLogicSystem.hpp"
-#include "System/SoundSystem.hpp"
-#include "System/SpatialSystem.hpp"
-#include "System/PathfindingSystem.hpp"
-#include "System/CollisionSystem.hpp"
-#include "System/PostCollisionSystem.hpp"
-#include "System/RenderSystem.hpp"
 #include "GameObject/GameObject.hpp"
 #include "GameObject/Message.hpp"
-#include "Component/Components.hpp"
+#include "Component/Component.hpp"
 
 
 
@@ -90,8 +83,8 @@ class Scene {
     static float totalDT;
     static float initDT;
     static float killDT;
-    static float gameLogicDT;
-    static float gameLogicMessagingDT;
+    static float gameDT;
+    static float gameMessagingDT;
     static float spatialDT;
     static float spatialMessagingDT;
     static float pathfindingDT;
@@ -133,6 +126,7 @@ void Scene::removeComponent(CompT & component) {
     static_assert(std::is_base_of<Component, CompT>::value, "CompT must be a component type");
     static_assert(!std::is_same<CompT, Component>::value, "CompT must be a derived component type");
 
+    assert(s_components.count(typeid(CompT))); // trying to remove a type of component that was never added
     s_componentKillQueue.emplace_back(typeid(CompT), static_cast<Component *>(&component));
 }
 

@@ -6788,6 +6788,11 @@ bool ImGui::SliderFloat2(const char* label, float v[2], float v_min, float v_max
     return SliderFloatN(label, v, 2, v_min, v_max, display_format, power);
 }
 
+bool ImGui::SliderFloat2(const char* label, float v[2], float v_min[2], float v_max[2], const char* display_format, float power)
+{
+    return SliderFloatN(label, v, 2, v_min, v_max, display_format, power);
+}
+
 bool ImGui::SliderFloat3(const char* label, float v[3], float v_min[3], float v_max[3], const char* display_format, float power)
 {
     return SliderFloatN(label, v, 3, v_min, v_max, display_format, power);

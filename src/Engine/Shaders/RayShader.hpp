@@ -3,12 +3,11 @@
 
 
 #include "Shader.hpp"
-#include "Util/Geometry.hpp"
 
 
 
-class Component;
 class CameraComponent;
+class DiffuseRenderComponent;
 
 
 
@@ -20,7 +19,7 @@ class RayShader : public Shader {
 
     bool init() override;
 
-    virtual void render(const CameraComponent * camera, const Vector<Component *> &) override;
+    virtual void render(const CameraComponent * camera) override;
 
     void setPositions(const Vector<glm::vec3> & positions);
 

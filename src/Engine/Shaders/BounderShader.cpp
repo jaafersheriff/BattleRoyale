@@ -1,11 +1,16 @@
 #include "BounderShader.hpp"
 
+#define GLEW_STATIC
+#include <GL/glew.h>
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "Component/CollisionComponents/BounderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 #include "System/CollisionSystem.hpp"
+#include "Util/Util.hpp"
+
+
 
 namespace {
 
@@ -70,10 +75,12 @@ bool BounderShader::init() {
     return true;
 }
 
-void BounderShader::render(const CameraComponent * camera, const Vector<Component *> & components_) {
-    if (!camera) {
+void BounderShader::render(const CameraComponent * camera) {
+    if (!camera || !m_isEnabled) {
         return;
     }
+
+    bind();
 
     loadMat4(getUniform("u_viewMat"), camera->getView());
     loadMat4(getUniform("u_projMat"), camera->getProj());
@@ -122,6 +129,7 @@ void BounderShader::render(const CameraComponent * camera, const Vector<Componen
         }
     }
 
+    unbind();
     glBindVertexArray(0);
 }
 

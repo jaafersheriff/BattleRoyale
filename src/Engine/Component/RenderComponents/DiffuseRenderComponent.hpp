@@ -29,15 +29,13 @@ class DiffuseRenderComponent : public Component {
 
         DiffuseRenderComponent(
             GameObject & gameObject, const SpatialComponent & spatial,
-            int pid, const Mesh & mesh, const ModelTexture & texture,
+            const Mesh & mesh, const ModelTexture & texture,
             bool toon, const glm::vec2 & tiling
         );
 
     public:
 
         DiffuseRenderComponent(DiffuseRenderComponent && other) = default;
-
-        virtual SystemID systemID() const override { return SystemID::render; };
 
         virtual void update(float dt) override;
 
@@ -53,7 +51,6 @@ class DiffuseRenderComponent : public Component {
 
     private:
 
-        int m_pid;
         const Mesh & m_mesh;
         ModelTexture m_modelTexture;
         bool m_isToon;

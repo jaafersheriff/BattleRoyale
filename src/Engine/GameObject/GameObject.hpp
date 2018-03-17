@@ -8,7 +8,7 @@
 #include <typeindex>
 #include <functional>
 
-#include "System/System.hpp"
+#include "Util/Memory.hpp"
 
 class Scene;
 class Component;

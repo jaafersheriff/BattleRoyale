@@ -238,17 +238,10 @@ bool CapsuleBounderComponent::isCritical() const {
         return true;
     }
     float h_2(m_transCapsule.height * 0.5f);
-    if (delta.y > h_2) {
-        float dy(delta.y - h_2);
-        if (dxz2 + dy * dy > r2) {
-            return true;
-        }
+    float dy(glm::abs(delta.y) - h_2);
+    if (dy > 0.0f && dxz2 + dy * dy > r2) {
+        return true;
     }
-    else if (delta.y < h_2) {
-        float dy(delta.y + h_2);
-        if (dxz2 + dy * dy > r2) {
-            return true;
-        }
-    }
+
     return false;
 }

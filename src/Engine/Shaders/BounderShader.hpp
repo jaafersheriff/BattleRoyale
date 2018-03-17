@@ -6,8 +6,8 @@
 
 
 
-class Component;
 class CameraComponent;
+class DiffuseRenderComponent;
 
 
 
@@ -19,7 +19,7 @@ class BounderShader : public Shader {
 
     bool init() override;
 
-    virtual void render(const CameraComponent * camera, const Vector<Component *> &) override;
+    virtual void render(const CameraComponent * camera) override;
 
     private:
 

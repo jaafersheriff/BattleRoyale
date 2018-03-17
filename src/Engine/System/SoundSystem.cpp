@@ -1,8 +1,13 @@
 #include "SoundSystem.hpp"
 
-const Vector<SoundComponent *> & SoundSystem::s_soundComponents(Scene::getComponents<SoundComponent>());
+#include <fstream>
+
+#include "Scene/Scene.hpp"
+#include "Component/CameraComponents/CameraComponent.hpp"
+#include "EngineApp/EngineApp.hpp"
+
 String SoundSystem::s_SOUND_DIR = EngineApp::RESOURCE_DIR + "/soundeffects/";
-CameraComponent* SoundSystem::s_camera = NULL;
+const CameraComponent* SoundSystem::s_camera = NULL;
 #ifdef HAVE_FMOD_LIBRARY
 FMOD::System* SoundSystem::s_system = NULL;
 Map<String, FMOD::Sound*> SoundSystem::s_soundLibrary = Map<String, FMOD::Sound*>();
@@ -46,7 +51,7 @@ void SoundSystem::update(float dt)
 #endif
 }
 
-void SoundSystem::setCamera(CameraComponent *camera) {
+void SoundSystem::setCamera(const CameraComponent *camera) {
     s_camera = camera;
 }
 
@@ -190,28 +195,41 @@ FMOD::Sound* SoundSystem::createSound(String soundfilename, FMOD_MODE m)
     FMOD::Sound *sound = NULL;
     FMOD_RESULT result = s_system->createSound(path, m, 0, &sound);
     if (result != FMOD_OK) {
-	    printf("Failed to create sound.\n");
+        printf("Failed to create sound.\n");
     }
 
     return sound;
 }
 
-//play sound from resources/soundeffects by filename
 void  SoundSystem::playSound(String fileName) {
+    playSound(fileName, false);
+}
+
+//play sound from resources/soundeffects by filename
+void  SoundSystem::playSound(String fileName, bool loop) {
     FMOD::Sound *sound;
+    FMOD::Channel *newChannel;
     if (s_soundLibrary.count(fileName + "2D")) {
         sound = s_soundLibrary[fileName + "2D"];
     }
     else {
         sound = createSound(fileName + "2D", FMOD_DEFAULT);
     }
-    FMOD_RESULT result = s_system->playSound(sound, NULL, false, NULL);
+    FMOD_RESULT result = s_system->playSound(sound, NULL, false, &newChannel);
+    if (loop) {
+        sound->setMode(FMOD_LOOP_NORMAL);
+        newChannel->setMode(FMOD_LOOP_NORMAL);
+    }
+    newChannel->setPaused(false);
     if (result != FMOD_OK) {
         printf("playSound() done goofed!\n");
     }
 }
+void SoundSystem::playSound3D(String fileName, glm::vec3 pos){
+    playSound3D(fileName, pos, false);
+}
 
-void SoundSystem::playSound3D(String fileName, glm::vec3 pos) {
+void SoundSystem::playSound3D(String fileName, glm::vec3 pos, bool loop) {
     FMOD::Sound *sound;
     FMOD::Channel *newChannel;
 
@@ -224,7 +242,12 @@ void SoundSystem::playSound3D(String fileName, glm::vec3 pos) {
 
     FMOD_RESULT result = s_system->playSound(sound, NULL, true, &newChannel);
     newChannel->set3DAttributes(fVec(pos), NULL, NULL);
+    if (loop) {
+        sound->setMode(FMOD_LOOP_NORMAL);
+        newChannel->setMode(FMOD_LOOP_NORMAL);
+    }
     newChannel->setPaused(false);
+
     if (result != FMOD_OK) {
         printf("playSound() done goofed!\n");
     }

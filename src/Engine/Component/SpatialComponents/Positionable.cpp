@@ -26,11 +26,7 @@ void Positionable::setPosition(const glm::vec3 & position) {
 }
 
 void Positionable::move(const glm::vec3 & delta) {
-    m_prevPosition = m_position;
-    if (delta == glm::vec3()) {
-        m_isChange = false;
-    }
-    else {
+    if (delta != glm::vec3()) {
         m_position += delta;
         m_isChange = true;
     }
