@@ -236,16 +236,4 @@ void RenderSystem::doBloom() {
             first_iteration = false;
     }
     s_blurShader->unbind();
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    s_postProcessShader->bind();
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, s_fboColorTexs[0]);
-    //glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, s_pingpongColorbuffers[!horizontal]);
-    s_postProcessShader->render(nullptr);
-    s_postProcessShader->unbind();
 }
