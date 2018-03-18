@@ -38,7 +38,7 @@ void ShadowDepthShader::initFBO() {
     // generate the texture
     glGenTextures(1, &s_shadowMap->textureId);
     glBindTexture(GL_TEXTURE_2D, s_shadowMap->textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, s_shadowMap->width, s_shadowMap->height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, s_shadowMap->width, s_shadowMap->height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
