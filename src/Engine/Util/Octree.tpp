@@ -40,6 +40,16 @@ inline int detOctant(const glm::vec3 & center, const AABox & region) {
     return -1;
 }
 
+inline float maxCompNonInf(glm::vec3 v) {
+    float temp;
+    if (v.y < v.x) { temp = v.x; v.x = v.y; v.y = temp; }
+    if (v.z < v.y) { temp = v.y; v.y = v.z; v.z = temp; }
+    if (v.y < v.x) { temp = v.x; v.x = v.y; v.y = temp; }
+    if (v.z != std::numeric_limits<float>::infinity()) return v.z;
+    if (v.y != std::numeric_limits<float>::infinity()) return v.y;
+    return v.x;
+}
+
 inline bool intersect(const Ray & ray, const glm::vec3 & invDir, const glm::vec3 & min, const glm::vec3 & max, float & r_near, float & r_far) {
     glm::vec3 tsLow((min - ray.pos) * invDir);
     glm::vec3 tsHigh((max - ray.pos) * invDir);
@@ -498,7 +508,7 @@ void Octree<T>::filter(const Node & node, const Ray & ray, const std::function<I
     float near(near_), far(glm::compMin((farCorner - ray.pos) * invDir));
     if (o) {
         glm::vec3 nearCorner(farCorner - node.radius * signDir);
-        near = glm::compMax((nearCorner - ray.pos) * invDir);
+        near = detail::maxCompNonInf((nearCorner - ray.pos) * invDir);
     }
     
     // Follow octant route. At most 4 can be visited
@@ -520,7 +530,7 @@ void Octree<T>::filter(const Node & node, const Ray & ray, const std::function<I
         }
 
         // No more than 4 octants can ever be intersected by one ray
-        if (++oCount >= 4) {
+        if (o == 7 || ++oCount >= 4) {
             break;
         }
 

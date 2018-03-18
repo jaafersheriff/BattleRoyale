@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Component/Component.hpp"
+#include <iostream>
 
 #include "glm/glm.hpp"
-#include <iostream>
+
+#include "Component/Component.hpp"
 
 class PathfindingSystem;
 
@@ -13,7 +14,7 @@ class PathfindingComponent : public Component {
     
     protected: // only scene or friends can create component
 
-    PathfindingComponent(GameObject & gameObject, GameObject & player, float ms, bool wander);
+    PathfindingComponent(GameObject & gameObject, const GameObject & player, float ms, bool wander);
 
     public:
 
@@ -25,8 +26,6 @@ class PathfindingComponent : public Component {
 
     public:
 
-    virtual SystemID systemID() const override { return SystemID::pathfinding; };
-
     virtual void update(float) override;
 
     // TODO : just add enable/disable options for all components?
@@ -35,7 +34,7 @@ class PathfindingComponent : public Component {
     private:
 
     SpatialComponent * m_spatial;
-    GameObject * m_player;
+    const GameObject & m_player;
     float m_moveSpeed;
     bool m_wander;
     glm::vec3 m_wanderCurrent;

@@ -15,7 +15,7 @@
 
 
 
-class GameLogicSystem;
+class GameSystem;
 class SpatialComponent;
 
 
@@ -30,6 +30,7 @@ class CameraComponent : public Component, public Orientable {
     protected: // only scene or friends can create component
 
         CameraComponent(GameObject & gameObject, float fov, float near, float far);
+        CameraComponent(GameObject & gameObject, glm::vec2 horiz, glm::vec2 vert, float near, float far);
 
     public:
 
@@ -42,8 +43,6 @@ class CameraComponent : public Component, public Orientable {
     public:
         
         /* Derived functions */
-
-        virtual SystemID systemID() const override { return SystemID::gameLogic; };
 
         void update(float dt);
 
@@ -62,8 +61,8 @@ class CameraComponent : public Component, public Orientable {
         void angle(float theta, float phi, bool relative, bool silently = true);
 
         void setFOV(float fov);
-
         void setNearFar(float near, float far);
+        void setOrthoBounds(glm::vec2, glm::vec2);
 
         const bool sphereInFrustum(const Sphere & sphere) const;
         float theta() const { return m_theta; }
@@ -71,6 +70,8 @@ class CameraComponent : public Component, public Orientable {
         float fov() const { return m_fov; }
         float near() const { return m_near; }
         float far() const { return m_far; }
+        glm::vec2 hBounds() const { return m_hBounds; }
+        glm::vec2 vBounds() const { return m_vBounds; }
 
         glm::vec3 getLookDir() const;
         
@@ -81,8 +82,6 @@ class CameraComponent : public Component, public Orientable {
 
         void detUVW();
 
-        void detAngles();
-
         void detView() const;
         void detProj() const;
         void detFrustum() const;
@@ -90,9 +89,11 @@ class CameraComponent : public Component, public Orientable {
     private:
 
         SpatialComponent * m_spatial;
-        float m_theta, m_phi; // rotation of camera relative to base
-        float m_fov; // field of view
-        float m_near, m_far; // distance to near and far planes
+        float m_theta, m_phi;       // rotation of camera relative to base
+        float m_fov;                // field of view
+        float m_near, m_far;        // distance to near and far planes
+        bool m_isOrtho;
+        glm::vec2 m_hBounds, m_vBounds;
 
         // DONT USE THESE DIRECTLY, CALL GETVIEW OR GETPROJ
         mutable glm::mat4 m_viewMat;

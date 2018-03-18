@@ -1,16 +1,15 @@
 #pragma once
 
 #include "System.hpp"
-#include "Component/PathfindingComponents/PathfindingComponent.hpp"
+#include "Util/Memory.hpp"
+
+class PathfindingComponent;
+class Scene;
 
 // static class
 class PathfindingSystem {
 
     friend Scene;
-
-    public:
-
-    static constexpr SystemID ID = SystemID::spatial;
     
     public:
 

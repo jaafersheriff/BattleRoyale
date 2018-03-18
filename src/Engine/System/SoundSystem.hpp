@@ -2,13 +2,10 @@
 #ifndef _SOUND_SYSTEM_HPP_
 #define _SOUND_SYSTEM_HPP_
 
-#include "System.hpp"
-#include "Component/SoundComponents/SoundComponent.hpp"
-#include "Component/CameraComponents/CameraComponent.hpp"
-#include "Component/SpatialComponents/SpatialComponent.hpp"
-#include "Scene/Scene.hpp"
+#include "glm/glm.hpp"
 
-#include "EngineApp/EngineApp.hpp"
+#include "System.hpp"
+#include "Util/Memory.hpp"
 
 #ifdef HAVE_FMOD_LIBRARY 
 #include <fmod.hpp>
@@ -21,14 +18,13 @@ typedef struct {
 } Sound;
 #endif
 
-class SoundComponent;
+class CameraComponent;
+
+class Scene;
 
 class SoundSystem {
 
     friend Scene;
-
-    public:
-        static constexpr SystemID ID = SystemID::sound;
 
     public:
     #ifdef HAVE_FMOD_LIBRARY
@@ -37,10 +33,9 @@ class SoundSystem {
 
     private:
         static String s_SOUND_DIR;
-        static const Vector<SoundComponent *> & s_soundComponents;
-        static CameraComponent* s_camera;
-    #ifdef HAVE_FMOD_LIBRARY
+        static const CameraComponent * s_camera;
 
+    #ifdef HAVE_FMOD_LIBRARY
         static Sound* s_bgMusic;
         static Map<String, FMOD::Sound*> s_soundLibrary;
     #endif
@@ -49,28 +44,28 @@ class SoundSystem {
         static void init();
         static void update(float dt);
 
-        static void setCamera(CameraComponent *camera);
+        static void setCamera(const CameraComponent *camera);
 
-    #ifdef HAVE_FMOD_LIBRARY
         static void playSound(String name);
+        static void playSound(String name, bool loop);
         static void playSound3D(String name, glm::vec3 pos);
+        static void playSound3D(String name, glm::vec3 pos, bool loop);
         static void setBackgroundMusic(String name, bool loop);
         static void pauseBackgroundMusic();
         static void unpauseBackgroundMusic();
         static void playBackgroundMusic();
         static void setBackgroundMusicVolume(float volume);
         static void setBackGroundLoop(bool loop);
-    #endif
 
-	private:
+    private:
         static void added(Component & component) {};
         static void removed(Component & component) {};
-    
-    #ifdef HAVE_FMOD_LIBRARY
         static Vector<String> getSoundFilenames(String listname);
-        static FMOD::Sound* createSound(String soundfilename, FMOD_MODE m);
         static void initSoundLibrary();
         static void updateListener();
+    
+    #ifdef HAVE_FMOD_LIBRARY
+       static FMOD::Sound* createSound(String soundfilename, FMOD_MODE m);
         static FMOD_VECTOR* fVec(glm::vec3 v);
     #endif
 };  

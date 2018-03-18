@@ -6,12 +6,18 @@
 #include "glm/gtx/norm.hpp"
 
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Component/CollisionComponents/BounderComponent.hpp"
 #include "Scene/Scene.hpp"
 #include "Util/Octree.hpp"
+#include "Util/Util.hpp"
 
 
 
 namespace {
+
+
+
+constexpr float k_rayOffset = 0.001f;
 
 
 
@@ -145,6 +151,7 @@ UnorderedSet<BounderComponent *> CollisionSystem::s_potentials;
 UnorderedSet<const BounderComponent *> CollisionSystem::s_collided;
 UnorderedSet<const BounderComponent *> CollisionSystem::s_adjusted;
 UniquePtr<Octree<const BounderComponent *>> CollisionSystem::s_octree;
+int CollisionSystem::s_nPicks = 0;
 
 void CollisionSystem::init() {
     auto compAddedCallback(
@@ -189,14 +196,15 @@ void CollisionSystem::init() {
 
 void CollisionSystem::update(float dt) {
     static UnorderedMap<const BounderComponent *, Vector<std::pair<int, glm::vec3>>> s_collisions;
-    static UnorderedSet<BounderComponent *> s_criticals;
+    static UnorderedSet<const BounderComponent *> s_criticals;
+    static Vector<const BounderComponent *> s_yanked;
+    static Vector<const BounderComponent *> s_zeroes;
     static UnorderedSet<const BounderComponent *> s_checked;
     static UnorderedMap<const GameObject *, glm::vec3> s_gameObjectDeltas;
     static Vector<const BounderComponent *> s_octreeResults;
     static UnorderedSet<GameObject *> s_outOfBounds;
 
-    s_collided.clear();
-    s_adjusted.clear();
+    s_nPicks = 0;
 
     // update all potential bounders
     for (BounderComponent * bounder : s_potentials) {
@@ -205,6 +213,7 @@ void CollisionSystem::update(float dt) {
 
     // update octree
     if (s_octree) {
+        s_outOfBounds.clear();
         for (BounderComponent * bounder : s_potentials) {
             if (!s_octree->set(bounder, bounder->enclosingAABox())) {
                 s_outOfBounds.insert(&bounder->gameObject());
@@ -218,53 +227,85 @@ void CollisionSystem::update(float dt) {
             }
             Scene::destroyGameObject(*go);
         }
-        s_outOfBounds.clear();
     }
-    
+
     // determine all bounders with path intersections
+    s_criticals.clear();
     for (BounderComponent * bounder : s_potentials) {
         if (bounder->isCritical()) {
             s_criticals.insert(bounder);
-            s_gameObjectDeltas[&bounder->gameObject()];
         }
     }
     // determine path intersection corrections per game object
-    for (BounderComponent * bounder : s_criticals) {
+    s_gameObjectDeltas.clear();
+    for (const BounderComponent * bounder : s_criticals) {
+        if (bounder->weight() == 0) {
+            continue;
+        }
         glm::vec3 delta(bounder->center() - bounder->prevCenter());
-        auto pair(pick(
-            Ray(bounder->prevCenter(), glm::normalize(delta)),
-            [bounder](const BounderComponent & b) {
-                return &b.gameObject() != &bounder->gameObject() && !s_gameObjectDeltas.count(&const_cast<BounderComponent &>(b).gameObject());
+        float dist(glm::length(delta));
+        Ray ray(bounder->prevCenter(), delta / dist);
+        auto pair(pickHeavy(
+            ray,
+            1,
+            // do not intersect other critical bounders. critical-critical collision hella unsupported
+            [&](const BounderComponent & b) {
+                return s_criticals.count(&b) == 0;
             }
         ));
-        const Intersect & inter(pair.second);
-        if (inter.is && inter.dist * inter.dist < glm::length2(delta)) {
-            glm::vec3 & d(s_gameObjectDeltas.at(&bounder->gameObject()));
-            d = compositeDeltas(d, inter.pos - bounder->center());
+        Intersect & inter(pair.second);
+        if (inter.is && inter.dist * inter.dist < dist * dist) {
+            glm::vec3 & d(s_gameObjectDeltas[&bounder->gameObject()]);
+            d = compositeDeltas(d, pair.second.pos - bounder->center());
         }
     }
     // apply path intersection corrections
+    s_yanked.clear();
     for (auto & pair : s_gameObjectDeltas) {
         if (pair.second == glm::vec3()) {
             continue;
         }
         const GameObject & go(*pair.first);
         SpatialComponent & spat(*go.getSpatial());
-        spat.setPosition(spat.position() + pair.second, true);
-        for (Component * comp : go.getComponentsByType<BounderComponent>()) {
-            BounderComponent & bounder(static_cast<BounderComponent &>(*comp));
-            s_potentials.insert(&bounder);
-            bounder.update(dt);
+        spat.move(pair.second, true);
+        for (BounderComponent * bounder : go.getComponentsByType<BounderComponent>()) {
+            s_yanked.push_back(bounder);
+            s_potentials.insert(bounder);
+            bounder->update(dt);
             if (s_octree) {
-                s_octree->set(&bounder, bounder.enclosingAABox());
+                s_octree->set(bounder, bounder->enclosingAABox());
             }
         }
     }
-    s_criticals.clear();
-    s_gameObjectDeltas.clear();
+    // look for path collisions with 0 weight bounders
+    for (const BounderComponent * bounder : s_yanked) {
+        glm::vec3 delta(bounder->center() - bounder->prevCenter());
+        float dist(glm::length(delta));
+        Ray ray(bounder->prevCenter(), delta / dist);
+        s_zeroes.clear();
+        pickHeavy(
+            ray,
+            1,
+            // do not intersect other critical bounders. critical-critical collision hella unsupported
+            [&](const BounderComponent & b) {
+                return s_criticals.count(&b) == 0;
+            },
+            &s_zeroes,
+            dist
+        );
+        for (const BounderComponent * b : s_zeroes) {
+            Scene::sendMessage<CollisionMessage>(&bounder->gameObject(), *bounder, *b);
+            Scene::sendMessage<CollisionMessage>(&b->gameObject(), *b, *bounder);
+        }
+    }
     
+
     // gather all collisions
+    s_collided.clear();
+    s_adjusted.clear();
+    s_checked.clear();
     for (BounderComponent * bounder : s_potentials) {
+        s_octreeResults.clear();
         s_checked.insert(bounder);
         const Vector<const BounderComponent *> * possible(&reinterpret_cast<const Vector<const BounderComponent *> &>(s_bounderComponents));
         if (s_octree) {
@@ -280,13 +321,12 @@ void CollisionSystem::update(float dt) {
                 Scene::sendMessage<CollisionMessage>(&other->gameObject(), *other, *bounder);
             }
         }
-        s_octreeResults.clear();
     }
-    s_potentials.clear();
-    s_checked.clear();    
+    s_potentials.clear(); 
     
     // composite deltas into a single delta per game object
     // additionally send norm messages
+    s_gameObjectDeltas.clear();
     for (auto & pair : s_collisions) {
         const BounderComponent & bounder(*pair.first);
         auto & weightDeltas(pair.second);
@@ -309,7 +349,7 @@ void CollisionSystem::update(float dt) {
         const glm::vec3 & delta(pair.second);
         // set position rather than move because they are conceptually different
         // this will come into play if we do time step interpolation
-        spat.setPosition(spat.position() + delta, true);
+        spat.move(delta, true);
         for (Component * comp : gameObject->getComponentsByType<BounderComponent>()) {
             BounderComponent * bounder(static_cast<BounderComponent *>(comp));
             s_potentials.insert(bounder);
@@ -321,27 +361,39 @@ void CollisionSystem::update(float dt) {
             Scene::sendMessage<CollisionAdjustMessage>(gameObject, *gameObject, delta);
         }
     }
-    s_gameObjectDeltas.clear();
 }
 
-std::pair<const BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray, const GameObject * ignore) {
-    return pick(ray, [ignore](const BounderComponent & bounder) { return &bounder.gameObject() != ignore; });
+std::pair<const BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray) {
+    return pick(ray, [](const BounderComponent & bounder) { return true; });
 }
 
 std::pair<const BounderComponent *, Intersect> CollisionSystem::pick(const Ray & ray, const std::function<bool(const BounderComponent &)> & conditional) {
     static Vector<BounderComponent *> s_octreeResults;
 
+    ++s_nPicks;
+
     if (s_octree) {
         return s_octree->filter(ray, [& conditional](const Ray & ray, const BounderComponent * bounder) {
-            return conditional(*bounder) ? bounder->intersect(ray) : Intersect();
+            if (conditional(*bounder)) {
+                Intersect inter(bounder->intersect(ray));
+                if (inter.face) {
+                    return inter;
+                }
+            }
+            return Intersect();
         });
     }
     else {
         BounderComponent * bounder(nullptr);
         Intersect inter;
         for (BounderComponent * b : s_bounderComponents) {
-            if (!conditional(*b)) continue;
+            if (!conditional(*b)) {
+                continue;
+            }
             Intersect potential(b->intersect(ray));
+            if (!potential.face) {
+                continue;
+            }
             if (potential.dist < inter.dist) {
                 bounder = b;
                 inter = potential;
@@ -349,6 +401,50 @@ std::pair<const BounderComponent *, Intersect> CollisionSystem::pick(const Ray &
         }
         return std::pair<BounderComponent *, Intersect>(bounder, inter);
     }
+}
+
+std::pair<const BounderComponent *, Intersect> CollisionSystem::pickHeavy(
+    const Ray & ray,
+    unsigned int minWeight,
+    Vector<const BounderComponent *> * r_passed,
+    float maxDist
+) {
+    return pickHeavy(ray, minWeight, [](const BounderComponent & bounder) { return true; }, r_passed, maxDist);
+}
+
+std::pair<const BounderComponent *, Intersect> CollisionSystem::pickHeavy(
+    const Ray & ray_,
+    unsigned int minWeight,
+    const std::function<bool(const BounderComponent &)> & conditional,
+    Vector<const BounderComponent *> * r_passed,
+    float maxDist
+) {
+    if (!r_passed) {
+        auto pair(pick(ray_, [&](const BounderComponent & bounder) { return bounder.weight() >= minWeight && conditional(bounder); }));
+        if (pair.second.dist <= maxDist) {
+            return pair;
+        }
+        else {
+            return std::pair<const BounderComponent *, Intersect>{};
+        }
+    }
+    
+    Ray ray(ray_);
+    float distRemaining(maxDist);
+    while (distRemaining > 0.0f) {
+        auto pair(pick(ray, conditional));
+        Intersect & inter(pair.second);
+
+        if (!inter.is || pair.first->weight() >= minWeight) {
+            return pair;
+        }
+
+        if (r_passed) r_passed->push_back(pair.first);
+        ray.pos = inter.pos + k_rayOffset * ray.dir;
+        distRemaining -= inter.dist;
+    }
+
+    return std::pair<const BounderComponent *, Intersect>{};
 }
 
 void CollisionSystem::setOctree(const glm::vec3 & min, const glm::vec3 & max, float minCellSize) {
@@ -418,7 +514,7 @@ std::tuple<float, float, float> detCapsuleSpecs(int n, const glm::vec3 * positio
 
 }
 
-BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, unsigned int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule) {
+BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, unsigned int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule, float scale) {
     if (!allowAAB && !allowSphere && !allowCapsule) {
         allowAAB = allowSphere = allowCapsule = true;
     }
@@ -433,13 +529,14 @@ BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, 
     glm::vec3 center((spanMax - spanMin) * 0.5f + spanMin);
 
     if (allowAAB) {
-        box = AABox(spanMin, spanMax);
+        glm::vec3 boxR(spanMax - center);
+        box = AABox(center - boxR * scale, center + boxR * scale);
         boxV = box.volume();
     }
 
     if (allowSphere) {
         float radius(detMaxRadius(nVerts, positions, center));
-        sphere = Sphere(center, radius);
+        sphere = Sphere(center, radius * scale);
         sphereV = sphere.volume();
     }
 
@@ -448,7 +545,7 @@ BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, 
         std::tie(minRad, yUpper, yLower) = detCapsuleSpecs(nVerts, positions, center);
         float capsuleHeight(yUpper - yLower);
         glm::vec3 capsuleCenter(center.x, yLower + capsuleHeight * 0.5f, center.z);
-        capsule = Capsule(capsuleCenter, minRad, capsuleHeight);
+        capsule = Capsule(capsuleCenter, minRad * scale, capsuleHeight * scale);
         capsuleV = capsule.volume();
     }
 

@@ -25,7 +25,7 @@ class Loader {
         static Texture *getTexture(const String &, GLenum, const bool);
 
         /* Call file reader */
-        static int loadLevel(const String &, float ambience);
+        static int loadLevel(const String &);
 
     private:
         /* Resize mesh vertex buffers so all the vertices are [0, 1] */

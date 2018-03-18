@@ -7,7 +7,7 @@
 
 
 
-class GameLogicSystem;
+class GameSystem;
 class CameraComponent;
 class Scene;
 
@@ -30,8 +30,6 @@ class CameraControllerComponent : public Component {
         virtual void init() override;
 
     public:
-
-        virtual SystemID systemID() const override { return SystemID::gameLogic; };
 
         virtual void update(float dt) override;
 

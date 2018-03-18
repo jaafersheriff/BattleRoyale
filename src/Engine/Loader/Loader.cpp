@@ -114,8 +114,8 @@ Texture* Loader::getTexture(const String & name) {
     return getTexture(name, GL_REPEAT, true);
 }
 
-int Loader::loadLevel(const String & name, float ambience) {
-    return FileReader::loadLevel(*name.c_str(), ambience);
+int Loader::loadLevel(const String & name) {
+    return FileReader::loadLevel(*name.c_str());
 }
 
 /* Provided function to resize a mesh so all vertex positions are [0, 1.f] */

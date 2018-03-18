@@ -55,19 +55,21 @@ void Orientable::setOrientation(const glm::mat3 & orient) {
 }
 
 void Orientable::rotate(const glm::quat & rot) {
-    m_prevOrientation = m_orientation;
-    m_orientation = rot * m_orientation;
-    m_prevOrientMatrix = m_orientMatrix;
-    m_orientMatrix = glm::toMat3(m_orientation);
-    m_isChange = m_orientation != m_prevOrientation;
+    if (rot != glm::quat()) {
+        m_orientation = rot * m_orientation;
+        m_prevOrientMatrix = m_orientMatrix;
+        m_orientMatrix = glm::toMat3(m_orientation);
+        m_isChange = true;
+    }
 }
 
 void Orientable::rotate(const glm::mat3 & rot) {
-    m_prevOrientMatrix = m_orientMatrix;
-    m_orientMatrix = m_orientMatrix * rot;
-    m_prevOrientation = m_orientation;
-    m_orientation = glm::toQuat(m_orientMatrix);
-    m_isChange = m_orientation != m_prevOrientation;
+    if (rot != glm::mat3()) {
+        m_orientMatrix = m_orientMatrix * rot;
+        m_prevOrientation = m_orientation;
+        m_orientation = glm::toQuat(m_orientMatrix);
+        m_isChange = true;
+    }
 }
 
 void Orientable::setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w) {

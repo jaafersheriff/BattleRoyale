@@ -1,7 +1,6 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "glm/gtc/constants.hpp"
 
 #include "Component/Component.hpp"
 
@@ -18,7 +17,7 @@ class GroundComponent : public Component {
 
   public:
 
-    static constexpr float k_defCriticalAngle = glm::pi<float>() * 0.25f; // 45 degrees
+    static const float k_defCriticalAngle;
 
   protected: // only scene or friends can create component
 
@@ -35,8 +34,6 @@ class GroundComponent : public Component {
     virtual void init() override;
 
   public:
-
-    virtual SystemID systemID() const override { return SystemID::postCollision; };
 
     virtual void update(float dt) override;
 

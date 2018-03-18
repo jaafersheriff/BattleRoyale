@@ -1,5 +1,7 @@
 #include "FileReader.hpp"
 
+#include <fstream>
+#include "EngineApp/EngineApp.hpp"
 #include "System/RenderSystem.hpp"
 #include "System/CollisionSystem.hpp"
 
@@ -39,7 +41,7 @@ SpatialComponent & FileReader::addSpatialComponent(GameObject & gameObject, cons
     );
 }
 
-DiffuseRenderComponent & FileReader::addRenderComponent(GameObject & gameObject, const SpatialComponent & spatial, const rapidjson::Value& jsonTransform, const String filePath, float ambience) {
+DiffuseRenderComponent & FileReader::addRenderComponent(GameObject & gameObject, const SpatialComponent & spatial, const rapidjson::Value& jsonTransform, const String filePath) {
 
     //Get full filepath of texture file
     assert(jsonTransform["objTexture"].IsString());
@@ -58,9 +60,8 @@ DiffuseRenderComponent & FileReader::addRenderComponent(GameObject & gameObject,
     return Scene::addComponent<DiffuseRenderComponent>(
         gameObject,
         spatial,
-        RenderSystem::getShader<DiffuseShader>()->pid,
         *Loader::getMesh(filePath),
-        ModelTexture(Loader::getTexture(texturePath), ambience, glm::vec3(1.0f), glm::vec3(1.0f)),
+        ModelTexture(Loader::getTexture(texturePath)),
         isToon.GetBool(),
         tiling
     );
@@ -128,7 +129,7 @@ int FileReader::addBoxColliderComponents(GameObject & gameObject, const rapidjso
     return numberOfColliders;
 }
 
-int FileReader::loadLevel(const char & filePath, float ambience) {
+int FileReader::loadLevel(const char & filePath) {
     rapidjson::Document document;
     int numberOfColliders;
 
@@ -172,7 +173,7 @@ int FileReader::loadLevel(const char & filePath, float ambience) {
 
         //Read the texture data from the json
         if(filePath.compare("") != 0) {
-            DiffuseRenderComponent & renderComp(FileReader::addRenderComponent(gameObject, spatialComp, jsonTransform, filePath, ambience));
+            DiffuseRenderComponent & renderComp(FileReader::addRenderComponent(gameObject, spatialComp, jsonTransform, filePath));
         }
     }
 

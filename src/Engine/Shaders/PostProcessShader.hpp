@@ -4,6 +4,9 @@
 
 #include "Shader.hpp"
 
+class DiffuseRenderComponent;
+class CameraComponent;
+
 class PostProcessShader : public Shader {
 
   public:
@@ -12,13 +15,13 @@ class PostProcessShader : public Shader {
 
     virtual bool init() override;
 
-    virtual void render(const CameraComponent * camera, const Vector<Component *> & components) override;
+    virtual void render(const CameraComponent * camera) override;
 
   private:
 
-    GLuint s_vaoHandle;
-    GLuint s_vboHandle;
-    GLuint s_iboHandle;
+    unsigned int s_vaoHandle;
+    unsigned int s_vboHandle;
+    unsigned int s_iboHandle;
 };
 
 #endif

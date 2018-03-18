@@ -6,7 +6,7 @@
 
 
 
-class BounderComponent;
+class HealthComponent;
 
 
 
@@ -16,20 +16,34 @@ class EnemyComponent : public Component {
 
     protected: // only scene or friends can create component
 
-    EnemyComponent(GameObject & gameObject) : Component(gameObject) {}
+    EnemyComponent(GameObject & gameObject);
 
     public:
 
     EnemyComponent(EnemyComponent && other) = default;
-    float hp = 100.f;
 
     protected:
 
-    virtual void init() override {};
+    virtual void init() override;
 
     public:
 
-    virtual SystemID systemID() const override { return SystemID::gameLogic; };
-
     virtual void update(float dt) override;
+
+    protected:
+
+    HealthComponent * m_health;
+
+};
+
+
+
+class BasicEnemyComponent : public EnemyComponent {
+
+    friend Scene;
+
+    protected:
+
+    BasicEnemyComponent(GameObject & gameObject);
+
 };
