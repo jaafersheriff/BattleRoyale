@@ -7,7 +7,7 @@
 #include "EngineApp/EngineApp.hpp"
 
 String SoundSystem::s_SOUND_DIR = EngineApp::RESOURCE_DIR + "/soundeffects/";
-const CameraComponent* SoundSystem::s_camera = NULL;
+const CameraComponent * SoundSystem::s_camera = NULL;
 #ifdef HAVE_FMOD_LIBRARY
 FMOD::System* SoundSystem::s_system = NULL;
 Map<String, FMOD::Sound*> SoundSystem::s_soundLibrary = Map<String, FMOD::Sound*>();
@@ -40,11 +40,9 @@ void SoundSystem::init() {
     initSoundLibrary();
 
 #endif
-    
 }
 
-void SoundSystem::update(float dt) 
-{
+void SoundSystem::update(float dt)  {
 #ifdef HAVE_FMOD_LIBRARY
     updateListener();
     s_system->update();
@@ -55,9 +53,8 @@ void SoundSystem::setCamera(const CameraComponent *camera) {
     s_camera = camera;
 }
 
+void SoundSystem::initSoundLibrary() {   
 #ifdef HAVE_FMOD_LIBRARY
-void SoundSystem::initSoundLibrary()
-{   
     Vector<String> sfn = getSoundFilenames("filesinfolder.txt");
     for (auto &s : sfn) {
         FMOD::Sound* tempSound = createSound(s, FMOD_DEFAULT);
@@ -65,9 +62,11 @@ void SoundSystem::initSoundLibrary()
         tempSound = createSound(s, FMOD_3D);
         s_soundLibrary[s + "3D"] = tempSound;
     }
+#endif
 }
 
 void SoundSystem::setBackgroundMusic(String name, bool loop) {
+#ifdef HAVE_FMOD_LIBRARY
     FMOD::Sound* bgSound = NULL;
     if (loop) {
         bgSound = createSound(name, FMOD_LOOP_NORMAL);
@@ -80,9 +79,11 @@ void SoundSystem::setBackgroundMusic(String name, bool loop) {
         s_bgMusic->sound = bgSound;
         s_bgMusic->loop = loop;
     }
+#endif
 }
 
 void SoundSystem::playBackgroundMusic() {
+#ifdef HAVE_FMOD_LIBRARY
     if (s_bgMusic != NULL) {
         FMOD::Channel *channel = NULL;
         FMOD_RESULT result = s_system->playSound(s_bgMusic->sound, NULL, false, &channel);
@@ -91,21 +92,27 @@ void SoundSystem::playBackgroundMusic() {
             printf("playBackgroundMusic() done goofed!\n");
         }
     }
+#endif
 }
 
 void SoundSystem::pauseBackgroundMusic() {
+#ifdef HAVE_FMOD_LIBRARY
     if (s_bgMusic != NULL && s_bgMusic->channel != NULL) {
         s_bgMusic->channel->setPaused(true);
     }
+#endif
 }
 
 void SoundSystem::unpauseBackgroundMusic() {
+#ifdef HAVE_FMOD_LIBRARY
     if (s_bgMusic != NULL && s_bgMusic->channel != NULL) {
         s_bgMusic->channel->setPaused(false);
     }
+#endif
 }
 
 void SoundSystem::setBackGroundLoop(bool loop) {
+#ifdef HAVE_FMOD_LIBRARY
     if (s_bgMusic != NULL) {
         if (loop && !s_bgMusic) {
             s_bgMusic->loop = true;
@@ -132,12 +139,15 @@ void SoundSystem::setBackGroundLoop(bool loop) {
             }
         }
     }
+#endif
 }
 
 void SoundSystem::setBackgroundMusicVolume(float volume) {
+#ifdef HAVE_FMOD_LIBRARY
     if (s_bgMusic != NULL && s_bgMusic->channel != NULL) {
         s_bgMusic->channel->setVolume(volume);
     }
+#endif
 }
 
 Vector<String> SoundSystem::getSoundFilenames(String listname) {
@@ -168,6 +178,7 @@ Vector<String> SoundSystem::getSoundFilenames(String listname) {
 }
 
 void SoundSystem::updateListener() {
+#ifdef HAVE_FMOD_LIBRARY
     if (s_camera != NULL) {
         SpatialComponent* s = s_camera->gameObject().getSpatial();
         s_system->set3DListenerAttributes(0,
@@ -177,8 +188,10 @@ void SoundSystem::updateListener() {
             fVec(s_camera->v())
         );
     }
+#endif
 }
 
+#ifdef HAVE_FMOD_LIBRARY
 FMOD_VECTOR* SoundSystem::fVec(glm::vec3 v) {
     FMOD_VECTOR *fv =  new FMOD_VECTOR();
     fv->x = v.x;
@@ -200,13 +213,15 @@ FMOD::Sound* SoundSystem::createSound(String soundfilename, FMOD_MODE m)
 
     return sound;
 }
+#endif
 
-void  SoundSystem::playSound(String fileName) {
+void SoundSystem::playSound(String fileName) {
     playSound(fileName, false);
 }
 
 //play sound from resources/soundeffects by filename
-void  SoundSystem::playSound(String fileName, bool loop) {
+void SoundSystem::playSound(String fileName, bool loop) {
+#ifdef HAVE_FMOD_LIBRARY
     FMOD::Sound *sound;
     FMOD::Channel *newChannel;
     if (s_soundLibrary.count(fileName + "2D")) {
@@ -224,12 +239,14 @@ void  SoundSystem::playSound(String fileName, bool loop) {
     if (result != FMOD_OK) {
         printf("playSound() done goofed!\n");
     }
+#endif
 }
 void SoundSystem::playSound3D(String fileName, glm::vec3 pos){
     playSound3D(fileName, pos, false);
 }
 
 void SoundSystem::playSound3D(String fileName, glm::vec3 pos, bool loop) {
+#ifdef HAVE_FMOD_LIBRARY
     FMOD::Sound *sound;
     FMOD::Channel *newChannel;
 
@@ -251,5 +268,5 @@ void SoundSystem::playSound3D(String fileName, glm::vec3 pos, bool loop) {
     if (result != FMOD_OK) {
         printf("playSound() done goofed!\n");
     }
-}
 #endif
+}

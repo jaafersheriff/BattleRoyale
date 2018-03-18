@@ -11,14 +11,14 @@
 #include <fmod.hpp>
 #include <fmod_studio.hpp>
 
-class CameraComponent;
-
 typedef struct {
     FMOD::Sound* sound = NULL;
     bool loop = false;
     FMOD::Channel* channel = NULL;
 } Sound;
 #endif
+
+class CameraComponent;
 
 class Scene;
 
@@ -33,9 +33,9 @@ class SoundSystem {
 
     private:
         static String s_SOUND_DIR;
-        static const CameraComponent* s_camera;
-    #ifdef HAVE_FMOD_LIBRARY
+        static const CameraComponent * s_camera;
 
+    #ifdef HAVE_FMOD_LIBRARY
         static Sound* s_bgMusic;
         static Map<String, FMOD::Sound*> s_soundLibrary;
     #endif
@@ -46,7 +46,6 @@ class SoundSystem {
 
         static void setCamera(const CameraComponent *camera);
 
-    #ifdef HAVE_FMOD_LIBRARY
         static void playSound(String name);
         static void playSound(String name, bool loop);
         static void playSound3D(String name, glm::vec3 pos);
@@ -57,17 +56,16 @@ class SoundSystem {
         static void playBackgroundMusic();
         static void setBackgroundMusicVolume(float volume);
         static void setBackGroundLoop(bool loop);
-    #endif
 
     private:
         static void added(Component & component) {};
         static void removed(Component & component) {};
-    
-    #ifdef HAVE_FMOD_LIBRARY
         static Vector<String> getSoundFilenames(String listname);
-        static FMOD::Sound* createSound(String soundfilename, FMOD_MODE m);
         static void initSoundLibrary();
         static void updateListener();
+    
+    #ifdef HAVE_FMOD_LIBRARY
+       static FMOD::Sound* createSound(String soundfilename, FMOD_MODE m);
         static FMOD_VECTOR* fVec(glm::vec3 v);
     #endif
 };  
