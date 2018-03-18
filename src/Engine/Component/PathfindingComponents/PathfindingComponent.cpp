@@ -23,10 +23,10 @@ void PathfindingComponent::init() {
     // init spatial
     if (!(m_spatial = gameObject().getSpatial())) assert(false);
 
-    //vecToNode = std::unordered_map<glm::vec3, Node, vecHash, customVecCompare>();
+    //vecToNode = std::unordered_map<glm::vec3, Node, vecHash, gridCompare>();
 
     // Read in the graph of the map from a text file
-    readInGraph("../resources/map.txt");
+    readInGraph("../resources/newMap.txt");
 
     // init cameFrom map
     cameFrom = vecvecMap();
@@ -40,12 +40,8 @@ void PathfindingComponent::init() {
 
     //glm::vec3 test = glm::vec3(4, -1.68, -16);
 
-    // place the positions on the graph so we don't get weird behavior
-    glm::vec3 graphPos = closestPos(graph, pos);
-    glm::vec3 test = closestPos(graph, playerPos);
-
-    if (aStarSearch(graph, graphPos, test, cameFrom)) {
-        path = reconstructPath(graphPos, test, cameFrom);
+    if (aStarSearch(graph, pos, playerPos, cameFrom)) {
+        path = reconstructPath(pos, playerPos, cameFrom);
         pathIT = path.begin();
     }
     else {
@@ -73,25 +69,28 @@ void PathfindingComponent::update(float dt) {
 
     // if enemy is very close to the player just follow them
     //std::cout << "Dir length: " << glm::length2(dir) << std::endl;
-    if (glm::length2(dir) < 5.0) {
+    if (glm::length2(dir) < 5.0 || noPath) {
         //std::cout << "close to player: " << glm::length2(dir) << std::endl;
         gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
+
+        if (pathCount++ > 50) {
+            updatePath = true;
+            noPath = false;
+            pathCount = 0;
+        }
+
     }
     // probably don't need to update the path everytime, set flag when neccessary
-    else if (updatePath || noPath) {
+    else if (updatePath) {
         std::cout << "update path" << std::endl;
 
-        // place the positions on the graph so we don't get weird behavior
-        glm::vec3 graphPos = closestPos(graph, pos);
-        glm::vec3 end = closestPos(graph, playerPos);
-
-        if (aStarSearch(graph, graphPos, end, cameFrom)) {
-            path = reconstructPath(graphPos, end, cameFrom);
+        if (aStarSearch(graph, pos, playerPos, cameFrom)) {
+            path = reconstructPath(pos, playerPos, cameFrom);
             pathIT = path.begin();
 
             noPath = false;
 
-            dir = *pathIT - graphPos;
+            dir = *pathIT - pos;
         }
         else {
             std::cout << "***************aStart didn't find a path" << std::endl;
@@ -109,7 +108,7 @@ void PathfindingComponent::update(float dt) {
         dir = *pathIT - pos;
         gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
 
-        if (pathCount++ > 20) {
+        if (pathCount++ > 50) {
             updatePath = true;
             pathCount = 0;
         }
@@ -227,6 +226,9 @@ bool PathfindingComponent::aStarSearch(vecvectorMap &graph, glm::vec3 start, glm
     vecdoubleMap cost = vecdoubleMap();
     std::priority_queue<pathPair, Vector<pathPair>, std::greater<pathPair>> frontier;
 
+    start = PathfindingComponent::closestPos(graph, start);
+    end = PathfindingComponent::closestPos(graph, end);
+
     frontier.emplace(start, 0.0);
 
     cameFrom[start] = start;
@@ -275,6 +277,9 @@ Vector<glm::vec3> PathfindingComponent::reconstructPath(glm::vec3 start, glm::ve
     Vector<glm::vec3> path;
     int count = 0;
 
+    start = PathfindingComponent::closestPos(graph, start);
+    end = PathfindingComponent::closestPos(graph, end);
+
     glm::vec3 current = end;
 
     std::cout << "Start: " << start.x << ", " << start.y << ", " << start.z << std::endl;
@@ -298,6 +303,13 @@ glm::vec3 PathfindingComponent::closestPos(vecvectorMap &graph, glm::vec3 pos) {
     std::cout << "in closestPos" << std::endl;
     float minDist = FLT_MAX;
     glm::vec3 minPos = glm::vec3();
+    glm::vec3 rounded = glm::vec3(round(pos.x), pos.y, round(pos.z));
+
+    if (graph.find(glm::vec3(rounded)) != graph.end()) {
+        std::cout << "Returned rounded" << std::endl;
+        return rounded;
+    }
+
     for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
         float dist = glm::distance2(pos, iter->first);
         if (dist < minDist) {

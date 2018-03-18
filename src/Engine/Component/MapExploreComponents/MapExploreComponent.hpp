@@ -55,8 +55,9 @@ class MapExploreComponent : public Component {
     glm::vec3 closestPos(glm::vec3 vec);
     void drawCup(glm::vec3 position);
 
+    bool removeOutliers(std::unordered_set<glm::vec3, vecHash, gridCompare> &graphSet);
     bool validNeighbor(glm::vec3 curPos, glm::vec3 candidate);
-    Vector<glm::vec3> gridFind(std::unordered_set<glm::vec3, vecHash, customVecCompare> &graphSet, int xPos, int zPos);
+    Vector<glm::vec3> gridFind(std::unordered_set<glm::vec3, vecHash, gridCompare> &graphSet, int xPos, int zPos);
 
     // cosine of most severe angle that can still be considered "ground"
     float m_cosCriticalAngle;
@@ -74,8 +75,8 @@ class MapExploreComponent : public Component {
 
     private:
 
-    //typedef std::unordered_map<glm::vec3, glm::vec3, detail::vecHash, detail::customVecCompare> vecvecMap;
-    //typedef std::unordered_map<glm::vec3, double, detail::vecHash, detail::customVecCompare> vecdoubleMap;
+    //typedef std::unordered_map<glm::vec3, glm::vec3, detail::vecHash, detail::gridCompare> vecvecMap;
+    //typedef std::unordered_map<glm::vec3, double, detail::vecHash, detail::gridCompare> vecdoubleMap;
 
     SpatialComponent * m_spatial;
     GameObject * m_player;
@@ -115,10 +116,10 @@ class MapExploreComponent : public Component {
     bool findNeighbors = false;
 
     int collisionCount = 0;
-    std::unordered_set<glm::vec3, vecHash, customVecCompare>::iterator visitIterator;
+    std::unordered_set<glm::vec3, vecHash, gridCompare>::iterator visitIterator;
     glm::vec3 collisionTestPoint;
-    std::unordered_set<glm::vec3, vecHash, customVecCompare> visitedSet;
-    std::unordered_set<glm::vec3, vecHash, customVecCompare> graphSet;
+    std::unordered_set<glm::vec3, vecHash, gridCompare> visitedSet;
+    std::unordered_set<glm::vec3, vecHash, gridCompare> graphSet;
 
     int nodeCount = 0;
 

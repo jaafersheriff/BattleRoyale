@@ -106,7 +106,7 @@ void createEnemy(const glm::vec3 & position, bool pathfinding) {
     bool toon(true);
     glm::vec3 scale(0.75f);
     unsigned int collisionWeight(5);
-    float moveSpeed(3.0f);
+    float moveSpeed(8.0f);
 
     GameObject & obj(Scene::createGameObject());
     SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, scale));

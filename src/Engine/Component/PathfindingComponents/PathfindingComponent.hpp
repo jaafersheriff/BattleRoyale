@@ -23,21 +23,23 @@ struct vecHash
 };
 
 
-struct customVecCompare {
+struct gridCompare {
 
     bool operator()(const glm::vec3& lhs, const glm::vec3& rhs) const
     {
-        if (glm::distance2(lhs, rhs) < 1.f) {
-            return true;
+        if (round(lhs.x) == round(rhs.x) && round(lhs.z) == round(rhs.z)) {
+            if (glm::distance(lhs.y, rhs.y) < .5) {
+                return true;
+            }
         }
         return false;
     }
 };
 
 
-typedef std::unordered_map<glm::vec3, glm::vec3, vecHash, customVecCompare> vecvecMap;
-typedef std::unordered_map<glm::vec3, double, vecHash, customVecCompare> vecdoubleMap;
-typedef std::unordered_map<glm::vec3, Vector<glm::vec3>, vecHash, customVecCompare> vecvectorMap;
+typedef std::unordered_map<glm::vec3, glm::vec3, vecHash, gridCompare> vecvecMap;
+typedef std::unordered_map<glm::vec3, double, vecHash, gridCompare> vecdoubleMap;
+typedef std::unordered_map<glm::vec3, Vector<glm::vec3>, vecHash, gridCompare> vecvectorMap;
 
 
 struct Node {
@@ -89,7 +91,6 @@ class PathfindingComponent : public Component {
 
     void readInGraph(String);
     Vector<glm::vec3> reconstructPath(glm::vec3 start, glm::vec3 playerPos, vecvecMap &cameFrom);
-    glm::vec3 closestPos(vecvectorMap &graph, glm::vec3 pos);
 
 
     // cosine of most severe angle that can still be considered "ground"
@@ -102,6 +103,7 @@ class PathfindingComponent : public Component {
     virtual void update(float) override;
 
     static bool aStarSearch(vecvectorMap &graph, glm::vec3 start, glm::vec3 playerPos, vecvecMap &cameFrom);
+    static glm::vec3 closestPos(vecvectorMap &graph, glm::vec3 pos);
 
     // TODO : just add enable/disable options for all components?
     void setMoveSpeed(float f) { this->m_moveSpeed = f; }
@@ -127,14 +129,14 @@ class PathfindingComponent : public Component {
 
     //glm::vec3 prevMove;
     //std::queue<glm::vec3> pos_queue;
-    //std::unordered_set<glm::vec3, vecHash, customVecCompare> visitedSet;
+    //std::unordered_set<glm::vec3, vecHash, gridCompare> visitedSet;
     //Vector<glm::vec3> visitedSet;
     bool updatePath;
     int pathCount;
     bool noPath = false;
 
     vecvectorMap graph;
-    //std::unordered_map<glm::vec3, Node, vecHash, customVecCompare> vecToNode;
+    //std::unordered_map<glm::vec3, Node, vecHash, gridCompare> vecToNode;
     vecvecMap cameFrom;
     Vector<glm::vec3> path;
     std::vector<glm::vec3>::iterator pathIT;

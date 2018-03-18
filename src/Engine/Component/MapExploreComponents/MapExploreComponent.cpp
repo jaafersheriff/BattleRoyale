@@ -18,8 +18,8 @@ void MapExploreComponent::init() {
 
     slowTime = 0;
 
-    visitedSet = std::unordered_set<glm::vec3, vecHash, customVecCompare>();
-    graphSet = std::unordered_set<glm::vec3, vecHash, customVecCompare>();
+    visitedSet = std::unordered_set<glm::vec3, vecHash, gridCompare>();
+    graphSet = std::unordered_set<glm::vec3, vecHash, gridCompare>();
     //visitedSet = Vector<glm::vec3>();
     pos_queue = std::queue<glm::vec3>();
     //curPos = m_spatial->position();
@@ -46,7 +46,7 @@ void MapExploreComponent::init() {
     nonGroundCollision = false;
 
     // Flag to stop update from writing out more than once
-    writeOut = true;
+    writeOut = false;
 
     // Greater than 16 to start off the loop
     dirIndex = 0;
@@ -86,7 +86,7 @@ void MapExploreComponent::update(float dt) {
 	int zPos;
 	glm::vec3 testPoint;
 
-	if (oneUpdate) {
+	if (oneUpdate || writeOut) {
 		glm::vec3 curPos;
 
 		glm::vec3 nextStep;
@@ -120,7 +120,7 @@ void MapExploreComponent::update(float dt) {
 
 						if (visitedSet.find(testPoint) == visitedSet.end()) {
 							visitedSet.insert(testPoint);
-							//drawCup(testPoint);
+							//`drawCup(testPoint);
 						}
 					}
 				}
@@ -169,7 +169,7 @@ void MapExploreComponent::update(float dt) {
 		else if (collisionCheck) {
 			if (visitIterator != visitedSet.end()) {
 				collisionCount++;
-				gameObject().getSpatial()->setPosition(*visitIterator, false);
+				gameObject().getSpatial()->setPosition(glm::vec3(visitIterator->x, visitIterator->y + .4f, visitIterator->z), false);
 				collisionTestPoint = *visitIterator;
 				visitIterator++;
 			}
@@ -186,13 +186,17 @@ void MapExploreComponent::update(float dt) {
 			Vector<glm::vec3> possibleNeighbors;
 			Vector<glm::vec3> neighbors;
 
+			std::cout << "Removing Outliers" << std::endl;
+			removeOutliers(graphSet);
+			std::cout << "Size After: " << graphSet.size() << std::endl;
+
 			// iterate through the graphSet and find the neighbors of each position
 			for (auto iter = graphSet.begin(); iter != graphSet.end(); ++iter) {
 				curPos = *iter;
 				neighbors = Vector<glm::vec3>();
 
 				for (int dir = 0; dir < 8; dir++) {
-					possibleNeighbors = gridFind(graphSet, xdir[dir], zdir[dir]);
+					possibleNeighbors = gridFind(graphSet, iter->x + xdir[dir], iter->z + zdir[dir]);
 
 					//walkways
 					if (possibleNeighbors.size() == 2) {
@@ -219,22 +223,38 @@ void MapExploreComponent::update(float dt) {
 					}
 				}
 
-				graph.emplace(curPos, neighbors);
+				// Don't add nodes which aren't connected
+				if (neighbors.size() > 2)
+					graph.emplace(curPos, neighbors);
 			}
 
 			std::cout << "Find Neighbors Done: " << graph.size() << std::endl;
+// int loopCount = 0;
+		vecvecMap cameFrom = vecvecMap();
+// 			for (auto iter = graph.begin(); iter != graph.end();) {
+// 				std::cout << "path loop: " << loopCount++ << std::endl;
+// 				if (!PathfindingComponent::aStarSearch(graph, glm::vec3(-9, -1.688156, -172), iter->first, cameFrom)) {
+// 					iter = graph.erase(iter);
+// 				}
+// 				else {
+// 					++iter;
+// 				}
+
+// 			}
+
+			std::cout << "Remove unconnected Nodes: " << graph.size() << std::endl;
 
 			for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
-				drawCup(iter->first);
-				for (auto iter2 = iter->second.begin(); iter2 != iter->second.end(); ++iter2) {
-					drawCup(*iter2);
-				}
+				if (iter->second.size() > 2)
+					drawCup(iter->first);
+				// for (auto iter2 = iter->second.begin(); iter2 != iter->second.end(); ++iter2) {
+				// 	drawCup(*iter2);
+				// }
 			}
 
 			//-20, 4.05946, -181
 			//40, 4.05946, 15
-			vecvecMap cameFrom = vecvecMap();
-			if (PathfindingComponent::aStarSearch(graph, glm::vec3(-20, 4.05946, -181), glm::vec3(40, 4.05946, 15), cameFrom)) {
+			if (PathfindingComponent::aStarSearch(graph, glm::vec3(-9, -1.688156, -172), glm::vec3(40, 4.05946, 15), cameFrom)) {
 				std::cout << "A* found a path between the test points" << std::endl;
 			}
 			else {
@@ -243,6 +263,7 @@ void MapExploreComponent::update(float dt) {
 
 			std::cout << "Write Out" << std::endl;
 			writeToFile(graph);
+			writeOut = true;
 
 			findNeighbors = false;
 		}
@@ -253,24 +274,63 @@ void MapExploreComponent::update(float dt) {
 	}
 }
 
+// Get rid of posistions that shouldn't be part of the map's graph, such as positions on top of the tables
+bool MapExploreComponent::removeOutliers(std::unordered_set<glm::vec3, vecHash, gridCompare> &graphSet) {
+	// if the posistion doesn't have at least 3 additional nodes in the graph next to it with the same y then get rid of it
+
+	const int xdir[] = {0, 1, 0, -1};
+	const int zdir[] = {1, 0, -1, 0};
+	int testRadius = 5;
+	int count;
+
+	for (auto iter = graphSet.begin(); iter != graphSet.end();) {
+		count = 0;
+		for (int dir = 0; dir < 4; dir++) {
+			for (int i = 0; i < testRadius; i++) {
+				//std::cout << "Looking for: " << iter->x + (xdir[dir] * i) << ", " << iter->y << ", " << iter->z + (zdir[dir] * i) << std::endl;
+				if (graphSet.find(glm::vec3(iter->x + (xdir[dir] * i), iter->y, iter->z + (zdir[dir] * i))) == graphSet.end()) {
+					break;
+				}
+				
+				count++;
+			}
+		}
+
+		if (count < 6) {
+			iter = graphSet.erase(iter);
+		}
+		else {
+			++iter;
+		}
+	}
+}
+
 // Checks if there is something between the two points and if they are close enough
 bool MapExploreComponent::validNeighbor(glm::vec3 curPos, glm::vec3 candidate) {
 	glm::vec3 direction = Util::safeNorm(curPos - candidate);
-
+	float maxDist = 1.45;
+/*
 	auto pair(CollisionSystem::pick(Ray(curPos, direction), &gameObject()));
 	if (pair.second.is) {
 		if (pair.second.dist > glm::distance(curPos, candidate)) {
 			// must be close or it is a drop
-			if (glm::distance(curPos, candidate) < 1.5 || curPos.y > candidate.y) 
+			if (glm::distance(curPos, candidate) < maxDist || curPos.y > candidate.y) 
 				return true;
 		}
 	}
+	else if (glm::distance(curPos, candidate) < maxDist) {
+		return true;
+	}
+	*/
+
+	if (glm::distance(curPos, candidate) < maxDist || curPos.y > candidate.y)
+		return true;
 
 	return false;
 }
 
 // Find the pos with given x and z coords, could return 0, 1, or 2 because of the raised walkways
-Vector<glm::vec3> MapExploreComponent::gridFind(std::unordered_set<glm::vec3, vecHash, customVecCompare> &graphSet, int xPos, int zPos) {
+Vector<glm::vec3> MapExploreComponent::gridFind(std::unordered_set<glm::vec3, vecHash, gridCompare> &graphSet, int xPos, int zPos) {
 	Vector<glm::vec3> found = Vector<glm::vec3>();
 
 	for (auto iter = graphSet.begin(); iter != graphSet.end(); ++iter) {
