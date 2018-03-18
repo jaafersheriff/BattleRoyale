@@ -72,7 +72,7 @@ int parseArgs(int argc, char **argv) {
 const float k_ambience = 0.2f;
 const float k_fov = 45.0f;
 const float k_near = 0.1f;
-const float k_far = 300.0f;
+const float k_far = 220.0f;
 const glm::vec3 k_gravity = glm::vec3(0.0f, -10.0f, 0.0f);
 
 // Player data and fuctions
@@ -292,21 +292,8 @@ int main(int argc, char **argv) {
             glm::vec3 lightDir = RenderSystem::getLightDir();
             ImGui::SliderFloat3("LightDir", glm::value_ptr(lightDir), -1.f, 1.f);
             RenderSystem::setLightDir(lightDir);
-            /* Light distance */
-            ImGui::SliderFloat("LightPos", &RenderSystem::lightDist, -100.f, 100.f);
-            /* Light ortho */
-            glm::vec2 hBounds = RenderSystem::s_lightCamera->hBounds();
-            glm::vec2 vBounds = RenderSystem::s_lightCamera->vBounds();
-            float nPlane = RenderSystem::s_lightCamera->near();
-            float fPlane = RenderSystem::s_lightCamera->far();
-            float min[2] = { -100.f,   0.f };
-            float max[2] = {    0.f, 100.f };
-            ImGui::SliderFloat2("H Bounds", glm::value_ptr(hBounds), min, max);
-            ImGui::SliderFloat2("V Bounds", glm::value_ptr(vBounds), min, max);
-            ImGui::SliderFloat("Near plane", &nPlane, 0.01f, 2.f);
-            ImGui::SliderFloat("Far plane", &fPlane, 0.01f, 150.f);
-            RenderSystem::s_lightCamera->setOrthoBounds(hBounds, vBounds);
-            RenderSystem::s_lightCamera->setNearFar(nPlane, fPlane);
+            /* Shadow map's distance */
+            ImGui::SliderFloat("Shadow Distance", &RenderSystem::lightDist, 0.1f, 350.f);
             /* Shadow map FBO */
             int mapSize = RenderSystem::s_shadowShader->getMapSize();
             ImGui::SliderInt("Shadow Map Size", &mapSize, 1024, 16384);
