@@ -191,7 +191,7 @@ void ParticleComponent::update(float dt) {
         p.position += m_anchor.position();
         p.velocity = m_anchor.orientMatrix() * p.velocity;
         p.velocity += m_anchor.effectiveVelocity();
-        if (++m_runningParticleID >= unsigned int(m_maxN)) {
+        if (++m_runningParticleID >= (unsigned int)(m_maxN)) {
             m_runningParticleID = 0;
             m_firstSpawn = false;
             if (!m_loop) {

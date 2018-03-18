@@ -27,7 +27,7 @@ void ParticleSystem::init() {
     for (int i = 0; i < k_maxVariations; ++i) {
         glm::vec3 scaleVec(Util::random(k_minScaleFactor, k_maxScaleFactor));
         float angle(Util::random() * 2.0f * glm::pi<float>());
-        glm::fvec3 & axis(glm::sphericalRand(1.0f));
+        const glm::fvec3 & axis(glm::sphericalRand(1.0f));
         s_variationMs[i] = Util::compositeTransform(scaleVec, glm::rotate(angle, axis));
         s_variationNs[i] = glm::mat3(s_variationMs.back()) * glm::mat3(glm::scale(glm::mat4(), 1.0f / scaleVec));
     }
