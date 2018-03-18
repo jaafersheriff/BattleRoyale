@@ -71,6 +71,10 @@ private:
     static GLuint s_fbo;
     static GLuint s_fboColorTex;
     static bool s_wasResize;
+
+    static void updateLightCamera();
+    static void calculateFrustumVertices(Vector<glm::vec4> &, glm::vec3, glm::vec3, glm::vec2, glm::vec2);
+    static glm::vec4 calculateLightSpaceFrustumCorner(glm::vec3, glm::vec3, float);
 };
 
 
