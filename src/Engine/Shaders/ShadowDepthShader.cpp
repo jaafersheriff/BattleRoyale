@@ -13,7 +13,8 @@
 #include "System/ParticleSystem.hpp"
 #include "Component/ParticleComponents/ParticleComponent.hpp"
 
-#define DEFAULT_SIZE 8192
+//#define DEFAULT_SIZE 8192
+#define DEFAULT_SIZE 4096
 
 ShadowDepthShader::ShadowDepthShader(const String & vertName, const String & fragName) :
     Shader(vertName, fragName) {
