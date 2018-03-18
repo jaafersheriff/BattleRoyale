@@ -17,7 +17,10 @@
 #include "Shaders/PostProcessShader.hpp"
 #include "Shaders/ShadowDepthShader.hpp"
 #include "Shaders/BlurShader.hpp"
-#include "Component/RenderComponents/DiffuseRenderComponent.hpp"
+
+
+
+class DiffuseRenderComponent;
 
 
 
@@ -59,9 +62,15 @@ public:
     static UniquePtr<BlurShader> s_blurShader;
 
     /* FBO Stuff */
-    static GLuint getFBOTexture() { return s_fboColorTex; }
+    static GLuint getFBOTexture() { return s_fboColorTexs[0]; }
+
+    static GLuint getBloomTexture() { return s_pingpongColorbuffers[0]; }
 
     static void getFrustumComps(const CameraComponent *, Vector<DiffuseRenderComponent *> &);
+
+private:
+
+    static void doBloom();
 
 private:
 
@@ -70,8 +79,7 @@ private:
     static void initFBO();
     static void doResize();
     static GLuint s_fbo;
-    static GLuint s_fboColorTex;
-    static GLuint s_colorBuffers[2];
+    static GLuint s_fboColorTexs[2];
     static GLuint s_pingpongFBO[2];
     static GLuint s_pingpongColorbuffers[2];
     static bool s_wasResize;

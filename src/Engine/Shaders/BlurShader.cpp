@@ -1,5 +1,7 @@
 #include "BlurShader.hpp"
 
+#define GLEW_STATIC
+#include <GL/glew.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "IO/Window.hpp"
@@ -57,12 +59,12 @@ bool BlurShader::init() {
     return true;
 }
 
-void BlurShader::render(const CameraComponent * camera, const Vector<Component *> & components){
+void BlurShader::render(const CameraComponent * camera){
     // Bind texture
     //glActiveTexture(GL_TEXTURE0);
     //glBindTexture(GL_TEXTURE_2D, RenderSystem::colorBuffers[1]);
     glUniform1i(getUniform("image"), 0);
-    glUniform1i(getUniform("horizontal"), s_Horizontal);
+    glUniform1i(getUniform("horizontal"), s_horizontal);
 
     glBindVertexArray(s_vaoHandle);
 

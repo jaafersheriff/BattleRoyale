@@ -64,6 +64,8 @@ void PostProcessShader::render(const CameraComponent * camera) {
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, RenderSystem::getFBOTexture());
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, RenderSystem::getBloomTexture());
     glUniform1i(getUniform("f_texCol"), 0);
     glUniform1i(getUniform("f_bloomBlur"), 1);
     glUniform1f(getUniform("exposure"), 1.f);
@@ -77,6 +79,8 @@ void PostProcessShader::render(const CameraComponent * camera) {
     
     // Unbind texture
     glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, 0);
     unbind();
 }

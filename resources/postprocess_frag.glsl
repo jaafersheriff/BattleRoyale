@@ -13,11 +13,6 @@ void main()
     vec3 hdrColor = texture(f_texCol, f_screenPos).rgb;      
     vec3 bloomColor = texture(f_bloomBlur, f_screenPos).rgb;
 
-	vec3 additive = hdrColor + bloomColor*exposure;
+    vec3 additive = hdrColor + bloomColor*exposure;
     color = vec4(additive, 1.0);
-}  
-
-/*
-void main() {
-	color = texture(f_texCol, f_screenPos);
-}*/
+}

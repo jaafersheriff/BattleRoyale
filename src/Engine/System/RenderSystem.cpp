@@ -6,14 +6,14 @@
 #include "Scene/Scene.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 /* FBO */
 GLuint RenderSystem::s_fbo = 0;
-GLuint RenderSystem::s_fboColorTex = 0;
-GLuint RenderSystem::colorBuffers[2];
-GLuint RenderSystem::pingpongFBO[2];
-GLuint RenderSystem::pingpongColorbuffers[2];
+GLuint RenderSystem::s_fboColorTexs[2];
+GLuint RenderSystem::s_pingpongFBO[2];
+GLuint RenderSystem::s_pingpongColorbuffers[2];
 bool RenderSystem::s_wasResize = false;
 /* Camera and light */
 const CameraComponent * RenderSystem::s_playerCamera = nullptr;
@@ -29,6 +29,7 @@ UniquePtr<BounderShader> RenderSystem::s_bounderShader;
 UniquePtr<RayShader> RenderSystem::s_rayShader;
 UniquePtr<OctreeShader> RenderSystem::s_octreeShader;
 UniquePtr<PostProcessShader> RenderSystem::s_postProcessShader;
+UniquePtr<BlurShader> RenderSystem::s_blurShader;
  
 
 void RenderSystem::init() {
@@ -65,7 +66,7 @@ void RenderSystem::init() {
         !(        s_rayShader = UniquePtr<        RayShader>::make(        "ray_vert.glsl",         "ray_frag.glsl")) ||
         !(s_postProcessShader = UniquePtr<PostProcessShader>::make("postprocess_vert.glsl", "postprocess_frag.glsl")) ||
         !(     s_shadowShader = UniquePtr<ShadowDepthShader>::make(     "shadow_vert.glsl",      "shadow_frag.glsl")) ||
-        !(s_blurShader = UniquePtr<BlurShader>::make("pass_vert.glsl", "blur_frag.glsl"))
+        !(       s_blurShader = UniquePtr<       BlurShader>::make(       "pass_vert.glsl",        "blur_frag.glsl"))
     ) {
         std::cin.get();
         std::exit(EXIT_FAILURE);
@@ -116,80 +117,25 @@ void RenderSystem::update(float dt) {
 
     /* Render! */
     s_diffuseShader->render(s_playerCamera);
-    //s_particleShader->render(s_playerCamera);
     s_bounderShader->render(s_playerCamera);
     s_octreeShader->render(s_playerCamera);
     s_rayShader->render(s_playerCamera);
 
     /* Rebind screen FBO */
     if (s_postProcessShader->isEnabled()) {
+        doBloom();
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         s_postProcessShader->render(s_playerCamera);
     }
 }
+
 void RenderSystem::setCamera(const CameraComponent * camera) {
     s_playerCamera = camera;
 }
-/*
-    // Make it so that rendering is done to the computer screen
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);   
 
-    //Blur bright frags
-    bool horizontal = true, first_iteration = true;
-    
-    //How much we want to blur the bloom image
-    unsigned int amount = 10;
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
-    // Reset rendering display
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glActiveTexture(GL_TEXTURE0);
-    
-    //This is where the actual blurring occurs
-    s_BlurShader->bind();
-    for (unsigned int i = 0; i < amount; i++) {
-        glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
-        s_BlurShader->s_Horizontal = horizontal;
-        glBindTexture(GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongColorbuffers[!horizontal]); // bind texture of other framebuffer (or scene if first iteration)
-        s_BlurShader->render(nullptr, *((Vector<Component *> *) nullptr));
-        horizontal = !horizontal;
-        if (first_iteration)
-            first_iteration = false;
-    }
-    s_BlurShader->unbind();
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    s_postProcessShader->bind();
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
-    //glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
-    s_postProcessShader->render(nullptr, *((Vector<Component *> *) nullptr));
-    s_postProcessShader->unbind();
-
-    /*
-    s_postProcessShader->bind();
-    // The second parameter is passed by reference (not by pointer),
-    // hence the funny pointer business
-
-    s_postProcessShader->render(nullptr, *((Vector<Component *> *) nullptr));
-    s_postProcessShader->unbind();
-    */
-
-
-    /* ImGui */
-#ifdef DEBUG_MODE
-    if (Window::isImGuiEnabled()) {
-        ImGui::Render();
-        s_wasRender = true;
-    }
-#endif
-    */
+glm::vec3 RenderSystem::getLightDir() {
+    return s_lightCamera->getLookDir();
 }
 
 void RenderSystem::setLightDir(glm::vec3 in) {
@@ -204,10 +150,10 @@ void RenderSystem::initFBO() {
     glm::ivec2 size = Window::getFrameSize();
 
     //Create 2 color buffers (One for normal view, the other for frags with a high luminosity )
-    glGenTextures(2, colorBuffers);
+    glGenTextures(2, s_fboColorTexs);
     for (unsigned int i = 0; i < 2; i++)
     {
-        glBindTexture(GL_TEXTURE_2D, colorBuffers[i]);
+        glBindTexture(GL_TEXTURE_2D, s_fboColorTexs[i]);
         glTexImage2D(
             GL_TEXTURE_2D, 0, GL_RGB16F, size.x, size.y, 0, GL_RGB, GL_FLOAT, NULL
         );
@@ -217,47 +163,39 @@ void RenderSystem::initFBO() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         // attach texture to framebuffer
         glFramebufferTexture2D(
-            GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorBuffers[i], 0
+            GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, s_fboColorTexs[i], 0
         );
     }
 
 
-    //Create depth and stencil buffers
-    RenderSystem::CreateRenderBuffer(size);
-
-    unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-    glDrawBuffers(2, attachments);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    // ping-pong-framebuffer for blurring
-    //Used for performing the vertical and horizontal blur
-    glGenFramebuffers(2, pingpongFBO);
-    glGenTextures(2, pingpongColorbuffers);
-    for (unsigned int i = 0; i < 2; i++)
-    {
-        glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
-        glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[i]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, size.x, size.y, 0, GL_RGB, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongColorbuffers[i], 0);
-        // also check if framebuffers are complete (no need for depth buffer)
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            std::cout << "Framebuffer not complete!" << std::endl;
-    }
-}
-
-void RenderSystem::CreateRenderBuffer(glm::ivec2 size) {
     // Create Renderbuffer Object to hold depth and stencil buffers
     GLuint fboDepthRB(0);
     glGenRenderbuffers(1, &fboDepthRB);
     glBindRenderbuffer(GL_RENDERBUFFER, fboDepthRB);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, fboDepthRB);
+
+    unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+    glDrawBuffers(2, attachments);
+
+    // ping-pong-framebuffer for blurring
+    //Used for performing the vertical and horizontal blur
+    glGenFramebuffers(2, s_pingpongFBO);
+    glGenTextures(2, s_pingpongColorbuffers);
+    for (unsigned int i = 0; i < 2; i++)
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, s_pingpongFBO[i]);
+        glBindTexture(GL_TEXTURE_2D, s_pingpongColorbuffers[i]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, size.x, size.y, 0, GL_RGB, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, s_pingpongColorbuffers[i], 0);
+        // also check if framebuffers are complete (no need for depth buffer)
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            std::cout << "Framebuffer not complete!" << std::endl;
+    }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -275,4 +213,39 @@ void RenderSystem::getFrustumComps(const CameraComponent *camera, Vector<Diffuse
             comps.push_back(comp);
         }
     }
+}
+
+void RenderSystem::doBloom() {
+    //Blur bright frags
+    bool horizontal = true, first_iteration = true;
+    
+    //How much we want to blur the bloom image
+    unsigned int amount = 10;
+
+    glActiveTexture(GL_TEXTURE0);
+    
+    //This is where the actual blurring occurs
+    s_blurShader->bind();
+    for (unsigned int i = 0; i < amount; i++) {
+        glBindFramebuffer(GL_FRAMEBUFFER, s_pingpongFBO[horizontal]);
+        s_blurShader->s_horizontal = horizontal;
+        glBindTexture(GL_TEXTURE_2D, first_iteration ? s_fboColorTexs[1] : s_pingpongColorbuffers[!horizontal]); // bind texture of other framebuffer (or scene if first iteration)
+        s_blurShader->render(nullptr);
+        horizontal = !horizontal;
+        if (first_iteration)
+            first_iteration = false;
+    }
+    s_blurShader->unbind();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    s_postProcessShader->bind();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, s_fboColorTexs[0]);
+    //glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, s_pingpongColorbuffers[!horizontal]);
+    s_postProcessShader->render(nullptr);
+    s_postProcessShader->unbind();
 }
