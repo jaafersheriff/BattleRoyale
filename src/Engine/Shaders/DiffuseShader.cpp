@@ -50,6 +50,7 @@ bool DiffuseShader::init() {
     addUniform("matShine");
     addUniform("textureImage");
     addUniform("usesTexture");
+    addUniform("doBloom");
 
     addUniform("isToon");
     addUniform("silAngle");
@@ -212,6 +213,9 @@ void DiffuseShader::render(const CameraComponent * camera) {
 
         /* Tiling amount */
         loadVec2(getUniform("tiling"), drc->tiling());
+
+        /* Bloom option*/
+        loadBool(getUniform("doBloom"), drc->doBloom());
 
         /* Model matrix */
         loadMat4(getUniform("M"), drc->m_spatial->modelMatrix());

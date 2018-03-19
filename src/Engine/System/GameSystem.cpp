@@ -71,7 +71,8 @@ void GameSystem::Player::init() {
         *handMesh,
         handModelTex,
         true,
-        glm::vec2(1.0f)
+        glm::vec2(1.0f),
+        false
     );
 }
 
@@ -113,7 +114,8 @@ void GameSystem::Enemies::Basic::create(const glm::vec3 & position) {
         *bodyMesh,
         modelTex,
         k_isToon,
-        glm::vec2(1.0f)
+        glm::vec2(1.0f),
+        false
     );
     DiffuseRenderComponent & headRenderComp = Scene::addComponent<DiffuseRenderComponent>(
         obj,
@@ -121,7 +123,8 @@ void GameSystem::Enemies::Basic::create(const glm::vec3 & position) {
         *headMesh,
         modelTex,
         k_isToon,
-        glm::vec2(1.0f)
+        glm::vec2(1.0f),
+        false
     );
     HealthComponent & healthComp(Scene::addComponent<HealthComponent>(obj, k_maxHP));
     EnemyComponent & enemyComp(Scene::addComponentAs<BasicEnemyComponent, EnemyComponent>(obj));
@@ -194,7 +197,8 @@ void GameSystem::Weapons::PizzaSlice::fire(const glm::vec3 & initPos, const glm:
         *mesh,
         modelTex,
         k_isToon,
-        glm::vec2(1.0f)
+        glm::vec2(1.0f),
+        false
     ));
     ProjectileComponent & weaponComp(Scene::addComponentAs<BulletComponent, ProjectileComponent>(obj, k_damage));
 
@@ -234,7 +238,8 @@ void GameSystem::Weapons::SodaGrenade::fire(const glm::vec3 & initPos, const glm
         *mesh,
         modelTex,
         k_isToon,
-        glm::vec2(1.0f)
+        glm::vec2(1.0f),
+        false
     ));
     ProjectileComponent & weaponComp(Scene::addComponentAs<GrenadeComponent, ProjectileComponent>(obj, k_damage, k_radius));
     SpinAnimationComponent & spinAnimation(Scene::addComponentAs<SpinAnimationComponent, AnimationComponent>(obj, spatComp, glm::vec3(1.0f, 0.0f, 0.0f), -5.0f));
