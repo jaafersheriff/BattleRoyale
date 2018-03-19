@@ -179,19 +179,14 @@ void CollisionSystem::init() {
 
     auto spatTransformCallback(
         [&](const Message & msg_) {
-            const SpatialTransformTag & msg(static_cast<const SpatialTransformTag &>(msg_));
+            const SpatialChangeMessage & msg(static_cast<const SpatialChangeMessage &>(msg_));
             for (auto & comp : msg.spatial.gameObject().getComponentsByType<BounderComponent>()) {
                 BounderComponent & bounder(static_cast<BounderComponent &>(*comp));
                 s_potentials.insert(&bounder);
             }
         }
     );
-    Scene::addReceiver<SpatialPositionSetMessage>(nullptr, spatTransformCallback);
-    Scene::addReceiver<SpatialMovedMessage>(nullptr, spatTransformCallback);
-    Scene::addReceiver<SpatialScaleSetMessage>(nullptr, spatTransformCallback);
-    Scene::addReceiver<SpatialScaledMessage>(nullptr, spatTransformCallback);
-    Scene::addReceiver<SpatialOrientationSetMessage>(nullptr, spatTransformCallback);
-    Scene::addReceiver<SpatialRotatedMessage>(nullptr, spatTransformCallback);
+    Scene::addReceiver<SpatialChangeMessage>(nullptr, spatTransformCallback);
 }
 
 void CollisionSystem::update(float dt) {

@@ -59,22 +59,13 @@ void CameraComponent::init() {
     m_projMatValid = false;
     m_frustumValid = false;
 
-    auto spatTransformCallback([&](const Message & msg_) {
-        m_viewMatValid = false;
-        m_frustumValid = false;
-    });
-    auto spatRotationCallback([&](const Message & msg_) {
+    auto spatChangeCallback([&](const Message & msg_) {
         m_viewMatValid = false;
         m_frustumValid = false;
         detUVW();
     });
-    Scene::addReceiver<SpatialPositionSetMessage>(&gameObject(), spatTransformCallback);
-    Scene::addReceiver<SpatialMovedMessage>(&gameObject(), spatTransformCallback);
-    Scene::addReceiver<SpatialScaleSetMessage>(&gameObject(), spatTransformCallback);
-    Scene::addReceiver<SpatialScaledMessage>(&gameObject(), spatTransformCallback);
-    Scene::addReceiver<SpatialOrientationSetMessage>(&gameObject(), spatRotationCallback);
-    Scene::addReceiver<SpatialRotatedMessage>(&gameObject(), spatRotationCallback);
-    Scene::addReceiver<CollisionAdjustMessage>(&gameObject(), spatTransformCallback); // necessary as collision sets position silently
+    Scene::addReceiver<SpatialChangeMessage>(&gameObject(), spatChangeCallback);
+    Scene::addReceiver<CollisionAdjustMessage>(&gameObject(), spatChangeCallback); // necessary as collision sets position silently
 
     if (!m_isOrtho) {
         auto windowSizeCallback([&] (const Message & msg_) {

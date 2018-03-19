@@ -90,7 +90,7 @@ void RenderSystem::update(float dt) {
     }
 
     /* Update light */
-    s_lightSpatial->setPosition(getLightDir() * -lightDist + s_playerCamera->gameObject().getComponentByType<SpatialComponent>()->position());
+    s_lightSpatial->setRelativePosition(getLightDir() * -lightDist + s_playerCamera->gameObject().getComponentByType<SpatialComponent>()->position());
 
     if (!s_playerCamera) {
         return;

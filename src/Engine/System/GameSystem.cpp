@@ -341,7 +341,7 @@ void GameSystem::init() {
     // Water fountain
     GameObject & fountain(Scene::createGameObject());
     SpatialComponent & fountainSpat(Scene::addComponent<SpatialComponent>(fountain, glm::vec3(1.0f, 7.6f, -51.0f)));
-    fountainSpat.setUVW(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f), true);
+    fountainSpat.setRelativeUVW(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f), true);
     ParticleSystem::addWaterFountainPC(fountainSpat);
 }
 
@@ -440,8 +440,8 @@ void GameSystem::setupMessageCallbacks() {
                 // enable camera object
                 Freecam::controllerComp->setEnabled(true);
                 // set camera object camera to player camera
-                Freecam::spatialComp->setPosition(Player::spatial->position());
-                Freecam::spatialComp->setUVW(Player::spatial->u(), Player::spatial->v(), Player::spatial->w());
+                Freecam::spatialComp->setRelativePosition(Player::spatial->position());
+                Freecam::spatialComp->setRelativeUVW(Player::spatial->u(), Player::spatial->v(), Player::spatial->w());
                 Freecam::cameraComp->lookInDir(Player::camera->getLookDir());
                 RenderSystem::setCamera(Freecam::cameraComp);
             }

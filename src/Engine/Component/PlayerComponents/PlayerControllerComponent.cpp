@@ -42,7 +42,7 @@ void PlayerControllerComponent::update(float dt) {
         // angle head
         m_camera->angle(-float(Mouse::dx) * m_lookSpeed, float(Mouse::dy) * m_lookSpeed, true);
         // set body to that angle. this also angles head more as its orientation is relative to body
-        m_spatial->setUVW(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f), glm::cross(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f)), true);
+        m_spatial->setRelativeUVW(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f), glm::cross(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f)), true);
         // reset head to face forward. in absolute space, this puts it back to where it was before the last line
         m_camera->angle(0.0f, m_camera->phi(), false, true);
     }
