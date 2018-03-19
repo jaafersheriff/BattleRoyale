@@ -95,13 +95,8 @@ void main() {
 
     BrightColor.a = 1;
 
-	if(doBloom)
-		BrightColor.rgb = color.rbg*2;
-
-    /*
-    if(brightness > 0.6)
-        BrightColor = vec4(color.rgb, 1.0);
-    else
-        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
-    */
+	if(doBloom){
+		color.rgb =  texture(textureImage, texCoords).rgb;
+		BrightColor.rgb = color.rbg;
+	}
 }
