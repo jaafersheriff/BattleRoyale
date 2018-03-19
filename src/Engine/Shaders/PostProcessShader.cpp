@@ -14,7 +14,8 @@ bool PostProcessShader::init() {
         return false;
     }
 
-    addAttribute("v_screenPos");
+    addAttribute("v_vPos");
+    addUniform("v_operation");
     addUniform("f_texCol");
     addUniform("f_bloomBlur");
     addUniform("exposure");
@@ -47,7 +48,7 @@ bool PostProcessShader::init() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_iboHandle);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), frameSquareElem, GL_STATIC_DRAW);
 
-    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(getAttribute("v_vPos"));
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
     // Bind each of GL_ARRAY_BUFFER and GL_ELEMENT_ARRAY_BUFFER to default
@@ -66,6 +67,9 @@ void PostProcessShader::render(const CameraComponent * camera) {
     glBindTexture(GL_TEXTURE_2D, RenderSystem::getFBOTexture());
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, RenderSystem::getBloomTexture());
+    
+    glUniform1i(getUniform("v_operation"), 0);
+
     glUniform1i(getUniform("f_texCol"), 0);
     glUniform1i(getUniform("f_bloomBlur"), 1);
     glUniform1f(getUniform("exposure"), 1.f);
