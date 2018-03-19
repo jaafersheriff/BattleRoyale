@@ -198,7 +198,15 @@ void CameraComponent::detView() const {
 
 void CameraComponent::detProj() const {
     if (m_isOrtho) {
-        m_projMat = glm::ortho(m_hBounds.x, m_hBounds.y, m_vBounds.x, m_vBounds.y, m_near, m_far);
+        /* Emulate glm::ortho without translation */
+        float width = m_hBounds.y - m_hBounds.x;
+        float height = m_vBounds.y - m_vBounds.x;
+        float length = m_far - m_near;
+        m_projMat = glm::mat4(1.f);
+        m_projMat[0][0] = 2.f / width;
+        m_projMat[1][1] = 2.f / height;
+        m_projMat[2][2] = -2.f / length;
+        m_projMat[3][3] = 1.f;
     }
     else {
         m_projMat = glm::perspective(m_fov, Window::getAspectRatio(), m_near, m_far);
