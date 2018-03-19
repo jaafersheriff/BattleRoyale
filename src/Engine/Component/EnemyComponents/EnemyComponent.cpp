@@ -26,10 +26,6 @@ void EnemyComponent::update(float dt) {
     }
     glm::vec3 pos(m_body->position());
     glm::vec3 playerPos(GameInterface::getPlayer().getSpatial()->position());
-    glm::vec3 forward(-m_body->w());
-    glm::vec3 delta(playerPos - m_body->position());
-    float dot(glm::dot(forward, delta));
-    //...
     m_body->lookAt(glm::vec3(playerPos.x, pos.y, playerPos.z), glm::vec3(0.0f, 1.0f, 0.0f));
     m_head->lookAt(playerPos, glm::vec3(0.0f, 1.0f, 0.0f));
 }
