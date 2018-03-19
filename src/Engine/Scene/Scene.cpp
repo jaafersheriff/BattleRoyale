@@ -121,13 +121,13 @@ void Scene::update(float dt) {
     relayMessages();
     killDT = float(watch.lap());
 
+    totalDT = float(watch.total());
+
 #ifdef DEBUG_MODE
     // Reports the state of the game, so should happen at end
     for (ImGuiComponent * comp : getComponents<ImGuiComponent>()) comp->update(dt);
     if (Window::isImGuiEnabled()) ImGui::Render();
 #endif
-
-    totalDT = float(watch.total());
 }
 
 void Scene::doInitQueue() {
