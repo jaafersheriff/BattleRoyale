@@ -27,6 +27,10 @@ bool ShadowDepthShader::init() {
     }
 
     addAttribute("vertPos");
+    addAttribute("vertTex");
+
+    addUniform("textureImage");
+    addUniform("usesTexture");
 
     addUniform("L");
     addUniform("M");
@@ -166,14 +170,46 @@ void ShadowDepthShader::render(const CameraComponent * camera) {
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vertBufId);
         glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
 
+        /* Bind texture coordinate buffer VBO */
+        pos = getAttribute("vertTex");
+        if (pos != -1 && mesh.texBufId != 0) {
+            glEnableVertexAttribArray(pos);
+            glBindBuffer(GL_ARRAY_BUFFER, mesh.texBufId);
+            glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, 0, (const void *)0);
+        }
+
         /* Bind indices buffer VBO */
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.eleBufId);
+
+        /* Load texture */
+        const ModelTexture modelTexture(drc->modelTexture());
+        if(modelTexture.texture && modelTexture.texture->textureId != 0) {
+            loadBool(getUniform("usesTexture"), true);
+            loadInt(getUniform("textureImage"), modelTexture.texture->textureId);
+            glActiveTexture(GL_TEXTURE0 + modelTexture.texture->textureId);
+            glBindTexture(GL_TEXTURE_2D, modelTexture.texture->textureId);
+        }
+        else {
+            loadBool(getUniform("usesTexture"), false);
+        }
 
         /* DRAW */
         glDrawElements(GL_TRIANGLES, (int)mesh.eleBufSize, GL_UNSIGNED_INT, nullptr);
 
+         /* Unload texture */
+        if (modelTexture.texture) {
+            glActiveTexture(GL_TEXTURE0 + modelTexture.texture->textureId);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+ 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));
+        pos = getAttribute("vertTex");
+        if (pos != -1) {
+            glDisableVertexAttribArray(pos);
+        }
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     //--------------------------------------------------------------------------

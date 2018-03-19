@@ -35,12 +35,10 @@ out vec2 texCoords;
 void main() {
 
     if (particles) {
-
         float scale = particleScale;
         if (particleFade) {
             scale *= 1.0f - particleLife / particleMaxLife;
         }
-
         if (particleVariation) {
             fragPos = vec3(variationMs[particleMatrixID] * vec4(scale * vertPos, 1.0f)) + particlePosition;
             fragNor = variationNs[particleMatrixID] * vertNor;
@@ -49,16 +47,13 @@ void main() {
             fragPos = scale * vertPos + particlePosition;
             fragNor = vertNor;
         }
-
     }
     else {
-
         fragPos = vec3(M * vec4(vertPos, 1.0f));
-        fragLPos = L * vec4(fragPos, 1.0);
         fragNor = N * vertNor;
-
     }
 
+    fragLPos = L * vec4(fragPos, 1.0);
     vec4 fragVPos = V * vec4(fragPos, 1.0);
     texCoords = vec2(vertTex.x*tiling.x, vertTex.y*tiling.y);
 
