@@ -23,7 +23,7 @@ class SpatialSystem {
 
     public:
 
-    static void init() {};
+    static void init();
 
     static void update(float dt);
 

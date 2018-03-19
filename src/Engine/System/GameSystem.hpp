@@ -49,20 +49,20 @@ class GameSystem {
 
     struct Player {
 
-        static const glm::vec3 k_defPosition;
-        static const float k_defHeight;
-        static const float k_defWidth;
-        static const unsigned int k_defWeight;
-        static const float k_defLookSpeed;
-        static const float k_defMoveSpeed;
-        static const float k_defSprintSpeed;
-        static const float k_defJumpSpeed;
-        static const float k_defFOV;
-        static const float k_defNear;
-        static const float k_defFar;
-        static const float k_defMaxHP;
-        static const glm::vec3 k_defPlayerPosition;
-        static const glm::vec3 k_defMainHandPosition;
+        static const glm::vec3 k_position;
+        static const float k_height;
+        static const float k_width;
+        static const unsigned int k_weight;
+        static const float k_lookSpeed;
+        static const float k_moveSpeed;
+        static const float k_sprintSpeed;
+        static const float k_jumpSpeed;
+        static const float k_fov;
+        static const float k_near;
+        static const float k_far;
+        static const float k_maxHP;
+        static const glm::vec3 k_playerPosition;
+        static const glm::vec3 k_mainHandPosition;
 
         static GameObject * gameObject;
         static SpatialComponent * spatial;
@@ -85,13 +85,15 @@ class GameSystem {
 
         struct Basic {
 
-            static const String k_defMeshName;
-            static const String k_defTextureName;
-            static const bool k_defIsToon;
-            static const glm::vec3 k_defScale;
-            static const unsigned int k_defWeight;
-            static const float k_defMoveSpeed;
-            static const float k_defMaxHP;
+            static const String k_bodyMeshName;
+            static const String k_headMeshName;
+            static const String k_textureName;
+            static const glm::vec3 k_headPosition;
+            static const bool k_isToon;
+            static const glm::vec3 k_scale;
+            static const unsigned int k_weight;
+            static const float k_moveSpeed;
+            static const float k_maxHP;
 
             static void create(const glm::vec3 & position);
 
@@ -112,13 +114,13 @@ class GameSystem {
 
         struct PizzaSlice {
 
-            static const String k_defMeshName;
-            static const String k_defTexName;
-            static const bool k_defIsToon;
-            static const glm::vec3 k_defScale;
-            static const unsigned int k_defWeight;
-            static const float k_defSpeed; 
-            static const float k_defDamage;
+            static const String k_meshName;
+            static const String k_texName;
+            static const bool k_isToon;
+            static const glm::vec3 k_scale;
+            static const unsigned int k_weight;
+            static const float k_speed; 
+            static const float k_damage;
 
             static void fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel);
             static void fireFromPlayer();
@@ -127,14 +129,14 @@ class GameSystem {
 
         struct SodaGrenade {
 
-            static const String k_defMeshName;
-            static const String k_defTexName;
-            static const bool k_defIsToon;
-            static const glm::vec3 k_defScale;
-            static const unsigned int k_defWeight;
-            static const float k_defSpeed; 
-            static const float k_defDamage;
-            static const float k_defRadius;
+            static const String k_meshName;
+            static const String k_texName;
+            static const bool k_isToon;
+            static const glm::vec3 k_scale;
+            static const unsigned int k_weight;
+            static const float k_speed; 
+            static const float k_damage;
+            static const float k_radius;
 
             static void fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel);
             static void fireFromPlayer();
@@ -150,8 +152,8 @@ class GameSystem {
 
     struct Freecam {
 
-        static const float k_defMinSpeed;
-        static const float k_defMaxSpeed;
+        static const float k_minSpeed;
+        static const float k_maxSpeed;
 
         static GameObject * gameObject;
         static SpatialComponent * spatialComp;

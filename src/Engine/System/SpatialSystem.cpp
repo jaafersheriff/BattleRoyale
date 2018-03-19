@@ -17,6 +17,10 @@ const Vector<AcceleratorComponent *> & SpatialSystem::s_acceleratorComponents(Sc
 glm::vec3 SpatialSystem::s_gravityDir = glm::vec3(0.0f, 0.0f, 0.0f);
 float SpatialSystem::s_gravityMag = 0.0f;
 
+void SpatialSystem::init() {
+
+}
+
 void SpatialSystem::update(float dt) {
     for (auto & comp : s_acceleratorComponents) {
         comp->update(dt);

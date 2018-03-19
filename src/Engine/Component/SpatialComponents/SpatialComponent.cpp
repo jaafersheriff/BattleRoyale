@@ -18,8 +18,16 @@ SpatialComponent::SpatialComponent(GameObject & gameObject, SpatialComponent * p
     m_isRelOrientationChange(false),
     m_parent(parent),
     m_children(),
-    m_dt(std::numeric_limits<float>::infinity())
-{}
+    m_dt(std::numeric_limits<float>::infinity()),
+
+    m_modelMat(), m_prevModelMat(),
+    m_normalMat(), m_prevNormalMat(),
+    m_modelMatValid(true), m_prevModelMatValid(true),
+    m_normalMatValid(true), m_prevNormalMatValid(true),
+    m_modelMatChanged(false), m_normalMatChanged(false)
+{
+    if (m_parent) m_parent->m_children.push_back(this);
+}
 
 SpatialComponent::SpatialComponent(GameObject & gameObject, const glm::vec3 & relativePosition, SpatialComponent * parent) :
     SpatialComponent(gameObject, parent)
@@ -45,9 +53,33 @@ SpatialComponent::SpatialComponent(GameObject & gameObject, const glm::vec3 & re
     setRelativeOrientation(relativeOrient, true);
 }
 
-SpatialComponent::~SpatialComponent() {
+SpatialComponent::SpatialComponent(SpatialComponent && o) :
+    Component(std::move(o)),
+    m_relPosition(o.m_relPosition), m_prevRelPosition(o.m_prevRelPosition),
+    m_isRelPositionChange(o.m_isRelPositionChange),
+    m_relScale(o.m_relScale), m_prevRelScale(o.m_prevRelScale),
+    m_isRelScaleChange(o.m_isRelScaleChange),
+    m_relOrientation(o.m_relOrientation), m_prevRelOrientation(o.m_prevRelOrientation),
+    m_relOrientMatrix(o.m_relOrientMatrix), m_prevRelOrientMatrix(o.m_prevRelOrientMatrix),
+    m_isRelOrientationChange(o.m_isRelOrientationChange),
+    m_parent(o.m_parent),
+    m_children(std::move(o.m_children)),
+    m_dt(o.m_dt),
+
+    m_modelMat(o.m_modelMat), m_prevModelMat(o.m_prevModelMat),
+    m_normalMat(o.m_normalMat), m_prevNormalMat(o.m_prevNormalMat),
+    m_modelMatValid(o.m_modelMatValid), m_prevModelMatValid(o.m_prevModelMatValid),
+    m_normalMatValid(o.m_normalMatValid), m_prevNormalMatValid(o.m_prevNormalMatValid),
+    m_modelMatChanged(o.m_modelMatChanged), m_normalMatChanged(o.m_normalMatChanged)
+{
+    o.m_parent = nullptr;
+
     if (m_parent) {
-        m_parent->orphan(*this);
+        m_parent->orphan(o);
+        m_parent->m_children.push_back(this);
+    }
+    for (SpatialComponent * child : m_children) {
+        child->m_parent = this;
     }
 }
 
@@ -67,6 +99,16 @@ void SpatialComponent::update(float dt) {
         m_prevRelOrientMatrix = m_relOrientMatrix;
         m_isRelOrientationChange = false;
     }
+    if (m_modelMatChanged) {
+        if (m_modelMatValid) m_prevModelMat = m_modelMat;
+        m_prevModelMatValid = m_modelMatValid;
+        m_modelMatChanged = false;
+    }
+    if (m_normalMatChanged) {
+        if (m_normalMatValid) m_prevNormalMat = m_normalMat;
+        m_prevNormalMatValid = m_normalMatValid;
+        m_normalMatChanged = false;
+    }
 }
 
 void SpatialComponent::orphan(SpatialComponent & child) {
@@ -84,7 +126,7 @@ void SpatialComponent::setRelativePosition(const glm::vec3 & position, bool sile
         m_isRelPositionChange = true;
         m_relPosition = position;
         m_prevRelPosition = m_relPosition;
-        if (!silently) broadcast();
+        propagate(false, true, silently);
     }
 }
 
@@ -92,7 +134,7 @@ void SpatialComponent::move(const glm::vec3 & delta, bool silently) {
     if (delta != glm::vec3()) {
         m_isRelPositionChange = true;
         m_relPosition += delta;
-        if (!silently) broadcast();
+        propagate(false, true, silently);
     }
 }
 
@@ -101,7 +143,7 @@ void SpatialComponent::setRelativeScale(const glm::vec3 & scale, bool silently) 
         m_isRelScaleChange = true;
         m_relScale = scale;
         m_prevRelScale = m_relScale;
-        if (!silently) broadcast();
+        propagate(false, false, silently);
     }
 }
 
@@ -109,7 +151,7 @@ void SpatialComponent::scaleBy(const glm::vec3 & factor, bool silently) {
     if (factor != glm::vec3(1.0f)) {
         m_isRelScaleChange = true;
         m_relScale *= factor;
-        if (!silently) broadcast();
+        propagate(false, false, silently);
     }
 }
 
@@ -120,7 +162,7 @@ void SpatialComponent::setRelativeOrientation(const glm::quat & relativeOrientat
         m_prevRelOrientation = m_relOrientation;
         m_relOrientMatrix = glm::toMat3(relativeOrientation);
         m_prevRelOrientMatrix = m_relOrientMatrix;
-        if (!silently) broadcast();
+        propagate(false, false, silently);
     }
 }
 
@@ -131,7 +173,7 @@ void SpatialComponent::setRelativeOrientation(const glm::mat3 & relativeOrientat
         m_prevRelOrientMatrix = m_relOrientMatrix;
         m_relOrientation = glm::toQuat(relativeOrientation);
         m_prevRelOrientation = m_relOrientation;
-        if (!silently) broadcast();
+        propagate(false, false, silently);
     }
 }
 
@@ -140,7 +182,7 @@ void SpatialComponent::rotate(const glm::quat & rotation, bool silently) {
         m_isRelOrientationChange = true;
         m_relOrientation *= rotation;
         m_relOrientMatrix = glm::toMat3(m_relOrientation);
-        if (!silently) broadcast();
+        propagate(false, false, silently);
     }
 }
 
@@ -149,7 +191,7 @@ void SpatialComponent::rotate(const glm::mat3 & rotation, bool silently) {
         m_isRelOrientationChange = true;
         m_relOrientMatrix = rotation * m_relOrientMatrix;
         m_relOrientation = glm::toQuat(m_relOrientMatrix);
-        if (!silently) broadcast();
+        propagate(false, false, silently);
     }
 }
 
@@ -188,8 +230,12 @@ glm::vec3 SpatialComponent::relativeScale(float interpP) const {
 
 glm::vec3 SpatialComponent::scale() const {
     if (m_parent) {
-        glm::mat3 mat(m_parent->modelMatrix());
-        return glm::vec3(glm::length(mat[0]), glm::length(mat[1]), glm::length(mat[1])) * m_relScale;
+        const glm::mat4 & mat(m_parent->modelMatrix());
+        return glm::vec3(
+            glm::length(glm::vec3(mat[0])),
+            glm::length(glm::vec3(mat[1])),
+            glm::length(glm::vec3(mat[2]))
+        ) * m_relScale;
     }
     else {
         return m_relScale;
@@ -198,8 +244,12 @@ glm::vec3 SpatialComponent::scale() const {
 
 glm::vec3 SpatialComponent::prevScale() const {
     if (m_parent) {
-        glm::mat3 mat(m_parent->prevModelMatrix());
-        return glm::vec3(glm::length(mat[0]), glm::length(mat[1]), glm::length(mat[1])) * m_prevRelScale;
+        const glm::mat4 & mat(m_parent->prevModelMatrix());
+        return glm::vec3(
+            glm::length(glm::vec3(mat[0])),
+            glm::length(glm::vec3(mat[1])),
+            glm::length(glm::vec3(mat[2]))
+        ) * m_prevRelScale;
     }
     else {
         return m_prevRelScale;
@@ -292,14 +342,26 @@ glm::mat3 SpatialComponent::orientMatrix(float interpP) const {
     return m_parent ? glm::toMat3(orientation(interpP)) : relativeOrientMatrix();
 }
 
-glm::mat4 SpatialComponent::modelMatrix() const {
-    glm::mat4 mat(Util::compositeTransform(m_relScale, m_relOrientMatrix, m_relPosition));
-    return m_parent ? m_parent->modelMatrix() * mat : mat;
+const glm::mat4 & SpatialComponent::modelMatrix() const {
+    if (m_modelMatValid) {
+        return m_modelMat;
+    }
+
+    m_modelMat = Util::compositeTransform(m_relScale, m_relOrientMatrix, m_relPosition);
+    if (m_parent) m_modelMat = m_parent->modelMatrix() * m_modelMat;
+    m_modelMatValid = true;
+    return m_modelMat;
 }
     
-glm::mat4 SpatialComponent::prevModelMatrix() const {
-    glm::mat4 mat(Util::compositeTransform(m_prevRelScale, m_prevRelOrientMatrix, m_prevRelPosition));
-    return m_parent ? m_parent->prevModelMatrix() * mat : mat;
+const glm::mat4 & SpatialComponent::prevModelMatrix() const {
+    if (m_prevModelMatValid) {
+        return m_prevModelMat;
+    }
+
+    m_prevModelMat = Util::compositeTransform(m_prevRelScale, m_prevRelOrientMatrix, m_prevRelPosition);
+    if (m_parent) m_prevModelMat = m_parent->prevModelMatrix() * m_prevModelMat;
+    m_prevModelMatValid = true;
+    return m_prevModelMat;
 }
 
 glm::mat4 SpatialComponent::modelMatrix(float interpP) const {
@@ -312,16 +374,28 @@ glm::mat4 SpatialComponent::modelMatrix(float interpP) const {
     }
 }
 
-glm::mat3 SpatialComponent::normalMatrix() const {
+const glm::mat3 & SpatialComponent::normalMatrix() const {
+    if (m_normalMatValid) {
+        return m_normalMat;
+    }
+
     // this is valid and waaaaaaaay faster than inverting the model matrix
-    glm::mat3 mat(m_relOrientMatrix * glm::mat3(glm::scale(glm::mat4(), 1.0f / m_relScale)));
-    return m_parent ? m_parent->normalMatrix() * mat : mat;
+    m_normalMat = m_relOrientMatrix * glm::mat3(glm::scale(glm::mat4(), 1.0f / m_relScale));
+    if (m_parent) m_normalMat = m_parent->normalMatrix() * m_normalMat;
+    m_normalMatValid = true;
+    return m_normalMat;
 }
 
-glm::mat3 SpatialComponent::prevNormalMatrix() const {
+const glm::mat3 & SpatialComponent::prevNormalMatrix() const {
+    if (m_prevNormalMatValid) {
+        return m_prevNormalMat;
+    }
+
     // this is valid and waaaaaaaay faster than inverting the model matrix
-    glm::mat3 mat(m_prevRelOrientMatrix * glm::mat3(glm::scale(glm::mat4(), 1.0f / m_prevRelScale)));
-    return m_parent ? m_parent->normalMatrix() * mat : mat;
+    m_prevNormalMat = m_prevRelOrientMatrix * glm::mat3(glm::scale(glm::mat4(), 1.0f / m_prevRelScale));
+    if (m_parent) m_prevNormalMat = m_parent->prevNormalMatrix() * m_prevNormalMat;
+    m_prevNormalMatValid = true;
+    return m_prevNormalMat;
 }
 
 glm::mat3 SpatialComponent::normalMatrix(float interpP) const {
@@ -339,9 +413,13 @@ glm::vec3 SpatialComponent::effectiveVelocity() const {
     return (position() - prevPosition()) / m_dt;
 }
 
-void SpatialComponent::broadcast() const {
-    Scene::sendMessage<SpatialChangeMessage>(&gameObject(), *this);
+void SpatialComponent::propagate(bool modelMatValid, bool normalMatValid, bool silently) const {
+    m_modelMatValid = m_modelMatValid && modelMatValid;
+    m_normalMatValid = m_normalMatValid && normalMatValid;
+    m_modelMatChanged = m_modelMatChanged || !modelMatValid;
+    m_normalMatChanged = m_normalMatChanged || !normalMatValid;
+    if (!silently) Scene::sendMessage<SpatialChangeMessage>(&gameObject(), *this);
     for (SpatialComponent * child : m_children) {
-        child->broadcast();
+        child->propagate(false, false, silently);
     }
 }

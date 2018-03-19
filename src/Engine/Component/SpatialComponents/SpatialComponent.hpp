@@ -37,9 +37,7 @@ class SpatialComponent : public Component {
 
     public:
 
-    SpatialComponent(SpatialComponent && other) = default;
-
-    ~SpatialComponent();
+    SpatialComponent(SpatialComponent && other);
 
     public:
 
@@ -138,12 +136,12 @@ class SpatialComponent : public Component {
     bool isRelativeChange() const { return m_isRelPositionChange || m_isRelScaleChange || m_isRelOrientationChange; }
     bool isChange() const { return isRelativeChange() || m_parent && m_parent->isChange(); }
 
-    glm::mat4 modelMatrix() const;
-    glm::mat4 prevModelMatrix() const;
+    const glm::mat4 & modelMatrix() const;
+    const glm::mat4 & prevModelMatrix() const;
     glm::mat4 modelMatrix(float interpP) const;
 
-    glm::mat3 normalMatrix() const;
-    glm::mat3 prevNormalMatrix() const;
+    const glm::mat3 & normalMatrix() const;
+    const glm::mat3 & prevNormalMatrix() const;
     glm::mat3 normalMatrix(float interpP) const;
 
     // This is not a true velocity, only a rough estimation based on just one frame
@@ -154,7 +152,7 @@ class SpatialComponent : public Component {
 
     private:
 
-    void broadcast() const;
+    void propagate(bool modelMatValid, bool normalMatValid, bool silently) const;
 
     private:
 
@@ -168,5 +166,11 @@ class SpatialComponent : public Component {
     SpatialComponent * m_parent;
     Vector<SpatialComponent *> m_children;
     float m_dt;
+
+    mutable glm::mat4 m_modelMat, m_prevModelMat;
+    mutable glm::mat3 m_normalMat, m_prevNormalMat;
+    mutable bool m_modelMatValid, m_prevModelMatValid;
+    mutable bool m_normalMatValid, m_prevNormalMatValid;
+    mutable bool m_modelMatChanged, m_normalMatChanged;
 
 };

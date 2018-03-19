@@ -9,15 +9,16 @@
 
 
 
-BounderComponent::BounderComponent(GameObject & gameObject, unsigned int weight) :
+BounderComponent::BounderComponent(GameObject & gameObject, unsigned int weight, const SpatialComponent * spatial) :
     Component(gameObject),
-    m_spatial(nullptr),
+    m_spatial(spatial),
     m_weight(weight),
     m_isChange(false)
 {}
 
 void BounderComponent::init() {
-    if (!(m_spatial = gameObject().getSpatial())) assert(false);
+    if (m_spatial) assert(&m_spatial->gameObject() == &gameObject());
+    else assert(m_spatial = gameObject().getSpatial());
 }
 
 
@@ -52,8 +53,8 @@ AABox AABBounderComponent::transformAABox(const AABox & box, const glm::vec3 & p
     );
 }
 
-AABBounderComponent::AABBounderComponent(GameObject & gameObject, unsigned int weight, const AABox & box) :
-    BounderComponent(gameObject, weight),
+AABBounderComponent::AABBounderComponent(GameObject & gameObject, unsigned int weight, const AABox & box, const SpatialComponent * spatial) :
+    BounderComponent(gameObject, weight, spatial),
     m_box(box),
     m_transBox(m_box),
     m_prevTransBox(m_transBox)
@@ -115,8 +116,8 @@ Sphere SphereBounderComponent::transformSphere(const Sphere & sphere, const glm:
     );
 }
 
-SphereBounderComponent::SphereBounderComponent(GameObject & gameObject, unsigned int weight, const Sphere & sphere) :
-    BounderComponent(gameObject, weight),
+SphereBounderComponent::SphereBounderComponent(GameObject & gameObject, unsigned int weight, const Sphere & sphere, const SpatialComponent * spatial) :
+    BounderComponent(gameObject, weight, spatial),
     m_sphere(sphere),
     m_transSphere(m_sphere),
     m_prevTransSphere(m_transSphere)
@@ -173,8 +174,8 @@ Capsule CapsuleBounderComponent::transformCapsule(const Capsule & capsule, const
     );
 }
 
-CapsuleBounderComponent::CapsuleBounderComponent(GameObject & gameObject, unsigned int weight, const Capsule & capsule) :
-    BounderComponent(gameObject, weight),
+CapsuleBounderComponent::CapsuleBounderComponent(GameObject & gameObject, unsigned int weight, const Capsule & capsule, const SpatialComponent * spatial) :
+    BounderComponent(gameObject, weight, spatial),
     m_capsule(capsule),
     m_transCapsule(m_capsule),
     m_prevTransCapsule(m_transCapsule)

@@ -509,7 +509,15 @@ std::tuple<float, float, float> detCapsuleSpecs(int n, const glm::vec3 * positio
 
 }
 
-BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, unsigned int weight, const Mesh & mesh, bool allowAAB, bool allowSphere, bool allowCapsule, float scale) {
+BounderComponent & CollisionSystem::addBounderFromMesh(
+    GameObject & gameObject,
+    unsigned int weight,
+    const Mesh & mesh,
+    bool allowAAB,
+    bool allowSphere,
+    bool allowCapsule,
+    const SpatialComponent * spatial
+) {
     if (!allowAAB && !allowSphere && !allowCapsule) {
         allowAAB = allowSphere = allowCapsule = true;
     }
@@ -525,13 +533,13 @@ BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, 
 
     if (allowAAB) {
         glm::vec3 boxR(spanMax - center);
-        box = AABox(center - boxR * scale, center + boxR * scale);
+        box = AABox(center - boxR, center + boxR);
         boxV = box.volume();
     }
 
     if (allowSphere) {
         float radius(detMaxRadius(nVerts, positions, center));
-        sphere = Sphere(center, radius * scale);
+        sphere = Sphere(center, radius);
         sphereV = sphere.volume();
     }
 
@@ -539,18 +547,19 @@ BounderComponent & CollisionSystem::addBounderFromMesh(GameObject & gameObject, 
         float minRad, yUpper, yLower;
         std::tie(minRad, yUpper, yLower) = detCapsuleSpecs(nVerts, positions, center);
         float capsuleHeight(yUpper - yLower);
+        float totalHeight(capsuleHeight + 2.0f * minRad);
         glm::vec3 capsuleCenter(center.x, yLower + capsuleHeight * 0.5f, center.z);
-        capsule = Capsule(capsuleCenter, minRad * scale, capsuleHeight * scale);
+        capsule = Capsule(capsuleCenter, minRad, capsuleHeight);
         capsuleV = capsule.volume();
     }
 
     if (allowSphere && sphereV <= boxV && sphereV <= capsuleV) {
-        return Scene::addComponentAs<SphereBounderComponent, BounderComponent>(gameObject, weight, sphere);
+        return Scene::addComponentAs<SphereBounderComponent, BounderComponent>(gameObject, weight, sphere, spatial);
     }
     else if (allowAAB && boxV <= sphereV && boxV <= capsuleV) {
-        return Scene::addComponentAs<AABBounderComponent, BounderComponent>(gameObject, weight, box);
+        return Scene::addComponentAs<AABBounderComponent, BounderComponent>(gameObject, weight, box, spatial);
     }
     else {
-        return Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(gameObject, weight, capsule);
+        return Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(gameObject, weight, capsule, spatial);
     }
 }

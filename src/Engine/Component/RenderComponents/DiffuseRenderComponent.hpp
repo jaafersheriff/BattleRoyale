@@ -13,6 +13,7 @@ class RenderSystem;
 class Mesh;
 class SpatialComponent;
 class DiffuseShader;
+class ShadowDepthShader;
 
 
 
@@ -20,6 +21,7 @@ class DiffuseRenderComponent : public Component {
 
     friend Scene;
     friend DiffuseShader;
+    friend ShadowDepthShader;
 
     private:
 

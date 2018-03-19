@@ -214,9 +214,9 @@ void DiffuseShader::render(const CameraComponent * camera) {
         loadVec2(getUniform("tiling"), drc->tiling());
 
         /* Model matrix */
-        loadMat4(getUniform("M"), drc->gameObject().getSpatial()->modelMatrix());
+        loadMat4(getUniform("M"), drc->m_spatial->modelMatrix());
         /* Normal matrix */
-        loadMat3(getUniform("N"), drc->gameObject().getSpatial()->normalMatrix());
+        loadMat3(getUniform("N"), drc->m_spatial->normalMatrix());
 
         /* Bind materials */
         const ModelTexture modelTexture(drc->modelTexture());
