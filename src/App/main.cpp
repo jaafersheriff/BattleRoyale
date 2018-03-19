@@ -293,7 +293,10 @@ int main(int argc, char **argv) {
             ImGui::SliderFloat3("LightDir", glm::value_ptr(lightDir), -1.f, 1.f);
             RenderSystem::setLightDir(lightDir);
             /* Shadow map's distance */
-            ImGui::SliderFloat("Shadow Distance", &RenderSystem::lightDist, 0.1f, 350.f);
+            ImGui::SliderFloat("Shadow Distance", &RenderSystem::lightDist, -350.f, 350.f);
+            ImGui::SliderFloat("Shadow Offset", &RenderSystem::lightOffset, 0.f, 50.f);
+            ImGui::SliderFloat("Shadow Ambience", &RenderSystem::shadowAmbience, 0.f, 1.f);
+            ImGui::SliderFloat("Shadow Transition", &RenderSystem::transitionDistance, 0.f, 50.f);
             /* Shadow map FBO */
             int mapSize = RenderSystem::s_shadowShader->getMapSize();
             ImGui::SliderInt("Shadow Map Size", &mapSize, 1024, 16384);

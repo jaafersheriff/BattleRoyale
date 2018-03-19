@@ -45,6 +45,9 @@ public:
     static glm::vec3 getLightDir();
     static void setLightDir(glm::vec3);
     static float lightDist;
+    static float lightOffset;
+    static float shadowAmbience;
+    static float transitionDistance;
 
     /* Shadows */
     static const glm::mat4 & getL() { return s_shadowShader->getL(); }

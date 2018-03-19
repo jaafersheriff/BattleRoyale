@@ -6,6 +6,7 @@ in vec3 fragNor;
 in vec2 texCoords;
 
 uniform sampler2D shadowMap;
+uniform float shadowAmbience;
 
 uniform float matAmbient;
 uniform vec3 matDiffuse;
@@ -26,15 +27,6 @@ uniform sampler1D cellDiffuseScales;
 uniform sampler1D cellSpecularScales;
 
 layout(location = 0) out vec4 color;
-
-float inShade(vec3 lPos, float bias) {
-    float worldDepth = texture(shadowMap, lPos.xy).r;
-    float lightDepth = lPos.z;
-    if (lightDepth > worldDepth + bias) {
-        return 1.0;
-    }
-    return 0.0;
-}
 
 void main() {
     vec3 viewDir = camPos - fragPos;
@@ -75,12 +67,13 @@ void main() {
     }
 
     /* Base color + shadow */
-    vec3 shift = fragLPos.xyz * 0.5 + 0.5;
-    float shade = 0.0;
-    if (shift.x >= 0.0 && shift.x <= 1.0 && shift.y >= 0.0 && shift.y <= 1.0) {
-        shade = inShade(shift, 0.01);
+    vec4 shadowCoords = fragLPos * 0.5 + 0.5;
+    float visibility = 1.0;
+    if (shadowCoords.x >= 0.0 && shadowCoords.x <= 1.0 && shadowCoords.y >= 0.0 && shadowCoords.y <= 1.0 && 
+            shadowCoords.z > texture(shadowMap, shadowCoords.xy).r + 0.005) {
+        visibility -= (shadowCoords.w * (1.0 - shadowAmbience));
     }
-    vec3 bColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib) * max((1 - shade), matAmbient);
+    vec3 bColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib) * visibility;
 
     /* Silhouettes */
     float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;
