@@ -85,7 +85,7 @@ void Scene::update(float dt) {
     relayMessages();
     pathfindingMessagingDT = float(watch.lap());
 
-    SpatialSystem::update(dt); // needs to happen right before collision
+    SpatialSystem::update(dt); // needs to happen before collision
     spatialDT += float(watch.lap());
     relayMessages();
     spatialMessagingDT = float(watch.lap());

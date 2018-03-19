@@ -11,10 +11,10 @@
 
 
 
-CameraComponent::CameraComponent(GameObject & gameObject, float fov, float near, float far) :
+CameraComponent::CameraComponent(GameObject & gameObject, float fov, float near, float far, SpatialComponent * spatial) :
     Component(gameObject),
     Orientable(),
-    m_spatial(nullptr),
+    m_spatial(spatial),
     m_theta(0.0f),
     m_phi(glm::pi<float>() * 0.5f),
     m_fov(fov),
@@ -30,10 +30,10 @@ CameraComponent::CameraComponent(GameObject & gameObject, float fov, float near,
     m_frustumValid(false)
 {}
 
-CameraComponent::CameraComponent(GameObject & gameObject, glm::vec2 horiz, glm::vec2 vert, float near, float far) :
+CameraComponent::CameraComponent(GameObject & gameObject, glm::vec2 horiz, glm::vec2 vert, float near, float far, SpatialComponent * spatial) :
     Component(gameObject),
     Orientable(),
-    m_spatial(nullptr),
+    m_spatial(spatial),
     m_theta(0.0f),
     m_phi(glm::pi<float>() * 0.5f),
     m_fov(0.0f),
@@ -51,7 +51,9 @@ CameraComponent::CameraComponent(GameObject & gameObject, glm::vec2 horiz, glm::
 
 
 void CameraComponent::init() {
-    if (!(m_spatial = gameObject().getComponentByType<SpatialComponent>())) assert(false);
+    if (m_spatial) assert(&m_spatial->gameObject() == &gameObject());
+    else assert(m_spatial = gameObject().getSpatial());
+
     setUVW(m_spatial->u(), m_spatial->v(), m_spatial->w());
     m_theta = 0.0f;
     m_phi = glm::pi<float>() * 0.5f;

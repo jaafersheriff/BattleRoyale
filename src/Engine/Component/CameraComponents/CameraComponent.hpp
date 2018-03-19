@@ -29,8 +29,8 @@ class CameraComponent : public Component, public Orientable {
 
     protected: // only scene or friends can create component
 
-        CameraComponent(GameObject & gameObject, float fov, float near, float far);
-        CameraComponent(GameObject & gameObject, glm::vec2 horiz, glm::vec2 vert, float near, float far);
+        CameraComponent(GameObject & gameObject, float fov, float near, float far, SpatialComponent * spatial = nullptr);
+        CameraComponent(GameObject & gameObject, glm::vec2 horiz, glm::vec2 vert, float near, float far, SpatialComponent * spatial = nullptr);
 
     public:
 

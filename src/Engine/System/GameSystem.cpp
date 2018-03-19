@@ -38,7 +38,7 @@ const float GameSystem::Player::k_near = 0.1f;
 const float GameSystem::Player::k_far = 300.0f;
 const float GameSystem::Player::k_maxHP = 100.0f;
 const glm::vec3 GameSystem::Player::k_playerPosition = glm::vec3(0.0f, 6.0f, 0.0f);
-const glm::vec3 GameSystem::Player::k_mainHandPosition = glm::vec3(k_width * 0.5f, 0.0f, -k_width * 0.5f);
+const glm::vec3 GameSystem::Player::k_mainHandPosition = glm::vec3(k_width * 0.5f, -k_height * 0.1f, -k_width * 0.5f);
 
 GameObject * GameSystem::Player::gameObject = nullptr;
 SpatialComponent * GameSystem::Player::spatial = nullptr;
@@ -237,6 +237,7 @@ void GameSystem::Weapons::SodaGrenade::fire(const glm::vec3 & initPos, const glm
         glm::vec2(1.0f)
     ));
     ProjectileComponent & weaponComp(Scene::addComponentAs<GrenadeComponent, ProjectileComponent>(obj, k_damage, k_radius));
+    SpinAnimationComponent & spinAnimation(Scene::addComponentAs<SpinAnimationComponent, AnimationComponent>(obj, spatComp, glm::vec3(1.0f, 0.0f, 0.0f), -5.0f));
 
     SoundSystem::playSound3D("sword_slash.wav", spatComp.position());
 }

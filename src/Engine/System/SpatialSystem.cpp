@@ -3,6 +3,7 @@
 #include "Scene/Scene.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/SpatialComponents/PhysicsComponents.hpp"
+#include "Component/SpatialComponents/AnimationComponents.hpp"
 
 
 
@@ -14,6 +15,7 @@ const float SpatialSystem::k_bounceVelThreshold = 0.5f;
 const Vector<SpatialComponent *> & SpatialSystem::s_spatialComponents(Scene::getComponents<SpatialComponent>());
 const Vector<NewtonianComponent *> & SpatialSystem::s_newtonianComponents(Scene::getComponents<NewtonianComponent>());
 const Vector<AcceleratorComponent *> & SpatialSystem::s_acceleratorComponents(Scene::getComponents<AcceleratorComponent>());
+const Vector<AnimationComponent *> & SpatialSystem::s_animationComponents(Scene::getComponents<AnimationComponent>());
 glm::vec3 SpatialSystem::s_gravityDir = glm::vec3(0.0f, 0.0f, 0.0f);
 float SpatialSystem::s_gravityMag = 0.0f;
 
@@ -26,6 +28,9 @@ void SpatialSystem::update(float dt) {
         comp->update(dt);
     }
     for (auto & comp : s_newtonianComponents) {
+        comp->update(dt);
+    }
+    for (auto & comp : s_animationComponents) {
         comp->update(dt);
     }
 }
