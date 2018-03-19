@@ -202,9 +202,9 @@ void SpatialComponent::setRelativeUVW(const glm::vec3 & u, const glm::vec3 & v, 
 void SpatialComponent::lookAt(const glm::vec3 & p, const glm::vec3 & up) {
     glm::vec3 w(glm::normalize(position() - p));
     if (m_parent) {
-        w = glm::transpose(orientMatrix()) * w;
+        w = glm::transpose(m_parent->orientMatrix()) * w;
     }
-    glm::vec3 u(glm::cross(up, w));
+    glm::vec3 u(glm::normalize(glm::cross(up, w)));
     setRelativeUVW(u, glm::cross(w, u), w);
 }
 
