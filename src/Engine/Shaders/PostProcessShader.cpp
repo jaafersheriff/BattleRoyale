@@ -69,9 +69,9 @@ void PostProcessShader::render(const CameraComponent * camera) {
 
     glBindVertexArray(s_vaoHandle);
 
-    loadVec2(getUniform("v_scale"), glm::vec2(.5f, .5f));
-    loadVec2(getUniform("v_translate"), glm::vec2(.5f, .5f));
-    loadFloat(getUniform("v_depth"), -1.f);
+    loadVec2(getUniform("v_scale"), glm::vec2(1.f, 1.f));
+    loadVec2(getUniform("v_translate"), glm::vec2(0.f, 0.f));
+    loadFloat(getUniform("v_depth"), -.4f);
 
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
@@ -84,7 +84,7 @@ void PostProcessShader::render(const CameraComponent * camera) {
     // Draw
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
 
-    /* loadVec2(getUniform("v_scale"), glm::vec2(.5f, .5f));
+    loadVec2(getUniform("v_scale"), glm::vec2(.5f, .5f));
     loadVec2(getUniform("v_translate"), glm::vec2(.5f, .5f));
     loadFloat(getUniform("v_depth"), -.5f);
 
@@ -95,7 +95,7 @@ void PostProcessShader::render(const CameraComponent * camera) {
     glUniform1i(getUniform("f_texCol"), 0);
 
     // Draw
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0); */
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
 
     glBindVertexArray(0);
     
