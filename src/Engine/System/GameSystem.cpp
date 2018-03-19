@@ -96,7 +96,8 @@ void GameSystem::Enemies::Basic::create(const glm::vec3 & position) {
         *mesh,
         modelTex,
         k_defIsToon,
-        glm::vec2(1.0f)
+        glm::vec2(1.0f),
+        false
     );
     HealthComponent & healthComp(Scene::addComponent<HealthComponent>(obj, k_defMaxHP));
     EnemyComponent & enemyComp(Scene::addComponentAs<BasicEnemyComponent, EnemyComponent>(obj));
@@ -169,7 +170,8 @@ void GameSystem::Weapons::PizzaSlice::fire(const glm::vec3 & initPos, const glm:
         *mesh,
         modelTex,
         k_defIsToon,
-        glm::vec2(1.0f)
+        glm::vec2(1.0f),
+        false
     ));
     ProjectileComponent & weaponComp(Scene::addComponentAs<BulletComponent, ProjectileComponent>(obj, k_defDamage));
 
@@ -209,7 +211,8 @@ void GameSystem::Weapons::SodaGrenade::fire(const glm::vec3 & initPos, const glm
         *mesh,
         modelTex,
         k_defIsToon,
-        glm::vec2(1.0f)
+        glm::vec2(1.0f),
+        false
     ));
     ProjectileComponent & weaponComp(Scene::addComponentAs<GrenadeComponent, ProjectileComponent>(obj, k_defDamage, k_defRadius));
 

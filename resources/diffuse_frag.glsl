@@ -17,6 +17,7 @@ uniform vec3 lightDir;
 
 uniform sampler2D textureImage;
 uniform bool usesTexture;
+uniform bool doBloom;
 
 uniform bool isToon;
 uniform float silAngle;
@@ -93,6 +94,9 @@ void main() {
     BrightColor.rgb = vec3(brightness);;
 
     BrightColor.a = 1;
+
+	if(doBloom)
+		BrightColor.rgb = color.rbg*2;
 
     /*
     if(brightness > 0.6)
