@@ -51,7 +51,7 @@ DiffuseRenderComponent & FileReader::addRenderComponent(GameObject & gameObject,
 
     //Get isToon bool
     const rapidjson::Value& isToon = jsonTransform["isToon"];
-    assert(isToon.IsBool());
+    assert(isToon.IsBool());    
 
     const rapidjson::Value& jsonTiling = jsonTransform["tiling"];
     glm::vec2 tiling = glm::vec2(jsonTiling[0].GetFloat(), jsonTiling[1].GetFloat());
