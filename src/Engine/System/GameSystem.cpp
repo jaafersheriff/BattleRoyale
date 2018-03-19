@@ -585,8 +585,9 @@ void GameSystem::setupImGui() {
             RenderSystem::s_lightCamera->setNearFar(nPlane, fPlane);
             /* Shadow map FBO */
             int mapSize = RenderSystem::s_shadowShader->getMapSize();
-            ImGui::SliderInt("Shadow Map Size", &mapSize, 1024, 16384);
-            RenderSystem::s_shadowShader->setMapSize(mapSize);
+            if (ImGui::SliderInt("Shadow Map Size", &mapSize, 1024, 16384)) {
+                RenderSystem::s_shadowShader->setMapSize(mapSize);
+            }
             ImGui::Image((ImTextureID)uintptr_t(RenderSystem::getShadowMap()), ImVec2(256, 256));
         }
     );
