@@ -155,7 +155,7 @@ void ShadowDepthShader::render(const CameraComponent * camera) {
     RenderSystem::getFrustumComps(camera, components);
     for (auto drc : components) {
     
-        loadMat4(getUniform("M"), drc->gameObject().getSpatial()->modelMatrix());
+        loadMat4(getUniform("M"), drc->m_spatial->modelMatrix());
 
         /* Bind mesh */
         const Mesh & mesh(drc->mesh());

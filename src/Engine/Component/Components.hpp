@@ -16,6 +16,7 @@
 // spatial
 #include "SpatialComponents/SpatialComponent.hpp"
 #include "SpatialComponents/PhysicsComponents.hpp"
+#include "SpatialComponents/AnimationComponents.hpp"
 // collision
 #include "CollisionComponents/BounderComponent.hpp"
 // post collision

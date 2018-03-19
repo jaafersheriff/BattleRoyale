@@ -11,10 +11,10 @@
 
 
 
-CameraComponent::CameraComponent(GameObject & gameObject, float fov, float near, float far) :
+CameraComponent::CameraComponent(GameObject & gameObject, float fov, float near, float far, SpatialComponent * spatial) :
     Component(gameObject),
     Orientable(),
-    m_spatial(nullptr),
+    m_spatial(spatial),
     m_theta(0.0f),
     m_phi(glm::pi<float>() * 0.5f),
     m_fov(fov),
@@ -30,10 +30,10 @@ CameraComponent::CameraComponent(GameObject & gameObject, float fov, float near,
     m_frustumValid(false)
 {}
 
-CameraComponent::CameraComponent(GameObject & gameObject, glm::vec2 horiz, glm::vec2 vert, float near, float far) :
+CameraComponent::CameraComponent(GameObject & gameObject, glm::vec2 horiz, glm::vec2 vert, float near, float far, SpatialComponent * spatial) :
     Component(gameObject),
     Orientable(),
-    m_spatial(nullptr),
+    m_spatial(spatial),
     m_theta(0.0f),
     m_phi(glm::pi<float>() * 0.5f),
     m_fov(0.0f),
@@ -51,7 +51,9 @@ CameraComponent::CameraComponent(GameObject & gameObject, glm::vec2 horiz, glm::
 
 
 void CameraComponent::init() {
-    if (!(m_spatial = gameObject().getComponentByType<SpatialComponent>())) assert(false);
+    if (m_spatial) assert(&m_spatial->gameObject() == &gameObject());
+    else assert(m_spatial = gameObject().getSpatial());
+
     setUVW(m_spatial->u(), m_spatial->v(), m_spatial->w());
     m_theta = 0.0f;
     m_phi = glm::pi<float>() * 0.5f;
@@ -59,22 +61,13 @@ void CameraComponent::init() {
     m_projMatValid = false;
     m_frustumValid = false;
 
-    auto spatTransformCallback([&](const Message & msg_) {
-        m_viewMatValid = false;
-        m_frustumValid = false;
-    });
-    auto spatRotationCallback([&](const Message & msg_) {
+    auto spatChangeCallback([&](const Message & msg_) {
         m_viewMatValid = false;
         m_frustumValid = false;
         detUVW();
     });
-    Scene::addReceiver<SpatialPositionSetMessage>(&gameObject(), spatTransformCallback);
-    Scene::addReceiver<SpatialMovedMessage>(&gameObject(), spatTransformCallback);
-    Scene::addReceiver<SpatialScaleSetMessage>(&gameObject(), spatTransformCallback);
-    Scene::addReceiver<SpatialScaledMessage>(&gameObject(), spatTransformCallback);
-    Scene::addReceiver<SpatialOrientationSetMessage>(&gameObject(), spatRotationCallback);
-    Scene::addReceiver<SpatialRotatedMessage>(&gameObject(), spatRotationCallback);
-    Scene::addReceiver<CollisionAdjustMessage>(&gameObject(), spatTransformCallback); // necessary as collision sets position silently
+    Scene::addReceiver<SpatialChangeMessage>(&gameObject(), spatChangeCallback);
+    Scene::addReceiver<CollisionAdjustMessage>(&gameObject(), spatChangeCallback); // necessary as collision sets position silently
 
     if (!m_isOrtho) {
         auto windowSizeCallback([&] (const Message & msg_) {

@@ -93,6 +93,8 @@ class Scene {
     static float collisionMessagingDT;
     static float postCollisionDT;
     static float postCollisionMessagingDT;
+    static float particleDT;
+    static float particleMessagingDT;
     static float renderDT;
     static float renderMessagingDT;
     static float soundDT;

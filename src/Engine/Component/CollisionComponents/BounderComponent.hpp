@@ -23,7 +23,7 @@ class BounderComponent : public Component {
 
     protected: // only scene or friends can create component
 
-    BounderComponent(GameObject & gameObject, unsigned int weight);
+    BounderComponent(GameObject & gameObject, unsigned int weight, const SpatialComponent * spatial = nullptr);
 
     public:
 
@@ -58,7 +58,7 @@ class BounderComponent : public Component {
 
     protected:
 
-    SpatialComponent * m_spatial;
+    const SpatialComponent * m_spatial;
     unsigned int m_weight;
     bool m_isChange;
 
@@ -79,7 +79,7 @@ class AABBounderComponent : public BounderComponent {
 
     protected: // only scene or friends can create component
 
-    AABBounderComponent(GameObject & gameObject, unsigned int weight, const AABox & box);
+    AABBounderComponent(GameObject & gameObject, unsigned int weight, const AABox & box, const SpatialComponent * spatial = nullptr);
 
     public:
 
@@ -125,7 +125,7 @@ class SphereBounderComponent : public BounderComponent {
 
     protected: // only scene or friends can create component
 
-    SphereBounderComponent(GameObject & gameObject, unsigned int weight, const Sphere & sphere);
+    SphereBounderComponent(GameObject & gameObject, unsigned int weight, const Sphere & sphere, const SpatialComponent * spatial = nullptr);
 
     public:
 
@@ -171,7 +171,7 @@ class CapsuleBounderComponent : public BounderComponent {
 
     protected: // only scene or friends can create component
 
-    CapsuleBounderComponent(GameObject & gameObject, unsigned int weight, const Capsule & capsule);
+    CapsuleBounderComponent(GameObject & gameObject, unsigned int weight, const Capsule & capsule, const SpatialComponent * spatial = nullptr);
 
     public:
 
