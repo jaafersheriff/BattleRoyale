@@ -39,6 +39,8 @@ float Scene::collisionDT;
 float Scene::collisionMessagingDT;
 float Scene::postCollisionDT;
 float Scene::postCollisionMessagingDT;
+float Scene::particleDT;
+float Scene::particleMessagingDT;
 float Scene::renderDT;
 float Scene::renderMessagingDT;
 float Scene::soundDT;
@@ -100,9 +102,10 @@ void Scene::update(float dt) {
     relayMessages();
     postCollisionMessagingDT = float(watch.lap());
 
-    // TO DO: Timing
     ParticleSystem::update(dt);
+    particleDT = float(watch.lap());
     relayMessages();
+    particleMessagingDT = float(watch.lap());
 
     RenderSystem::update(dt); // rendering should be last
     renderDT = float(watch.lap());
