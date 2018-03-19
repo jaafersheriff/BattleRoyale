@@ -1,8 +1,10 @@
 #pragma once
 
 #include <iostream>
+#include <queue>
 
 #include "glm/glm.hpp"
+#include "glm/gtc/constants.hpp"
 
 #include "Component/Component.hpp"
 
@@ -80,12 +82,6 @@ class PathfindingComponent : public Component {
 
     virtual void init() override;
 
-    //void print_queue(std::queue<glm::vec3> q);
-    //void drawCup(glm::vec3 position);
-    //bool findInVisited(glm::vec3 vec, float stepSize);
-    std::string vectorToString(Vector<glm::vec3> vec);
-    //glm::vec3 closestPos(glm::vec3 vec);
-
     void readInGraph(String);
     Vector<glm::vec3> reconstructPath(glm::vec3 start, glm::vec3 playerPos, vecvecMap &cameFrom);
 
@@ -94,8 +90,6 @@ class PathfindingComponent : public Component {
     float m_cosCriticalAngle;
 
     public:
-
-    virtual SystemID systemID() const override { return SystemID::pathfinding; };
 
     virtual void update(float) override;
 

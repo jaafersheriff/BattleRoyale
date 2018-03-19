@@ -76,10 +76,10 @@ const String GameSystem::Enemies::Basic::k_defTextureName = "characters/Enemy_Te
 const bool GameSystem::Enemies::Basic::k_defIsToon = true;
 const glm::vec3 GameSystem::Enemies::Basic::k_defScale = glm::vec3(0.75f);
 const unsigned int GameSystem::Enemies::Basic::k_defWeight = 5;
-const float GameSystem::Enemies::Basic::k_defMoveSpeed = 3.0f;
+const float GameSystem::Enemies::Basic::k_defMoveSpeed = 8.0f;
 const float GameSystem::Enemies::Basic::k_defMaxHP = 100.0f;
 
-void GameSystem::Enemies::Basic::create(const glm::vec3 & position) {
+void GameSystem::Enemies::Basic::create(const glm::vec3 & position, bool mapping) {
     const Mesh * mesh(Loader::getMesh(k_defMeshName));
     const Texture * texture(Loader::getTexture(k_defTextureName));
     const DiffuseShader * shader();
@@ -89,7 +89,10 @@ void GameSystem::Enemies::Basic::create(const glm::vec3 & position) {
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, false));
     GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
     BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, k_defWeight, *mesh, false, true, false));
-    PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *Player::gameObject, k_defMoveSpeed, false));
+    if (mapping)
+        MapExploreComponent & mapComp(Scene::addComponent<MapExploreComponent>(obj, 0.0f, Scene::mapFilename));
+    else
+        PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *Player::gameObject, k_defMoveSpeed));
     DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(
         obj,
         spatComp,
@@ -123,7 +126,7 @@ void GameSystem::Enemies::enablePathfinding() {
         GameObject & enemy(comp->gameObject());
         PathfindingComponent * path(enemy.getComponentByType<PathfindingComponent>());
         if (!path) {
-            Scene::addComponent<PathfindingComponent>(enemy, *Player::gameObject, Basic::k_defMoveSpeed, false);
+            Scene::addComponent<PathfindingComponent>(enemy, *Player::gameObject, Basic::k_defMoveSpeed);
         }
     }
 }
@@ -321,8 +324,10 @@ void GameSystem::init() {
 
     // Load Level
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json");
+
     // Set octree. Needs to be manually adjusted to fit level size
-    CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
+    if (!Scene::mapping)
+        CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
 
     // Start music
     Music::start();
@@ -343,6 +348,9 @@ void GameSystem::init() {
     SpatialComponent & fountainSpat(Scene::addComponent<SpatialComponent>(fountain, glm::vec3(1.0f, 7.6f, -51.0f)));
     fountainSpat.setUVW(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f), true);
     ParticleSystem::addWaterFountainPC(fountainSpat);
+
+    if (Scene::mapping) 
+        Enemies::Basic::create(glm::vec3(0, -1.5, 20), true);
 }
 
 void GameSystem::update(float dt) {
@@ -426,7 +434,7 @@ void GameSystem::setupMessageCallbacks() {
         static bool free = false;
 
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
-        if (msg.key == GLFW_KEY_TAB && msg.action == GLFW_PRESS && msg.mods & GLFW_MOD_CONTROL) {
+        if (msg.key == GLFW_KEY_G && msg.action == GLFW_PRESS) {
             if (free) {
                 // disable camera controller
                 Freecam::controllerComp->setEnabled(false);

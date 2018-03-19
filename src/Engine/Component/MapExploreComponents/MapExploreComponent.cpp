@@ -5,6 +5,11 @@
 #include "System/MapExploreSystem.hpp"
 #include "System/CollisionSystem.hpp"
 
+#include "glm/ext.hpp"
+
+#include "Component/Components.hpp"
+#include "System/GameSystem.hpp"
+
 MapExploreComponent::MapExploreComponent(GameObject & gameObject, float ms, String filename) :
 	Component(gameObject),
 	m_spatial(nullptr),
@@ -114,13 +119,13 @@ void MapExploreComponent::update(float dt) {
 
 					//std::cout << "Pos: " << xPos << ", " << zPos << std::endl;
 
-					auto pair(CollisionSystem::pick(Ray(glm::vec3(xPos, secondFloorHeight, zPos), glm::vec3(0, -1, 0)), &gameObject()));
+					auto pair(CollisionSystem::pickHeavy(Ray(glm::vec3(xPos, secondFloorHeight, zPos), glm::vec3(0, -1, 0)), UINT_MAX));
 					if (pair.second.is) {
 						testPoint = glm::vec3(xPos, secondFloorHeight - pair.second.dist, zPos);
 
 						if (visitedSet.find(testPoint) == visitedSet.end()) {
 							visitedSet.insert(testPoint);
-							//`drawCup(testPoint);
+							//drawCup(testPoint);
 						}
 					}
 				}
@@ -144,7 +149,7 @@ void MapExploreComponent::update(float dt) {
 					xPos = xIndex++ + firstFloorStart_x;
 					zPos = zIndex + firstFloorStart_z;
 
-					auto pair(CollisionSystem::pick(Ray(glm::vec3(xPos, firstFloorHeight, zPos), glm::vec3(0, -1, 0)), &gameObject()));
+					auto pair(CollisionSystem::pickHeavy(Ray(glm::vec3(xPos, firstFloorHeight, zPos), glm::vec3(0, -1, 0)), UINT_MAX));
 					if (pair.second.is) {
 						testPoint = glm::vec3(xPos, firstFloorHeight - pair.second.dist, zPos);
 
@@ -169,7 +174,7 @@ void MapExploreComponent::update(float dt) {
 		else if (collisionCheck) {
 			if (visitIterator != visitedSet.end()) {
 				collisionCount++;
-				gameObject().getSpatial()->setPosition(glm::vec3(visitIterator->x, visitIterator->y + .4f, visitIterator->z), false);
+				gameObject().getSpatial()->setPosition(glm::vec3(visitIterator->x, visitIterator->y + 1.5f, visitIterator->z), false);
 				collisionTestPoint = *visitIterator;
 				visitIterator++;
 			}
@@ -186,9 +191,9 @@ void MapExploreComponent::update(float dt) {
 			Vector<glm::vec3> possibleNeighbors;
 			Vector<glm::vec3> neighbors;
 
-			std::cout << "Removing Outliers" << std::endl;
-			removeOutliers(graphSet);
-			std::cout << "Size After: " << graphSet.size() << std::endl;
+			//std::cout << "Removing Outliers" << std::endl;
+			//removeOutliers(graphSet);
+			//std::cout << "Size After: " << graphSet.size() << std::endl;
 
 			// iterate through the graphSet and find the neighbors of each position
 			for (auto iter = graphSet.begin(); iter != graphSet.end(); ++iter) {
@@ -242,14 +247,15 @@ void MapExploreComponent::update(float dt) {
 
 // 			}
 
-			std::cout << "Remove unconnected Nodes: " << graph.size() << std::endl;
+			//std::cout << "Remove unconnected Nodes: " << graph.size() << std::endl;
 
 			for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
-				if (iter->second.size() > 2)
-					drawCup(iter->first);
-				// for (auto iter2 = iter->second.begin(); iter2 != iter->second.end(); ++iter2) {
-				// 	drawCup(*iter2);
-				// }
+				//if (iter->second.size() > 4)
+					//drawCup(iter->first);
+				 for (auto iter2 = iter->second.begin(); iter2 != iter->second.end(); ++iter2) {
+				 	if (iter2->y > iter->first.y)
+				 		drawCup(*iter2);
+				 }
 			}
 
 			//-20, 4.05946, -181
@@ -308,7 +314,7 @@ bool MapExploreComponent::removeOutliers(std::unordered_set<glm::vec3, vecHash, 
 // Checks if there is something between the two points and if they are close enough
 bool MapExploreComponent::validNeighbor(glm::vec3 curPos, glm::vec3 candidate) {
 	glm::vec3 direction = Util::safeNorm(curPos - candidate);
-	float maxDist = 1.45;
+	float maxDist = 1.7;
 /*
 	auto pair(CollisionSystem::pick(Ray(curPos, direction), &gameObject()));
 	if (pair.second.is) {
@@ -323,8 +329,16 @@ bool MapExploreComponent::validNeighbor(glm::vec3 curPos, glm::vec3 candidate) {
 	}
 	*/
 
-	if (glm::distance(curPos, candidate) < maxDist || curPos.y > candidate.y)
-		return true;
+	// Check that it is a neighbor on the grid
+	if (abs(curPos.x - candidate.x) < 1.2 && abs(curPos.z - candidate.z) < 1.2) {
+		// if step up or drop down
+		if (candidate.y - curPos.y < 1.0 || curPos.y > candidate.y) {
+			return true;
+		}
+	}
+
+	//if (glm::distance(curPos, candidate) < maxDist || curPos.y > candidate.y)
+	//	return true;
 
 	return false;
 }
@@ -372,17 +386,24 @@ std::string MapExploreComponent::vectorToString(Vector<glm::vec3> vec) {
 }
 
 void MapExploreComponent::drawCup(glm::vec3 position) {
-	Mesh * mesh(Loader::getMesh("Cup.obj"));
-    DiffuseShader * shader(RenderSystem::getShader<DiffuseShader>());
-    ModelTexture modelTex(.2f, glm::vec3(.20f, 1.0f, .20f), glm::vec3(1.0f));
-    bool toon(false);
-    glm::vec3 scale(.1f);
-    unsigned int collisionWeight(0);
-    float moveSpeed(0.0f);
-
+	const Mesh * mesh(Loader::getMesh("Hamburger.obj"));
+    const Texture * texture(Loader::getTexture("Hamburger_BaseColor.png"));
+    const DiffuseShader * shader();
+    ModelTexture modelTex(texture, Material(glm::vec3(1.f), glm::vec3(1.f), 16.0f));
     GameObject & obj(Scene::createGameObject());
-    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, scale));
-    //DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj, shader->pid, *mesh, modelTex, true, glm::vec2(1, 1)));
-    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(obj, spatComp, shader->pid, *mesh, modelTex, toon, glm::vec2(1,1));
+    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, glm::vec3(.05)));
+	DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(
+        obj,
+        spatComp,
+        *mesh,
+        modelTex,
+        false,
+        glm::vec2(1.0f)
+    );
 }
+
+
+
+
+
 

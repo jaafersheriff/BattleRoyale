@@ -16,6 +16,8 @@
 
 #include "Util/Util.hpp"
 
+#include "System/SpatialSystem.hpp"
+
 
 
 
@@ -63,8 +65,6 @@ class MapExploreComponent : public Component {
     float m_cosCriticalAngle;
 
     public:
-
-    virtual SystemID systemID() const override { return SystemID::mapexplore; };
 
     virtual void update(float) override;
 

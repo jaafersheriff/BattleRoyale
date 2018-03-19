@@ -45,6 +45,9 @@ float Scene::renderMessagingDT;
 float Scene::soundDT;
 float Scene::soundMessagingDT;
 
+bool Scene::mapping;
+String Scene::mapFilename;
+
 void Scene::init() {
     SpatialSystem::init();
     CollisionSystem::init();

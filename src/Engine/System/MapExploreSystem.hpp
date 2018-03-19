@@ -6,10 +6,6 @@
 class MapExploreSystem {
 
     friend Scene;
-
-    public:
-
-    static constexpr SystemID ID = SystemID::spatial;
     
     public:
 
