@@ -19,7 +19,8 @@ SpatialComponent::SpatialComponent(GameObject & gameObject) :
     m_modelMatrixValid(true),
     m_prevModelMatrixValid(true),
     m_normalMatrixValid(true),
-    m_prevNormalMatrixValid(true)
+    m_prevNormalMatrixValid(true),
+    m_dt(Util::infinity())
 {}
 
 SpatialComponent::SpatialComponent(GameObject & gameObject, const glm::vec3 & position) :
@@ -47,6 +48,7 @@ SpatialComponent::SpatialComponent(GameObject & gameObject, const glm::vec3 & po
 }
 
 void SpatialComponent::update(float dt) {
+    m_dt = dt;
     if (Positionable::isChange()) {
         Positionable::update();
         m_modelMatrixValid = false;
@@ -192,4 +194,8 @@ glm::mat3 SpatialComponent::normalMatrix(float interpP) const {
     else {
         return normalMatrix();
     }
+}
+
+glm::vec3 SpatialComponent::effectiveVelocity() const {
+    return (position() - prevPosition()) / m_dt;
 }

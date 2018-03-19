@@ -5,8 +5,14 @@
 #include "glm/glm.hpp"
 
 #include "System.hpp"
-#include "Component/SpatialComponents/SpatialComponent.hpp"
-#include "Component/SpatialComponents/PhysicsComponents.hpp"
+#include "Util/Memory.hpp"
+
+
+
+class Scene;
+class SpatialComponent;
+class NewtonianComponent;
+class AcceleratorComponent;
 
 
 
@@ -14,10 +20,6 @@
 class SpatialSystem {
 
     friend Scene;
-
-    public:
-
-    static constexpr SystemID ID = SystemID::spatial;
 
     public:
 
@@ -32,8 +34,13 @@ class SpatialSystem {
     static glm::vec3 gravity() { return s_gravityDir * s_gravityMag; }
     static const glm::vec3 & gravityDir() { return s_gravityDir; }
     static float gravityMag() { return s_gravityMag; }
-    static float coefficientOfFriction() { return s_coefficientOfFriction; }
-    static float terminalVelocity() { return s_terminalVelocity; }
+
+    public:
+
+    static const float k_terminalVelocity;
+    static const float k_coefficientOfFriction;
+    static const float k_elasticity;
+    static const float k_bounceVelThreshold;
 
     private:
 
@@ -42,7 +49,5 @@ class SpatialSystem {
     static const Vector<AcceleratorComponent *> & s_acceleratorComponents;
     static glm::vec3 s_gravityDir;
     static float s_gravityMag;
-    static const float s_coefficientOfFriction;
-    static const float s_terminalVelocity;
 
 };

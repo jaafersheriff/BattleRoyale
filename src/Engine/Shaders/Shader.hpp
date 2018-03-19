@@ -4,17 +4,12 @@
 #ifndef _SHADER_HPP_
 #define _SHADER_HPP_
 
-#define GLEW_STATIC
-#include <GL/glew.h>
 #include "glm/glm.hpp"
-#include "glm/gtc/type_ptr.hpp"
 
 #include "Util/Memory.hpp"
-#include "GLSL.hpp"
 
-class Component;
 class CameraComponent;
-
+class DiffuseRenderComponent;
 
 class Shader {
     public:
@@ -38,7 +33,7 @@ class Shader {
         void unloadTexture(int);
 
         /* Render functions */
-        virtual void render(const CameraComponent * camera, const Vector<Component *> & components) = 0;
+        virtual void render(const CameraComponent * camera) = 0;
 
         /* Parent load functions */
         void loadBool(const int, const bool) const;
@@ -48,15 +43,17 @@ class Shader {
         void loadVec3(const int, const glm::vec3 &) const;
         void loadMat3(const int, const glm::mat3 &) const;
         void loadMat4(const int, const glm::mat4 &) const;
+        void loadMultiMat4(const int, const glm::mat4 *, int) const;
+        void loadMultiMat3(const int, const glm::mat3 *, int) const;
 
         /* Get shader location */
-        GLint getAttribute(const String &);
-        GLint getUniform(const String &);
+        int getAttribute(const String &);
+        int getUniform(const String &);
 
          /* GLSL shader names */
         const String vShaderName;
         const String fShaderName;
-        GLuint pid = 0;
+        unsigned int pid = 0;
 
         bool isEnabled() const { return m_isEnabled; }
         void setEnabled(bool enabled) { m_isEnabled = enabled; }
@@ -69,10 +66,10 @@ class Shader {
         void addUniform(const String &);
     private:    
         /* GLSL shader attributes */
-        GLint vShaderId;
-        GLint fShaderId;
-        UnorderedMap<String, GLint> attributes;
-        UnorderedMap<String, GLint> uniforms;
+        int vShaderId;
+        int fShaderId;
+        UnorderedMap<String, int> attributes;
+        UnorderedMap<String, int> uniforms;
 };
 
 #endif

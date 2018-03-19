@@ -55,10 +55,12 @@ bool PostProcessShader::init() {
     return true;
 }
 
-void PostProcessShader::render(const CameraComponent * camera, const Vector<Component *> & components) {
+void PostProcessShader::render(const CameraComponent * camera) {
+    bind();
+
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, RenderSystem::s_fboColorTex);
+    glBindTexture(GL_TEXTURE_2D, RenderSystem::getFBOTexture());
     glUniform1i(getUniform("f_texCol"), 0);
     
     glBindVertexArray(s_vaoHandle);
@@ -71,4 +73,5 @@ void PostProcessShader::render(const CameraComponent * camera, const Vector<Comp
     // Unbind texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
+    unbind();
 }

@@ -1,13 +1,10 @@
 #pragma once
 
-#include "Component/Component.hpp"
+#include <iostream>
 
 #include "glm/glm.hpp"
-#include "glm/gtx/norm.hpp"
-#include <iostream>
-#include <queue>
 
-#include "Loader/Loader.hpp"
+#include "Component/Component.hpp"
 
 class PathfindingSystem;
 
@@ -111,7 +108,7 @@ class PathfindingComponent : public Component {
     private:
 
     SpatialComponent * m_spatial;
-    GameObject * m_player;
+    const GameObject & m_player;
     float m_moveSpeed;
 
     //glm::vec3 m_groundNorm;

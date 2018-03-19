@@ -1,11 +1,6 @@
 #include "Scene.hpp"
 
-#include <algorithm>
-
-#include "GLFW/glfw3.h"
-
-#include "IO/Keyboard.hpp"
-#include "System/GameLogicSystem.hpp"
+#include "System/GameSystem.hpp"
 #include "System/SpatialSystem.hpp"
 #include "System/PathfindingSystem.hpp"
 #include "System/MapExploreSystem.hpp"
@@ -13,6 +8,11 @@
 #include "System/PostCollisionSystem.hpp"
 #include "System/RenderSystem.hpp"
 #include "System/SoundSystem.hpp"
+#include "System/ParticleSystem.hpp"
+#include "Util/Util.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "IO/Window.hpp"
+#include "Component/ImGuiComponents/ImGuiComponent.hpp"
 
 
 
@@ -30,8 +30,8 @@ UnorderedMap<std::type_index, Vector<std::function<void (const Message &)>>> Sce
 float Scene::totalDT;
 float Scene::initDT;
 float Scene::killDT;
-float Scene::gameLogicDT;
-float Scene::gameLogicMessagingDT;
+float Scene::gameDT;
+float Scene::gameMessagingDT;
 float Scene::spatialDT;
 float Scene::spatialMessagingDT;
 float Scene::pathfindingDT;
@@ -46,14 +46,15 @@ float Scene::soundDT;
 float Scene::soundMessagingDT;
 
 void Scene::init() {
-    GameLogicSystem::init();
-    PathfindingSystem::init();
-    MapExploreSystem::init();
     SpatialSystem::init();
     CollisionSystem::init();
     PostCollisionSystem::init();
+    PathfindingSystem::init();
+    MapExploreSystem::init();
+    ParticleSystem::init();
     RenderSystem::init();
     SoundSystem::init();
+    GameSystem::init();
 }
 
 GameObject & Scene::createGameObject() {
@@ -72,10 +73,14 @@ void Scene::update(float dt) {
     relayMessages();
     initDT = float(watch.lap());
 
-    GameLogicSystem::update(dt);
-    gameLogicDT = float(watch.lap());
+    // This is here and not in SpatialSystem because this needs to happen right at the start of the game loop
+    for (SpatialComponent * comp : getComponents<SpatialComponent>()) { comp->update(dt); }
+    spatialDT = float(watch.lap());
+
+    GameSystem::update(dt);
+    gameDT = float(watch.lap());
     relayMessages();
-    gameLogicMessagingDT = float(watch.lap());
+    gameMessagingDT = float(watch.lap());
 
     PathfindingSystem::update(dt);
     pathfindingDT = float(watch.lap());
@@ -86,7 +91,7 @@ void Scene::update(float dt) {
     relayMessages();
 
     SpatialSystem::update(dt); // needs to happen right before collision
-    spatialDT = float(watch.lap());
+    spatialDT += float(watch.lap());
     relayMessages();
     spatialMessagingDT = float(watch.lap());
 
@@ -99,6 +104,10 @@ void Scene::update(float dt) {
     postCollisionDT = float(watch.lap());
     relayMessages();
     postCollisionMessagingDT = float(watch.lap());
+
+    // TO DO: Timing
+    ParticleSystem::update(dt);
+    relayMessages();
 
     RenderSystem::update(dt); // rendering should be last
     renderDT = float(watch.lap());
@@ -113,6 +122,12 @@ void Scene::update(float dt) {
     doKillQueue();
     relayMessages();
     killDT = float(watch.lap());
+
+#ifdef DEBUG_MODE
+    // Reports the state of the game, so should happen at end
+    for (ImGuiComponent * comp : getComponents<ImGuiComponent>()) comp->update(dt);
+    if (Window::isImGuiEnabled()) ImGui::Render();
+#endif
 
     totalDT = float(watch.total());
 }

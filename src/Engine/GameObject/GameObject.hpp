@@ -8,7 +8,8 @@
 #include <typeindex>
 #include <functional>
 
-#include "System/System.hpp"
+#include "glm/glm.hpp"
+#include "Util/Memory.hpp"
 
 class Scene;
 class Component;

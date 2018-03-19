@@ -5,20 +5,7 @@
 
 
 
-#include "Util/Memory.hpp"
-
-
-
-enum class SystemID {
-    gameLogic,
-    pathfinding,
-    mapexplore,
-    spatial,
-    collision,
-    postCollision,
-    render,
-    sound
-};
+#include "Component/Component.hpp"
 
 
 

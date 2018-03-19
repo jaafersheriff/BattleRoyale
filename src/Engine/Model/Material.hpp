@@ -8,24 +8,20 @@ class Material {
     public:
         /* Constructor */
         Material() :
-            ambient(0.f),
-            diffuse(glm::vec3(0.f)),
-            specular(glm::vec3(0.f)),
-            shineDamper(16.f)
+            diffuse(glm::vec3(1.0f)),
+            specular(glm::vec3(1.0f)),
+            shine(16.0f)
         {}
 
-        Material(const float a, const glm::vec3 & d, const glm::vec3 & s) :
-            ambient(a),
-            diffuse(d),
-            specular(s),
-            shineDamper(16.f)
+        Material(const glm::vec3 & diffuse, const glm::vec3 & specular, float shine) :
+            diffuse(diffuse),
+            specular(specular),
+            shine(shine)
         {}
 
-        float ambient;
         glm::vec3 diffuse;
         glm::vec3 specular;
-
-        float shineDamper;
+        float shine;
         
 };
 
