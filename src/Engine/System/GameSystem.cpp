@@ -71,7 +71,8 @@ void GameSystem::Player::init() {
         *handMesh,
         handModelTex,
         true,
-        glm::vec2(1.0f)
+        glm::vec2(1.0f),
+        false
     );
 }
 
@@ -113,7 +114,8 @@ void GameSystem::Enemies::Basic::create(const glm::vec3 & position) {
         *bodyMesh,
         modelTex,
         k_isToon,
-        glm::vec2(1.0f)
+        glm::vec2(1.0f),
+        false
     );
     DiffuseRenderComponent & headRenderComp = Scene::addComponent<DiffuseRenderComponent>(
         obj,
