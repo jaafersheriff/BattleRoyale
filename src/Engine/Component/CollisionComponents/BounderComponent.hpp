@@ -37,8 +37,6 @@ class BounderComponent : public Component {
 
     public:
 
-    virtual SystemID systemID() const override { return SystemID::collision; };
-
     virtual void update(float dt) = 0;
 
     virtual bool collide(const BounderComponent & o, glm::vec3 * delta) const = 0;

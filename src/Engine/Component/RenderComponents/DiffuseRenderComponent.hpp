@@ -37,8 +37,6 @@ class DiffuseRenderComponent : public Component {
 
         DiffuseRenderComponent(DiffuseRenderComponent && other) = default;
 
-        virtual SystemID systemID() const override { return SystemID::render; };
-
         virtual void update(float dt) override;
 
         const Mesh & mesh() const { return m_mesh; }

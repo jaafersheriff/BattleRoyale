@@ -1,14 +1,19 @@
 #include "ShadowDepthShader.hpp"
 
+#define GLEW_STATIC
+#include "GL/glew.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include "GLSL.hpp"
+
 #include "Component/CameraComponents/CameraComponent.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
-
 #include "System/RenderSystem.hpp"
+#include "Model/Mesh.hpp"
+#include "System/ParticleSystem.hpp"
+#include "Component/ParticleComponents/ParticleComponent.hpp"
 
-#include <glm/gtc/matrix_transform.hpp>
-
-#define DEFAULT_SIZE 1024
+#define DEFAULT_SIZE 8192
 
 ShadowDepthShader::ShadowDepthShader(const String & vertName, const String & fragName) :
     Shader(vertName, fragName) {
@@ -27,6 +32,69 @@ bool ShadowDepthShader::init() {
     addUniform("M");
 
     initFBO();
+
+    //--------------------------------------------------------------------------
+    // Particles
+
+    /* Add attributes */
+    addAttribute("particlePosition");
+    addAttribute("particleMatrixID");
+    addAttribute("particleVelocity");
+    addAttribute("particleLife");
+
+    /* Add uniforms */
+    addUniform("particles");
+    addUniform("variationMs");
+    addUniform("particleScale");
+    addUniform("particleVariation");
+    addUniform("particleFade");
+    addUniform("particleMaxLife");
+
+    // Init particles buffers
+    glGenVertexArrays(1, &s_particlesVAO);
+    glBindVertexArray(s_particlesVAO);
+
+    glGenBuffers(1, &s_particlesVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, s_particlesVBO);
+    glBufferData(GL_ARRAY_BUFFER, ParticleSystem::k_maxNParticles * sizeof(Particle), nullptr, GL_STREAM_DRAW);
+    // Position
+    int positionAI(getAttribute("particlePosition"));
+    if (positionAI != -1) {
+        glEnableVertexAttribArray(positionAI);
+        glVertexAttribPointer(positionAI, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *)0);
+        glVertexAttribDivisor(positionAI, 1);
+    }
+    // Matrix ID
+    int matrixIDAI(getAttribute("particleMatrixID"));
+    if (matrixIDAI != -1) {
+        glEnableVertexAttribArray(matrixIDAI);
+        glVertexAttribIPointer(matrixIDAI, 1, GL_UNSIGNED_INT, sizeof(Particle), (void *)12);
+        glVertexAttribDivisor(matrixIDAI, 1);
+    }
+    // Velocity
+    int velocityAI(getAttribute("particleVelocity"));
+    if (velocityAI != -1) {
+        glEnableVertexAttribArray(velocityAI);
+        glVertexAttribPointer(velocityAI, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *)16);
+        glVertexAttribDivisor(velocityAI, 1);
+    }
+    // Life
+    int lifeAI(getAttribute("particleLife"));
+    if (lifeAI != -1) {
+        glEnableVertexAttribArray(lifeAI);
+        glVertexAttribPointer(lifeAI, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *)28);
+        glVertexAttribDivisor(lifeAI, 1);
+    }
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Load particle variation matrices
+    bind();
+    loadMultiMat4(getUniform("variationMs"), ParticleSystem::s_variationMs.data(), ParticleSystem::k_maxVariations);
+    unbind();
+
+    GLSL::checkError();
 
     return true;
 }
@@ -74,6 +142,9 @@ void ShadowDepthShader::render(const CameraComponent * camera) {
 
     bind();
     glCullFace(GL_FRONT);
+    
+    // Not doing particles yet
+    loadBool(getUniform("particles"), false);
 
     /* Calculate L */
     this->L = camera->getProj() * camera->getView();
@@ -105,8 +176,44 @@ void ShadowDepthShader::render(const CameraComponent * camera) {
         glDisableVertexAttribArray(getAttribute("vertPos"));
     }
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    //--------------------------------------------------------------------------
+    // Particles
+    
+    loadBool(getUniform("particles"), true);
+    
+    glBindVertexArray(s_particlesVAO);
+
+    for (ParticleComponent * pc : ParticleSystem::s_particleComponents) {
+        if (pc->finished()) {
+            continue;
+        }
+
+        // Load particle uniforms
+        loadFloat(getUniform("particleScale"), pc->m_scale);
+        loadBool(getUniform("particleVariation"), pc->m_variation);
+        loadBool(getUniform("particleFade"), pc->m_fade);
+        loadFloat(getUniform("particleMaxLife"), pc->m_duration);
+
+        // Buffer instance data
+        glBindBuffer(GL_ARRAY_BUFFER, s_particlesVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, pc->m_particles.size() * sizeof(Particle), pc->m_particles.data());
+
+        /* Bind vertex buffer VBO */
+        int pos = getAttribute("vertPos");
+        glBindBuffer(GL_ARRAY_BUFFER, pc->m_mesh.vertBufId);
+        glEnableVertexAttribArray(pos);
+        glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
+
+        /* Bind indices buffer VBO */
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pc->m_mesh.eleBufId);
+
+        /* DRAW */
+        glDrawElementsInstanced(GL_TRIANGLES, (int)pc->m_mesh.eleBufSize, GL_UNSIGNED_INT, nullptr, int(pc->m_particles.size())); 
+    }
+
+    glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glCullFace(GL_BACK);
     unbind();

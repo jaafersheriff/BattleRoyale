@@ -1,7 +1,6 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "glm/gtc/constants.hpp"
 
 #include "Component/Component.hpp"
 
@@ -18,13 +17,9 @@ class NewtonianComponent : public Component {
 
     friend Scene;
 
-  public:
-
-    virtual SystemID systemID() const override { return SystemID::spatial; };
-
   protected: // only scene or friends can create component
 
-    NewtonianComponent(GameObject & gameObject);
+    NewtonianComponent(GameObject & gameObject, bool isBouncy);
 
   public:
 
@@ -44,6 +39,8 @@ class NewtonianComponent : public Component {
 
     void addVelocity(const glm::vec3 & velocity);
 
+    void setVelocity(const glm::vec3 & velocity);
+
     // dir should be normalized
     void removeAllVelocityAgainstDir(const glm::vec3 & dir);
     // dir should be normalized
@@ -56,6 +53,7 @@ class NewtonianComponent : public Component {
     SpatialComponent * m_spatial;
     glm::vec3 m_velocity;
     glm::vec3 m_acceleration;
+    bool m_isBouncy;
 
 
 };
@@ -82,8 +80,6 @@ class AcceleratorComponent : public Component {
     virtual void init() override;
 
   public:
-
-    virtual SystemID systemID() const override { return SystemID::spatial; };
 
     virtual void update(float dt) override;
 

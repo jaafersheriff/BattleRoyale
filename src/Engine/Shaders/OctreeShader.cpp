@@ -1,5 +1,7 @@
 #include "OctreeShader.hpp"
 
+#define GLEW_STATIC
+#include "GL/glew.h"
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "Component/CollisionComponents/BounderComponent.hpp"
@@ -7,6 +9,7 @@
 #include "Component/CameraComponents/CameraComponent.hpp"
 #include "System/CollisionSystem.hpp"
 #include "Util/Octree.hpp"
+#include "Util/Util.hpp"
 
 
 

@@ -3,7 +3,6 @@
 
 
 #include "Shader.hpp"
-#include "Util/Geometry.hpp"
 
 
 

@@ -3,6 +3,8 @@
 #include "glm/gtx/component_wise.hpp"
 #include "glm/gtx/norm.hpp"
 
+#include "Util.hpp"
+
 
 
 namespace {

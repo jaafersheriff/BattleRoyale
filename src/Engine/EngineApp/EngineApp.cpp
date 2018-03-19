@@ -3,6 +3,7 @@
 #include <time.h>
 #include <iostream>
 
+#include "Util/Util.hpp"
 
 String EngineApp::RESOURCE_DIR = "../resources/";
 String EngineApp::APP_NAME = "Battle Royale with Cheese";

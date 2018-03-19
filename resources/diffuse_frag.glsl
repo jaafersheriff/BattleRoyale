@@ -8,10 +8,10 @@ in vec2 texCoords;
 uniform sampler2D shadowMap;
 uniform float shadowAmbience;
 
-uniform float matAmbient;
+uniform float ambience;
 uniform vec3 matDiffuse;
 uniform vec3 matSpecular;
-uniform float shine;
+uniform float matShine;
 
 uniform vec3 camPos;
 uniform vec3 lightDir;
@@ -27,6 +27,7 @@ uniform sampler1D cellDiffuseScales;
 uniform sampler1D cellSpecularScales;
 
 layout(location = 0) out vec4 color;
+layout (location = 1) out vec4 BrightColor;
 
 void main() {
     vec3 viewDir = camPos - fragPos;
@@ -36,14 +37,14 @@ void main() {
 
     /* Base color */
     vec3 diffuseColor = matDiffuse;
-	float alpha = 1.0;
+    float alpha = 1.0;
     if (usesTexture) {
         vec4 texColor = vec4(texture(textureImage, texCoords));
-		if (texColor.a < 0.1) {
-			discard; 
-		}
-		diffuseColor = texColor.xyz;
-		alpha = texColor.a;
+        if (texColor.a < 0.1) {
+            discard; 
+        }
+        diffuseColor = texColor.xyz;
+        alpha = texColor.a;
     }
 
     float lambert = dot(L, N);
@@ -54,7 +55,7 @@ void main() {
         for(int i = 0; i < numCells; i++) {
             if(lambert > texelFetch(cellIntensities, i, 0).r) {
                 diffuseContrib = texelFetch(cellDiffuseScales, i, 0).r;
-                specularContrib = pow(texelFetch(cellSpecularScales, i, 0).r, shine);
+                specularContrib = pow(texelFetch(cellSpecularScales, i, 0).r, matShine);
                 break;
             }
         }
@@ -62,8 +63,8 @@ void main() {
     /* Blinn-Phong shading */
     else {
         vec3 H = (L + V) / 2.0;
-        diffuseContrib = clamp(lambert, matAmbient, 1.0);
-        specularContrib = pow(max(dot(H, N), 0.0), shine);
+        diffuseContrib = clamp(lambert, ambience, 1.0);
+        specularContrib = pow(max(dot(H, N), 0.0), matShine);
     }
 
     /* Base color + shadow */
@@ -73,10 +74,24 @@ void main() {
             shadowCoords.z > texture(shadowMap, shadowCoords.xy).r + 0.005) {
         visibility -= (shadowCoords.w * (1.0 - shadowAmbience));
     }
+    // Shadows affect ambience value :(
     vec3 bColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib) * visibility;
 
     /* Silhouettes */
     float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;
 
     color = vec4(edge * bColor, alpha);
+
+    float brightness = max(((color.r+color.g+color.b)/3.0 - 0.6)/0.4, 0.0f);
+
+    BrightColor.rgb = vec3(brightness);;
+
+    BrightColor.a = 1;
+
+    /*
+    if(brightness > 0.6)
+        BrightColor = vec4(color.rgb, 1.0);
+    else
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+    */
 }

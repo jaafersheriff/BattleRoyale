@@ -1,5 +1,7 @@
 #include "RayShader.hpp"
 
+#define GLEW_STATIC
+#include "GL/glew.h"
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "Component/CollisionComponents/BounderComponent.hpp"

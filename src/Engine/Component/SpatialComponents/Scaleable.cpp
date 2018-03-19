@@ -26,11 +26,7 @@ void Scaleable::setScale(const glm::vec3 & scale) {
 }
 
 void Scaleable::scale(const glm::vec3 & factor) {
-    m_prevScale = m_scale;
-    if (factor == glm::vec3(1.0f)) {
-        m_isChange = false;
-    }
-    else {
+    if (factor != glm::vec3(1.0f)) {
         m_scale *= factor;
         m_isChange = true;
     }
