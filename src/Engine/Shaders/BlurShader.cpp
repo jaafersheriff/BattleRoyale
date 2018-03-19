@@ -1,24 +1,24 @@
-#include "PostProcessShader.hpp"
+#include "BlurShader.hpp"
 
+#define GLEW_STATIC
+#include <GL/glew.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "IO/Window.hpp"
 #include "System/RenderSystem.hpp"
 
-PostProcessShader::PostProcessShader(const String & vertName, const String & fragName) :
+BlurShader::BlurShader(const String & vertName, const String & fragName) :
     Shader(vertName, fragName)
 {}
 
-bool PostProcessShader::init() {
+bool BlurShader::init() {
     if (!Shader::init()) {
         return false;
     }
 
     addAttribute("v_screenPos");
-    addUniform("f_texCol");
-    addUniform("f_bloomBlur");
-    addUniform("exposure");
-
+    addUniform("image");
+    addUniform("horizontal");
 
     // Initialize frameSquarePos
     glm::vec2 frameSquarePos[4]{
@@ -54,34 +54,26 @@ bool PostProcessShader::init() {
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    
 
     return true;
 }
 
-void PostProcessShader::render(const CameraComponent * camera) {
-    bind();
-
+void BlurShader::render(const CameraComponent * camera){
     // Bind texture
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, RenderSystem::getFBOTexture());
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, RenderSystem::getBloomTexture());
-    glUniform1i(getUniform("f_texCol"), 0);
-    glUniform1i(getUniform("f_bloomBlur"), 1);
-    glUniform1f(getUniform("exposure"), 1.f);
-    
+    //glActiveTexture(GL_TEXTURE0);
+    //glBindTexture(GL_TEXTURE_2D, RenderSystem::colorBuffers[1]);
+    glUniform1i(getUniform("image"), 0);
+    glUniform1i(getUniform("horizontal"), s_horizontal);
+
     glBindVertexArray(s_vaoHandle);
 
     // Draw
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *)0);
 
-    glBindVertexArray(0);
-    
+    //glBindVertexArray(0);
+
     // Unbind texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    unbind();
 }

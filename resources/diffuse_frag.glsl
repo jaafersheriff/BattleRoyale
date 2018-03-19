@@ -26,6 +26,7 @@ uniform sampler1D cellDiffuseScales;
 uniform sampler1D cellSpecularScales;
 
 layout(location = 0) out vec4 color;
+layout (location = 1) out vec4 BrightColor;
 
 float inShade(vec3 lPos, float bias) {
     float worldDepth = texture(shadowMap, lPos.xy).r;
@@ -86,4 +87,17 @@ void main() {
     float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;
 
     color = vec4(edge * bColor, alpha);
+
+    float brightness = max(((color.r+color.g+color.b)/3.0 - 0.6)/0.4, 0.0f);
+
+    BrightColor.rgb = vec3(brightness);;
+
+    BrightColor.a = 1;
+
+    /*
+    if(brightness > 0.6)
+        BrightColor = vec4(color.rgb, 1.0);
+    else
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+    */
 }
