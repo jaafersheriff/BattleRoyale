@@ -49,7 +49,7 @@ void ShadowDepthShader::initFBO() {
     glBindFramebuffer(GL_FRAMEBUFFER, s_fboHandle);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, s_shadowMap->textureId, 0);
     glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
+    //glReadBuffer(GL_NONE);
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -57,7 +57,7 @@ void ShadowDepthShader::initFBO() {
 void ShadowDepthShader::setMapSize(int size) {
     s_shadowMap->width = s_shadowMap->height = size;
     glBindTexture(GL_TEXTURE_2D, s_shadowMap->textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, size, size, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, size, size, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
