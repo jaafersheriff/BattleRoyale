@@ -32,6 +32,7 @@ class EnemyComponent : public Component {
 
     protected:
 
+    SpatialComponent * m_spatial;
     HealthComponent * m_health;
 
 };

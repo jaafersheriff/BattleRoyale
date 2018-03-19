@@ -12,7 +12,7 @@
 #include "Model/Mesh.hpp"
 #include "System/ParticleSystem.hpp"
 #include "Component/ParticleComponents/ParticleComponent.hpp"
-#include "System/GameSystem.hpp"
+#include "System/GameInterface.hpp"
 
 DiffuseShader::DiffuseShader(const String & vertFile, const String & fragFile) :
     Shader(vertFile, fragFile) {
@@ -164,7 +164,7 @@ void DiffuseShader::render(const CameraComponent * camera) {
     loadMat4(getUniform("V"), camera->getView());
     loadVec3(getUniform("lightDir"), RenderSystem::getLightDir());
     loadVec3(getUniform("camPos"), camera->gameObject().getSpatial()->position());
-    loadFloat(getUniform("ambience"), GameSystem::getAmbience());
+    loadFloat(getUniform("ambience"), GameInterface::getAmbience());
 
     /* Shadows */
     loadMat4(getUniform("L"), RenderSystem::getL());

@@ -157,6 +157,15 @@ void SpatialComponent::setRelativeUVW(const glm::vec3 & u, const glm::vec3 & v, 
     setRelativeOrientation(glm::mat3(u, v, w), silently);
 }
 
+void SpatialComponent::lookAt(const glm::vec3 & p, const glm::vec3 & up) {
+    glm::vec3 w(glm::normalize(position() - p));
+    if (m_parent) {
+        w = glm::transpose(orientMatrix()) * w;
+    }
+    glm::vec3 u(glm::cross(up, w));
+    setRelativeUVW(u, glm::cross(w, u), w);
+}
+
 glm::vec3 SpatialComponent::relativePosition(float interpP) const {
     return m_isRelPositionChange ? glm::mix(m_prevRelPosition, m_relPosition, interpP) : m_relPosition;
 }

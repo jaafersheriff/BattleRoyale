@@ -48,6 +48,7 @@ CameraComponent * GameSystem::Player::camera = nullptr;
 PlayerControllerComponent * GameSystem::Player::controller = nullptr;
 PlayerComponent * GameSystem::Player::playerComp = nullptr;
 HealthComponent * GameSystem::Player::health = nullptr;
+SpatialComponent * GameSystem::Player::handSpatial = nullptr;
 
 void GameSystem::Player::init() {
     gameObject = &Scene::createGameObject();
@@ -61,6 +62,17 @@ void GameSystem::Player::init() {
     controller = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_defLookSpeed, k_defMoveSpeed, k_defJumpSpeed, k_defSprintSpeed);
     playerComp = &Scene::addComponent<PlayerComponent>(*gameObject);
     health = &Scene::addComponent<HealthComponent>(*gameObject, k_defMaxHP);
+    handSpatial = &Scene::addComponent<SpatialComponent>(*gameObject, k_defMainHandPosition, spatial);
+    const Mesh * handMesh(Loader::getMesh("weapons/Pizza_Slice.obj"));
+    const Texture * handTex(Loader::getTexture("weapons/Pizza_Tex.png"));
+    ModelTexture handModelTex(handTex, Lighting::k_defMaterial);
+    Scene::addComponent<DiffuseRenderComponent>(*gameObject,
+        *handSpatial,
+        *handMesh,
+        handModelTex,
+        true,
+        glm::vec2(1.0f)
+    );
 }
 
 
@@ -334,7 +346,7 @@ void GameSystem::init() {
     setupImGui();
 
     // Disable certain shaders
-    RenderSystem::s_bounderShader->setEnabled(false);
+    //RenderSystem::s_bounderShader->setEnabled(false);
     RenderSystem::s_octreeShader->setEnabled(false);
     RenderSystem::s_rayShader->setEnabled(false);
 
@@ -373,7 +385,6 @@ void GameSystem::update(float dt) {
 
 //==============================================================================
 // Message Handling
-
 
 void GameSystem::setupMessageCallbacks() {
 

@@ -16,6 +16,12 @@ class SpatialSystem;
 
 
 
+// Spatial Components define a game object spatially. They exist in a
+// heirarchical structure, where each may have a parent and any number of
+// children. Transformations applied will effectively propagate down the tree.
+// Relative position/scale/orientation means relative to its parent spatial.
+// If it has no parent, then it's relative to world space and is equivalent to
+// absolute position/scale/orientation.
 class SpatialComponent : public Component {
 
     friend Scene;
@@ -39,21 +45,22 @@ class SpatialComponent : public Component {
 
     virtual void update(float dt) override;
 
+    // Remove the given child from this spatial's children
     void orphan(SpatialComponent & child);
 
-    // sets the absolute position
+    // sets the relative position
     void setRelativePosition(const glm::vec3 & relativePosition, bool silently = false);
 
     // moves current position by delta
     void move(const glm::vec3 & delta, bool silently = false);
 
-    // sets the absolute scale
+    // sets the relative scale
     void setRelativeScale(const glm::vec3 & relativeScale, bool silently = false);
 
     // multiplies current scale by factor
     void scaleBy(const glm::vec3 & factor, bool silently = false);
 
-    // sets the absolute orientation
+    // sets the relative orientation
     void setRelativeOrientation(const glm::quat & relativeOrientation, bool silently = false);
     void setRelativeOrientation(const glm::mat3 & relativeOrientation, bool silently = false);
     
@@ -61,25 +68,34 @@ class SpatialComponent : public Component {
     void rotate(const glm::quat & rotation, bool silently = false);
     void rotate(const glm::mat3 & rotation, bool silently = false);
 
-    // set the orthonormal basis vectors
+    // set the relative orthonormal basis vectors
     void setRelativeUVW(const glm::vec3 & relativeU, const glm::vec3 & relativeV, const glm::vec3 & relativeW, bool silently = false);
 
+    // Adjusts orientation such that -w is pointing toward p, and v is coplanar with up
+    // UP MUST BE UNIT VECTOR
+    void lookAt(const glm::vec3 & p, const glm::vec3 & up);
+
+    // Get the relative position
     const glm::vec3 & relativePosition() const { return m_relPosition; }
     const glm::vec3 & prevRelativePosition() const { return m_prevRelPosition; }
     glm::vec3 relativePosition(float interpP) const;
 
+    // Get the absolute position
     glm::vec3 position() const;
     glm::vec3 prevPosition() const;
     glm::vec3 position(float interpP) const;
 
+    // Get the relative scale
     const glm::vec3 & relativeScale() const { return m_relScale; }
     const glm::vec3 & prevRelativeScale() const { return m_prevRelScale; }
     glm::vec3 relativeScale(float interpP) const;
 
+    // Get the absolute scale
     glm::vec3 scale() const;
     glm::vec3 prevScale() const;
     glm::vec3 scale(float interpP) const;
 
+    // Get the relative uvw vectors
     const glm::vec3 & relativeU() const { return m_relOrientMatrix[0]; }
     const glm::vec3 & relativeV() const { return m_relOrientMatrix[1]; }
     const glm::vec3 & relativeW() const { return m_relOrientMatrix[2]; }
@@ -90,6 +106,7 @@ class SpatialComponent : public Component {
     glm::vec3 relativeV(float interpP) const;
     glm::vec3 relativeW(float interpP) const;
 
+    // Get the absolute uvw vectors
     glm::vec3 u() const;
     glm::vec3 v() const;
     glm::vec3 w() const;
@@ -100,6 +117,7 @@ class SpatialComponent : public Component {
     glm::vec3 v(float interpP) const;
     glm::vec3 w(float interpP) const;
 
+    // Get the relative orientation
     const glm::quat & relativeOrientation() const { return m_relOrientation; }
     const glm::quat & prevRelativeOrientation() const { return m_prevRelOrientation; }
     glm::quat relativeOrientation(float interpP) const;
@@ -108,6 +126,7 @@ class SpatialComponent : public Component {
     const glm::mat3 & prevRelativeOrientMatrix() const { return m_prevRelOrientMatrix; };
     glm::mat3 relativeOrientMatrix(float interpP) const;
 
+    // Get the absolute orientation
     glm::quat orientation() const;
     glm::quat prevOrientation() const;
     glm::quat orientation(float interpP) const;

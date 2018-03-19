@@ -21,6 +21,7 @@ class ImGuiComponent;
 class EnemyComponent;
 class ProjectileComponent;
 class BlastComponent;
+struct GameInterface;
 
 
 
@@ -28,6 +29,7 @@ class BlastComponent;
 class GameSystem {
 
     friend Scene;
+    friend GameInterface;
 
     private:
 
@@ -70,6 +72,7 @@ class GameSystem {
         static PlayerControllerComponent * controller;
         static PlayerComponent * playerComp;
         static HealthComponent * health;
+        static SpatialComponent * handSpatial;
 
         static void init();
 
@@ -183,8 +186,6 @@ class GameSystem {
     static void init();
 
     static void update(float dt);
-
-    static float getAmbience() { return Lighting::k_defAmbience; }
 
     private:
 
