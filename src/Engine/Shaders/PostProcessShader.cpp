@@ -14,8 +14,15 @@ bool PostProcessShader::init() {
         return false;
     }
 
-    addAttribute("v_screenPos");
+    addAttribute("v_vPos");
+    
+    addUniform("v_scale");
+    addUniform("v_translate");
+    addUniform("v_depth");
+
     addUniform("f_texCol");
+
+    tex_pizza = Loader::getTexture("chrome_tex.png");
 
     // Initialize frameSquarePos
     glm::vec2 frameSquarePos[4]{
@@ -58,15 +65,37 @@ bool PostProcessShader::init() {
 void PostProcessShader::render(const CameraComponent * camera) {
     bind();
 
+    glm::ivec2 size = Window::getFrameSize();
+
+    glBindVertexArray(s_vaoHandle);
+
+    loadVec2(getUniform("v_scale"), glm::vec2(.5f, .5f));
+    loadVec2(getUniform("v_translate"), glm::vec2(.5f, .5f));
+    loadFloat(getUniform("v_depth"), -1.f);
+
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, RenderSystem::getFBOTexture());
+    //glBindTexture(GL_TEXTURE_2D, tex_pizza->textureId);
     glUniform1i(getUniform("f_texCol"), 0);
     
-    glBindVertexArray(s_vaoHandle);
+    //glBindVertexArray(s_vaoHandle);
 
     // Draw
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
+
+    /* loadVec2(getUniform("v_scale"), glm::vec2(.5f, .5f));
+    loadVec2(getUniform("v_translate"), glm::vec2(.5f, .5f));
+    loadFloat(getUniform("v_depth"), -.5f);
+
+    // Bind texture
+    glActiveTexture(GL_TEXTURE0);
+    //glBindTexture(GL_TEXTURE_2D, RenderSystem::getFBOTexture());
+    glBindTexture(GL_TEXTURE_2D, tex_pizza->textureId);
+    glUniform1i(getUniform("f_texCol"), 0);
+
+    // Draw
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0); */
 
     glBindVertexArray(0);
     
