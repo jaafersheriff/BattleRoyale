@@ -19065,8 +19065,8 @@
 "object339": {
 "transform": 
 {
-    "objName": "Assets/Models/Stage Pieces/Shop_Gate.obj",
-    "objTexture": "Assets/Models/Grey_Tex.png",
+    "objName": "Assets/Models/PizzaShop_Display.obj",
+    "objTexture": "Assets/Models/PizzaShop_Display.png",
     "tiling": [
         1.0,
         1.0
@@ -19074,19 +19074,19 @@
     "isToon": true,
     "allowColliders": true,
     "position": [
-        -36.880001068115237,
-        0.48000001907348635,
-        -59.907405853271487
+        -36.38999938964844,
+        -0.8299999833106995,
+        -59.865997314453128
     ],
     "scale": [
-        0.6796911954879761,
-        0.3241199851036072,
-        1.0
+        0.12304002791643143,
+        0.12303999811410904,
+        0.07804606109857559
     ],
     "rotMat3_0": [
-        5.960464477539063e-8,
+        0.9997631311416626,
         0.0,
-        -0.9999999403953552
+        0.021763687953352929
     ],
     "rotMat3_1": [
         0.0,
@@ -19094,9 +19094,9 @@
         0.0
     ],
     "rotMat3_2": [
-        0.9999999403953552,
+        -0.021763687953352929,
         0.0,
-        5.960464477539063e-8
+        0.9997631311416626
     ]
 },
 "capsules":{
@@ -19206,6 +19206,241 @@
 "object341": {
 "transform": 
 {
+    "objName": "Assets/Models/Chinese_Counter.obj",
+    "objTexture": "Assets/Models/Chinese_Counter.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -36.470001220703128,
+        -1.1399999856948853,
+        -59.77000045776367
+    ],
+    "scale": [
+        0.3422669768333435,
+        0.2854689061641693,
+        0.47636649012565615
+    ],
+    "rotMat3_0": [
+        1.0,
+        0.0,
+        1.7484555314695172e-7
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        -1.7484555314695172e-7,
+        0.0,
+        1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object342": {
+"transform": 
+{
+    "objName": "Assets/Models/PizzaShop_Display.obj",
+    "objTexture": "Assets/Models/PizzaShop_Display.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -36.38999938964844,
+        -0.8299999833106995,
+        -61.189998626708987
+    ],
+    "scale": [
+        0.12304004281759262,
+        0.12303999811410904,
+        0.07805002480745316
+    ],
+    "rotMat3_0": [
+        0.9992815852165222,
+        0.0,
+        -0.03789930045604706
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.03789930045604706,
+        0.0,
+        0.9992815852165222
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object343": {
+"transform": 
+{
+    "objName": "Assets/Models/PizzaShop_Display.obj",
+    "objTexture": "Assets/Models/PizzaShop_Display.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -36.47600173950195,
+        -0.8299999833106995,
+        -62.55799865722656
+    ],
+    "scale": [
+        0.12303999811410904,
+        0.12303999811410904,
+        0.07804998010396958
+    ],
+    "rotMat3_0": [
+        0.9942499399185181,
+        0.0,
+        -0.10708437114953995
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.10708437114953995,
+        0.0,
+        0.9942499399185181
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object344": {
+"transform": 
+{
+    "objName": "Assets/Models/PizzaShop_Display.obj",
+    "objTexture": "Assets/Models/PizzaShop_Display.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -36.61899948120117,
+        -0.8299999833106995,
+        -63.900001525878909
+    ],
+    "scale": [
+        0.12304013967514038,
+        0.12303999811410904,
+        0.07805008441209793
+    ],
+    "rotMat3_0": [
+        0.9942499399185181,
+        0.0,
+        -0.10708437114953995
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.10708437114953995,
+        0.0,
+        0.9942499399185181
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object345": {
+"transform": 
+{
+    "objName": "Assets/Models/PizzaShop_Display.obj",
+    "objTexture": "Assets/Models/PizzaShop_Display.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -36.762001037597659,
+        -0.8299999833106995,
+        -65.22699737548828
+    ],
+    "scale": [
+        0.12304013967514038,
+        0.12303999811410904,
+        0.07805008441209793
+    ],
+    "rotMat3_0": [
+        0.9942499399185181,
+        0.0,
+        -0.10708437114953995
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        0.10708437114953995,
+        0.0,
+        0.9942499399185181
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object346": {
+"transform": 
+{
     "objName": "Assets/Models/Stage Pieces/Shop_Gate.obj",
     "objTexture": "Assets/Models/Grey_Tex.png",
     "tiling": [
@@ -19250,7 +19485,7 @@
 }
 }
 ,
-"object342": {
+"object347": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Basic_Shop.obj",
@@ -19344,7 +19579,7 @@
 }}
 }
 ,
-"object343": {
+"object348": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Shop_Gate.obj",
@@ -19391,7 +19626,7 @@
 }
 }
 ,
-"object344": {
+"object349": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Basic_Shop.obj",
@@ -19485,7 +19720,7 @@
 }}
 }
 ,
-"object345": {
+"object350": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Shop_Gate.obj",
@@ -19532,7 +19767,7 @@
 }
 }
 ,
-"object346": {
+"object351": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Basic_Shop.obj",
@@ -19626,7 +19861,7 @@
 }}
 }
 ,
-"object347": {
+"object352": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Shop_Gate.obj",
@@ -19673,7 +19908,7 @@
 }
 }
 ,
-"object348": {
+"object353": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Basic_Shop.obj",
@@ -19767,7 +20002,7 @@
 }}
 }
 ,
-"object349": {
+"object354": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Shop_Gate.obj",
@@ -19814,7 +20049,7 @@
 }
 }
 ,
-"object350": {
+"object355": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Basic_Shop.obj",
@@ -19908,7 +20143,7 @@
 }}
 }
 ,
-"object351": {
+"object356": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Shop_Gate.obj",
@@ -19955,7 +20190,7 @@
 }
 }
 ,
-"object352": {
+"object357": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Basic_Shop.obj",
@@ -20049,7 +20284,7 @@
 }}
 }
 ,
-"object353": {
+"object358": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Shop_Gate.obj",
@@ -20096,7 +20331,7 @@
 }
 }
 ,
-"object354": {
+"object359": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Basic_Shop.obj",
@@ -20190,7 +20425,7 @@
 }}
 }
 ,
-"object355": {
+"object360": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Shop_Gate.obj",
@@ -20237,7 +20472,7 @@
 }
 }
 ,
-"object356": {
+"object361": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Basic_Shop.obj",
@@ -20331,7 +20566,7 @@
 }}
 }
 ,
-"object357": {
+"object362": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Shop_Gate.obj",
@@ -20378,7 +20613,7 @@
 }
 }
 ,
-"object358": {
+"object363": {
 "transform": 
 {
     "objName": "Assets/Models/Stage Pieces/Basic_Shop.obj",
@@ -20472,7 +20707,7 @@
 }}
 }
 ,
-"object359": {
+"object364": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -20519,7 +20754,7 @@
 }
 }
 ,
-"object360": {
+"object365": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -20566,7 +20801,7 @@
 }
 }
 ,
-"object361": {
+"object366": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_2.obj",
@@ -20613,7 +20848,7 @@
 }
 }
 ,
-"object362": {
+"object367": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_2.obj",
@@ -20660,7 +20895,7 @@
 }
 }
 ,
-"object363": {
+"object368": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_2.obj",
@@ -20707,7 +20942,7 @@
 }
 }
 ,
-"object364": {
+"object369": {
 "transform": 
 {
     "objName": "",
@@ -20762,7 +20997,7 @@
 }}
 }
 ,
-"object365": {
+"object370": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -20809,7 +21044,7 @@
 }
 }
 ,
-"object366": {
+"object371": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -20856,7 +21091,7 @@
 }
 }
 ,
-"object367": {
+"object372": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_2.obj",
@@ -20903,7 +21138,7 @@
 }
 }
 ,
-"object368": {
+"object373": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_2.obj",
@@ -20950,7 +21185,7 @@
 }
 }
 ,
-"object369": {
+"object374": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_2.obj",
@@ -20997,7 +21232,7 @@
 }
 }
 ,
-"object370": {
+"object375": {
 "transform": 
 {
     "objName": "",
@@ -21052,7 +21287,7 @@
 }}
 }
 ,
-"object371": {
+"object376": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_2.obj",
@@ -21099,7 +21334,7 @@
 }
 }
 ,
-"object372": {
+"object377": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -21146,7 +21381,7 @@
 }
 }
 ,
-"object373": {
+"object378": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -21193,7 +21428,7 @@
 }
 }
 ,
-"object374": {
+"object379": {
 "transform": 
 {
     "objName": "",
@@ -21248,7 +21483,7 @@
 }}
 }
 ,
-"object375": {
+"object380": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_2.obj",
@@ -21295,7 +21530,7 @@
 }
 }
 ,
-"object376": {
+"object381": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -21342,7 +21577,7 @@
 }
 }
 ,
-"object377": {
+"object382": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -21389,7 +21624,7 @@
 }
 }
 ,
-"object378": {
+"object383": {
 "transform": 
 {
     "objName": "",
@@ -21444,7 +21679,7 @@
 }}
 }
 ,
-"object379": {
+"object384": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -21491,7 +21726,7 @@
 }
 }
 ,
-"object380": {
+"object385": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -21538,7 +21773,7 @@
 }
 }
 ,
-"object381": {
+"object386": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -21585,7 +21820,7 @@
 }
 }
 ,
-"object382": {
+"object387": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -21632,7 +21867,7 @@
 }
 }
 ,
-"object383": {
+"object388": {
 "transform": 
 {
     "objName": "",
@@ -21687,7 +21922,7 @@
 }}
 }
 ,
-"object384": {
+"object389": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -21734,7 +21969,7 @@
 }
 }
 ,
-"object385": {
+"object390": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -21781,7 +22016,7 @@
 }
 }
 ,
-"object386": {
+"object391": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -21828,7 +22063,7 @@
 }
 }
 ,
-"object387": {
+"object392": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -21875,7 +22110,7 @@
 }
 }
 ,
-"object388": {
+"object393": {
 "transform": 
 {
     "objName": "",
@@ -21887,249 +22122,6 @@
         -36.18000030517578,
         4.619999885559082,
         -28.399999618530275
-    ],
-    "scale": [
-        1.0,
-        1.0,
-        1.0
-    ],
-    "rotMat3_0": [
-        -1.0,
-        0.0,
-        -8.742277657347586e-8
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        8.742277657347586e-8,
-        0.0,
-        -1.0
-    ]
-},
-"capsules":{
-}
-,
-"spheres":{
-}
-,
-"boxes":{
-"box 0": {
-    "min": [
-        0.6499999761581421,
-        -0.5,
-        -17.53499984741211
-    ],
-    "max": [
-        -0.6499999761581421,
-        0.5,
-        18.334999084472658
-    ]
-}}
-}
-,
-"object389": {
-"transform": 
-{
-    "objName": "Assets/Models/Railing_3.obj",
-    "objTexture": "Assets/Models/Grey_Tex.png",
-    "tiling": [
-        1.0,
-        1.0
-    ],
-    "isToon": true,
-    "allowColliders": false,
-    "position": [
-        -36.51000213623047,
-        3.950000047683716,
-        -62.191383361816409
-    ],
-    "scale": [
-        0.13765999674797059,
-        0.12401999533176422,
-        0.08179721236228943
-    ],
-    "rotMat3_0": [
-        -1.0,
-        0.0,
-        -8.742277657347586e-8
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        8.742277657347586e-8,
-        0.0,
-        -1.0
-    ]
-},
-"capsules":{
-}
-,
-"spheres":{
-}
-,
-"boxes":{
-}
-}
-,
-"object390": {
-"transform": 
-{
-    "objName": "Assets/Models/Railing_3.obj",
-    "objTexture": "Assets/Models/Grey_Tex.png",
-    "tiling": [
-        1.0,
-        1.0
-    ],
-    "isToon": true,
-    "allowColliders": false,
-    "position": [
-        -36.51000213623047,
-        3.950000047683716,
-        -71.48674774169922
-    ],
-    "scale": [
-        0.13765999674797059,
-        0.12401999533176422,
-        0.08179721236228943
-    ],
-    "rotMat3_0": [
-        -1.0,
-        0.0,
-        -8.742277657347586e-8
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        8.742277657347586e-8,
-        0.0,
-        -1.0
-    ]
-},
-"capsules":{
-}
-,
-"spheres":{
-}
-,
-"boxes":{
-}
-}
-,
-"object391": {
-"transform": 
-{
-    "objName": "Assets/Models/Railing_3.obj",
-    "objTexture": "Assets/Models/Grey_Tex.png",
-    "tiling": [
-        1.0,
-        1.0
-    ],
-    "isToon": true,
-    "allowColliders": false,
-    "position": [
-        -36.51000213623047,
-        3.950000047683716,
-        -80.77215576171875
-    ],
-    "scale": [
-        0.13765999674797059,
-        0.12401999533176422,
-        0.08179721236228943
-    ],
-    "rotMat3_0": [
-        -1.0,
-        0.0,
-        -8.742277657347586e-8
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        8.742277657347586e-8,
-        0.0,
-        -1.0
-    ]
-},
-"capsules":{
-}
-,
-"spheres":{
-}
-,
-"boxes":{
-}
-}
-,
-"object392": {
-"transform": 
-{
-    "objName": "Assets/Models/Railing_3.obj",
-    "objTexture": "Assets/Models/Grey_Tex.png",
-    "tiling": [
-        1.0,
-        1.0
-    ],
-    "isToon": true,
-    "allowColliders": false,
-    "position": [
-        -36.5099983215332,
-        3.950000047683716,
-        -88.58464050292969
-    ],
-    "scale": [
-        0.13765999674797059,
-        0.12401999533176422,
-        0.08179721236228943
-    ],
-    "rotMat3_0": [
-        -1.0,
-        0.0,
-        -8.742277657347586e-8
-    ],
-    "rotMat3_1": [
-        0.0,
-        1.0,
-        0.0
-    ],
-    "rotMat3_2": [
-        8.742277657347586e-8,
-        0.0,
-        -1.0
-    ]
-},
-"capsules":{
-}
-,
-"spheres":{
-}
-,
-"boxes":{
-}
-}
-,
-"object393": {
-"transform": 
-{
-    "objName": "",
-    "objTexture": "",
-    "tiling": [],
-    "isToon": false,
-    "allowColliders": false,
-    "position": [
-        -36.150001525878909,
-        4.619999885559082,
-        -71.5
     ],
     "scale": [
         1.0,
@@ -22185,7 +22177,7 @@
     "isToon": true,
     "allowColliders": false,
     "position": [
-        38.70000076293945,
+        -36.51000213623047,
         3.950000047683716,
         -62.191383361816409
     ],
@@ -22232,7 +22224,7 @@
     "isToon": true,
     "allowColliders": false,
     "position": [
-        38.70000076293945,
+        -36.51000213623047,
         3.950000047683716,
         -71.48674774169922
     ],
@@ -22279,7 +22271,7 @@
     "isToon": true,
     "allowColliders": false,
     "position": [
-        38.70000076293945,
+        -36.51000213623047,
         3.950000047683716,
         -80.77215576171875
     ],
@@ -22326,7 +22318,7 @@
     "isToon": true,
     "allowColliders": false,
     "position": [
-        38.70000076293945,
+        -36.5099983215332,
         3.950000047683716,
         -88.58464050292969
     ],
@@ -22367,12 +22359,12 @@
     "objName": "",
     "objTexture": "",
     "tiling": [],
-    "isToon": true,
+    "isToon": false,
     "allowColliders": false,
     "position": [
-        38.279998779296878,
+        -36.150001525878909,
         4.619999885559082,
-        -71.51000213623047
+        -71.5
     ],
     "scale": [
         1.0,
@@ -22428,6 +22420,249 @@
     "isToon": true,
     "allowColliders": false,
     "position": [
+        38.70000076293945,
+        3.950000047683716,
+        -62.191383361816409
+    ],
+    "scale": [
+        0.13765999674797059,
+        0.12401999533176422,
+        0.08179721236228943
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object400": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing_3.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        38.70000076293945,
+        3.950000047683716,
+        -71.48674774169922
+    ],
+    "scale": [
+        0.13765999674797059,
+        0.12401999533176422,
+        0.08179721236228943
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object401": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing_3.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        38.70000076293945,
+        3.950000047683716,
+        -80.77215576171875
+    ],
+    "scale": [
+        0.13765999674797059,
+        0.12401999533176422,
+        0.08179721236228943
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object402": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing_3.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        38.70000076293945,
+        3.950000047683716,
+        -88.58464050292969
+    ],
+    "scale": [
+        0.13765999674797059,
+        0.12401999533176422,
+        0.08179721236228943
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object403": {
+"transform": 
+{
+    "objName": "",
+    "objTexture": "",
+    "tiling": [],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        38.279998779296878,
+        4.619999885559082,
+        -71.51000213623047
+    ],
+    "scale": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ]
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+"box 0": {
+    "min": [
+        0.6499999761581421,
+        -0.5,
+        -17.53499984741211
+    ],
+    "max": [
+        -0.6499999761581421,
+        0.5,
+        18.334999084472658
+    ]
+}}
+}
+,
+"object404": {
+"transform": 
+{
+    "objName": "Assets/Models/Railing_3.obj",
+    "objTexture": "Assets/Models/Grey_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
         -14.78512191772461,
         3.950000047683716,
         -89.76000213623047
@@ -22463,7 +22698,7 @@
 }
 }
 ,
-"object400": {
+"object405": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -22510,7 +22745,7 @@
 }
 }
 ,
-"object401": {
+"object406": {
 "transform": 
 {
     "objName": "",
@@ -22565,7 +22800,7 @@
 }}
 }
 ,
-"object402": {
+"object407": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -22612,7 +22847,7 @@
 }
 }
 ,
-"object403": {
+"object408": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -22659,7 +22894,7 @@
 }
 }
 ,
-"object404": {
+"object409": {
 "transform": 
 {
     "objName": "",
@@ -22714,7 +22949,7 @@
 }}
 }
 ,
-"object405": {
+"object410": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -22761,7 +22996,7 @@
 }
 }
 ,
-"object406": {
+"object411": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -22808,7 +23043,7 @@
 }
 }
 ,
-"object407": {
+"object412": {
 "transform": 
 {
     "objName": "",
@@ -22863,7 +23098,7 @@
 }}
 }
 ,
-"object408": {
+"object413": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -22910,7 +23145,7 @@
 }
 }
 ,
-"object409": {
+"object414": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -22957,7 +23192,7 @@
 }
 }
 ,
-"object410": {
+"object415": {
 "transform": 
 {
     "objName": "",
@@ -23012,7 +23247,7 @@
 }}
 }
 ,
-"object411": {
+"object416": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -23059,7 +23294,7 @@
 }
 }
 ,
-"object412": {
+"object417": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -23106,7 +23341,7 @@
 }
 }
 ,
-"object413": {
+"object418": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -23153,7 +23388,7 @@
 }
 }
 ,
-"object414": {
+"object419": {
 "transform": 
 {
     "objName": "",
@@ -23208,7 +23443,7 @@
 }}
 }
 ,
-"object415": {
+"object420": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -23255,7 +23490,7 @@
 }
 }
 ,
-"object416": {
+"object421": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -23302,7 +23537,7 @@
 }
 }
 ,
-"object417": {
+"object422": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -23349,7 +23584,7 @@
 }
 }
 ,
-"object418": {
+"object423": {
 "transform": 
 {
     "objName": "",
@@ -23404,7 +23639,7 @@
 }}
 }
 ,
-"object419": {
+"object424": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -23451,7 +23686,7 @@
 }
 }
 ,
-"object420": {
+"object425": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -23498,7 +23733,7 @@
 }
 }
 ,
-"object421": {
+"object426": {
 "transform": 
 {
     "objName": "",
@@ -23553,7 +23788,7 @@
 }}
 }
 ,
-"object422": {
+"object427": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -23600,7 +23835,7 @@
 }
 }
 ,
-"object423": {
+"object428": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -23647,7 +23882,7 @@
 }
 }
 ,
-"object424": {
+"object429": {
 "transform": 
 {
     "objName": "",
@@ -23702,7 +23937,7 @@
 }}
 }
 ,
-"object425": {
+"object430": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -23760,7 +23995,7 @@
 }}
 }
 ,
-"object426": {
+"object431": {
 "transform": 
 {
     "objName": "Assets/Models/Railing_3.obj",
@@ -23818,7 +24053,7 @@
 }}
 }
 ,
-"object427": {
+"object432": {
 "transform": 
 {
     "objName": "Assets/Models/Fern.obj",
@@ -23865,7 +24100,7 @@
 }
 }
 ,
-"object428": {
+"object433": {
 "transform": 
 {
     "objName": "Assets/Models/Fern.obj",
@@ -23912,7 +24147,7 @@
 }
 }
 ,
-"object429": {
+"object434": {
 "transform": 
 {
     "objName": "Assets/Models/Fern.obj",
@@ -23959,7 +24194,7 @@
 }
 }
 ,
-"object430": {
+"object435": {
 "transform": 
 {
     "objName": "Assets/Models/Pizza_Oven.obj",
@@ -24006,7 +24241,7 @@
 }
 }
 ,
-"object431": {
+"object436": {
 "transform": 
 {
     "objName": "Assets/Models/Pizza_Oven.obj",
@@ -24053,7 +24288,7 @@
 }
 }
 ,
-"object432": {
+"object437": {
 "transform": 
 {
     "objName": "Assets/Models/Plant_Pot_Long.obj",
@@ -24100,7 +24335,7 @@
 }
 }
 ,
-"object433": {
+"object438": {
 "transform": 
 {
     "objName": "Assets/Models/Plant_Pot_Long.obj",
@@ -24147,7 +24382,7 @@
 }
 }
 ,
-"object434": {
+"object439": {
 "transform": 
 {
     "objName": "Assets/Models/Plant_Pot_Long.obj",
@@ -24194,7 +24429,7 @@
 }
 }
 ,
-"object435": {
+"object440": {
 "transform": 
 {
     "objName": "Assets/Models/Plant_Pot_Long.obj",
