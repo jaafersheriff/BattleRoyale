@@ -76,21 +76,20 @@ void PostProcessShader::render(const CameraComponent * camera) {
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, RenderSystem::getFBOTexture());
-    //glBindTexture(GL_TEXTURE_2D, tex_pizza->textureId);
     glUniform1i(getUniform("f_texCol"), 0);
-    
-    //glBindVertexArray(s_vaoHandle);
 
     // Draw
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
 
-    loadVec2(getUniform("v_scale"), glm::vec2(.5f, .5f));
-    loadVec2(getUniform("v_translate"), glm::vec2(.5f, .5f));
+    // Assumes that width > height
+    float xScale = (float) size.y / (float) size.x;
+
+    loadVec2(getUniform("v_scale"), glm::vec2(.125f * xScale, .125f));
+    loadVec2(getUniform("v_translate"), glm::vec2(.825f, .825f));
     loadFloat(getUniform("v_depth"), -.5f);
 
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_2D, RenderSystem::getFBOTexture());
     glBindTexture(GL_TEXTURE_2D, tex_pizza->textureId);
     glUniform1i(getUniform("f_texCol"), 0);
 
