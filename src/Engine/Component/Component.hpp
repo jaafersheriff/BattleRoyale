@@ -12,7 +12,7 @@ class Component {
 
     protected: // only scene or friends can create components
 
-        Component(GameObject & gameObject) : m_gameObject(gameObject) {};
+        Component(GameObject & gameObject) : m_gameObject(&gameObject) {};
 
     public:
 
@@ -33,12 +33,12 @@ class Component {
         
         virtual void update(float) {};
 
-        GameObject & gameObject() { return m_gameObject; }
-        const GameObject & gameObject() const { return m_gameObject; }
+        GameObject & gameObject() { return *m_gameObject; }
+        const GameObject & gameObject() const { return *m_gameObject; }
 
     private:
 
-        GameObject & m_gameObject;
+        GameObject * m_gameObject;
 
 };
 

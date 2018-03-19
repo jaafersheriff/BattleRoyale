@@ -21,11 +21,11 @@ class Scaleable {
 
     virtual void scale(const glm::vec3 & factor);
 
-    const glm::vec3 & scale() const { return m_scale; }
-    const glm::vec3 & prevScale() const { return m_prevScale; }
-    glm::vec3 scale(float interpP) const;
+    virtual const glm::vec3 & scale() const { return m_scale; }
+    virtual const glm::vec3 & prevScale() const { return m_prevScale; }
+    virtual glm::vec3 scale(float interpP) const;
 
-    bool isChange() const { return m_isChange; }
+    virtual bool isChange() const { return m_isChange; }
 
     private:
 

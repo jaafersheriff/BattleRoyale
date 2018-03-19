@@ -87,7 +87,7 @@ void Scene::update(float dt) {
     relayMessages();
     pathfindingMessagingDT = float(watch.lap());
 
-    SpatialSystem::update(dt); // needs to happen right before collision
+    SpatialSystem::update(dt); // needs to happen before collision
     spatialDT += float(watch.lap());
     relayMessages();
     spatialMessagingDT = float(watch.lap());
@@ -188,6 +188,7 @@ void Scene::killGameObjects() {
                 // add game object's components to kill queue
                 for (auto compTIt(go->m_compsByCompT.begin()); compTIt != go->m_compsByCompT.end(); ++compTIt) {
                     for (auto & comp : compTIt->second) {
+                        comp->m_gameObject = nullptr;
                         s_componentKillQueue.emplace_back(compTIt->first, comp);
                     }
                 }
@@ -220,7 +221,7 @@ void Scene::killComponents() {
             for (int i(int(comps.size()) - 1); i >= 0; --i) {
                 if (comps[i].get() == comp) {
                     auto it(comps.begin() + i);
-                    sendMessage<ComponentRemovedMessage>(nullptr, std::move(*it), typeI);
+                    sendMessage<ComponentRemovedMessage>(comp->m_gameObject, std::move(*it), typeI);
                     comps.erase(it);
                     found = true;
                     break;

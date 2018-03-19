@@ -73,7 +73,7 @@ void Orientable::rotate(const glm::mat3 & rot) {
 }
 
 void Orientable::setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w) {
-    m_orientMatrix[0] = u; m_orientMatrix[1] = v; m_orientMatrix[2] = w;;
+    m_orientMatrix[0] = u; m_orientMatrix[1] = v; m_orientMatrix[2] = w;
     m_prevOrientMatrix = m_orientMatrix;
     m_orientation = glm::toQuat(m_orientMatrix);
     m_prevOrientation = m_orientation;
