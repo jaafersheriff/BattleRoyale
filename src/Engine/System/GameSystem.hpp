@@ -210,6 +210,8 @@ class GameSystem {
 
     private:
 
+    static void updateGame(float dt);
+
     static void setCulture(Culture culture);
 
     static void equipWeapon();
