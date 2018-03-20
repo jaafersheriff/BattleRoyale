@@ -44,6 +44,8 @@ class GameSystem {
         static int k_enemiesInWave;
         static int k_enemiesAlive;
         
+        static int computeWaveEnemies(int waveNumber);
+        static glm::vec3 randomSpawnPoint();
     };
 
     //--------------------------------------------------------------------------

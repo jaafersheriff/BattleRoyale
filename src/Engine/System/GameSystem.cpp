@@ -82,8 +82,17 @@ const Vector<glm::vec3> GameSystem::Wave::k_spawnPoints = {};
 int GameSystem::Wave::k_waveNumber = 1;
 float GameSystem::Wave::k_spawnTimer = 0.f;
 float GameSystem::Wave::k_spawnTimerMax = 1.f;
-int GameSystem::Wave::k_enemiesInWave = GameSystem::Wave::k_waveNumber + 2;
+int GameSystem::Wave::k_enemiesInWave = GameSystem::Wave::computeWaveEnemies(GameSystem::Wave::k_waveNumber);
 int GameSystem::Wave::k_enemiesAlive = 0;
+
+int GameSystem::Wave::computeWaveEnemies(int waveNumber) {
+    return 10 + (int) glm::floor(glm::log(glm::pow(waveNumber, 30)));
+}
+
+// TODO
+glm::vec3 GameSystem::Wave::randomSpawnPoint() {
+    return glm::vec3(0.f, 6.f, -5.f);
+}
 
 //==============================================================================
 // ENEMIES
@@ -410,13 +419,15 @@ void GameSystem::update(float dt) {
     Wave::k_enemiesAlive = s_enemyComponents.size();
     if (!s_enemyComponents.size() && !Wave::k_enemiesInWave) {
         Wave::k_waveNumber++;
-        Wave::Wave::k_enemiesInWave = Wave::k_waveNumber + 2; // TODO : better math
+        Wave::Wave::k_enemiesInWave = Wave::computeWaveEnemies(Wave::k_waveNumber); 
     }
     /* Spawn enemy based on timer */
     Wave::k_spawnTimer += dt;
     if (Wave::k_spawnTimer > Wave::k_spawnTimerMax && Wave::Wave::k_enemiesInWave) {
         Wave::k_spawnTimer = 0.f;
-        Enemies::Basic::spawn(); // TODO : pick spawn point, change enemy parameters based on wave number (speed, health, etc.)
+        Wave::k_spawnTimerMax = Util::random() / 2.f;
+        // TODO : change enemy parameters based on wave number (speed, health, etc.)
+        Enemies::Basic::create(Wave::randomSpawnPoint());
         Wave::Wave::k_enemiesInWave--;
     }
 }
