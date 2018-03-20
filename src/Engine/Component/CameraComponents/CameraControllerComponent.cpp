@@ -12,7 +12,7 @@
 CameraControllerComponent::CameraControllerComponent(GameObject & gameObject, float lookSpeed, float minMoveSpeed, float maxMoveSpeed) :
     Component(gameObject),
     m_spatial(nullptr),
-    m_camera(nullptr),
+    m_theta(0.0f), m_phi(glm::pi<float>() * 0.5f),
     m_lookSpeed(lookSpeed),
     m_minMoveSpeed(glm::max(minMoveSpeed, 0.0f)),
     m_maxMoveSpeed(glm::max(maxMoveSpeed, m_minMoveSpeed)),
@@ -22,7 +22,6 @@ CameraControllerComponent::CameraControllerComponent(GameObject & gameObject, fl
 
 void CameraControllerComponent::init() {
     if (!(m_spatial = gameObject().getSpatial())) assert(false);
-    if (!(m_camera = gameObject().getComponentByType<CameraComponent>())) assert(false);
 
     auto scrollCallback([&](const Message & msg_) {
         static float s_percentage = 0.5f;
@@ -46,12 +45,9 @@ void CameraControllerComponent::update(float dt) {
     }
 
     if (Mouse::dx || Mouse::dy) {
-        // orient camera relative to base
-        m_camera->angle(-float(Mouse::dx) * m_lookSpeed, float(Mouse::dy) * m_lookSpeed, true);
-        // set camera base to same xz orientation
-        m_spatial->setRelativeUVW(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f), glm::cross(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f)), true);
-        // reset camera to face forward. in absolute space, this puts it back to where it was before the last line
-        m_camera->angle(0.0f, m_camera->phi(), false, true);
+        m_theta -= float(Mouse::dx) * m_lookSpeed;
+        m_phi += float(Mouse::dy) * m_lookSpeed;
+        updateSpatialOrientation();
     }
 
     int forward(Keyboard::isKeyPressed(GLFW_KEY_W));
@@ -68,11 +64,31 @@ void CameraControllerComponent::update(float dt) {
     );
     if (dir != glm::vec3()) {
         dir = Util::safeNorm(dir);
-        dir = Util::safeNorm(m_camera->u() * dir.x + glm::vec3(0.0f, 1.0f, 0.0f) * dir.y + m_camera->w() * dir.z); // WoW controls
+        dir = Util::safeNorm(m_spatial->u() * dir.x + glm::vec3(0.0f, 1.0f, 0.0f) * dir.y + m_spatial->w() * dir.z); // WoW controls
         m_spatial->move(dir * m_moveSpeed * dt);
     }
 }
 
+void CameraControllerComponent::setOrientation(float theta, float phi) {
+    m_theta = theta;
+    m_phi = phi;
+    updateSpatialOrientation();
+}
+
 void CameraControllerComponent::setEnabled(bool enabled) {
     m_enabled = enabled;
+}
+
+void CameraControllerComponent::updateSpatialOrientation() {    
+    if      (m_theta >  glm::pi<float>()) m_theta = std::fmod(m_theta, glm::pi<float>()) - glm::pi<float>();
+    else if (m_theta < -glm::pi<float>()) m_theta = glm::pi<float>() - std::fmod(-m_theta, glm::pi<float>());
+    if (m_phi < 0.0f) m_phi = 0.0f;
+    if (m_phi > glm::pi<float>()) m_phi = glm::pi<float>();
+
+    glm::vec3 w(-Util::sphericalToCartesian(1.0f, m_theta, m_phi));
+    w = glm::vec3(-w.y, w.z, -w.x); // one of the many reasons I like z to be up
+    glm::vec3 v(Util::sphericalToCartesian(1.0f, m_theta, m_phi - glm::pi<float>() * 0.5f));
+    v = glm::vec3(-v.y, v.z, -v.x);
+    glm::vec3 u(glm::cross(v, w));
+    m_spatial->setRelativeUVW(u, v, w);
 }

@@ -6,21 +6,10 @@
 
 #include "System.hpp"
 #include "Model/Material.hpp"
+#include "Component/Components.hpp"
 
 
 
-class SpatialComponent;
-class NewtonianComponent;
-class CapsuleBounderComponent;
-class CameraComponent;
-class PlayerControllerComponent;
-class PlayerComponent;
-class HealthComponent;
-class CameraControllerComponent;
-class ImGuiComponent;
-class EnemyComponent;
-class ProjectileComponent;
-class BlastComponent;
 struct GameInterface;
 
 
@@ -31,6 +20,10 @@ class GameSystem {
     friend Scene;
     friend GameInterface;
 
+    public:
+
+    enum class Culture { none, american, asian, italian };
+
     private:
 
     //--------------------------------------------------------------------------
@@ -39,7 +32,6 @@ class GameSystem {
     struct Lighting {
 
         static const float k_defAmbience;
-        static const Material k_defMaterial;
         static const glm::vec3 k_defLightDir;
 
     };
@@ -65,7 +57,8 @@ class GameSystem {
         static const glm::vec3 k_mainHandPosition;
 
         static GameObject * gameObject;
-        static SpatialComponent * spatial;
+        static SpatialComponent * bodySpatial;
+        static SpatialComponent * headSpatial;
         static NewtonianComponent * newtonian;
         static CapsuleBounderComponent * bounder;
         static CameraComponent * camera;
@@ -73,6 +66,7 @@ class GameSystem {
         static PlayerComponent * playerComp;
         static HealthComponent * health;
         static SpatialComponent * handSpatial;
+        static DiffuseRenderComponent * handDiffuse;
 
         static void init();
 
@@ -122,8 +116,12 @@ class GameSystem {
             static const float k_speed; 
             static const float k_damage;
 
-            static void fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel);
-            static void fireFromPlayer();
+            static GameObject * fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel, const glm::quat & orient);
+            static GameObject * fireFromPlayer();
+
+            static void equip();
+            
+            static void unequip();
 
         };
 
@@ -138,12 +136,33 @@ class GameSystem {
             static const float k_damage;
             static const float k_radius;
 
-            static void fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel);
-            static void fireFromPlayer();
+            static GameObject * fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel);
+            static GameObject * fireFromPlayer();
+
+            static void equip();
+            
+            static void unequip();
 
         };
 
-        static void destroyAllProjectiles();
+        struct SrirachaBottle {
+
+            static const float k_damage;
+            static const float k_radius;
+
+            static GameObject * s_playerSriracha;
+
+            static GameObject * start(const SpatialComponent & hostSpatial, const glm::vec3 & offset = glm::vec3());
+
+            static void toggleForPlayer();
+
+            static void equip();
+            
+            static void unequip();
+
+        };
+
+        static void destroyAllWeapons();
 
     };
 
@@ -191,6 +210,11 @@ class GameSystem {
 
     private:
 
+    static void setCulture(Culture culture);
+
+    static void equipWeapon();
+    static void unequipWeapon();
+
     static void setupMessageCallbacks();
 
     static void setupImGui();
@@ -207,6 +231,13 @@ class GameSystem {
     static const Vector<EnemyComponent *> & s_enemyComponents;
     static const Vector<ProjectileComponent *> & s_projectileComponents;
     static const Vector<BlastComponent *> & s_blastComponents;
+    static const Vector<MeleeComponent *> & s_meleeComponents;
+
+    static Culture s_culture;
+    static bool s_changeCulture;
+    static Culture s_newCulture;
+    static bool s_useWeapon;
+    static bool s_unuseWeapon;
 
 };
 

@@ -7,6 +7,7 @@
 #include "Component/CameraComponents/CameraComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
+#include "Util/Util.hpp"
 
 // Necessary for light debug
 #ifdef DEBUG_MODE
@@ -28,7 +29,7 @@ CameraComponent * RenderSystem::s_lightCamera = nullptr;
 SpatialComponent * RenderSystem::s_lightSpatial = nullptr;
 float RenderSystem::lightDist(350.f);
 float RenderSystem::lightOffset(20.f);
-float RenderSystem::shadowAmbience(0.4f);
+float RenderSystem::shadowAmbience(0.0f);
 float RenderSystem::transitionDistance(50.f);
 
 /* Shaders */
@@ -148,7 +149,13 @@ glm::vec3 RenderSystem::getLightDir() {
 }
 
 void RenderSystem::setLightDir(glm::vec3 in) {
-    s_lightCamera->lookInDir(in);
+    // Check if light is straight up or down
+    if (Util::isZero(in.x) && Util::isZero(in.z)) {
+        s_lightSpatial->lookInDir(in, glm::vec3(1.0f, 0.0f, 0.0f));
+    }
+    else {
+        s_lightSpatial->lookInDir(in, glm::vec3(0.0f, 1.0f, 0.0f));
+    }
 }
 
 void RenderSystem::initFBO() {
@@ -298,8 +305,8 @@ void RenderSystem::updateLightCamera() {
 
 // TODO : move this to camera component?
 void RenderSystem::calculateFrustumVertices(Vector<glm::vec4> & points, glm::vec3 centerNear, glm::vec3 centerFar, glm::vec2 nearSize, glm::vec2 farSize) {
-    glm::vec3 upVector = glm::normalize(s_playerCamera->v());
-    glm::vec3 rightVector = glm::normalize(s_playerCamera->u());
+    glm::vec3 upVector = glm::normalize(s_playerCamera->spatial().v());
+    glm::vec3 rightVector = glm::normalize(s_playerCamera->spatial().u());
     glm::vec3 farTop = centerFar + (upVector * farSize.y);
     glm::vec3 farBottom = centerFar + (-upVector * farSize.y);
     glm::vec3 nearTop = centerNear + (upVector * nearSize.y);
