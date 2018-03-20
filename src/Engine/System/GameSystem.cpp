@@ -72,7 +72,7 @@ void GameSystem::Player::init() {
         handModelTex,
         true,
         glm::vec2(1.0f),
-        false
+        false   
     );
 }
 
