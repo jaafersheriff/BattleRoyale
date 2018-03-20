@@ -78,7 +78,15 @@ void GameSystem::Player::init() {
 
 //==============================================================================
 // WAVES
-const Vector<glm::vec3> GameSystem::Wave::k_spawnPoints = {};
+const Vector<glm::vec3> GameSystem::Wave::k_spawnPoints = {
+    glm::vec3(0.84, -0.542, -37.8), // door mid 
+    glm::vec3(12.7, 0.074, 11.77),  // door back right
+    glm::vec3(-12.08, -0.1, 11.8),  // door back left 
+    glm::vec3(-30.14, 5.55, 8.92),  // seating area back left
+    glm::vec3(33.81, 5.28, 0.67),   // seating area back right
+    glm::vec3(11.23, 5.21, -39.39), // seating area mid back right
+    glm::vec3(-6.42, 5.31, -55.36), // seating area mid front left 
+};
 int GameSystem::Wave::k_waveNumber = 1;
 float GameSystem::Wave::k_spawnTimer = 0.f;
 float GameSystem::Wave::k_spawnTimerMax = 1.f;
@@ -89,9 +97,8 @@ int GameSystem::Wave::computeWaveEnemies(int waveNumber) {
     return 10 + (int) glm::floor(glm::log(glm::pow(waveNumber, 30)));
 }
 
-// TODO
 glm::vec3 GameSystem::Wave::randomSpawnPoint() {
-    return glm::vec3(0.f, 6.f, -5.f);
+    return k_spawnPoints[Util::randomUInt(k_spawnPoints.size())] + glm::vec3(Util::random() * 3.f, 0.f, Util::random() * 3.f);
 }
 
 //==============================================================================
