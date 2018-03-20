@@ -47,6 +47,9 @@ public:
     static glm::vec3 getLightDir();
     static void setLightDir(glm::vec3);
     static float lightDist;
+    static float lightOffset;
+    static float shadowAmbience;
+    static float transitionDistance;
 
     /* Shadows */
     static const glm::mat4 & getL() { return s_shadowShader->getL(); }
@@ -63,7 +66,6 @@ public:
 
     /* FBO Stuff */
     static GLuint getFBOTexture() { return s_fboColorTexs[0]; }
-
     static GLuint getBloomTexture() { return s_pingpongColorbuffers[0]; }
 
     static void getFrustumComps(const CameraComponent *, Vector<DiffuseRenderComponent *> &);
@@ -71,8 +73,6 @@ public:
 private:
 
     static void doBloom();
-
-private:
 
     static const Vector<DiffuseRenderComponent *> & s_diffuseComponents;
 
@@ -84,6 +84,9 @@ private:
     static GLuint s_pingpongColorbuffers[2];
     static bool s_wasResize;
 
+    static void updateLightCamera();
+    static void calculateFrustumVertices(Vector<glm::vec4> &, glm::vec3, glm::vec3, glm::vec2, glm::vec2);
+    static glm::vec4 calculateLightSpaceFrustumCorner(glm::vec3, glm::vec3, float);
 };
 
 
