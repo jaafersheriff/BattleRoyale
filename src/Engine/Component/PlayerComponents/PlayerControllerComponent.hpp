@@ -35,16 +35,26 @@ class PlayerControllerComponent : public Component {
 
     virtual void update(float dt) override;
 
+    void setOrientation(float theta, float phi);
+
     void setEnabled(bool enabled);
+
+    float theta() const { return m_theta; }
+    float phi() const { return m_phi; }
 
     bool enabled() const { return m_enabled; }
 
     private:
 
-    SpatialComponent * m_spatial;
+    void updateSpatialOrientation();
+
+    private:
+
+    SpatialComponent * m_bodySpatial;
+    SpatialComponent * m_headSpatial;
     NewtonianComponent * m_newtonian;
     GroundComponent * m_ground;
-    CameraComponent * m_camera;
+    float m_theta, m_phi;
     float m_lookSpeed;
     float m_moveSpeed;
     float m_jumpSpeed;

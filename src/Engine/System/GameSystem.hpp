@@ -39,7 +39,6 @@ class GameSystem {
     struct Lighting {
 
         static const float k_defAmbience;
-        static const Material k_defMaterial;
         static const glm::vec3 k_defLightDir;
 
     };
@@ -65,7 +64,8 @@ class GameSystem {
         static const glm::vec3 k_mainHandPosition;
 
         static GameObject * gameObject;
-        static SpatialComponent * spatial;
+        static SpatialComponent * bodySpatial;
+        static SpatialComponent * headSpatial;
         static NewtonianComponent * newtonian;
         static CapsuleBounderComponent * bounder;
         static CameraComponent * camera;
