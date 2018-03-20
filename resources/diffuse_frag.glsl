@@ -48,7 +48,7 @@ void main() {
         color.a = texColor.a;
     }
 
-    float lambert = max(dot(L, N), 0.0);
+    float lambert = dot(L, N);
     float diffuseContrib, specularContrib;
 
     /* Cell shading */
@@ -64,7 +64,7 @@ void main() {
     /* Blinn-Phong shading */
     else {
         vec3 H = normalize(L + V);
-        diffuseContrib = lambert;
+        diffuseContrib = max(lambert, 0.0f);
         specularContrib = pow(max(dot(H, N), 0.0), matShine);
     }
 
