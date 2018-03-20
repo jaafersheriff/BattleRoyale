@@ -21,11 +21,11 @@ class Positionable {
 
     virtual void move(const glm::vec3 & delta);
 
-    const glm::vec3 & position() const { return m_position; }
-    const glm::vec3 & prevPosition() const { return m_prevPosition; }
-    glm::vec3 position(float interpP) const;
+    virtual const glm::vec3 & position() const { return m_position; }
+    virtual const glm::vec3 & prevPosition() const { return m_prevPosition; }
+    virtual glm::vec3 position(float interpP) const;
 
-    bool isChange() const { return m_isChange; }
+    virtual bool isChange() const { return m_isChange; }
 
     private:
 

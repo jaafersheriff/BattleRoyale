@@ -28,22 +28,22 @@ class Orientable {
 
     virtual void setUVW(const glm::vec3 & u, const glm::vec3 & v, const glm::vec3 & w);
 
-    const glm::vec3 & u() const { return m_orientMatrix[0]; }
-    const glm::vec3 & v() const { return m_orientMatrix[1]; }
-    const glm::vec3 & w() const { return m_orientMatrix[2]; }
-    const glm::vec3 & prevU() const { return m_prevOrientMatrix[0]; }
-    const glm::vec3 & prevV() const { return m_prevOrientMatrix[1]; }
-    const glm::vec3 & prevW() const { return m_prevOrientMatrix[2]; }
+    virtual const glm::vec3 & u() const { return m_orientMatrix[0]; }
+    virtual const glm::vec3 & v() const { return m_orientMatrix[1]; }
+    virtual const glm::vec3 & w() const { return m_orientMatrix[2]; }
+    virtual const glm::vec3 & prevU() const { return m_prevOrientMatrix[0]; }
+    virtual const glm::vec3 & prevV() const { return m_prevOrientMatrix[1]; }
+    virtual const glm::vec3 & prevW() const { return m_prevOrientMatrix[2]; }
 
-    const glm::quat & orientation() const { return m_orientation; }
-    const glm::quat & prevOrientation() const { return m_prevOrientation; }
-    glm::quat orientation(float interpP) const;
+    virtual const glm::quat & orientation() const { return m_orientation; }
+    virtual const glm::quat & prevOrientation() const { return m_prevOrientation; }
+    virtual glm::quat orientation(float interpP) const;
 
-    const glm::mat3 & orientMatrix() const { return m_orientMatrix; }
-    const glm::mat3 & prevOrientMatrix() const { return m_prevOrientMatrix; }
-    glm::mat3 orientMatrix(float interpP) const;
+    virtual const glm::mat3 & orientMatrix() const { return m_orientMatrix; }
+    virtual const glm::mat3 & prevOrientMatrix() const { return m_prevOrientMatrix; }
+    virtual glm::mat3 orientMatrix(float interpP) const;
 
-    bool isChange() const { return m_isChange; }
+    virtual bool isChange() const { return m_isChange; }
 
     private:
   

@@ -77,42 +77,10 @@ struct ObjectInitMessage : public Message {
 
 
 
-// a spatial was transformed in some way
-// tag for the following six messages
-// Don't use this as a message type!!
-struct SpatialTransformTag : public Message {
+// a spatiality was changed in some way
+struct SpatialChangeMessage : public Message {
     const SpatialComponent & spatial;
-    SpatialTransformTag(const SpatialComponent & spatial) : spatial(spatial) {}
-};
-
-// a spatial's location was set
-struct SpatialPositionSetMessage :  public SpatialTransformTag {
-    SpatialPositionSetMessage(const SpatialComponent & spatial) : SpatialTransformTag(spatial) {}
-};
-
-// a spatial was moved
-struct SpatialMovedMessage :  public SpatialTransformTag {
-    SpatialMovedMessage(const SpatialComponent & spatial) : SpatialTransformTag(spatial) {}
-};
-
-// a spatial's scale was set
-struct SpatialScaleSetMessage :  public SpatialTransformTag {
-    SpatialScaleSetMessage(const SpatialComponent & spatial) : SpatialTransformTag(spatial) {}
-};
-
-// a spatial was scaled
-struct SpatialScaledMessage :  public SpatialTransformTag {
-    SpatialScaledMessage(const SpatialComponent & spatial) : SpatialTransformTag(spatial) {}
-};
-
-// a spatial's rotation was set
-struct SpatialOrientationSetMessage :  public SpatialTransformTag {
-    SpatialOrientationSetMessage(const SpatialComponent & spatial) : SpatialTransformTag(spatial) {}
-};
-
-// a spatial was rotated
-struct SpatialRotatedMessage :  public SpatialTransformTag {
-    SpatialRotatedMessage(const SpatialComponent & spatial) : SpatialTransformTag(spatial) {}
+    SpatialChangeMessage(const SpatialComponent & spatial) : spatial(spatial) {}
 };
 
 

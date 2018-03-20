@@ -49,7 +49,7 @@ void CameraControllerComponent::update(float dt) {
         // orient camera relative to base
         m_camera->angle(-float(Mouse::dx) * m_lookSpeed, float(Mouse::dy) * m_lookSpeed, true);
         // set camera base to same xz orientation
-        m_spatial->setUVW(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f), glm::cross(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f)), true);
+        m_spatial->setRelativeUVW(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f), glm::cross(m_camera->u(), glm::vec3(0.0f, 1.0f, 0.0f)), true);
         // reset camera to face forward. in absolute space, this puts it back to where it was before the last line
         m_camera->angle(0.0f, m_camera->phi(), false, true);
     }

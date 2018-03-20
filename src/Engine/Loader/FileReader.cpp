@@ -51,10 +51,16 @@ DiffuseRenderComponent & FileReader::addRenderComponent(GameObject & gameObject,
 
     //Get isToon bool
     const rapidjson::Value& isToon = jsonTransform["isToon"];
-    assert(isToon.IsBool());
+    assert(isToon.IsBool());    
 
+
+    //Get the tiling scale
     const rapidjson::Value& jsonTiling = jsonTransform["tiling"];
     glm::vec2 tiling = glm::vec2(jsonTiling[0].GetFloat(), jsonTiling[1].GetFloat());
+
+    //Get the doBloom bool
+    const rapidjson::Value& doBloom = jsonTransform["doBloom"];
+    assert(doBloom.IsBool());
 
     //Add diffuse component
     return Scene::addComponent<DiffuseRenderComponent>(
@@ -63,7 +69,8 @@ DiffuseRenderComponent & FileReader::addRenderComponent(GameObject & gameObject,
         *Loader::getMesh(filePath),
         ModelTexture(Loader::getTexture(texturePath)),
         isToon.GetBool(),
-        tiling
+        tiling, 
+        doBloom.GetBool()
     );
 }
 
