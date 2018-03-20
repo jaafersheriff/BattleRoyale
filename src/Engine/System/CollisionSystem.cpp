@@ -192,8 +192,9 @@ void CollisionSystem::init() {
 void CollisionSystem::update(float dt) {
     static UnorderedMap<const BounderComponent *, Vector<std::pair<int, glm::vec3>>> s_collisions;
     static UnorderedSet<const BounderComponent *> s_criticals;
+    static UnorderedSet<const BounderComponent *> s_criticalZeroes;
     static Vector<const BounderComponent *> s_yanked;
-    static Vector<const BounderComponent *> s_zeroes;
+    static Vector<const BounderComponent *> s_passed;
     static UnorderedSet<const BounderComponent *> s_checked;
     static UnorderedMap<const GameObject *, glm::vec3> s_gameObjectDeltas;
     static Vector<const BounderComponent *> s_octreeResults;
@@ -226,9 +227,11 @@ void CollisionSystem::update(float dt) {
 
     // determine all bounders with path intersections
     s_criticals.clear();
+    s_criticalZeroes.clear();
     for (BounderComponent * bounder : s_potentials) {
         if (bounder->isCritical()) {
             s_criticals.insert(bounder);
+            if (bounder->weight() == 0) s_criticalZeroes.insert(bounder);
         }
     }
     // determine path intersection corrections per game object
@@ -277,7 +280,7 @@ void CollisionSystem::update(float dt) {
         glm::vec3 delta(bounder->center() - bounder->prevCenter());
         float dist(glm::length(delta));
         Ray ray(bounder->prevCenter(), delta / dist);
-        s_zeroes.clear();
+        s_passed.clear();
         pickHeavy(
             ray,
             1,
@@ -285,15 +288,34 @@ void CollisionSystem::update(float dt) {
             [&](const BounderComponent & b) {
                 return s_criticals.count(&b) == 0;
             },
-            &s_zeroes,
+            &s_passed,
             dist
         );
-        for (const BounderComponent * b : s_zeroes) {
+        for (const BounderComponent * b : s_passed) {
             Scene::sendMessage<CollisionMessage>(&bounder->gameObject(), *bounder, *b);
             Scene::sendMessage<CollisionMessage>(&b->gameObject(), *b, *bounder);
         }
     }
-    
+    // process 0 weight criticals
+    for (const BounderComponent * bounder : s_criticalZeroes) {
+        glm::vec3 delta(bounder->center() - bounder->prevCenter());
+        float dist(glm::length(delta));
+        Ray ray(bounder->prevCenter(), delta / dist);
+        s_passed.clear();
+        pickAll(
+            ray,
+            // do not intersect other critical bounders. critical-critical collision hella unsupported
+            [&](const BounderComponent & b) {
+                return s_criticals.count(&b) == 0;
+            },
+            &s_passed,
+            dist
+        );
+        for (const BounderComponent * b : s_passed) {
+            Scene::sendMessage<CollisionMessage>(&bounder->gameObject(), *bounder, *b);
+            Scene::sendMessage<CollisionMessage>(&b->gameObject(), *b, *bounder);
+        }
+    }    
 
     // gather all collisions
     s_collided.clear();
@@ -430,11 +452,53 @@ std::pair<const BounderComponent *, Intersect> CollisionSystem::pickHeavy(
         auto pair(pick(ray, conditional));
         Intersect & inter(pair.second);
 
-        if (!inter.is || pair.first->weight() >= minWeight) {
-            return pair;
+        if (!inter.is || inter.dist > distRemaining || pair.first->weight() >= minWeight) {
+            break;
         }
 
-        if (r_passed) r_passed->push_back(pair.first);
+        r_passed->push_back(pair.first);
+        ray.pos = inter.pos + k_rayOffset * ray.dir;
+        distRemaining -= inter.dist;
+    }
+
+    return std::pair<const BounderComponent *, Intersect>{};
+}
+
+std::pair<const BounderComponent *, Intersect> CollisionSystem::pickAll(
+    const Ray & ray,
+    Vector<const BounderComponent *> * r_passed,
+    float maxDist
+) {
+    return pickAll(ray, [](const BounderComponent & bounder) { return true; }, r_passed, maxDist);
+}
+
+std::pair<const BounderComponent *, Intersect> CollisionSystem::pickAll(
+    const Ray & ray_,
+    const std::function<bool(const BounderComponent &)> & conditional,
+    Vector<const BounderComponent *> * r_passed,
+    float maxDist
+) {
+    if (!r_passed) {
+        auto pair(pick(ray_, [&](const BounderComponent & bounder) { return conditional(bounder); }));
+        if (pair.second.dist <= maxDist) {
+            return pair;
+        }
+        else {
+            return std::pair<const BounderComponent *, Intersect>{};
+        }
+    }
+    
+    Ray ray(ray_);
+    float distRemaining(maxDist);
+    while (distRemaining > 0.0f) {
+        auto pair(pick(ray, conditional));
+        Intersect & inter(pair.second);
+
+        if (!inter.is || inter.dist > distRemaining) {
+           break;
+        }
+
+        r_passed->push_back(pair.first);
         ray.pos = inter.pos + k_rayOffset * ray.dir;
         distRemaining -= inter.dist;
     }

@@ -5,7 +5,6 @@
 #include "Scene/Scene.hpp"
 #include "Systems.hpp"
 #include "Shaders/Shaders.hpp"
-#include "Component/Components.hpp"
 #include "Loader/Loader.hpp"
 #include "Util/Util.hpp"
 #include "IO/Window.hpp"
@@ -17,7 +16,6 @@
 // LIGHTING
 
 const float GameSystem::Lighting::k_defAmbience = 0.3f;
-const Material GameSystem::Lighting::k_defMaterial = Material(glm::vec3(1.0f), glm::vec3(1.0f), 16.0f);
 const glm::vec3 GameSystem::Lighting::k_defLightDir = glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f));
 
 
@@ -38,10 +36,11 @@ const float GameSystem::Player::k_near = 0.1f;
 const float GameSystem::Player::k_far = 300.0f;
 const float GameSystem::Player::k_maxHP = 100.0f;
 const glm::vec3 GameSystem::Player::k_playerPosition = glm::vec3(0.0f, 6.0f, 0.0f);
-const glm::vec3 GameSystem::Player::k_mainHandPosition = glm::vec3(k_width * 0.5f, -k_height * 0.1f, -k_width * 0.5f);
+const glm::vec3 GameSystem::Player::k_mainHandPosition = glm::vec3(k_width * 0.5f, -k_height * 0.075f, -k_width * 0.75f);
 
 GameObject * GameSystem::Player::gameObject = nullptr;
-SpatialComponent * GameSystem::Player::spatial = nullptr;
+SpatialComponent * GameSystem::Player::bodySpatial = nullptr;
+SpatialComponent * GameSystem::Player::headSpatial = nullptr;
 NewtonianComponent * GameSystem::Player::newtonian = nullptr;
 CapsuleBounderComponent * GameSystem::Player::bounder = nullptr;
 CameraComponent * GameSystem::Player::camera = nullptr;
@@ -49,31 +48,22 @@ PlayerControllerComponent * GameSystem::Player::controller = nullptr;
 PlayerComponent * GameSystem::Player::playerComp = nullptr;
 HealthComponent * GameSystem::Player::health = nullptr;
 SpatialComponent * GameSystem::Player::handSpatial = nullptr;
+DiffuseRenderComponent * GameSystem::Player::handDiffuse = nullptr;
 
 void GameSystem::Player::init() {
     gameObject = &Scene::createGameObject();
-    spatial = &Scene::addComponent<SpatialComponent>(*gameObject, k_position);
+    bodySpatial = &Scene::addComponent<SpatialComponent>(*gameObject, k_position);
+    headSpatial = &Scene::addComponent<SpatialComponent>(*gameObject, bodySpatial);
     newtonian = &Scene::addComponent<NewtonianComponent>(*gameObject, false);
     Scene::addComponentAs<GravityComponent, AcceleratorComponent>(*gameObject);
     Scene::addComponent<GroundComponent>(*gameObject);
     Capsule playerCap(glm::vec3(0.0f, -k_height * 0.5f + k_width, 0.0f), k_width, k_height - 2.0f * k_width);
     bounder = &Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(*gameObject, k_weight, playerCap);
-    camera = &Scene::addComponent<CameraComponent>(*gameObject, k_fov, k_near, k_far);
+    camera = &Scene::addComponent<CameraComponent>(*gameObject, k_fov, k_near, k_far, headSpatial);
     controller = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_lookSpeed, k_moveSpeed, k_jumpSpeed, k_sprintSpeed);
     playerComp = &Scene::addComponent<PlayerComponent>(*gameObject);
     health = &Scene::addComponent<HealthComponent>(*gameObject, k_maxHP);
-    handSpatial = &Scene::addComponent<SpatialComponent>(*gameObject, k_mainHandPosition, spatial);
-    const Mesh * handMesh(Loader::getMesh("weapons/Pizza_Slice.obj"));
-    const Texture * handTex(Loader::getTexture("weapons/Pizza_Tex.png"));
-    ModelTexture handModelTex(handTex, Lighting::k_defMaterial);
-    Scene::addComponent<DiffuseRenderComponent>(*gameObject,
-        *handSpatial,
-        *handMesh,
-        handModelTex,
-        true,
-        glm::vec2(1.0f),
-        false   
-    );
+    handSpatial = &Scene::addComponent<SpatialComponent>(*gameObject, k_mainHandPosition, headSpatial);
 }
 
 //==============================================================================
@@ -132,7 +122,7 @@ void GameSystem::Enemies::Basic::create(const glm::vec3 & position, const float 
     const Mesh * headMesh(Loader::getMesh(k_headMeshName));
     const Texture * texture(Loader::getTexture(k_textureName));
     const DiffuseShader * shader();
-    ModelTexture modelTex(texture, Lighting::k_defMaterial);
+    ModelTexture modelTex(texture);
     GameObject & obj(Scene::createGameObject());
     SpatialComponent & bodySpatComp(Scene::addComponent<SpatialComponent>(obj, position, k_scale));
     SpatialComponent & headSpatComp(Scene::addComponent<SpatialComponent>(obj, k_headPosition, &bodySpatComp));
@@ -164,15 +154,15 @@ void GameSystem::Enemies::Basic::create(const glm::vec3 & position, const float 
 }
 
 void GameSystem::Enemies::Basic::spawn() {
-    glm::vec3 dir(-Player::spatial->w());
+    glm::vec3 dir(-Player::bodySpatial->w());
     dir = Util::safeNorm(glm::vec3(dir.x, 0.0f, dir.z));
     if (dir == glm::vec3()) {
         return;
     }
-    auto pair(CollisionSystem::pickHeavy(Ray(Player::spatial->position(), dir), UINT_MAX));
+    auto pair(CollisionSystem::pickHeavy(Ray(Player::bodySpatial->position(), dir), UINT_MAX));
     Intersect & inter(pair.second);
     if (inter.dist > 20.0f) {
-        create(Player::spatial->position() + dir * 20.0f, k_moveSpeed, k_maxHP);
+        create(Player::bodySpatial->position() + dir * 20.0f, k_moveSpeed, k_maxHP);
     }    
 }
 
@@ -213,14 +203,14 @@ const bool GameSystem::Weapons::PizzaSlice::k_isToon = true;
 const glm::vec3 GameSystem::Weapons::PizzaSlice::k_scale = glm::vec3(1.0f);
 const unsigned int GameSystem::Weapons::PizzaSlice::k_weight = 0;
 const float GameSystem::Weapons::PizzaSlice::k_speed = 30.0f; 
-const float GameSystem::Weapons::PizzaSlice::k_damage = 25.0f;
+const float GameSystem::Weapons::PizzaSlice::k_damage = 50.0f;
 
-void GameSystem::Weapons::PizzaSlice::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel) {
+GameObject * GameSystem::Weapons::PizzaSlice::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel, const glm::quat & orient) {
     const Mesh * mesh(Loader::getMesh(k_meshName));
     const Texture * tex(Loader::getTexture(k_texName));
-    ModelTexture modelTex(tex, Lighting::k_defMaterial);
+    ModelTexture modelTex(tex);
     GameObject & obj(Scene::createGameObject());
-    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_scale, Player::camera->orientation()));
+    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_scale, orient));
     BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *mesh, false, true, false));
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, true));
     GroundComponent & groundComp(Scene::addComponent<GroundComponent>(obj));
@@ -233,18 +223,44 @@ void GameSystem::Weapons::PizzaSlice::fire(const glm::vec3 & initPos, const glm:
         glm::vec2(1.0f),
         false
     ));
-    ProjectileComponent & weaponComp(Scene::addComponentAs<BulletComponent, ProjectileComponent>(obj, k_damage));
+    ProjectileComponent & weaponComp(Scene::addComponentAs<BulletComponent, ProjectileComponent>(obj, Player::gameObject, k_damage));
+    SpinAnimationComponent & spinAnimation(Scene::addComponentAs<SpinAnimationComponent, AnimationComponent>(obj, spatComp, glm::vec3(0.0f, 1.0f, 0.0f), -5.0f));
 
     SoundSystem::playSound3D("splash2.wav", spatComp.position());
+
+    return &obj;
 }
 
-void GameSystem::Weapons::PizzaSlice::fireFromPlayer() {
-    glm::vec3 initPos(Player::camera->orientMatrix() * Player::k_mainHandPosition + Player::spatial->position());
-    fire(initPos, Player::camera->getLookDir(), Player::spatial->effectiveVelocity());
+GameObject * GameSystem::Weapons::PizzaSlice::fireFromPlayer() {
+    glm::vec3 initPos(Player::handSpatial->position());
+    return fire(initPos, Player::camera->getLookDir(), Player::handSpatial->effectiveVelocity(), Player::handSpatial->orientation());
+}
+
+void GameSystem::Weapons::PizzaSlice::equip() {
+    if (Player::handDiffuse) Scene::removeComponent(*Player::handDiffuse);
+
+    const Mesh * mesh(Loader::getMesh("weapons/Pizza_Slice.obj"));
+    const Texture * tex(Loader::getTexture("weapons/Pizza_Tex.png"));
+    ModelTexture modelTex(tex);
+    Player::handDiffuse = &Scene::addComponent<DiffuseRenderComponent>(*Player::gameObject,
+        *Player::handSpatial,
+        *mesh,
+        modelTex,
+        true,
+        glm::vec2(1.0f),
+        false   
+    );
+}
+
+void GameSystem::Weapons::PizzaSlice::unequip() {
+    if (Player::handDiffuse) {
+        Scene::removeComponent(*Player::handDiffuse);
+        Player::handDiffuse = nullptr;
+    }
 }
 
 //------------------------------------------------------------------------------
-// Grenade
+// Soda Grenade
 
 const String GameSystem::Weapons::SodaGrenade::k_meshName = "weapons/SodaCan.obj";
 const String GameSystem::Weapons::SodaGrenade::k_texName = "weapons/SodaCan_Tex.png";
@@ -255,12 +271,12 @@ const float GameSystem::Weapons::SodaGrenade::k_speed = 20.0f;
 const float GameSystem::Weapons::SodaGrenade::k_damage = 50.0f;
 const float GameSystem::Weapons::SodaGrenade::k_radius = 5.0f;
 
-void GameSystem::Weapons::SodaGrenade::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel) {
+GameObject * GameSystem::Weapons::SodaGrenade::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel) {
     const Mesh * mesh(Loader::getMesh(k_meshName));
     const Texture * tex(Loader::getTexture(k_texName));
-    ModelTexture modelTex(tex, Lighting::k_defMaterial);
+    ModelTexture modelTex(tex);
     GameObject & obj(Scene::createGameObject());
-    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_scale));
+    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_scale, Player::headSpatial->orientation()));
     BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *mesh, false, true, false));
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, true));
     GroundComponent & groundComp(Scene::addComponent<GroundComponent>(obj));
@@ -274,25 +290,110 @@ void GameSystem::Weapons::SodaGrenade::fire(const glm::vec3 & initPos, const glm
         glm::vec2(1.0f),
         false
     ));
-    ProjectileComponent & weaponComp(Scene::addComponentAs<GrenadeComponent, ProjectileComponent>(obj, k_damage, k_radius));
+    ProjectileComponent & weaponComp(Scene::addComponentAs<GrenadeComponent, ProjectileComponent>(obj, Player::gameObject, k_damage, k_radius));
     SpinAnimationComponent & spinAnimation(Scene::addComponentAs<SpinAnimationComponent, AnimationComponent>(obj, spatComp, glm::vec3(1.0f, 0.0f, 0.0f), -5.0f));
 
-    SoundSystem::playSound3D("sword_slash.wav", spatComp.position());
+    SoundSystem::playSound3D("splash3.wav", spatComp.position());
+
+    return &obj;
 }
 
-void GameSystem::Weapons::SodaGrenade::fireFromPlayer() {
-    glm::vec3 initPos(Player::camera->orientMatrix() * Player::k_mainHandPosition + Player::spatial->position());
-    fire(initPos, Player::camera->getLookDir(), Player::spatial->effectiveVelocity());
+GameObject * GameSystem::Weapons::SodaGrenade::fireFromPlayer() {
+    glm::vec3 initPos(Player::headSpatial->orientMatrix() * Player::k_mainHandPosition + Player::headSpatial->position());
+    return fire(initPos, Player::camera->getLookDir(), Player::handSpatial->effectiveVelocity());
+}
+
+void GameSystem::Weapons::SodaGrenade::equip() {
+    if (Player::handDiffuse) Scene::removeComponent(*Player::handDiffuse);
+
+    const Mesh * mesh(Loader::getMesh("weapons/SodaCan.obj"));
+    const Texture * tex(Loader::getTexture("weapons/SodaCan_Tex.png"));
+    ModelTexture modelTex(tex);
+    Player::handDiffuse = &Scene::addComponent<DiffuseRenderComponent>(*Player::gameObject,
+        *Player::handSpatial,
+        *mesh,
+        modelTex,
+        true,
+        glm::vec2(1.0f),
+        false   
+    );
+}
+
+void GameSystem::Weapons::SodaGrenade::unequip() {
+    if (Player::handDiffuse) {
+        Scene::removeComponent(*Player::handDiffuse);
+        Player::handDiffuse = nullptr;
+    }
+}
+
+//------------------------------------------------------------------------------
+// Sriracha Bottle
+
+const float GameSystem::Weapons::SrirachaBottle::k_damage = 100.0f;
+const float GameSystem::Weapons::SrirachaBottle::k_radius = 1.5f;
+
+GameObject * GameSystem::Weapons::SrirachaBottle::s_playerSriracha;
+
+GameObject * GameSystem::Weapons::SrirachaBottle::start(const SpatialComponent & hostSpatial, const glm::vec3 & offset) {
+    GameObject & obj(Scene::createGameObject());
+    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, hostSpatial.position(), glm::vec3(1.0f), hostSpatial.orientation()));
+    BounderComponent & bounderComp(Scene::addComponentAs<SphereBounderComponent, BounderComponent>(obj, 0, Sphere(glm::vec3(0.0f, 0.0f, -k_radius), k_radius)));
+    SprayComponent & weaponComp(Scene::addComponentAs<SprayComponent, MeleeComponent>(obj, &hostSpatial, offset, k_damage));
+    ParticleComponent & particleComp(ParticleSystem::addSrirachaPC(spatComp));
+
+    SoundSystem::playSound3D("sword_slash.wav", spatComp.position());
+
+    return &obj;
+}
+
+void GameSystem::Weapons::SrirachaBottle::toggleForPlayer() {
+    if (s_playerSriracha) {
+        Scene::destroyGameObject(*s_playerSriracha);
+        s_playerSriracha = nullptr;
+        Player::handSpatial->setRelativeScale(glm::vec3(1.0f));
+    }
+    else {
+        s_playerSriracha = start(*Player::handSpatial);
+        Scene::addComponentAs<ScaleToAnimationComponent, AnimationComponent>(*s_playerSriracha, *Player::handSpatial, glm::vec3(1.0f, 0.5f, 1.0f), 5.0f);
+    }
+}
+
+void GameSystem::Weapons::SrirachaBottle::equip() {
+    if (Player::handDiffuse) Scene::removeComponent(*Player::handDiffuse);
+
+    const Mesh * mesh(Loader::getMesh("weapons/Sriracha.obj"));
+    const Texture * tex(Loader::getTexture("weapons/Sriracha_Tex.png"));
+    ModelTexture modelTex(tex);
+    Player::handDiffuse = &Scene::addComponent<DiffuseRenderComponent>(*Player::gameObject,
+        *Player::handSpatial,
+        *mesh,
+        modelTex,
+        true,
+        glm::vec2(1.0f),
+        false   
+    );
+}
+
+void GameSystem::Weapons::SrirachaBottle::unequip() {
+    if (Player::handDiffuse) {
+        Scene::removeComponent(*Player::handDiffuse);
+        Player::handDiffuse = nullptr;
+    }
+
+    if (s_playerSriracha) toggleForPlayer();
 }
 
 //------------------------------------------------------------------------------
 // All
 
-void GameSystem::Weapons::destroyAllProjectiles() {        
+void GameSystem::Weapons::destroyAllWeapons() {        
     for (ProjectileComponent * comp : s_projectileComponents) {
         Scene::destroyGameObject(comp->gameObject());
     }
     for (BlastComponent * comp : s_blastComponents) {
+        Scene::destroyGameObject(comp->gameObject());
+    }
+    for (MeleeComponent * comp : s_meleeComponents) {
         Scene::destroyGameObject(comp->gameObject());
     }
 }
@@ -359,6 +460,13 @@ const Vector<PlayerComponent *> & GameSystem::s_playerComponents(Scene::getCompo
 const Vector<EnemyComponent *> & GameSystem::s_enemyComponents(Scene::getComponents<EnemyComponent>());
 const Vector<ProjectileComponent *> & GameSystem::s_projectileComponents(Scene::getComponents<ProjectileComponent>());
 const Vector<BlastComponent *> & GameSystem::s_blastComponents(Scene::getComponents<BlastComponent>());
+const Vector<MeleeComponent *> & GameSystem::s_meleeComponents(Scene::getComponents<MeleeComponent>());
+
+GameSystem::Culture GameSystem::s_culture = Culture::none;
+bool GameSystem::s_changeCulture = false;
+GameSystem::Culture GameSystem::s_newCulture = Culture::none;
+bool GameSystem::s_useWeapon = false;
+bool GameSystem::s_unuseWeapon = false;
 
 void GameSystem::init() {
 
@@ -380,8 +488,8 @@ void GameSystem::init() {
     // Set primary camera
     RenderSystem::setCamera(Player::camera);
 
-    // Set Sound camera
-    SoundSystem::setCamera(Player::camera);
+    // Set sound ear
+    SoundSystem::setEar(*Player::headSpatial);
 
     // Load Level
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json");
@@ -410,12 +518,18 @@ void GameSystem::init() {
 }
 
 void GameSystem::update(float dt) {
-   for (auto & comp : s_playerControllers) {
+    // Update controllers (must be before game logic)
+    for (auto & comp : s_playerControllers) {
         comp->update(dt);
     }
     for (auto & comp : s_cameraControllerComponents) {
         comp->update(dt);
     }
+
+    // Game Logic
+    updateGame(dt);
+
+    // Update components
     for (auto & comp : s_cameraComponents) {
         comp->update(dt);
     }
@@ -429,6 +543,9 @@ void GameSystem::update(float dt) {
         comp->update(dt);
     }
     for (auto & comp : s_blastComponents) {
+        comp->update(dt);
+    }
+    for (auto & comp : s_meleeComponents) {
         comp->update(dt);
     }
 
@@ -450,29 +567,90 @@ void GameSystem::update(float dt) {
     }
 }
 
+void GameSystem::updateGame(float dt) {
+
+    if (s_changeCulture) {
+        setCulture(s_newCulture);
+        s_changeCulture = false;
+    }
+    if (s_useWeapon) {
+        switch (s_culture) {
+            case Culture::american: Weapons::SodaGrenade::fireFromPlayer(); break;
+            case Culture::asian: Weapons::SrirachaBottle::toggleForPlayer(); break;
+            case Culture::italian: Weapons::PizzaSlice::fireFromPlayer(); break;
+        }
+        s_useWeapon = false;
+    }
+    else if (s_unuseWeapon) {
+        if (s_culture == Culture::asian) Weapons::SrirachaBottle::toggleForPlayer();
+        s_unuseWeapon = false;
+    }
+}
+
+void GameSystem::setCulture(Culture culture) {
+    unequipWeapon();
+
+    s_culture = culture;
+
+    equipWeapon();
+}
+
+void GameSystem::equipWeapon() {
+    switch (s_culture) {
+        case Culture::american: Weapons::SodaGrenade::equip(); break;
+        case Culture::asian: Weapons::SrirachaBottle::equip(); break;
+        case Culture::italian: Weapons::PizzaSlice::equip(); break;
+    }
+}
+
+void GameSystem::unequipWeapon() {
+    switch (s_culture) {
+        case Culture::american: Weapons::SodaGrenade::unequip(); break;
+        case Culture::asian: Weapons::SrirachaBottle::unequip(); break;
+        case Culture::italian: Weapons::PizzaSlice::unequip(); break;
+    }
+}
+
 
 
 //==============================================================================
 // Message Handling
 
 void GameSystem::setupMessageCallbacks() {
-
-    // Shoot pizza slice (click) or fire soda grenade (right-click)
-    auto fireCallback([&](const Message & msg_) {
-        const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
-        if (msg.button == GLFW_MOUSE_BUTTON_1 && !(msg.mods & GLFW_MOD_CONTROL) && msg.action == GLFW_PRESS) {
-            Weapons::PizzaSlice::fireFromPlayer();
+    
+    // Set culture (1 | 2 | 3 | 4)
+    auto setCultureCallback([&](const Message & msg_) {
+        const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
+        if (msg.action != GLFW_PRESS || msg.mods) {
+            return;
         }
-        else if (msg.button == GLFW_MOUSE_BUTTON_2 && !(msg.mods & GLFW_MOD_CONTROL) && msg.action == GLFW_PRESS) {
-            Weapons::SodaGrenade::fireFromPlayer();
+        switch (msg.key) {
+            case GLFW_KEY_1: { s_changeCulture = true; s_newCulture = Culture::american; break; }
+            case GLFW_KEY_2: { s_changeCulture = true; s_newCulture = Culture::asian; break; }
+            case GLFW_KEY_3: { s_changeCulture = true; s_newCulture = Culture::italian; break; }
+            case GLFW_KEY_4: { s_changeCulture = true; s_newCulture = Culture::none; break; }
         }
     });
-    Scene::addReceiver<MouseMessage>(nullptr, fireCallback);
+    Scene::addReceiver<KeyMessage>(nullptr, setCultureCallback);
 
-    // Spawn enemy (1)
+    // Use weapon (click)
+    auto useWeaponCallback([&](const Message & msg_) {
+        const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
+        if (msg.button == GLFW_MOUSE_BUTTON_1 && !(msg.mods & GLFW_MOD_CONTROL)) {
+            if (msg.action == GLFW_PRESS) {
+                s_useWeapon = true;                
+            }
+            else if (msg.action == GLFW_RELEASE) {
+                s_unuseWeapon = true;
+            }
+        }
+    });
+    Scene::addReceiver<MouseMessage>(nullptr, useWeaponCallback);
+
+    // Spawn enemy (enter)
     auto spawnEnemyCallback([&](const Message & msg_) {
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
-        if (msg.key == GLFW_KEY_1 && msg.action == GLFW_PRESS) {
+        if (msg.key == GLFW_KEY_ENTER && msg.action == GLFW_PRESS) {
             Enemies::Basic::spawn();
         }
     });
@@ -486,7 +664,7 @@ void GameSystem::setupMessageCallbacks() {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && msg.mods & GLFW_MOD_CONTROL && msg.action == GLFW_PRESS) {
             rayPositions.clear();
-            rayPositions.push_back(Player::spatial->position());
+            rayPositions.push_back(Player::headSpatial->position());
             glm::vec3 dir(Player::camera->getLookDir());
             for (int i(0); i < rayDepth; ++i) {
                 auto pair(CollisionSystem::pick(Ray(rayPositions.back() + dir * 0.001f, dir)));
@@ -520,9 +698,8 @@ void GameSystem::setupMessageCallbacks() {
                 // enable camera object
                 Freecam::controllerComp->setEnabled(true);
                 // set camera object camera to player camera
-                Freecam::spatialComp->setRelativePosition(Player::spatial->position());
-                Freecam::spatialComp->setRelativeUVW(Player::spatial->u(), Player::spatial->v(), Player::spatial->w());
-                Freecam::cameraComp->lookInDir(Player::camera->getLookDir());
+                Freecam::spatialComp->setRelativePosition(Player::headSpatial->position());
+                Freecam::controllerComp->setOrientation(Player::controller->theta(), Player::controller->phi());
                 RenderSystem::setCamera(Freecam::cameraComp);
             }
             free = !free;
@@ -582,9 +759,9 @@ void GameSystem::setupImGui() {
             ImGui::NewLine();
             ImGui::Text("Player Pos");
             ImGui::Text("%f %f %f",
-                Player::spatial->position().x,
-                Player::spatial->position().y,
-                Player::spatial->position().z
+                Player::bodySpatial->position().x,
+                Player::bodySpatial->prevPosition().x,
+                Player::bodySpatial->position().z
             );
             ImGui::Text("Freecam Pos");
             ImGui::Text("%f %f %f",
@@ -668,16 +845,8 @@ void GameSystem::setupImGui() {
             if (ImGui::SliderInt("Shadow Map Size", &mapSize, 1024, 16384)) {
                 RenderSystem::s_shadowShader->setMapSize(mapSize);
             }
-            ImGui::Image((ImTextureID)RenderSystem::getShadowMap(), ImVec2(256, 256));
+            ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<uintptr_t>(RenderSystem::getShadowMap())), ImVec2(256, 256));
 
-            glm::vec3 u = RenderSystem::s_lightCamera->u();
-            glm::vec3 v = RenderSystem::s_lightCamera->v();
-            glm::vec3 w = RenderSystem::s_lightCamera->w();
-            if (ImGui::SliderFloat3("U", glm::value_ptr(u), -1.f, 1.f) ||
-                ImGui::SliderFloat3("V", glm::value_ptr(v), -1.f, 1.f) ||
-                ImGui::SliderFloat3("W", glm::value_ptr(w), -1.f, 1.f)) {
-                RenderSystem::s_lightCamera->setUVW(u, v, w);
-            }
             glm::vec3 position = RenderSystem::s_lightSpatial->position();
             if (ImGui::SliderFloat3("Position", glm::value_ptr(position), -300.f, 300.f)) {
                 RenderSystem::s_lightSpatial->setRelativePosition(position);

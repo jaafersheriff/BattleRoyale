@@ -40,6 +40,7 @@ class ParticleSystem {
         static ParticleComponent & addBodyExplosionPC(SpatialComponent & spatial);
         static ParticleComponent & addWaterFountainPC(SpatialComponent & spatial);
         static ParticleComponent & addSodaGrenadePC(SpatialComponent & spatial);
+        static ParticleComponent & addSrirachaPC(SpatialComponent & spatial);
 
     private:
 

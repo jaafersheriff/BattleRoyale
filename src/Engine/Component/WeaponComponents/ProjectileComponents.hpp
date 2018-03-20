@@ -20,7 +20,7 @@ class ProjectileComponent : public Component {
 
     protected: // only scene or friends can create component
 
-    ProjectileComponent(GameObject & gameObject);
+    ProjectileComponent(GameObject & gameObject, const GameObject * host);
 
     public:
 
@@ -32,6 +32,7 @@ class ProjectileComponent : public Component {
 
     protected:
 
+    const GameObject * m_host;
     BounderComponent * m_bounder;
     NewtonianComponent * m_newtonian;
 
@@ -45,7 +46,11 @@ class BulletComponent : public ProjectileComponent {
 
     protected:
 
-    BulletComponent(GameObject & gameObject, float damage);
+    BulletComponent(GameObject & gameObject, const GameObject * host, float damage);
+
+    public:
+
+    BulletComponent(BulletComponent && other) = default;
 
     virtual void init() override;
 
@@ -68,7 +73,7 @@ class GrenadeComponent : public ProjectileComponent {
 
     protected:
 
-    GrenadeComponent(GameObject & gameObject, float damage, float radius);
+    GrenadeComponent(GameObject & gameObject, const GameObject * host, float damage, float radius);
 
     virtual void init() override;
 

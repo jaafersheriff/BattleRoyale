@@ -3,11 +3,11 @@
 #include <fstream>
 
 #include "Scene/Scene.hpp"
-#include "Component/CameraComponents/CameraComponent.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "EngineApp/EngineApp.hpp"
 
 String SoundSystem::s_SOUND_DIR = EngineApp::RESOURCE_DIR + "/soundeffects/";
-const CameraComponent * SoundSystem::s_camera = NULL;
+const SpatialComponent * SoundSystem::s_earSpatial = NULL;
 #ifdef HAVE_FMOD_LIBRARY
 FMOD::System* SoundSystem::s_system = NULL;
 Map<String, FMOD::Sound*> SoundSystem::s_soundLibrary = Map<String, FMOD::Sound*>();
@@ -49,8 +49,8 @@ void SoundSystem::update(float dt)  {
 #endif
 }
 
-void SoundSystem::setCamera(const CameraComponent *camera) {
-    s_camera = camera;
+void SoundSystem::setEar(const SpatialComponent & spatial) {
+    s_earSpatial = &spatial;
 }
 
 void SoundSystem::initSoundLibrary() {   
@@ -179,13 +179,12 @@ Vector<String> SoundSystem::getSoundFilenames(String listname) {
 
 void SoundSystem::updateListener() {
 #ifdef HAVE_FMOD_LIBRARY
-    if (s_camera != NULL) {
-        SpatialComponent* s = s_camera->gameObject().getSpatial();
+    if (s_earSpatial != NULL) {
         s_system->set3DListenerAttributes(0,
-            fVec(s->position()), 
+            fVec(s_earSpatial->position()), 
             NULL, 
-            fVec(s_camera->getLookDir()), 
-            fVec(s_camera->v())
+            fVec(-s_earSpatial->w()), 
+            fVec(s_earSpatial->v())
         );
     }
 #endif

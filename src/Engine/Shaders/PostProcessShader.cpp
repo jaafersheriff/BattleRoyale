@@ -24,7 +24,6 @@ bool PostProcessShader::init() {
     
     addUniform("f_texCol");
     addUniform("f_bloomBlur");
-    addUniform("exposure");
 
     tex_pizza = Loader::getTexture("Grey_Tex.png");
 
@@ -85,7 +84,6 @@ void PostProcessShader::render(const CameraComponent * camera) {
 
     glUniform1i(getUniform("f_texCol"), 0);
     glUniform1i(getUniform("f_bloomBlur"), 1);
-    glUniform1f(getUniform("exposure"), 1.f);
 
     // Draw
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
