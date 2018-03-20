@@ -8,6 +8,12 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 
+// Necessary for light debug
+#ifdef DEBUG_MODE
+#include "Loader/Loader.hpp"
+#include "Model/ModelTexture.hpp"
+#endif
+
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 /* FBO */
 GLuint RenderSystem::s_fbo = 0;
@@ -20,7 +26,10 @@ const CameraComponent * RenderSystem::s_playerCamera = nullptr;
 GameObject * RenderSystem::s_lightObject = nullptr;
 CameraComponent * RenderSystem::s_lightCamera = nullptr;
 SpatialComponent * RenderSystem::s_lightSpatial = nullptr;
-float RenderSystem::lightDist = 15.f;
+float RenderSystem::lightDist(350.f);
+float RenderSystem::lightOffset(20.f);
+float RenderSystem::shadowAmbience(0.4f);
+float RenderSystem::transitionDistance(50.f);
 
 /* Shaders */
 UniquePtr<ShadowDepthShader> RenderSystem::s_shadowShader;;
@@ -51,13 +60,13 @@ void RenderSystem::init() {
 
     /* Init light */
     s_lightObject = &Scene::createGameObject();
-    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, 45.f, -150.0f, 150.0f);
-    glm::vec3 w = glm::normalize(glm::vec3(-0.2f, 0.75f, 0.5f));
+    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, 45.f, -10.f, 100.f);
+    glm::vec3 w = glm::normalize(glm::vec3(-0.42f, 0.75f, 0.5f));
     glm::vec3 u = glm::normalize(glm::cross(w, glm::vec3(0.f, 1.f, 0.f)));
     glm::vec3 v = glm::normalize(glm::cross(u, w));
-    s_lightSpatial = &Scene::addComponent<SpatialComponent>(*s_lightObject, w * lightDist, glm::vec3(2.f), glm::mat3(u, v, w));
-    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, glm::vec2(-75.f, 100.f), glm::vec2(-55.f, 100.f), 0.01f, 105.f);
-    //Scene::addComponent<DiffuseRenderComponent>(*s_lightObject, *Loader::getMesh("cube.obj"), ModelTexture(1.f, glm::vec3(1.f), glm::vec3(0.9f)), true, glm::vec2(1, 1));
+    s_lightSpatial = &Scene::addComponent<SpatialComponent>(*s_lightObject, glm::vec3(-27.26, 5.5, -50), glm::vec3(2.f), glm::mat3(u, v, w));
+    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, glm::vec2(-115.f, 118.f), glm::vec2(-42.f, 234.f), 42.f, 156.f);
+    //Scene::addComponent<DiffuseRenderComponent>(*s_lightObject, *s_lightSpatial, *Loader::getMesh("cube.obj"), ModelTexture(Material(glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 1.f), 16.f)), true, glm::vec2(1, 1));
 
     /* Init shaders */
     if (!(    s_diffuseShader = UniquePtr<    DiffuseShader>::make(    "diffuse_vert.glsl",     "diffuse_frag.glsl")) ||
@@ -95,8 +104,6 @@ void RenderSystem::update(float dt) {
         comp->update(dt);
     }
 
-    /* Update light */
-    s_lightSpatial->setRelativePosition(getLightDir() * -lightDist + s_playerCamera->gameObject().getComponentByType<SpatialComponent>()->position());
 
     if (!s_playerCamera) {
         return;
@@ -128,8 +135,10 @@ void RenderSystem::update(float dt) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         s_postProcessShader->render(s_playerCamera);
     }
+    
+    /* Update light -- done here to sync with other game logic */
+    //updateLightCamera();
 }
-
 void RenderSystem::setCamera(const CameraComponent * camera) {
     s_playerCamera = camera;
 }
@@ -236,4 +245,76 @@ void RenderSystem::doBloom() {
             first_iteration = false;
     }
     s_blurShader->unbind();
+}
+
+void RenderSystem::updateLightCamera() {
+    /* Size of player cam's near and far plane - far plane adjusted to shadow distance */
+    // TODO : this shouldn't need to calulate this on every frame
+    glm::vec2 farSize;
+    glm::vec2 nearSize;
+    farSize.x  = lightDist * glm::tan(glm::radians(s_playerCamera->fov()));
+    farSize.y  = farSize.x / Window::getAspectRatio();                                   
+    nearSize.x = s_playerCamera->near() * glm::tan(glm::radians(s_playerCamera->fov())); 
+    nearSize.y = nearSize.x / Window::getAspectRatio();                                  
+
+    glm::vec3 forward = glm::normalize(s_playerCamera->getLookDir());
+    glm::vec3 camPos = s_playerCamera->gameObject().getSpatial()->position();
+
+    /* World space positions of player cam's near and far plane - far plane ajusted to shadow distance */
+    glm::vec3 centerNear = camPos + (forward * s_playerCamera->near());
+    glm::vec3 centerFar = camPos + (forward * lightDist);
+
+    /* Calculate 8 points of player's frustum in light space */
+    Vector<glm::vec4> corners;
+    calculateFrustumVertices(corners, centerNear, centerFar, nearSize, farSize);
+
+    /* Find AABB of player cam's projection in light space */
+    glm::vec3 min(INFINITY, INFINITY, INFINITY);
+    glm::vec3 max(-min);
+    for (auto corner : corners) {
+        min.x = glm::min(min.x, corner.x);
+        min.y = glm::min(min.y, corner.y);
+        min.z = glm::min(min.z, corner.z);
+        max.x = glm::max(max.x, corner.x);
+        max.y = glm::max(max.y, corner.y);
+        max.z = glm::max(max.z, corner.z);
+    }
+    // TODO : offsets for all bounds
+    max.z += lightOffset;
+
+    /* Update light shadow box ortho based on AABB */
+    s_lightCamera->setNearFar(min.z, max.z);
+    s_lightCamera->setOrthoBounds(glm::vec2(min.x, max.x), glm::vec2(min.y, max.y));
+
+    /* Find center of shadow box in light space */
+    glm::vec3 center = glm::vec3(min.x + max.x, min.y + max.y, min.z + max.z) / 2.f;
+
+    /* Transform center of shadow box to world space */
+    center = glm::vec3(glm::inverse(s_lightCamera->getView()) * glm::vec4(center, 1.f));
+
+    /* Set center of shadow box */
+    s_lightCamera->gameObject().getSpatial()->setRelativePosition(center);
+}
+
+// TODO : move this to camera component?
+void RenderSystem::calculateFrustumVertices(Vector<glm::vec4> & points, glm::vec3 centerNear, glm::vec3 centerFar, glm::vec2 nearSize, glm::vec2 farSize) {
+    glm::vec3 upVector = glm::normalize(s_playerCamera->v());
+    glm::vec3 rightVector = glm::normalize(s_playerCamera->u());
+    glm::vec3 farTop = centerFar + (upVector * farSize.y);
+    glm::vec3 farBottom = centerFar + (-upVector * farSize.y);
+    glm::vec3 nearTop = centerNear + (upVector * nearSize.y);
+    glm::vec3 nearBottom = centerNear + (-upVector * nearSize.y);
+    points.push_back(calculateLightSpaceFrustumCorner(farTop,     rightVector,  farSize.x));
+    points.push_back(calculateLightSpaceFrustumCorner(farTop,    -rightVector,  farSize.x));
+    points.push_back(calculateLightSpaceFrustumCorner(farBottom,  rightVector,  farSize.x));
+    points.push_back(calculateLightSpaceFrustumCorner(farBottom, -rightVector,  farSize.x));
+    points.push_back(calculateLightSpaceFrustumCorner(nearTop,    rightVector,  nearSize.x));
+    points.push_back(calculateLightSpaceFrustumCorner(nearTop,   -rightVector,  nearSize.x));
+    points.push_back(calculateLightSpaceFrustumCorner(nearBottom, rightVector,  nearSize.x));
+    points.push_back(calculateLightSpaceFrustumCorner(nearBottom,-rightVector,  nearSize.x));
+}
+
+/* Transform corners of player camera's frustum into light space */
+glm::vec4 RenderSystem::calculateLightSpaceFrustumCorner(glm::vec3 start, glm::vec3 dir, float scale) {
+    return s_lightCamera->getView() * glm::vec4((start + (dir * scale)), 1.f);
 }
