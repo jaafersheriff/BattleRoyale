@@ -13,7 +13,7 @@ const Vector<PathfindingComponent *> & PathfindingSystem::s_pathfindingComponent
 void PathfindingSystem::init() {
 
     // Read in the graph of the map from a text file
-    readInGraph("../resources/test.txt", graph);
+    readInGraph("../resources/stepSize.txt", graph);
 }
 
 void PathfindingSystem::update(float dt) {

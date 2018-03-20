@@ -104,13 +104,14 @@ void GameSystem::Enemies::Basic::create(const glm::vec3 & position, bool mapping
     SpatialComponent & bodySpatComp(Scene::addComponent<SpatialComponent>(obj, position, k_scale));
     SpatialComponent & headSpatComp(Scene::addComponent<SpatialComponent>(obj, k_headPosition, &bodySpatComp));
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, false));
-    GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
     BounderComponent & bodyBoundComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *bodyMesh, false, false, true));
     BounderComponent & headBoundComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *headMesh, false, true, false, &headSpatComp));
     if (mapping)
         MapExploreComponent & mapComp(Scene::addComponent<MapExploreComponent>(obj, 0.0f, Scene::mapFilename));
-    else
+    else {
         PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *Player::gameObject, k_moveSpeed));
+        GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
+    }
     DiffuseRenderComponent & bodyRenderComp = Scene::addComponent<DiffuseRenderComponent>(
         obj,
         bodySpatComp,

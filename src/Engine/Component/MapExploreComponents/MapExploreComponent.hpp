@@ -52,10 +52,10 @@ class MapExploreComponent : public Component {
     bool findInVisited(glm::vec3 vec, float stepSize);
     std::string vectorToString(Vector<glm::vec3> vec);
     glm::vec3 closestPos(glm::vec3 vec);
-    void drawCup(glm::vec3 position);
+    void drawCup(glm::vec3 position, int heightoffset = 0);
 
     bool removeOutliers(std::unordered_set<glm::vec3, PathfindingSystem::vecHash, PathfindingSystem::gridCompare> &graphSet);
-    bool validNeighbor(glm::vec3 curPos, glm::vec3 candidate);
+    bool validNeighbor(glm::vec3 curPos, glm::vec3 candidate, float);
     Vector<glm::vec3> gridFind(std::unordered_set<glm::vec3, PathfindingSystem::vecHash, PathfindingSystem::gridCompare> &graphSet, int xPos, int zPos);
 
     // cosine of most severe angle that can still be considered "ground"
@@ -88,6 +88,8 @@ class MapExploreComponent : public Component {
     bool nonGroundCollision;
     bool writeOut;
     bool oneUpdate = false;
+
+    float stepSize = 2.0f;
     
 
     int secondFloorWidth = 97;
@@ -98,7 +100,7 @@ class MapExploreComponent : public Component {
 
     int secondFloorStart_x = -48;
     int secondFloorStart_z = -186;
-    int firstFloorStart_x = -35;
+    int firstFloorStart_x = -36;
     int firstFloorStart_z = -179;
 
     int secondFloorHeight = 10;

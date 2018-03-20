@@ -69,6 +69,8 @@ void MapExploreComponent::init() {
         	nonGroundCollision = true;
         }
 
+        //nonGroundCollision = true;
+
     });
 
     Scene::addReceiver<CollisionNormMessage>(&gameObject(), collisionCallback);
@@ -95,7 +97,7 @@ void MapExploreComponent::update(float dt) {
 				//collisionTestPoint.y += .25f;
 				graphSet.insert(collisionTestPoint);
 				//std::cout << "Cup" << std::endl;
-				//drawCup(collisionTestPoint);
+				//drawCup(collisionTestPoint, 2);
 			}
 		}
 		nonGroundCollision = false;
@@ -104,9 +106,9 @@ void MapExploreComponent::update(float dt) {
 
 		// Second floor height pass
 		if (secondFloorPass) {
-			for (int zIndex = 0; zIndex < secondFloorDepth; zIndex++) {
+			for (int zIndex = 0; zIndex < secondFloorDepth; zIndex += stepSize) {
 			//if (zIndex < secondFloorDepth) {
-				for (int xIndex = 0; xIndex < secondFloorWidth; xIndex++) {
+				for (int xIndex = 0; xIndex < secondFloorWidth; xIndex += stepSize) {
 				//if (xIndex < secondFloorWidth) {
 					xPos = xIndex + secondFloorStart_x;
 					zPos = zIndex + secondFloorStart_z;
@@ -119,7 +121,7 @@ void MapExploreComponent::update(float dt) {
 
 						if (visitedSet.find(testPoint) == visitedSet.end()) {
 							visitedSet.insert(testPoint);
-							//drawCup(testPoint);
+							drawCup(testPoint);
 						}
 					}
 				}
@@ -138,9 +140,9 @@ void MapExploreComponent::update(float dt) {
 		}
 		// First floor height pass
 		else if (firstFloorPass) {
-			for (int zIndex = 0; zIndex < firstFloorDepth; zIndex++) {
+			for (int zIndex = 0; zIndex < firstFloorDepth; zIndex += stepSize) {
 			//if (zIndex < firstFloorDepth) {
-				for (int xIndex = 0; xIndex < firstFloorWidth; xIndex++) {
+				for (int xIndex = 0; xIndex < firstFloorWidth; xIndex += stepSize) {
 				//if (xIndex < firstFloorWidth) {
 					xPos = xIndex + firstFloorStart_x;
 					zPos = zIndex + firstFloorStart_z;
@@ -151,7 +153,7 @@ void MapExploreComponent::update(float dt) {
 
 						if (visitedSet.find(testPoint) == visitedSet.end()) {
 							visitedSet.insert(testPoint);
-							//drawCup(testPoint);
+							drawCup(testPoint);
 						}
 					}
 				}
@@ -190,9 +192,9 @@ void MapExploreComponent::update(float dt) {
 			Vector<glm::vec3> possibleNeighbors;
 			Vector<glm::vec3> neighbors;
 
-			std::cout << "Removing Outliers" << std::endl;
-			removeOutliers(graphSet);
-			std::cout << "Size After: " << graphSet.size() << std::endl;
+			// std::cout << "Removing Outliers" << std::endl;
+			// removeOutliers(graphSet);
+			// std::cout << "Size After: " << graphSet.size() << std::endl;
 
 			// iterate through the graphSet and find the neighbors of each position
 			for (auto iter = graphSet.begin(); iter != graphSet.end(); ++iter) {
@@ -200,24 +202,24 @@ void MapExploreComponent::update(float dt) {
 				neighbors = Vector<glm::vec3>();
 
 				for (int dir = 0; dir < 8; dir++) {
-					possibleNeighbors = gridFind(graphSet, iter->x + xdir[dir], iter->z + zdir[dir]);
+					possibleNeighbors = gridFind(graphSet, iter->x + (xdir[dir] * stepSize), iter->z + (zdir[dir] * stepSize));
 
 					//walkways
 					if (possibleNeighbors.size() == 2) {
 						if (possibleNeighbors[0].y == curPos.y) {
 
-							if (validNeighbor(curPos, possibleNeighbors[0])) {
+							if (validNeighbor(curPos, possibleNeighbors[0], stepSize)) {
 								neighbors.push_back(possibleNeighbors[0]);
 							}
 						}
 						else {
-							if (validNeighbor(curPos, possibleNeighbors[1])) {
+							if (validNeighbor(curPos, possibleNeighbors[1], stepSize)) {
 								neighbors.push_back(possibleNeighbors[1]);
 							}
 						}
 					}
 					else if (possibleNeighbors.size() == 1) {
-						if (validNeighbor(curPos, possibleNeighbors[0])) {
+						if (validNeighbor(curPos, possibleNeighbors[0], stepSize)) {
 							neighbors.push_back(possibleNeighbors[0]);
 						}
 
@@ -234,10 +236,10 @@ void MapExploreComponent::update(float dt) {
 
 			std::cout << "Find Neighbors Done: " << graph.size() << std::endl;
 
-			for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
-				if (iter->second.size() == 8)
-					drawCup(iter->first);
-			}
+			 for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
+			 	if (iter->second.size() == 8)
+			 		drawCup(iter->first, 3);
+			 }
 // int loopCount = 0;
 		PathfindingSystem::vecvecMap cameFrom = PathfindingSystem::vecvecMap();
 // 			for (auto iter = graph.begin(); iter != graph.end();) {
@@ -318,9 +320,9 @@ bool MapExploreComponent::removeOutliers(std::unordered_set<glm::vec3, Pathfindi
 }
 
 // Checks if there is something between the two points and if they are close enough
-bool MapExploreComponent::validNeighbor(glm::vec3 curPos, glm::vec3 candidate) {
+bool MapExploreComponent::validNeighbor(glm::vec3 curPos, glm::vec3 candidate, float stepSize) {
 	glm::vec3 direction = Util::safeNorm(curPos - candidate);
-	float maxDist = 1.7;
+	//float maxDist = 1.7;
 /*
 	auto pair(CollisionSystem::pick(Ray(curPos, direction), &gameObject()));
 	if (pair.second.is) {
@@ -336,9 +338,10 @@ bool MapExploreComponent::validNeighbor(glm::vec3 curPos, glm::vec3 candidate) {
 	*/
 
 	// Check that it is a neighbor on the grid
-	if (abs(curPos.x - candidate.x) < 1.2 && abs(curPos.z - candidate.z) < 1.2) {
+	stepSize += .2;
+	if (abs(curPos.x - candidate.x) < stepSize && abs(curPos.z - candidate.z) < stepSize) {
 		// if step up or drop down
-		if (candidate.y - curPos.y < 1.0 || curPos.y > candidate.y) {
+		if (candidate.y - curPos.y < stepSize || curPos.y > candidate.y) {
 			return true;
 		}
 	}
@@ -391,12 +394,13 @@ std::string MapExploreComponent::vectorToString(Vector<glm::vec3> vec) {
 	return ret;
 }
 
-void MapExploreComponent::drawCup(glm::vec3 position) {
+void MapExploreComponent::drawCup(glm::vec3 position, int heightoffset) {
 	const Mesh * mesh(Loader::getMesh("Hamburger.obj"));
     const Texture * texture(Loader::getTexture("Hamburger_BaseColor.png"));
     const DiffuseShader * shader();
     ModelTexture modelTex(texture, Material(glm::vec3(1.f), glm::vec3(1.f), 16.0f));
     GameObject & obj(Scene::createGameObject());
+    position.y += heightoffset;
     SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, glm::vec3(.05)));
 	DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(
         obj,
