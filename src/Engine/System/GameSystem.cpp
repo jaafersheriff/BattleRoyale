@@ -271,7 +271,7 @@ GameObject * GameSystem::Weapons::SodaGrenade::fire(const glm::vec3 & initPos, c
 
 GameObject * GameSystem::Weapons::SodaGrenade::fireFromPlayer() {
     glm::vec3 initPos(Player::headSpatial->orientMatrix() * Player::k_mainHandPosition + Player::headSpatial->position());
-    return fire(initPos, Player::camera->getLookDir(), Player::headSpatial->effectiveVelocity());
+    return fire(initPos, Player::camera->getLookDir(), Player::handSpatial->effectiveVelocity());
 }
 
 void GameSystem::Weapons::SodaGrenade::equip() {
@@ -495,32 +495,18 @@ void GameSystem::init() {
 }
 
 void GameSystem::update(float dt) {
-    // Game Logic
-
-    if (s_changeCulture) {
-        setCulture(s_newCulture);
-        s_changeCulture = false;
-    }
-    if (s_useWeapon) {
-        switch (s_culture) {
-            case Culture::american: Weapons::SodaGrenade::fireFromPlayer(); break;
-            case Culture::asian: Weapons::SrirachaBottle::toggleForPlayer(); break;
-            case Culture::italian: Weapons::PizzaSlice::fireFromPlayer(); break;
-        }
-        s_useWeapon = false;
-    }
-    else if (s_unuseWeapon) {
-        if (s_culture == Culture::asian) Weapons::SrirachaBottle::toggleForPlayer();
-        s_unuseWeapon = false;
-    }
-
-    // Update components
+    // Update controllers (must be before game logic)
     for (auto & comp : s_playerControllers) {
         comp->update(dt);
     }
     for (auto & comp : s_cameraControllerComponents) {
         comp->update(dt);
     }
+
+    // Game Logic
+    updateGame(dt);
+
+    // Update components
     for (auto & comp : s_cameraComponents) {
         comp->update(dt);
     }
@@ -538,6 +524,26 @@ void GameSystem::update(float dt) {
     }
     for (auto & comp : s_meleeComponents) {
         comp->update(dt);
+    }
+}
+
+void GameSystem::updateGame(float dt) {
+
+    if (s_changeCulture) {
+        setCulture(s_newCulture);
+        s_changeCulture = false;
+    }
+    if (s_useWeapon) {
+        switch (s_culture) {
+            case Culture::american: Weapons::SodaGrenade::fireFromPlayer(); break;
+            case Culture::asian: Weapons::SrirachaBottle::toggleForPlayer(); break;
+            case Culture::italian: Weapons::PizzaSlice::fireFromPlayer(); break;
+        }
+        s_useWeapon = false;
+    }
+    else if (s_unuseWeapon) {
+        if (s_culture == Culture::asian) Weapons::SrirachaBottle::toggleForPlayer();
+        s_unuseWeapon = false;
     }
 }
 
@@ -714,7 +720,7 @@ void GameSystem::setupImGui() {
             ImGui::Text("Player Pos");
             ImGui::Text("%f %f %f",
                 Player::bodySpatial->position().x,
-                Player::bodySpatial->position().y,
+                Player::bodySpatial->prevPosition().x,
                 Player::bodySpatial->position().z
             );
             ImGui::Text("Freecam Pos");
