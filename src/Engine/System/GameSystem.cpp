@@ -25,20 +25,20 @@ const glm::vec3 GameSystem::Lighting::k_defLightDir = glm::normalize(glm::vec3(1
 //==============================================================================
 // PLAYER
 
-const glm::vec3 GameSystem::Player::k_defPosition = glm::vec3(0.0f, 6.0f, 0.0f);
-const float GameSystem::Player::k_defHeight = 1.75f;
-const float GameSystem::Player::k_defWidth = k_defHeight / 4.0f;
-const unsigned int GameSystem::Player::k_defWeight = 5;
-const float GameSystem::Player::k_defLookSpeed = 0.005f;
-const float GameSystem::Player::k_defMoveSpeed = 5.0f;
-const float GameSystem::Player::k_defSprintSpeed = 15.0f;
-const float GameSystem::Player::k_defJumpSpeed = 5.0f;
-const float GameSystem::Player::k_defFOV = 45.0f;
-const float GameSystem::Player::k_defNear = 0.1f;
-const float GameSystem::Player::k_defFar = 300.0f;
-const float GameSystem::Player::k_defMaxHP = 100.0f;
-const glm::vec3 GameSystem::Player::k_defPlayerPosition = glm::vec3(0.0f, 6.0f, 0.0f);
-const glm::vec3 GameSystem::Player::k_defMainHandPosition = glm::vec3(k_defWidth * 0.5f, 0.0f, -k_defWidth * 0.5f);
+const glm::vec3 GameSystem::Player::k_position = glm::vec3(0.0f, 6.0f, 0.0f);
+const float GameSystem::Player::k_height = 1.75f;
+const float GameSystem::Player::k_width = k_height / 4.0f;
+const unsigned int GameSystem::Player::k_weight = 5;
+const float GameSystem::Player::k_lookSpeed = 0.005f;
+const float GameSystem::Player::k_moveSpeed = 5.0f;
+const float GameSystem::Player::k_sprintSpeed = 15.0f;
+const float GameSystem::Player::k_jumpSpeed = 5.0f;
+const float GameSystem::Player::k_fov = 45.0f;
+const float GameSystem::Player::k_near = 0.1f;
+const float GameSystem::Player::k_far = 300.0f;
+const float GameSystem::Player::k_maxHP = 100.0f;
+const glm::vec3 GameSystem::Player::k_playerPosition = glm::vec3(0.0f, 6.0f, 0.0f);
+const glm::vec3 GameSystem::Player::k_mainHandPosition = glm::vec3(k_width * 0.5f, -k_height * 0.1f, -k_width * 0.5f);
 
 GameObject * GameSystem::Player::gameObject = nullptr;
 SpatialComponent * GameSystem::Player::spatial = nullptr;
@@ -48,19 +48,32 @@ CameraComponent * GameSystem::Player::camera = nullptr;
 PlayerControllerComponent * GameSystem::Player::controller = nullptr;
 PlayerComponent * GameSystem::Player::playerComp = nullptr;
 HealthComponent * GameSystem::Player::health = nullptr;
+SpatialComponent * GameSystem::Player::handSpatial = nullptr;
 
 void GameSystem::Player::init() {
     gameObject = &Scene::createGameObject();
-    spatial = &Scene::addComponent<SpatialComponent>(*gameObject, k_defPosition);
+    spatial = &Scene::addComponent<SpatialComponent>(*gameObject, k_position);
     newtonian = &Scene::addComponent<NewtonianComponent>(*gameObject, false);
     Scene::addComponentAs<GravityComponent, AcceleratorComponent>(*gameObject);
     Scene::addComponent<GroundComponent>(*gameObject);
-    Capsule playerCap(glm::vec3(0.0f, -k_defHeight * 0.5f + k_defWidth, 0.0f), k_defWidth, k_defHeight - 2.0f * k_defWidth);
-    bounder = &Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(*gameObject, k_defWeight, playerCap);
-    camera = &Scene::addComponent<CameraComponent>(*gameObject, k_defFOV, k_defNear, k_defFar);
-    controller = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_defLookSpeed, k_defMoveSpeed, k_defJumpSpeed, k_defSprintSpeed);
+    Capsule playerCap(glm::vec3(0.0f, -k_height * 0.5f + k_width, 0.0f), k_width, k_height - 2.0f * k_width);
+    bounder = &Scene::addComponentAs<CapsuleBounderComponent, BounderComponent>(*gameObject, k_weight, playerCap);
+    camera = &Scene::addComponent<CameraComponent>(*gameObject, k_fov, k_near, k_far);
+    controller = &Scene::addComponent<PlayerControllerComponent>(*gameObject, k_lookSpeed, k_moveSpeed, k_jumpSpeed, k_sprintSpeed);
     playerComp = &Scene::addComponent<PlayerComponent>(*gameObject);
-    health = &Scene::addComponent<HealthComponent>(*gameObject, k_defMaxHP);
+    health = &Scene::addComponent<HealthComponent>(*gameObject, k_maxHP);
+    handSpatial = &Scene::addComponent<SpatialComponent>(*gameObject, k_mainHandPosition, spatial);
+    const Mesh * handMesh(Loader::getMesh("weapons/Pizza_Slice.obj"));
+    const Texture * handTex(Loader::getTexture("weapons/Pizza_Tex.png"));
+    ModelTexture handModelTex(handTex, Lighting::k_defMaterial);
+    Scene::addComponent<DiffuseRenderComponent>(*gameObject,
+        *handSpatial,
+        *handMesh,
+        handModelTex,
+        true,
+        glm::vec2(1.0f),
+        false   
+    );
 }
 
 
@@ -71,34 +84,49 @@ void GameSystem::Player::init() {
 //------------------------------------------------------------------------------
 // Basic
 
-const String GameSystem::Enemies::Basic::k_defMeshName = "characters/Enemy.obj";
-const String GameSystem::Enemies::Basic::k_defTextureName = "characters/Enemy_Tex.png";
-const bool GameSystem::Enemies::Basic::k_defIsToon = true;
-const glm::vec3 GameSystem::Enemies::Basic::k_defScale = glm::vec3(0.75f);
-const unsigned int GameSystem::Enemies::Basic::k_defWeight = 5;
-const float GameSystem::Enemies::Basic::k_defMoveSpeed = 3.0f;
-const float GameSystem::Enemies::Basic::k_defMaxHP = 100.0f;
+const String GameSystem::Enemies::Basic::k_bodyMeshName = "characters/Enemy_Torso.obj";
+const String GameSystem::Enemies::Basic::k_headMeshName = "characters/Enemy_Head.obj";
+const String GameSystem::Enemies::Basic::k_textureName = "characters/Enemy_Tex.png";
+const glm::vec3 GameSystem::Enemies::Basic::k_headPosition = glm::vec3(0.0f, 1.0f, 0.0f);
+const bool GameSystem::Enemies::Basic::k_isToon = true;
+const glm::vec3 GameSystem::Enemies::Basic::k_scale = glm::vec3(0.75f);
+const unsigned int GameSystem::Enemies::Basic::k_weight = 5;
+const float GameSystem::Enemies::Basic::k_moveSpeed = 3.0f;
+const float GameSystem::Enemies::Basic::k_maxHP = 100.0f;
 
 void GameSystem::Enemies::Basic::create(const glm::vec3 & position) {
-    const Mesh * mesh(Loader::getMesh(k_defMeshName));
-    const Texture * texture(Loader::getTexture(k_defTextureName));
+    const Mesh * bodyMesh(Loader::getMesh(k_bodyMeshName));
+    const Mesh * headMesh(Loader::getMesh(k_headMeshName));
+    const Texture * texture(Loader::getTexture(k_textureName));
     const DiffuseShader * shader();
     ModelTexture modelTex(texture, Lighting::k_defMaterial);
     GameObject & obj(Scene::createGameObject());
-    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, position, k_defScale));
+    SpatialComponent & bodySpatComp(Scene::addComponent<SpatialComponent>(obj, position, k_scale));
+    SpatialComponent & headSpatComp(Scene::addComponent<SpatialComponent>(obj, k_headPosition, &bodySpatComp));
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, false));
     GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
-    BounderComponent & boundComp(CollisionSystem::addBounderFromMesh(obj, k_defWeight, *mesh, false, true, false));
-    PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *Player::gameObject, k_defMoveSpeed, false));
-    DiffuseRenderComponent & renderComp = Scene::addComponent<DiffuseRenderComponent>(
+    BounderComponent & bodyBoundComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *bodyMesh, false, false, true));
+    BounderComponent & headBoundComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *headMesh, false, true, false, &headSpatComp));
+    PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *Player::gameObject, k_moveSpeed, false));
+    DiffuseRenderComponent & bodyRenderComp = Scene::addComponent<DiffuseRenderComponent>(
         obj,
-        spatComp,
-        *mesh,
+        bodySpatComp,
+        *bodyMesh,
         modelTex,
-        k_defIsToon,
-        glm::vec2(1.0f)
+        k_isToon,
+        glm::vec2(1.0f),
+        false
     );
-    HealthComponent & healthComp(Scene::addComponent<HealthComponent>(obj, k_defMaxHP));
+    DiffuseRenderComponent & headRenderComp = Scene::addComponent<DiffuseRenderComponent>(
+        obj,
+        headSpatComp,
+        *headMesh,
+        modelTex,
+        k_isToon,
+        glm::vec2(1.0f),
+        false
+    );
+    HealthComponent & healthComp(Scene::addComponent<HealthComponent>(obj, k_maxHP));
     EnemyComponent & enemyComp(Scene::addComponentAs<BasicEnemyComponent, EnemyComponent>(obj));
 }
 
@@ -123,7 +151,7 @@ void GameSystem::Enemies::enablePathfinding() {
         GameObject & enemy(comp->gameObject());
         PathfindingComponent * path(enemy.getComponentByType<PathfindingComponent>());
         if (!path) {
-            Scene::addComponent<PathfindingComponent>(enemy, *Player::gameObject, Basic::k_defMoveSpeed, false);
+            Scene::addComponent<PathfindingComponent>(enemy, *Player::gameObject, Basic::k_moveSpeed, false);
         }
     }
 }
@@ -146,78 +174,81 @@ void GameSystem::Enemies::disablePathfinding() {
 //------------------------------------------------------------------------------
 // Pizza Slice
 
-const String GameSystem::Weapons::PizzaSlice::k_defMeshName = "weapons/Pizza_Slice.obj";
-const String GameSystem::Weapons::PizzaSlice::k_defTexName = "weapons/Pizza_Tex.png";
-const bool GameSystem::Weapons::PizzaSlice::k_defIsToon = true;
-const glm::vec3 GameSystem::Weapons::PizzaSlice::k_defScale = glm::vec3(1.0f);
-const unsigned int GameSystem::Weapons::PizzaSlice::k_defWeight = 0;
-const float GameSystem::Weapons::PizzaSlice::k_defSpeed = 30.0f; 
-const float GameSystem::Weapons::PizzaSlice::k_defDamage = 25.0f;
+const String GameSystem::Weapons::PizzaSlice::k_meshName = "weapons/Pizza_Slice.obj";
+const String GameSystem::Weapons::PizzaSlice::k_texName = "weapons/Pizza_Tex.png";
+const bool GameSystem::Weapons::PizzaSlice::k_isToon = true;
+const glm::vec3 GameSystem::Weapons::PizzaSlice::k_scale = glm::vec3(1.0f);
+const unsigned int GameSystem::Weapons::PizzaSlice::k_weight = 0;
+const float GameSystem::Weapons::PizzaSlice::k_speed = 30.0f; 
+const float GameSystem::Weapons::PizzaSlice::k_damage = 25.0f;
 
 void GameSystem::Weapons::PizzaSlice::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel) {
-    const Mesh * mesh(Loader::getMesh(k_defMeshName));
-    const Texture * tex(Loader::getTexture(k_defTexName));
+    const Mesh * mesh(Loader::getMesh(k_meshName));
+    const Texture * tex(Loader::getTexture(k_texName));
     ModelTexture modelTex(tex, Lighting::k_defMaterial);
     GameObject & obj(Scene::createGameObject());
-    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_defScale));
-    BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, k_defWeight, *mesh, false, true, false, 0.5f));
+    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_scale, Player::camera->orientation()));
+    BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *mesh, false, true, false));
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, true));
     GroundComponent & groundComp(Scene::addComponent<GroundComponent>(obj));
-    newtComp.addVelocity(initDir * k_defSpeed + srcVel);
+    newtComp.addVelocity(initDir * k_speed + srcVel);
     DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj,
         spatComp,
         *mesh,
         modelTex,
-        k_defIsToon,
-        glm::vec2(1.0f)
+        k_isToon,
+        glm::vec2(1.0f),
+        false
     ));
-    ProjectileComponent & weaponComp(Scene::addComponentAs<BulletComponent, ProjectileComponent>(obj, k_defDamage));
+    ProjectileComponent & weaponComp(Scene::addComponentAs<BulletComponent, ProjectileComponent>(obj, k_damage));
 
     SoundSystem::playSound3D("splash2.wav", spatComp.position());
 }
 
 void GameSystem::Weapons::PizzaSlice::fireFromPlayer() {
-    glm::vec3 initPos(Player::camera->orientMatrix() * Player::k_defMainHandPosition + Player::spatial->position());
+    glm::vec3 initPos(Player::camera->orientMatrix() * Player::k_mainHandPosition + Player::spatial->position());
     fire(initPos, Player::camera->getLookDir(), Player::spatial->effectiveVelocity());
 }
 
 //------------------------------------------------------------------------------
 // Grenade
 
-const String GameSystem::Weapons::SodaGrenade::k_defMeshName = "weapons/SodaCan.obj";
-const String GameSystem::Weapons::SodaGrenade::k_defTexName = "weapons/SodaCan_Tex.png";
-const bool GameSystem::Weapons::SodaGrenade::k_defIsToon = true;
-const glm::vec3 GameSystem::Weapons::SodaGrenade::k_defScale = glm::vec3(1.0f);
-const unsigned int GameSystem::Weapons::SodaGrenade::k_defWeight = 1;
-const float GameSystem::Weapons::SodaGrenade::k_defSpeed = 20.0f; 
-const float GameSystem::Weapons::SodaGrenade::k_defDamage = 50.0f;
-const float GameSystem::Weapons::SodaGrenade::k_defRadius = 5.0f;
+const String GameSystem::Weapons::SodaGrenade::k_meshName = "weapons/SodaCan.obj";
+const String GameSystem::Weapons::SodaGrenade::k_texName = "weapons/SodaCan_Tex.png";
+const bool GameSystem::Weapons::SodaGrenade::k_isToon = true;
+const glm::vec3 GameSystem::Weapons::SodaGrenade::k_scale = glm::vec3(1.0f);
+const unsigned int GameSystem::Weapons::SodaGrenade::k_weight = 1;
+const float GameSystem::Weapons::SodaGrenade::k_speed = 20.0f; 
+const float GameSystem::Weapons::SodaGrenade::k_damage = 50.0f;
+const float GameSystem::Weapons::SodaGrenade::k_radius = 5.0f;
 
 void GameSystem::Weapons::SodaGrenade::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel) {
-    const Mesh * mesh(Loader::getMesh(k_defMeshName));
-    const Texture * tex(Loader::getTexture(k_defTexName));
+    const Mesh * mesh(Loader::getMesh(k_meshName));
+    const Texture * tex(Loader::getTexture(k_texName));
     ModelTexture modelTex(tex, Lighting::k_defMaterial);
     GameObject & obj(Scene::createGameObject());
-    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_defScale));
-    BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, k_defWeight, *mesh, false, true, false));
+    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_scale));
+    BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *mesh, false, true, false));
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, true));
     GroundComponent & groundComp(Scene::addComponent<GroundComponent>(obj));
     Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj);
-    newtComp.addVelocity(initDir * k_defSpeed + srcVel);
+    newtComp.addVelocity(initDir * k_speed + srcVel);
     DiffuseRenderComponent & renderComp(Scene::addComponent<DiffuseRenderComponent>(obj,
         spatComp,
         *mesh,
         modelTex,
-        k_defIsToon,
-        glm::vec2(1.0f)
+        k_isToon,
+        glm::vec2(1.0f),
+        false
     ));
-    ProjectileComponent & weaponComp(Scene::addComponentAs<GrenadeComponent, ProjectileComponent>(obj, k_defDamage, k_defRadius));
+    ProjectileComponent & weaponComp(Scene::addComponentAs<GrenadeComponent, ProjectileComponent>(obj, k_damage, k_radius));
+    SpinAnimationComponent & spinAnimation(Scene::addComponentAs<SpinAnimationComponent, AnimationComponent>(obj, spatComp, glm::vec3(1.0f, 0.0f, 0.0f), -5.0f));
 
     SoundSystem::playSound3D("sword_slash.wav", spatComp.position());
 }
 
 void GameSystem::Weapons::SodaGrenade::fireFromPlayer() {
-    glm::vec3 initPos(Player::camera->orientMatrix() * Player::k_defMainHandPosition + Player::spatial->position());
+    glm::vec3 initPos(Player::camera->orientMatrix() * Player::k_mainHandPosition + Player::spatial->position());
     fire(initPos, Player::camera->getLookDir(), Player::spatial->effectiveVelocity());
 }
 
@@ -238,8 +269,8 @@ void GameSystem::Weapons::destroyAllProjectiles() {
 //==============================================================================
 // FREECAM
 
-const float GameSystem::Freecam::k_defMinSpeed = 0.25f;
-const float GameSystem::Freecam::k_defMaxSpeed = 100.0f;
+const float GameSystem::Freecam::k_minSpeed = 0.25f;
+const float GameSystem::Freecam::k_maxSpeed = 100.0f;
 
 GameObject * GameSystem::Freecam::gameObject = nullptr;
 SpatialComponent * GameSystem::Freecam::spatialComp = nullptr;
@@ -249,8 +280,8 @@ CameraControllerComponent * GameSystem::Freecam::controllerComp = nullptr;
 void GameSystem::Freecam::init() {
     gameObject = &Scene::createGameObject();
     spatialComp = &Scene::addComponent<SpatialComponent>(*gameObject);
-    cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, Player::k_defFOV, Player::k_defNear, Player::k_defFar);
-    controllerComp = &Scene::addComponent<CameraControllerComponent>(*gameObject, Player::k_defLookSpeed, k_defMinSpeed, k_defMaxSpeed);
+    cameraComp = &Scene::addComponent<CameraComponent>(*gameObject, Player::k_fov, Player::k_near, Player::k_far);
+    controllerComp = &Scene::addComponent<CameraControllerComponent>(*gameObject, Player::k_lookSpeed, k_minSpeed, k_maxSpeed);
     controllerComp->setEnabled(false);
 }
 
@@ -341,7 +372,7 @@ void GameSystem::init() {
     // Water fountain
     GameObject & fountain(Scene::createGameObject());
     SpatialComponent & fountainSpat(Scene::addComponent<SpatialComponent>(fountain, glm::vec3(1.0f, 7.6f, -51.0f)));
-    fountainSpat.setUVW(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f), true);
+    fountainSpat.setRelativeUVW(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f), true);
     ParticleSystem::addWaterFountainPC(fountainSpat);
 }
 
@@ -373,7 +404,6 @@ void GameSystem::update(float dt) {
 
 //==============================================================================
 // Message Handling
-
 
 void GameSystem::setupMessageCallbacks() {
 
@@ -440,8 +470,8 @@ void GameSystem::setupMessageCallbacks() {
                 // enable camera object
                 Freecam::controllerComp->setEnabled(true);
                 // set camera object camera to player camera
-                Freecam::spatialComp->setPosition(Player::spatial->position());
-                Freecam::spatialComp->setUVW(Player::spatial->u(), Player::spatial->v(), Player::spatial->w());
+                Freecam::spatialComp->setRelativePosition(Player::spatial->position());
+                Freecam::spatialComp->setRelativeUVW(Player::spatial->u(), Player::spatial->v(), Player::spatial->w());
                 Freecam::cameraComp->lookInDir(Player::camera->getLookDir());
                 RenderSystem::setCamera(Freecam::cameraComp);
             }
@@ -521,6 +551,7 @@ void GameSystem::setupImGui() {
             ImGui::Text("       Spatial: %5.2f%%, %5.2f%%", Scene::      spatialDT * factor, Scene::      spatialMessagingDT * factor);
             ImGui::Text("     Collision: %5.2f%%, %5.2f%%", Scene::    collisionDT * factor, Scene::    collisionMessagingDT * factor);
             ImGui::Text("Post Collision: %5.2f%%, %5.2f%%", Scene::postCollisionDT * factor, Scene::postCollisionMessagingDT * factor);
+            ImGui::Text("      Particle: %5.2f%%, %5.2f%%", Scene::     particleDT * factor, Scene::              particleDT * factor);
             ImGui::Text("        Render: %5.2f%%, %5.2f%%", Scene::       renderDT * factor, Scene::       renderMessagingDT * factor);
             ImGui::Text("         Sound: %5.2f%%, %5.2f%%", Scene::        soundDT * factor, Scene::        soundMessagingDT * factor);
             ImGui::Text("    Kill Queue: %5.2f%%", Scene::killDT * factor);
@@ -586,7 +617,7 @@ void GameSystem::setupImGui() {
             }
             glm::vec3 position = RenderSystem::s_lightSpatial->position();
             if (ImGui::SliderFloat3("Position", glm::value_ptr(position), -300.f, 300.f)) {
-                RenderSystem::s_lightSpatial->setPosition(position);
+                RenderSystem::s_lightSpatial->setRelativePosition(position);
             }
             glm::vec2 xBounds = RenderSystem::s_lightCamera->hBounds();
             glm::vec2 yBounds = RenderSystem::s_lightCamera->vBounds();

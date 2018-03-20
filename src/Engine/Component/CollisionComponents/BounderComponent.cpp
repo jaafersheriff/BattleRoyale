@@ -9,15 +9,16 @@
 
 
 
-BounderComponent::BounderComponent(GameObject & gameObject, unsigned int weight) :
+BounderComponent::BounderComponent(GameObject & gameObject, unsigned int weight, const SpatialComponent * spatial) :
     Component(gameObject),
-    m_spatial(nullptr),
+    m_spatial(spatial),
     m_weight(weight),
     m_isChange(false)
 {}
 
 void BounderComponent::init() {
-    if (!(m_spatial = gameObject().getSpatial())) assert(false);
+    if (m_spatial) assert(&m_spatial->gameObject() == &gameObject());
+    else assert(m_spatial = gameObject().getSpatial());
 }
 
 
@@ -52,8 +53,8 @@ AABox AABBounderComponent::transformAABox(const AABox & box, const glm::vec3 & p
     );
 }
 
-AABBounderComponent::AABBounderComponent(GameObject & gameObject, unsigned int weight, const AABox & box) :
-    BounderComponent(gameObject, weight),
+AABBounderComponent::AABBounderComponent(GameObject & gameObject, unsigned int weight, const AABox & box, const SpatialComponent * spatial) :
+    BounderComponent(gameObject, weight, spatial),
     m_box(box),
     m_transBox(m_box),
     m_prevTransBox(m_transBox)
@@ -106,6 +107,10 @@ bool AABBounderComponent::isCritical() const {
     return glm::abs(delta.x) > boxRadii.x || glm::abs(delta.y) > boxRadii.y || glm::abs(delta.z) > boxRadii.z;
 }
 
+glm::vec3 AABBounderComponent::groundPosition() const {
+    return glm::vec3((m_transBox.min.x + m_transBox.max.x) * 0.5f, m_transBox.min.y, (m_transBox.min.z + m_transBox.max.z) * 0.5f);
+}
+
 
 
 Sphere SphereBounderComponent::transformSphere(const Sphere & sphere, const glm::mat4 & transMat, const glm::vec3 & scale) {
@@ -115,8 +120,8 @@ Sphere SphereBounderComponent::transformSphere(const Sphere & sphere, const glm:
     );
 }
 
-SphereBounderComponent::SphereBounderComponent(GameObject & gameObject, unsigned int weight, const Sphere & sphere) :
-    BounderComponent(gameObject, weight),
+SphereBounderComponent::SphereBounderComponent(GameObject & gameObject, unsigned int weight, const Sphere & sphere, const SpatialComponent * spatial) :
+    BounderComponent(gameObject, weight, spatial),
     m_sphere(sphere),
     m_transSphere(m_sphere),
     m_prevTransSphere(m_transSphere)
@@ -162,6 +167,10 @@ bool SphereBounderComponent::isCritical() const {
     return glm::length2(m_transSphere.origin - m_prevTransSphere.origin) > m_transSphere.radius * m_transSphere.radius;
 }
 
+glm::vec3 SphereBounderComponent::groundPosition() const {
+    return glm::vec3(m_transSphere.origin.x, m_transSphere.origin.y - m_transSphere.radius, m_transSphere.origin.z);
+}
+
 
 
 Capsule CapsuleBounderComponent::transformCapsule(const Capsule & capsule, const glm::mat4 & transMat, const glm::vec3 & scale) {
@@ -173,8 +182,8 @@ Capsule CapsuleBounderComponent::transformCapsule(const Capsule & capsule, const
     );
 }
 
-CapsuleBounderComponent::CapsuleBounderComponent(GameObject & gameObject, unsigned int weight, const Capsule & capsule) :
-    BounderComponent(gameObject, weight),
+CapsuleBounderComponent::CapsuleBounderComponent(GameObject & gameObject, unsigned int weight, const Capsule & capsule, const SpatialComponent * spatial) :
+    BounderComponent(gameObject, weight, spatial),
     m_capsule(capsule),
     m_transCapsule(m_capsule),
     m_prevTransCapsule(m_transCapsule)
@@ -244,4 +253,8 @@ bool CapsuleBounderComponent::isCritical() const {
     }
 
     return false;
+}
+
+glm::vec3 CapsuleBounderComponent::groundPosition() const {
+    return glm::vec3(m_transCapsule.center.x, m_transCapsule.center.y - m_transCapsule.height * 0.5f - m_transCapsule.radius, m_transCapsule.center.z);
 }

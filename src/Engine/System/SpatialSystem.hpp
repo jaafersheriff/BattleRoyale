@@ -13,6 +13,7 @@ class Scene;
 class SpatialComponent;
 class NewtonianComponent;
 class AcceleratorComponent;
+class AnimationComponent;
 
 
 
@@ -23,7 +24,7 @@ class SpatialSystem {
 
     public:
 
-    static void init() {};
+    static void init();
 
     static void update(float dt);
 
@@ -47,6 +48,7 @@ class SpatialSystem {
     static const Vector<SpatialComponent *> & s_spatialComponents;
     static const Vector<NewtonianComponent *> & s_newtonianComponents;
     static const Vector<AcceleratorComponent *> & s_acceleratorComponents;
+    static const Vector<AnimationComponent *> & s_animationComponents;
     static glm::vec3 s_gravityDir;
     static float s_gravityMag;
 

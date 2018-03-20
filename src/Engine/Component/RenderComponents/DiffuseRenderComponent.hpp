@@ -13,6 +13,7 @@ class RenderSystem;
 class Mesh;
 class SpatialComponent;
 class DiffuseShader;
+class ShadowDepthShader;
 
 
 
@@ -20,6 +21,7 @@ class DiffuseRenderComponent : public Component {
 
     friend Scene;
     friend DiffuseShader;
+    friend ShadowDepthShader;
 
     private:
 
@@ -30,7 +32,7 @@ class DiffuseRenderComponent : public Component {
         DiffuseRenderComponent(
             GameObject & gameObject, const SpatialComponent & spatial,
             const Mesh & mesh, const ModelTexture & texture,
-            bool toon, const glm::vec2 & tiling
+            bool toon, const glm::vec2 & tiling, bool doBloom
         );
 
     public:
@@ -45,6 +47,8 @@ class DiffuseRenderComponent : public Component {
 
         bool isToon() const  { return m_isToon; }
 
+        bool doBloom() const { return m_doBloom; }
+
         const glm::vec2 & tiling() const { return m_tiling; }
 
         const Sphere & enclosingSphere() const { return m_transSphere; }
@@ -55,6 +59,7 @@ class DiffuseRenderComponent : public Component {
         ModelTexture m_modelTexture;
         bool m_isToon;
         glm::vec2 m_tiling;
+        bool m_doBloom;
         const SpatialComponent * m_spatial;
         Sphere m_sphere;
         Sphere m_transSphere;

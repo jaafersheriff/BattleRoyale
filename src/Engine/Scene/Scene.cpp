@@ -39,6 +39,8 @@ float Scene::collisionDT;
 float Scene::collisionMessagingDT;
 float Scene::postCollisionDT;
 float Scene::postCollisionMessagingDT;
+float Scene::particleDT;
+float Scene::particleMessagingDT;
 float Scene::renderDT;
 float Scene::renderMessagingDT;
 float Scene::soundDT;
@@ -85,7 +87,7 @@ void Scene::update(float dt) {
     relayMessages();
     pathfindingMessagingDT = float(watch.lap());
 
-    SpatialSystem::update(dt); // needs to happen right before collision
+    SpatialSystem::update(dt); // needs to happen before collision
     spatialDT += float(watch.lap());
     relayMessages();
     spatialMessagingDT = float(watch.lap());
@@ -100,9 +102,10 @@ void Scene::update(float dt) {
     relayMessages();
     postCollisionMessagingDT = float(watch.lap());
 
-    // TO DO: Timing
     ParticleSystem::update(dt);
+    particleDT = float(watch.lap());
     relayMessages();
+    particleMessagingDT = float(watch.lap());
 
     RenderSystem::update(dt); // rendering should be last
     renderDT = float(watch.lap());
@@ -118,13 +121,13 @@ void Scene::update(float dt) {
     relayMessages();
     killDT = float(watch.lap());
 
+    totalDT = float(watch.total());
+
 #ifdef DEBUG_MODE
     // Reports the state of the game, so should happen at end
     for (ImGuiComponent * comp : getComponents<ImGuiComponent>()) comp->update(dt);
     if (Window::isImGuiEnabled()) ImGui::Render();
 #endif
-
-    totalDT = float(watch.total());
 }
 
 void Scene::doInitQueue() {
@@ -185,6 +188,7 @@ void Scene::killGameObjects() {
                 // add game object's components to kill queue
                 for (auto compTIt(go->m_compsByCompT.begin()); compTIt != go->m_compsByCompT.end(); ++compTIt) {
                     for (auto & comp : compTIt->second) {
+                        comp->m_gameObject = nullptr;
                         s_componentKillQueue.emplace_back(compTIt->first, comp);
                     }
                 }
@@ -217,7 +221,7 @@ void Scene::killComponents() {
             for (int i(int(comps.size()) - 1); i >= 0; --i) {
                 if (comps[i].get() == comp) {
                     auto it(comps.begin() + i);
-                    sendMessage<ComponentRemovedMessage>(nullptr, std::move(*it), typeI);
+                    sendMessage<ComponentRemovedMessage>(comp->m_gameObject, std::move(*it), typeI);
                     comps.erase(it);
                     found = true;
                     break;
