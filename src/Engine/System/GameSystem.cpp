@@ -561,8 +561,9 @@ void GameSystem::setupImGui() {
         [&]() {
             /* Light dir */
             glm::vec3 lightDir = RenderSystem::getLightDir();
-            ImGui::SliderFloat3("LightDir", glm::value_ptr(lightDir), -1.f, 1.f);
-            RenderSystem::setLightDir(lightDir);
+            if (ImGui::SliderFloat3("LightDir", glm::value_ptr(lightDir), -1.f, 1.f)) {
+                RenderSystem::setLightDir(lightDir);
+            }
             /* Shadow map's distance */
             ImGui::SliderFloat("Shadow Distance", &RenderSystem::lightDist, -350.f, 350.f);
             ImGui::SliderFloat("Shadow Offset", &RenderSystem::lightOffset, 0.f, 50.f);
@@ -570,9 +571,33 @@ void GameSystem::setupImGui() {
             ImGui::SliderFloat("Shadow Transition", &RenderSystem::transitionDistance, 0.f, 50.f);
             /* Shadow map FBO */
             int mapSize = RenderSystem::s_shadowShader->getMapSize();
-            ImGui::SliderInt("Shadow Map Size", &mapSize, 1024, 16384);
-            RenderSystem::s_shadowShader->setMapSize(mapSize);
+            if (ImGui::SliderInt("Shadow Map Size", &mapSize, 1024, 16384)) {
+                RenderSystem::s_shadowShader->setMapSize(mapSize);
+            }
             ImGui::Image((ImTextureID)RenderSystem::getShadowMap(), ImVec2(256, 256));
+
+            glm::vec3 u = RenderSystem::s_lightCamera->u();
+            glm::vec3 v = RenderSystem::s_lightCamera->v();
+            glm::vec3 w = RenderSystem::s_lightCamera->w();
+            if (ImGui::SliderFloat3("U", glm::value_ptr(u), -1.f, 1.f) ||
+                ImGui::SliderFloat3("V", glm::value_ptr(v), -1.f, 1.f) ||
+                ImGui::SliderFloat3("W", glm::value_ptr(w), -1.f, 1.f)) {
+                RenderSystem::s_lightCamera->setUVW(u, v, w);
+            }
+            glm::vec3 position = RenderSystem::s_lightSpatial->position();
+            if (ImGui::SliderFloat3("Position", glm::value_ptr(position), -300.f, 300.f)) {
+                RenderSystem::s_lightSpatial->setPosition(position);
+            }
+            glm::vec2 xBounds = RenderSystem::s_lightCamera->hBounds();
+            glm::vec2 yBounds = RenderSystem::s_lightCamera->vBounds();
+            glm::vec2 zBounds = glm::vec2(RenderSystem::s_lightCamera->near(), RenderSystem::s_lightCamera->far());
+            if (ImGui::SliderFloat2("xBounds", glm::value_ptr(xBounds), -300.f, 300.f) ||
+                ImGui::SliderFloat2("yBounds", glm::value_ptr(yBounds), -300.f, 300.f)) {
+                RenderSystem::s_lightCamera->setOrthoBounds(xBounds, yBounds);
+            }
+            if (ImGui::SliderFloat2("zBounds", glm::value_ptr(zBounds), -300.f, 300.f)) {
+                RenderSystem::s_lightCamera->setNearFar(zBounds.x, zBounds.y);
+            }
         }
     );
 
