@@ -25,7 +25,7 @@ void MeleeComponent::init() {
 
 void MeleeComponent::update(float dt) {
     if (m_hostSpatial) {
-        gameObject().getSpatial()->setRelativePosition(glm::vec3(m_hostSpatial->modelMatrix() * glm::vec4(m_hostOffset, 1.0f)));
+        gameObject().getSpatial()->move(glm::vec3(m_hostSpatial->modelMatrix() * glm::vec4(m_hostOffset, 1.0f)) - gameObject().getSpatial()->position());
         gameObject().getSpatial()->setRelativeOrientation(m_hostSpatial->orientation());
     }
 }

@@ -80,14 +80,14 @@ ParticleComponent & ParticleSystem::addWaterFountainPC(SpatialComponent & spatia
     bool randomDistrib(true);
     auto initializer(UniquePtr<ConeParticleInitializer>::make(minSpeed, maxSpeed, angle, randomDistrib));
     auto updater(UniquePtr<GravityParticleUpdater>::make());
-    Mesh & mesh(*Loader::getMesh("particles/Blood_Drop.obj"));
-    ModelTexture modelTexture(Loader::getTexture("particles/Blood_Drop_Tex.png"));
+    Mesh & mesh(*Loader::getMesh("particles/Droplet.obj"));
+    ModelTexture modelTexture(Loader::getTexture("particles/Water_Drop_Tex.png"));
     int maxN(2000);
     float rate(1000.0f);
     float duration(2.0f);
     bool loop(true);
     float scale(1.0f);
-    bool variation(true);
+    bool variation(false);
     bool fade(true);
     return Scene::addComponent<ParticleComponent>(spatial.gameObject(),
         std::move(initializer),
@@ -117,7 +117,7 @@ ParticleComponent & ParticleSystem::addSodaGrenadePC(SpatialComponent & spatial)
     float duration(0.25f);
     bool loop(false);
     float scale(1.0f);
-    bool variation(true);
+    bool variation(false);
     bool fade(true);
     ModelTexture modelTexture(Loader::getTexture("particles/Soda_Tex.png"));
     return Scene::addComponent<ParticleComponent>(spatial.gameObject(),
@@ -137,20 +137,20 @@ ParticleComponent & ParticleSystem::addSodaGrenadePC(SpatialComponent & spatial)
 }
 
 ParticleComponent & ParticleSystem::addSrirachaPC(SpatialComponent & spatial) {
-    float minSpeed(2.0f);
-    float maxSpeed(5.0f);
-    float angle(glm::radians(40.0f));
+    float minSpeed(8.0f);
+    float maxSpeed(12.0f);
+    float angle(glm::radians(30.0f));
     bool randomDistrib(true);
     auto initializer(UniquePtr<ConeParticleInitializer>::make(minSpeed, maxSpeed, angle, randomDistrib));
-    auto updater(UniquePtr<GravityParticleUpdater>::make());
-    Mesh & mesh(*Loader::getMesh("particles/Blood_Drop.obj"));
+    auto updater(UniquePtr<LinearParticleUpdater>::make());
+    Mesh & mesh(*Loader::getMesh("particles/Droplet.obj"));
     ModelTexture modelTexture(Loader::getTexture("particles/Blood_Drop_Tex.png"));
     int maxN(2000);
-    float rate(1000.0f);
-    float duration(2.0f);
+    float rate(2000.0f);
+    float duration(0.5f);
     bool loop(true);
-    float scale(1.0f);
-    bool variation(true);
+    float scale(0.1f);
+    bool variation(false);
     bool fade(true);
     return Scene::addComponent<ParticleComponent>(spatial.gameObject(),
         std::move(initializer),

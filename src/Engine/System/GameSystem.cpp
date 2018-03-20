@@ -296,8 +296,8 @@ void GameSystem::Weapons::SodaGrenade::unequip() {
 //------------------------------------------------------------------------------
 // Sriracha Bottle
 
-const float GameSystem::Weapons::SrirachaBottle::k_damage = 50.0f;
-const float GameSystem::Weapons::SrirachaBottle::k_radius = 5.0f;
+const float GameSystem::Weapons::SrirachaBottle::k_damage = 100.0f;
+const float GameSystem::Weapons::SrirachaBottle::k_radius = 1.5f;
 
 GameObject * GameSystem::Weapons::SrirachaBottle::s_playerSriracha = nullptr;
 
@@ -306,7 +306,7 @@ GameObject * GameSystem::Weapons::SrirachaBottle::start(const SpatialComponent &
     SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, hostSpatial.position(), glm::vec3(1.0f), hostSpatial.orientation()));
     BounderComponent & bounderComp(Scene::addComponentAs<SphereBounderComponent, BounderComponent>(obj, 0, Sphere(glm::vec3(0.0f, 0.0f, -k_radius), k_radius)));
     SprayComponent & weaponComp(Scene::addComponentAs<SprayComponent, MeleeComponent>(obj, &hostSpatial, offset, k_damage));
-    ParticleComponent & particleComp(ParticleSystem::addSrirachaPC())
+    ParticleComponent & particleComp(ParticleSystem::addSrirachaPC(spatComp));
 
     SoundSystem::playSound3D("sword_slash.wav", spatComp.position());
 
@@ -441,7 +441,7 @@ void GameSystem::init() {
     Window::setCursorEnabled(false);
 
     // Set gravity
-    //SpatialSystem::setGravity(k_defGravity);
+    SpatialSystem::setGravity(k_defGravity);
 
     // Init player
     Player::init();
@@ -456,9 +456,9 @@ void GameSystem::init() {
     SoundSystem::setEar(*Player::headSpatial);
 
     // Load Level
-    //Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json");
+    Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json");
     // Set octree. Needs to be manually adjusted to fit level size
-    //CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
+    CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
 
     // Start music
     Music::start();
