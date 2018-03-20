@@ -5,7 +5,6 @@
 #include "Scene/Scene.hpp"
 #include "Systems.hpp"
 #include "Shaders/Shaders.hpp"
-#include "Component/Components.hpp"
 #include "Loader/Loader.hpp"
 #include "Util/Util.hpp"
 #include "IO/Window.hpp"
@@ -192,6 +191,7 @@ GameObject * GameSystem::Weapons::PizzaSlice::fire(const glm::vec3 & initPos, co
         false
     ));
     ProjectileComponent & weaponComp(Scene::addComponentAs<BulletComponent, ProjectileComponent>(obj, Player::gameObject, k_damage));
+    SpinAnimationComponent & spinAnimation(Scene::addComponentAs<SpinAnimationComponent, AnimationComponent>(obj, spatComp, glm::vec3(0.0f, 1.0f, 0.0f), -5.0f));
 
     SoundSystem::playSound3D("splash2.wav", spatComp.position());
 
@@ -260,7 +260,7 @@ GameObject * GameSystem::Weapons::SodaGrenade::fire(const glm::vec3 & initPos, c
     ProjectileComponent & weaponComp(Scene::addComponentAs<GrenadeComponent, ProjectileComponent>(obj, Player::gameObject, k_damage, k_radius));
     SpinAnimationComponent & spinAnimation(Scene::addComponentAs<SpinAnimationComponent, AnimationComponent>(obj, spatComp, glm::vec3(1.0f, 0.0f, 0.0f), -5.0f));
 
-    SoundSystem::playSound3D("sword_slash.wav", spatComp.position());
+    SoundSystem::playSound3D("splash3.wav", spatComp.position());
 
     return &obj;
 }
@@ -299,7 +299,7 @@ void GameSystem::Weapons::SodaGrenade::unequip() {
 const float GameSystem::Weapons::SrirachaBottle::k_damage = 100.0f;
 const float GameSystem::Weapons::SrirachaBottle::k_radius = 1.5f;
 
-GameObject * GameSystem::Weapons::SrirachaBottle::s_playerSriracha = nullptr;
+GameObject * GameSystem::Weapons::SrirachaBottle::s_playerSriracha;
 
 GameObject * GameSystem::Weapons::SrirachaBottle::start(const SpatialComponent & hostSpatial, const glm::vec3 & offset) {
     GameObject & obj(Scene::createGameObject());
@@ -317,9 +317,11 @@ void GameSystem::Weapons::SrirachaBottle::toggleForPlayer() {
     if (s_playerSriracha) {
         Scene::destroyGameObject(*s_playerSriracha);
         s_playerSriracha = nullptr;
+        Player::handSpatial->setRelativeScale(glm::vec3(1.0f));
     }
     else {
         s_playerSriracha = start(*Player::handSpatial);
+        Scene::addComponentAs<ScaleToAnimationComponent, AnimationComponent>(*s_playerSriracha, *Player::handSpatial, glm::vec3(1.0f, 0.5f, 1.0f), 5.0f);
     }
 }
 
@@ -427,10 +429,11 @@ const Vector<ProjectileComponent *> & GameSystem::s_projectileComponents(Scene::
 const Vector<BlastComponent *> & GameSystem::s_blastComponents(Scene::getComponents<BlastComponent>());
 const Vector<MeleeComponent *> & GameSystem::s_meleeComponents(Scene::getComponents<MeleeComponent>());
 
-GameSystem::Store GameSystem::s_store = Store::none;
-bool GameSystem::s_changeStore = false;
-GameSystem::Store GameSystem::s_newStore = Store::none;
+GameSystem::Culture GameSystem::s_culture = Culture::none;
+bool GameSystem::s_changeCulture = false;
+GameSystem::Culture GameSystem::s_newCulture = Culture::none;
 bool GameSystem::s_useWeapon = false;
+bool GameSystem::s_unuseWeapon = false;
 
 void GameSystem::init() {
 
@@ -470,10 +473,10 @@ void GameSystem::init() {
     setupImGui();
 
     // Disable certain shaders
-    //RenderSystem::s_bounderShader->setEnabled(false);
+    RenderSystem::s_bounderShader->setEnabled(false);
     RenderSystem::s_octreeShader->setEnabled(false);
     RenderSystem::s_rayShader->setEnabled(false);
-    RenderSystem::s_shadowShader->setEnabled(false);
+    //RenderSystem::s_shadowShader->setEnabled(false);
 
     // Water fountain
     GameObject & fountain(Scene::createGameObject());
@@ -485,17 +488,21 @@ void GameSystem::init() {
 void GameSystem::update(float dt) {
     // Game Logic
 
-    if (s_changeStore) {
-        setStore(s_newStore);
-        s_changeStore = false;
+    if (s_changeCulture) {
+        setCulture(s_newCulture);
+        s_changeCulture = false;
     }
     if (s_useWeapon) {
-        switch (s_store) {
-            case Store::american: Weapons::SodaGrenade::fireFromPlayer(); break;
-            case Store::asian: Weapons::SrirachaBottle::toggleForPlayer(); break;
-            case Store::italian: Weapons::PizzaSlice::fireFromPlayer(); break;
+        switch (s_culture) {
+            case Culture::american: Weapons::SodaGrenade::fireFromPlayer(); break;
+            case Culture::asian: Weapons::SrirachaBottle::toggleForPlayer(); break;
+            case Culture::italian: Weapons::PizzaSlice::fireFromPlayer(); break;
         }
         s_useWeapon = false;
+    }
+    else if (s_unuseWeapon) {
+        if (s_culture == Culture::asian) Weapons::SrirachaBottle::toggleForPlayer();
+        s_unuseWeapon = false;
     }
 
     // Update components
@@ -525,27 +532,27 @@ void GameSystem::update(float dt) {
     }
 }
 
-void GameSystem::setStore(Store store) {
+void GameSystem::setCulture(Culture culture) {
     unequipWeapon();
 
-    s_store = store;
+    s_culture = culture;
 
     equipWeapon();
 }
 
 void GameSystem::equipWeapon() {
-    switch (s_store) {
-        case Store::american: Weapons::SodaGrenade::equip(); break;
-        case Store::asian: Weapons::SrirachaBottle::equip(); break;
-        case Store::italian: Weapons::PizzaSlice::equip(); break;
+    switch (s_culture) {
+        case Culture::american: Weapons::SodaGrenade::equip(); break;
+        case Culture::asian: Weapons::SrirachaBottle::equip(); break;
+        case Culture::italian: Weapons::PizzaSlice::equip(); break;
     }
 }
 
 void GameSystem::unequipWeapon() {
-    switch (s_store) {
-        case Store::american: Weapons::SodaGrenade::unequip(); break;
-        case Store::asian: Weapons::SrirachaBottle::unequip(); break;
-        case Store::italian: Weapons::PizzaSlice::unequip(); break;
+    switch (s_culture) {
+        case Culture::american: Weapons::SodaGrenade::unequip(); break;
+        case Culture::asian: Weapons::SrirachaBottle::unequip(); break;
+        case Culture::italian: Weapons::PizzaSlice::unequip(); break;
     }
 }
 
@@ -556,25 +563,30 @@ void GameSystem::unequipWeapon() {
 
 void GameSystem::setupMessageCallbacks() {
     
-    // Set store (1 | 2 | 3)
-    auto setStoreCallback([&](const Message & msg_) {
+    // Set culture (1 | 2 | 3)
+    auto setCultureCallback([&](const Message & msg_) {
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
         if (msg.action != GLFW_PRESS || msg.mods) {
             return;
         }
         switch (msg.key) {
-            case GLFW_KEY_1: { s_changeStore = true; s_newStore = Store::american; break; }
-            case GLFW_KEY_2: { s_changeStore = true; s_newStore = Store::asian; break; }
-            case GLFW_KEY_3: { s_changeStore = true; s_newStore = Store::italian; break; }
+            case GLFW_KEY_1: { s_changeCulture = true; s_newCulture = Culture::american; break; }
+            case GLFW_KEY_2: { s_changeCulture = true; s_newCulture = Culture::asian; break; }
+            case GLFW_KEY_3: { s_changeCulture = true; s_newCulture = Culture::italian; break; }
         }
     });
-    Scene::addReceiver<KeyMessage>(nullptr, setStoreCallback);
+    Scene::addReceiver<KeyMessage>(nullptr, setCultureCallback);
 
     // Use weapon (click)
     auto useWeaponCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
-        if (msg.button == GLFW_MOUSE_BUTTON_1 && !(msg.mods & GLFW_MOD_CONTROL) && msg.action == GLFW_PRESS) {
-            s_useWeapon = true;
+        if (msg.button == GLFW_MOUSE_BUTTON_1 && !(msg.mods & GLFW_MOD_CONTROL)) {
+            if (msg.action == GLFW_PRESS) {
+                s_useWeapon = true;                
+            }
+            else if (msg.action == GLFW_RELEASE) {
+                s_unuseWeapon = true;
+            }
         }
     });
     Scene::addReceiver<MouseMessage>(nullptr, useWeaponCallback);

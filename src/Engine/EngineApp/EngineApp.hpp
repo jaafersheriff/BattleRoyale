@@ -2,12 +2,7 @@
 #ifndef _ENGINE_APP_HPP_
 #define _ENGINE_APP_HPP_
 
-#include "IO/Window.hpp"
-#include "Loader/Loader.hpp"
-#include "Scene/Scene.hpp"
-#include "System/Systems.hpp"
-#include "Component/Components.hpp"
-#include "Shaders/Shaders.hpp"
+#include "Util/Memory.hpp"
 
 // static class
 class EngineApp {

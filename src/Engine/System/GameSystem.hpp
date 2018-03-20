@@ -6,23 +6,10 @@
 
 #include "System.hpp"
 #include "Model/Material.hpp"
+#include "Component/Components.hpp"
 
 
 
-class SpatialComponent;
-class NewtonianComponent;
-class CapsuleBounderComponent;
-class CameraComponent;
-class PlayerControllerComponent;
-class PlayerComponent;
-class HealthComponent;
-class CameraControllerComponent;
-class ImGuiComponent;
-class EnemyComponent;
-class ProjectileComponent;
-class BlastComponent;
-class MeleeComponent;
-class DiffuseRenderComponent;
 struct GameInterface;
 
 
@@ -35,7 +22,7 @@ class GameSystem {
 
     public:
 
-    enum class Store { none, american, asian, italian };
+    enum class Culture { none, american, asian, italian };
 
     private:
 
@@ -223,7 +210,7 @@ class GameSystem {
 
     private:
 
-    static void setStore(Store store);
+    static void setCulture(Culture culture);
 
     static void equipWeapon();
     static void unequipWeapon();
@@ -246,10 +233,11 @@ class GameSystem {
     static const Vector<BlastComponent *> & s_blastComponents;
     static const Vector<MeleeComponent *> & s_meleeComponents;
 
-    static Store s_store;
-    static bool s_changeStore;
-    static Store s_newStore;
+    static Culture s_culture;
+    static bool s_changeCulture;
+    static Culture s_newCulture;
     static bool s_useWeapon;
+    static bool s_unuseWeapon;
 
 };
 
