@@ -9,13 +9,13 @@
 #include "BlastComponent.hpp"
 #include "Component/StatComponents/StatComponents.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
-#include "Component/PlayerComponents/PlayerComponent.hpp"
 #include "System/SoundSystem.hpp"
 
 
 
-ProjectileComponent::ProjectileComponent(GameObject & gameObject) :
+ProjectileComponent::ProjectileComponent(GameObject & gameObject, const GameObject * host) :
     Component(gameObject),
+    m_host(host),
     m_bounder(nullptr)
 {}
 
@@ -26,8 +26,8 @@ void ProjectileComponent::init() {
 
 
 
-BulletComponent::BulletComponent(GameObject & gameObject, float damage) :
-    ProjectileComponent(gameObject),
+BulletComponent::BulletComponent(GameObject & gameObject, const GameObject * host, float damage) :
+    ProjectileComponent(gameObject, host),
     m_damage(damage)
 {}
 
@@ -37,10 +37,10 @@ void BulletComponent::init() {
     auto collisionCallback([&](const Message & msg_) {
         const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
         if (&msg.bounder1 == m_bounder) {
-            // If collided with something with health that's not the player, detonate
+            // If collided with something with health that's not the host, detonate
             HealthComponent * health;
             bool destroy(false);
-            if ((health = msg.bounder2.gameObject().getComponentByType<HealthComponent>()) && !msg.bounder2.gameObject().getComponentByType<PlayerComponent>()) {
+            if ((health = msg.bounder2.gameObject().getComponentByType<HealthComponent>()) && &msg.bounder2.gameObject() != m_host) {
                 health->changeValue(-m_damage);
                 destroy = true;
             }
@@ -62,8 +62,8 @@ void BulletComponent::init() {
 const int GrenadeComponent::k_maxBounces = 2;
 const float GrenadeComponent::k_maxFuseTime = 3.0f;
 
-GrenadeComponent::GrenadeComponent(GameObject & gameObject, float damage, float radius) :
-    ProjectileComponent(gameObject),
+GrenadeComponent::GrenadeComponent(GameObject & gameObject, const GameObject * host, float damage, float radius) :
+    ProjectileComponent(gameObject, host),
     m_damage(damage),
     m_radius(radius),
     m_shouldDetonate(false),
@@ -79,8 +79,8 @@ void GrenadeComponent::init() {
     auto collisionCallback([&](const Message & msg_) {
         const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
         if (&msg.bounder1 == m_bounder) {
-            // If collided with something with health that's not the player, detonate
-            if (msg.bounder2.gameObject().getComponentByType<HealthComponent>() && !msg.bounder2.gameObject().getComponentByType<PlayerComponent>()) {
+            // If collided with something with health that's not the host, detonate
+            if (msg.bounder2.gameObject().getComponentByType<HealthComponent>() && &msg.bounder2.gameObject() != m_host) {
                 m_shouldDetonate = true;
             }
         }

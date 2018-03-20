@@ -22,8 +22,8 @@ SpatialComponent::SpatialComponent(GameObject & gameObject, SpatialComponent * p
 
     m_modelMat(), m_prevModelMat(),
     m_normalMat(), m_prevNormalMat(),
-    m_modelMatValid(true), m_prevModelMatValid(true),
-    m_normalMatValid(true), m_prevNormalMatValid(true),
+    m_modelMatValid(false), m_prevModelMatValid(false),
+    m_normalMatValid(false), m_prevNormalMatValid(false),
     m_modelMatChanged(false), m_normalMatChanged(false)
 {
     if (m_parent) m_parent->m_children.push_back(this);
