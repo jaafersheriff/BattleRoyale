@@ -305,8 +305,8 @@ void RenderSystem::updateLightCamera() {
 
 // TODO : move this to camera component?
 void RenderSystem::calculateFrustumVertices(Vector<glm::vec4> & points, glm::vec3 centerNear, glm::vec3 centerFar, glm::vec2 nearSize, glm::vec2 farSize) {
-    glm::vec3 upVector = glm::normalize(s_playerCamera->v());
-    glm::vec3 rightVector = glm::normalize(s_playerCamera->u());
+    glm::vec3 upVector = glm::normalize(s_playerCamera->spatial().v());
+    glm::vec3 rightVector = glm::normalize(s_playerCamera->spatial().u());
     glm::vec3 farTop = centerFar + (upVector * farSize.y);
     glm::vec3 farBottom = centerFar + (-upVector * farSize.y);
     glm::vec3 nearTop = centerNear + (upVector * nearSize.y);

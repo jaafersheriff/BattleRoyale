@@ -17,7 +17,6 @@
 // LIGHTING
 
 const float GameSystem::Lighting::k_defAmbience = 0.3f;
-const Material GameSystem::Lighting::k_defMaterial = Material(glm::vec3(1.0f), glm::vec3(1.0f), 16.0f);
 const glm::vec3 GameSystem::Lighting::k_defLightDir = glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f));
 
 
@@ -67,7 +66,7 @@ void GameSystem::Player::init() {
     handSpatial = &Scene::addComponent<SpatialComponent>(*gameObject, k_mainHandPosition, headSpatial);
     const Mesh * handMesh(Loader::getMesh("weapons/Pizza_Slice.obj"));
     const Texture * handTex(Loader::getTexture("weapons/Pizza_Tex.png"));
-    ModelTexture handModelTex(handTex, Lighting::k_defMaterial);
+    ModelTexture handModelTex(handTex);
     Scene::addComponent<DiffuseRenderComponent>(*gameObject,
         *handSpatial,
         *handMesh,
@@ -101,7 +100,7 @@ void GameSystem::Enemies::Basic::create(const glm::vec3 & position) {
     const Mesh * headMesh(Loader::getMesh(k_headMeshName));
     const Texture * texture(Loader::getTexture(k_textureName));
     const DiffuseShader * shader();
-    ModelTexture modelTex(texture, Lighting::k_defMaterial);
+    ModelTexture modelTex(texture);
     GameObject & obj(Scene::createGameObject());
     SpatialComponent & bodySpatComp(Scene::addComponent<SpatialComponent>(obj, position, k_scale));
     SpatialComponent & headSpatComp(Scene::addComponent<SpatialComponent>(obj, k_headPosition, &bodySpatComp));
@@ -187,7 +186,7 @@ const float GameSystem::Weapons::PizzaSlice::k_damage = 25.0f;
 void GameSystem::Weapons::PizzaSlice::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel) {
     const Mesh * mesh(Loader::getMesh(k_meshName));
     const Texture * tex(Loader::getTexture(k_texName));
-    ModelTexture modelTex(tex, Lighting::k_defMaterial);
+    ModelTexture modelTex(tex);
     GameObject & obj(Scene::createGameObject());
     SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_scale, Player::headSpatial->orientation()));
     BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *mesh, false, true, false));
@@ -227,9 +226,9 @@ const float GameSystem::Weapons::SodaGrenade::k_radius = 5.0f;
 void GameSystem::Weapons::SodaGrenade::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel) {
     const Mesh * mesh(Loader::getMesh(k_meshName));
     const Texture * tex(Loader::getTexture(k_texName));
-    ModelTexture modelTex(tex, Lighting::k_defMaterial);
+    ModelTexture modelTex(tex);
     GameObject & obj(Scene::createGameObject());
-    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_scale));
+    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_scale, Player::headSpatial->orientation()));
     BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *mesh, false, true, false));
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, true));
     GroundComponent & groundComp(Scene::addComponent<GroundComponent>(obj));
@@ -606,16 +605,8 @@ void GameSystem::setupImGui() {
             if (ImGui::SliderInt("Shadow Map Size", &mapSize, 1024, 16384)) {
                 RenderSystem::s_shadowShader->setMapSize(mapSize);
             }
-            ImGui::Image((ImTextureID)RenderSystem::getShadowMap(), ImVec2(256, 256));
+            ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<uintptr_t>(RenderSystem::getShadowMap())), ImVec2(256, 256));
 
-            glm::vec3 u = RenderSystem::s_lightCamera->u();
-            glm::vec3 v = RenderSystem::s_lightCamera->v();
-            glm::vec3 w = RenderSystem::s_lightCamera->w();
-            if (ImGui::SliderFloat3("U", glm::value_ptr(u), -1.f, 1.f) ||
-                ImGui::SliderFloat3("V", glm::value_ptr(v), -1.f, 1.f) ||
-                ImGui::SliderFloat3("W", glm::value_ptr(w), -1.f, 1.f)) {
-                RenderSystem::s_lightCamera->setUVW(u, v, w);
-            }
             glm::vec3 position = RenderSystem::s_lightSpatial->position();
             if (ImGui::SliderFloat3("Position", glm::value_ptr(position), -300.f, 300.f)) {
                 RenderSystem::s_lightSpatial->setRelativePosition(position);

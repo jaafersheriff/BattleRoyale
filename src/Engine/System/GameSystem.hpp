@@ -39,7 +39,6 @@ class GameSystem {
     struct Lighting {
 
         static const float k_defAmbience;
-        static const Material k_defMaterial;
         static const glm::vec3 k_defLightDir;
 
     };

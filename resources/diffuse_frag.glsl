@@ -63,7 +63,7 @@ void main() {
     }
     /* Blinn-Phong shading */
     else {
-        vec3 H = (L + V) / 2.0;
+        vec3 H = normalize(L + V);
         diffuseContrib = clamp(lambert, ambience, 1.0);
         specularContrib = pow(max(dot(H, N), 0.0), matShine);
     }
@@ -76,21 +76,25 @@ void main() {
         visibility -= (shadowCoords.w * (1.0 - shadowAmbience));
     }
     // Shadows affect ambience value :(
-    vec3 bColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib) * visibility;
+    vec3 bColor = vec3(diffuseColor * diffuseContrib + matSpecular * specularContrib) * visibility;
 
     /* Silhouettes */
     float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;
 
     color = vec4(edge * bColor, alpha);
 
-    float brightness = max(((color.r+color.g+color.b)/3.0 - 0.6)/0.4, 0.0f);
+    //float brightness = max(((color.r+color.g+color.b)/3.0 - 0.6)/0.4, 0.0);
+    // luminosity: average of min and max components
+    float brightness = (min(min(color.r, color.g), color.b) + max(max(color.r, color.g), color.b)) * 0.5;
 
-    BrightColor.rgb = vec3(brightness);;
+    const float bloomThreshold = 0.8f;
+    brightness = max((brightness - bloomThreshold) / (1.0 - bloomThreshold), 0.0);
+    BrightColor.rgb = color.rgb * brightness;
 
-    BrightColor.a = 1;
+    if(doBloom){
+        color.rgb = diffuseColor;
+        BrightColor.rgb = color.rbg;
+    }
 
-	if(doBloom){
-		color.rgb =  texture(textureImage, texCoords).rgb;
-		BrightColor.rgb = color.rbg;
-	}
+    BrightColor.a = 1.0;
 }

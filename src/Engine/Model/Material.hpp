@@ -8,8 +8,8 @@ class Material {
     public:
         /* Constructor */
         Material() :
-            diffuse(glm::vec3(1.0f)),
-            specular(glm::vec3(1.0f)),
+            diffuse(glm::vec3(0.5f)),
+            specular(glm::vec3(0.5f)),
             shine(16.0f)
         {}
 
