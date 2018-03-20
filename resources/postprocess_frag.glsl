@@ -13,16 +13,23 @@ void onlyYellow() {
     color = vec4(1.f, 1.f, 0.f, 1.f);
 }
 
+void doBloom() {
+    vec3 hdrColor = texture(f_texCol, f_texPos).rgb;      
+    vec3 bloomColor = texture(f_bloomBlur, f_texPos).rgb;
+
+    vec3 additive = hdrColor + bloomColor*exposure;
+    color = vec4(additive, 1.0);
+}
+
 void main()
 {             
     if(f_operation == 1) {
-        vec3 hdrColor = texture(f_texCol, f_texPos).rgb;      
-        vec3 bloomColor = texture(f_bloomBlur, f_texPos).rgb;
-
-        vec3 additive = hdrColor + bloomColor*exposure;
-        color = vec4(additive, 1.0);
+        doBloom();
     }
-    if(f_operation == 0) {
+    else if(f_operation == 2) {
+        color = texture(f_texCol, f_texPos);
+    }
+    else {
         onlyYellow();
     }
 }
