@@ -99,9 +99,6 @@ class MapExploreComponent : public Component {
     int firstFloorWidth = 73;
     int firstFloorDepth = 190;
 
-    int xIndex = 0;
-    int zIndex = 0;
-
     int secondFloorStart_x = -48;
     int secondFloorStart_z = -186;
     int firstFloorStart_x = -35;

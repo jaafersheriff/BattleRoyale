@@ -2,6 +2,7 @@
 
 #include "Scene/Scene.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Component/CollisionComponents/BounderComponent.hpp"
 #include "Util/Util.hpp"
 #include "Loader/Loader.hpp"
 
@@ -21,22 +22,22 @@ void PathfindingComponent::init() {
     // init spatial
     if (!(m_spatial = gameObject().getSpatial())) assert(false);
 
-    //vecToNode = std::unordered_map<glm::vec3, Node, vecHash, gridCompare>();
+    if (!(m_bounder = gameObject().getComponentByType<BounderComponent>())) assert(false);
+
 
     // Read in the graph of the map from a text file
-    readInGraph("../resources/newNeighborMap.txt");
+    readInGraph("../resources/test.txt");
 
     // init cameFrom map
     cameFrom = vecvecMap();
 
     const glm::vec3 &playerPos = m_player.getSpatial()->position();
-    const glm::vec3 &pos = m_spatial->position();
+    //const glm::vec3 &pos = m_spatial->position();
+    const glm::vec3 &pos = m_bounder->groundPosition();
 
     std::cout << "Start: " << pos.x << ", " << pos.y << ", " << pos.z << std::endl;
 
     std::cout << "Distance: " << glm::distance(glm::vec3(0, 0, 0), glm::vec3(1, 0, 1)) << std::endl;
-
-    //glm::vec3 test = glm::vec3(4, -1.68, -16);
 
     if (aStarSearch(graph, pos, playerPos, cameFrom)) {
         path = reconstructPath(pos, playerPos, cameFrom);
@@ -46,31 +47,21 @@ void PathfindingComponent::init() {
         std::cout << "Init: aStart didn't find a path" << std::endl;
     }
 
-    // std::cout << "Path" << std::endl;
-    // for (auto iter = path.begin(); iter != path.end(); ++iter) {
-    //    std::cout << iter->x << ", " << iter->y << ", " << iter->z << std::endl;
-    // }
-
     updatePath = false;
 
     std::cout << "End Init" << std::endl;
 }
 
 void PathfindingComponent::update(float dt) {
-
-    //std::cout << "Update start" << std::endl;
     const glm::vec3 & playerPos = m_player.getSpatial()->position();
-    const glm::vec3 & pos = m_spatial->position();
-    std::cout << "Pos top of Update: " << pos.x << ", " << pos.y << ", " << pos.z << std::endl;
+    const glm::vec3 & pos = m_bounder->groundPosition();
+
     glm::vec3 dir = playerPos - pos;
 
 
-    // Could do a ray pick to see if the player is ahead unobstructed, but then what if the player is on the second floor railing
-
     // if enemy is very close to the player just follow them
-    //std::cout << "Dir length: " << glm::length2(dir) << std::endl;
     if (glm::length2(dir) < 5.0 || noPath) {
-        //std::cout << "close to player: " << glm::length2(dir) << std::endl;
+
         gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
 
         if (pathCount++ > 50) {
@@ -82,8 +73,6 @@ void PathfindingComponent::update(float dt) {
     }
     // probably don't need to update the path everytime, set flag when neccessary
     else if (updatePath) {
-        std::cout << "update path" << std::endl;
-        std::cout << "pos right before aStart: " << pos.x << ", " << pos.y << ", " << pos.z << std::endl;
         if (aStarSearch(graph, pos, playerPos, cameFrom)) {
             path = reconstructPath(pos, playerPos, cameFrom);
             pathIT = path.begin();
@@ -96,6 +85,7 @@ void PathfindingComponent::update(float dt) {
             std::cout << "***************aStart didn't find a path" << std::endl;
             noPath = true;
         }
+
         gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
         updatePath = false;
     }
@@ -104,31 +94,18 @@ void PathfindingComponent::update(float dt) {
         if (glm::length2(*pathIT - pos) < 1.0) {
             pathIT++;
         }
-
         dir = *pathIT - pos;
-        // help going up stairs
-        if (pathIT->y > pos.y) {
-            //std::cout << "upupupup*************************************************" << std::endl;
-            dir.y += 20.f;
-        }
 
-        //help falling off ledges
-        // if (pathIT->y < pos.y) {
-            
-
-        // }
         gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
 
-        if (pathCount++ > 50) {
+        // update the path after 50 update loops or when the path is complete
+        if (pathCount++ > 50 || std::next(pathIT) == path.end()) {
             updatePath = true;
             pathCount = 0;
         }
 
-        //std::cout << "walked on path" << std::endl;
-
     }
     
-    //std::cout << "Update End" << std::endl;
 }
 
 // Read in the graph from a specified file and fill out the vecToNode map
@@ -172,32 +149,16 @@ void PathfindingComponent::readInGraph(String fileName) {
                 }
             }
 
-            if (neighbors.size()) {
-                std::cout << "More Than 8 neighbors" << std::endl;
-            }
+            // if (neighbors.size()) {
+            //     std::cout << "More Than 8 neighbors" << std::endl;
+            // }
 
             graph.emplace(nodePos, neighbors);
-            //vecToNode.emplace(nodePos, Node(nodePos, neighbors));
         }
 
         myfile.close();
 
         std::cout << "Size: " << graph.size() << std::endl;
-/*
-        int graphCount = 0;
-        for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
-            graphCount++;
-            std::cout << "New Node" << std::endl;
-            std::cout << "Position: " << iter->first.x << ", " << iter->first.y << ", " << iter->first.z << std::endl;
-            std::cout << "Neighbors" << std::endl;
-            for (glm::vec3 neighbor : iter->second) {
-                std::cout << "Pos: " << neighbor.x << ", " << neighbor.y << ", " << neighbor.z << std::endl;
-            }
-            std::cout << std::endl;
-        }
-
-        std::cout << "Size of map: " << graphCount << std::endl;
-*/
     }
 
 }
@@ -211,10 +172,7 @@ bool operator > (pathPair a , pathPair b) {
 }
 
 bool operator == (glm::vec3 a, glm::vec3 b) {
-    //std::cout << "Operator: " << a.x << ", " << a.y << ", " << a.z << "|" << b.x << ", " << b.y << ", " << b.z << "dist: " << glm::distance2(a, b) << std::endl;
-    //if (a.x == b.x && a.z == b.z) {
-    //    std::cout << "Operator: " << a.x << ", " << a.y << ", " << a.z << "|" << b.x << ", " << b.y << ", " << b.z << "dist: " << glm::distance2(a, b) << std::endl;
-    //}
+
     return glm::distance2(a, b) < 1.f;
 }
 
@@ -222,8 +180,7 @@ bool operator != (glm::vec3 a, glm::vec3 b) {
     return !(a == b);
 }
 
-bool PathfindingComponent::aStarSearch(vecvectorMap &graph, glm::vec3 start, glm::vec3 end, vecvecMap &cameFrom) {//, vecdoubleMap &cost) {
-    //typedef std::pair<double, glm::vec3> pqElement;
+bool PathfindingComponent::aStarSearch(vecvectorMap &graph, glm::vec3 start, glm::vec3 end, vecvecMap &cameFrom) {
     vecdoubleMap cost = vecdoubleMap();
     std::priority_queue<pathPair, Vector<pathPair>, std::greater<pathPair>> frontier;
 
@@ -238,14 +195,13 @@ bool PathfindingComponent::aStarSearch(vecvectorMap &graph, glm::vec3 start, glm
 
     std::cout << "In A*" << std::endl;
     while (!frontier.empty()) {
-        //std::cout << "LOOP" << std::endl;
         glm::vec3 current = frontier.top().position;
         frontier.pop();
 
-        //std::cout << "current: " << current.x << ", " << current.y << ", " << current.z << std::endl;
 
         if (current == end) {
-            std::cout << "leaving A*" << std::endl;
+
+            std::cout << "true leaving A*" << std::endl;
             return true;
         }
 
@@ -261,16 +217,8 @@ bool PathfindingComponent::aStarSearch(vecvectorMap &graph, glm::vec3 start, glm
         }
     }
 
-    std::cout << "leaving A*" << std::endl;
+    std::cout << "false leaving A*" << std::endl;
     return false;
-/*
-std::cout << "CamFrom" << std::endl;
-    for (auto iter = cameFrom.begin(); iter != cameFrom.end(); ++iter) {
-         std::cout << "Postition: " << iter->first.x << ", " << iter->first.y << ", " << iter->first.z << " == " << iter->second.x << ", " << iter->second.y << ", " << iter->second.z << std::endl;
-    }
-*/
-
- 
 
 }
 
@@ -284,16 +232,10 @@ Vector<glm::vec3> PathfindingComponent::reconstructPath(glm::vec3 start, glm::ve
 
     glm::vec3 current = end;
 
-    std::cout << "Start: " << start.x << ", " << start.y << ", " << start.z << std::endl;
-    std::cout << "Current: " << end.x << ", " << end.y << ", " << end.z << std::endl;
-    //std::cout << "Size: " << cameFrom.size() << std::endl;
-
     while (current != start && count < cameFrom.size()) {
         count++;
         path.push_back(current);
         current = cameFrom[current];
-        //if (current != glm::vec3(0.0))
-        //    std::cout << "New Current: " << current.x << ", " << current.y << ", " << current.z << std::endl;
     }
 
     // If path not reconstructed and while loop was exited because of count just return end

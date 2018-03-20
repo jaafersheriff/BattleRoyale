@@ -94,7 +94,7 @@ const unsigned int GameSystem::Enemies::Basic::k_weight = 5;
 const float GameSystem::Enemies::Basic::k_moveSpeed = 3.0f;
 const float GameSystem::Enemies::Basic::k_maxHP = 100.0f;
 
-void GameSystem::Enemies::Basic::create(const glm::vec3 & position) {
+void GameSystem::Enemies::Basic::create(const glm::vec3 & position, bool mapping) {
     const Mesh * bodyMesh(Loader::getMesh(k_bodyMeshName));
     const Mesh * headMesh(Loader::getMesh(k_headMeshName));
     const Texture * texture(Loader::getTexture(k_textureName));
@@ -154,7 +154,7 @@ void GameSystem::Enemies::enablePathfinding() {
         GameObject & enemy(comp->gameObject());
         PathfindingComponent * path(enemy.getComponentByType<PathfindingComponent>());
         if (!path) {
-            Scene::addComponent<PathfindingComponent>(enemy, *Player::gameObject, Basic::k_moveSpeed, false);
+            Scene::addComponent<PathfindingComponent>(enemy, *Player::gameObject, Basic::k_moveSpeed);
         }
     }
 }
@@ -357,8 +357,8 @@ void GameSystem::init() {
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json");
 
     // Set octree. Needs to be manually adjusted to fit level size
-    if (!Scene::mapping)
-        CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
+    //if (!Scene::mapping)
+    //    CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
 
     // Start music
     Music::start();

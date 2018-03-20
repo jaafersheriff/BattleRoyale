@@ -66,21 +66,9 @@ void MapExploreComponent::init() {
         const CollisionNormMessage & msg(static_cast<const CollisionNormMessage &>(msg_));
         float dot(glm::dot(msg.norm, -SpatialSystem::gravityDir()));
         if (dot >= m_cosCriticalAngle) {
-            m_potentialGroundNorm += msg.norm;
-        }
-
-        m_groundNorm = Util::safeNorm(m_potentialGroundNorm);
-        m_potentialGroundNorm = glm::vec3();
-
-        // if onGround
-        if (m_groundNorm != glm::vec3()) {
-        	//std::cout << "On ground" << std::endl;
-
-        }
-        else {
-        	//std::cout << "Not on ground" << std::endl;
         	nonGroundCollision = true;
         }
+
     });
 
     Scene::addReceiver<CollisionNormMessage>(&gameObject(), collisionCallback);
@@ -92,6 +80,8 @@ void MapExploreComponent::update(float dt) {
 	glm::vec3 testPoint;
 
 	if (oneUpdate || writeOut) {
+
+	//if (slowTime++ > 50) {
 		glm::vec3 curPos;
 
 		glm::vec3 nextStep;
@@ -102,7 +92,9 @@ void MapExploreComponent::update(float dt) {
 		// While checking collisions and has only a ground collision
 		if (collisionCheck && !nonGroundCollision) {
 			if (graphSet.find(collisionTestPoint) == graphSet.end()) {
+				//collisionTestPoint.y += .25f;
 				graphSet.insert(collisionTestPoint);
+				//std::cout << "Cup" << std::endl;
 				//drawCup(collisionTestPoint);
 			}
 		}
@@ -112,9 +104,11 @@ void MapExploreComponent::update(float dt) {
 
 		// Second floor height pass
 		if (secondFloorPass) {
-			if (zIndex < secondFloorDepth) {
-				if (xIndex < secondFloorWidth) {
-					xPos = xIndex++ + secondFloorStart_x;
+			for (int zIndex = 0; zIndex < secondFloorDepth; zIndex++) {
+			//if (zIndex < secondFloorDepth) {
+				for (int xIndex = 0; xIndex < secondFloorWidth; xIndex++) {
+				//if (xIndex < secondFloorWidth) {
+					xPos = xIndex + secondFloorStart_x;
 					zPos = zIndex + secondFloorStart_z;
 
 					//std::cout << "Pos: " << xPos << ", " << zPos << std::endl;
@@ -129,24 +123,26 @@ void MapExploreComponent::update(float dt) {
 						}
 					}
 				}
-				else {
-					xIndex = 0;
-					zIndex++;
-				}
+				// else {
+				// 	xIndex = 0;
+				// 	zIndex++;
+				// }
 			}
-			else {
+			//else {
 				std::cout << "Second Floor Done: " << visitedSet.size() << std::endl;
 				secondFloorPass = false;
 				firstFloorPass = true;
-				zIndex = 0;
-				xIndex = 0;
-			}
+				//zIndex = 0;
+				//xIndex = 0;
+			//}
 		}
 		// First floor height pass
 		else if (firstFloorPass) {
-			if (zIndex < firstFloorDepth) {
-				if (xIndex < firstFloorWidth) {
-					xPos = xIndex++ + firstFloorStart_x;
+			for (int zIndex = 0; zIndex < firstFloorDepth; zIndex++) {
+			//if (zIndex < firstFloorDepth) {
+				for (int xIndex = 0; xIndex < firstFloorWidth; xIndex++) {
+				//if (xIndex < firstFloorWidth) {
+					xPos = xIndex + firstFloorStart_x;
 					zPos = zIndex + firstFloorStart_z;
 
 					auto pair(CollisionSystem::pickHeavy(Ray(glm::vec3(xPos, firstFloorHeight, zPos), glm::vec3(0, -1, 0)), UINT_MAX));
@@ -159,41 +155,44 @@ void MapExploreComponent::update(float dt) {
 						}
 					}
 				}
-				else {
-					xIndex = 0;
-					zIndex++;
-				}
+				// else {
+				// 	xIndex = 0;
+				// 	zIndex++;
+				// }
 			}
-			else {
+			//else {
 				std::cout << "First Floor Done: " << visitedSet.size() << std::endl;
 				firstFloorPass = false;
-				collisionCheck = true;
-				visitIterator = visitedSet.begin();
-			}
-		}
-		else if (collisionCheck) {
-			if (visitIterator != visitedSet.end()) {
-				collisionCount++;
-				gameObject().getSpatial()->setPosition(glm::vec3(visitIterator->x, visitIterator->y + 1.5f, visitIterator->z), false);
-				collisionTestPoint = *visitIterator;
-				visitIterator++;
-			}
-			else {
-				std::cout << "Collision Check Done: " << graphSet.size() << std::endl;
-				std::cout << "Count: " << collisionCount << std::endl;
-				collisionCheck = false;
+				//collisionCheck = true;
 				findNeighbors = true;
-			}
+				visitIterator = visitedSet.begin();
+				graphSet = visitedSet;
+			//}
 		}
+		// else if (collisionCheck) {
+		// 	if (visitIterator != visitedSet.end()) {
+		// 		collisionCount++;
+		// 		float offset = m_spatial->position().y - gameObject().getComponentByType<BounderComponent>()->groundPosition().y;
+		// 		gameObject().getSpatial()->setRelativePosition(glm::vec3(visitIterator->x, visitIterator->y + offset + .5f, visitIterator->z), false);
+		// 		collisionTestPoint = *visitIterator;
+		// 		visitIterator++;
+		// 	}
+		// 	else {
+		// 		std::cout << "Collision Check Done: " << graphSet.size() << std::endl;
+		// 		std::cout << "Count: " << collisionCount << std::endl;
+		// 		collisionCheck = false;
+		// 		findNeighbors = true;
+		// 	}
+		// }
 		else if (findNeighbors) {
 			const int xdir[] = {1, 1, 0, -1, -1, -1, 0, 1};
 			const int zdir[] = {0, 1, 1, 1, 0, -1, -1, -1};
 			Vector<glm::vec3> possibleNeighbors;
 			Vector<glm::vec3> neighbors;
 
-			//std::cout << "Removing Outliers" << std::endl;
-			//removeOutliers(graphSet);
-			//std::cout << "Size After: " << graphSet.size() << std::endl;
+			std::cout << "Removing Outliers" << std::endl;
+			removeOutliers(graphSet);
+			std::cout << "Size After: " << graphSet.size() << std::endl;
 
 			// iterate through the graphSet and find the neighbors of each position
 			for (auto iter = graphSet.begin(); iter != graphSet.end(); ++iter) {
@@ -234,6 +233,11 @@ void MapExploreComponent::update(float dt) {
 			}
 
 			std::cout << "Find Neighbors Done: " << graph.size() << std::endl;
+
+			for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
+				if (iter->second.size() == 8)
+					drawCup(iter->first);
+			}
 // int loopCount = 0;
 		vecvecMap cameFrom = vecvecMap();
 // 			for (auto iter = graph.begin(); iter != graph.end();) {
@@ -249,14 +253,14 @@ void MapExploreComponent::update(float dt) {
 
 			//std::cout << "Remove unconnected Nodes: " << graph.size() << std::endl;
 
-			for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
-				//if (iter->second.size() > 4)
-					//drawCup(iter->first);
-				 for (auto iter2 = iter->second.begin(); iter2 != iter->second.end(); ++iter2) {
-				 	if (iter2->y > iter->first.y)
-				 		drawCup(*iter2);
-				 }
-			}
+			// for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
+			// 	//if (iter->second.size() > 4)
+			// 		//drawCup(iter->first);
+			// 	 for (auto iter2 = iter->second.begin(); iter2 != iter->second.end(); ++iter2) {
+			// 	 	if (iter2->y > iter->first.y)
+			// 	 		drawCup(*iter2);
+			// 	 }
+			// }
 
 			//-20, 4.05946, -181
 			//40, 4.05946, 15
@@ -273,6 +277,8 @@ void MapExploreComponent::update(float dt) {
 
 			findNeighbors = false;
 		}
+		slowTime = 0;
+	//}
 
 	}
 	else {
@@ -398,7 +404,8 @@ void MapExploreComponent::drawCup(glm::vec3 position) {
         *mesh,
         modelTex,
         false,
-        glm::vec2(1.0f)
+        glm::vec2(1.0f),
+        false
     );
 }
 

@@ -9,6 +9,7 @@
 #include "Component/Component.hpp"
 
 class PathfindingSystem;
+class BounderComponent;
 
 
 struct vecHash
@@ -103,6 +104,7 @@ class PathfindingComponent : public Component {
 
     SpatialComponent * m_spatial;
     const GameObject & m_player;
+    const BounderComponent * m_bounder;
     float m_moveSpeed;
 
     //glm::vec3 m_groundNorm;
