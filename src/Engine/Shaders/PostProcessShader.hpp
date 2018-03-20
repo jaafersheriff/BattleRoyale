@@ -4,6 +4,8 @@
 
 #include "Shader.hpp"
 
+#include "Loader/Loader.hpp"
+
 class DiffuseRenderComponent;
 class CameraComponent;
 
@@ -22,6 +24,9 @@ class PostProcessShader : public Shader {
     unsigned int s_vaoHandle;
     unsigned int s_vboHandle;
     unsigned int s_iboHandle;
+
+    // UI textures
+    Texture *tex_pizza;
 };
 
 #endif

@@ -28,6 +28,10 @@ bool ShadowDepthShader::init() {
     }
 
     addAttribute("vertPos");
+    addAttribute("vertTex");
+
+    addUniform("textureImage");
+    addUniform("usesTexture");
 
     addUniform("L");
     addUniform("M");
@@ -107,7 +111,7 @@ void ShadowDepthShader::initFBO() {
     // generate the texture
     glGenTextures(1, &s_shadowMap->textureId);
     glBindTexture(GL_TEXTURE_2D, s_shadowMap->textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, s_shadowMap->width, s_shadowMap->height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, s_shadowMap->width, s_shadowMap->height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -118,7 +122,7 @@ void ShadowDepthShader::initFBO() {
     glBindFramebuffer(GL_FRAMEBUFFER, s_fboHandle);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, s_shadowMap->textureId, 0);
     glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
+    //glReadBuffer(GL_NONE);
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -126,7 +130,7 @@ void ShadowDepthShader::initFBO() {
 void ShadowDepthShader::setMapSize(int size) {
     s_shadowMap->width = s_shadowMap->height = size;
     glBindTexture(GL_TEXTURE_2D, s_shadowMap->textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, size, size, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, size, size, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -167,14 +171,46 @@ void ShadowDepthShader::render(const CameraComponent * camera) {
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vertBufId);
         glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0);
 
+        /* Bind texture coordinate buffer VBO */
+        pos = getAttribute("vertTex");
+        if (pos != -1 && mesh.texBufId != 0) {
+            glEnableVertexAttribArray(pos);
+            glBindBuffer(GL_ARRAY_BUFFER, mesh.texBufId);
+            glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, 0, (const void *)0);
+        }
+
         /* Bind indices buffer VBO */
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.eleBufId);
+
+        /* Load texture */
+        const ModelTexture modelTexture(drc->modelTexture());
+        if(modelTexture.texture && modelTexture.texture->textureId != 0) {
+            loadBool(getUniform("usesTexture"), true);
+            loadInt(getUniform("textureImage"), modelTexture.texture->textureId);
+            glActiveTexture(GL_TEXTURE0 + modelTexture.texture->textureId);
+            glBindTexture(GL_TEXTURE_2D, modelTexture.texture->textureId);
+        }
+        else {
+            loadBool(getUniform("usesTexture"), false);
+        }
 
         /* DRAW */
         glDrawElements(GL_TRIANGLES, (int)mesh.eleBufSize, GL_UNSIGNED_INT, nullptr);
 
+         /* Unload texture */
+        if (modelTexture.texture) {
+            glActiveTexture(GL_TEXTURE0 + modelTexture.texture->textureId);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+ 
         /* Unload mesh */
         glDisableVertexAttribArray(getAttribute("vertPos"));
+        pos = getAttribute("vertTex");
+        if (pos != -1) {
+            glDisableVertexAttribArray(pos);
+        }
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     //--------------------------------------------------------------------------
