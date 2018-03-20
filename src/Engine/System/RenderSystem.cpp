@@ -7,6 +7,7 @@
 #include "Component/CameraComponents/CameraComponent.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/RenderComponents/DiffuseRenderComponent.hpp"
+#include "Util/Util.hpp"
 
 const Vector<DiffuseRenderComponent *> & RenderSystem::s_diffuseComponents(Scene::getComponents<DiffuseRenderComponent>());
 /* FBO */
@@ -139,7 +140,13 @@ glm::vec3 RenderSystem::getLightDir() {
 }
 
 void RenderSystem::setLightDir(glm::vec3 in) {
-    s_lightCamera->lookInDir(in);
+    // Check if light is straight up or down
+    if (Util::isZero(in.x) && Util::isZero(in.z)) {
+        s_lightSpatial->lookInDir(in, glm::vec3(1.0f, 0.0f, 0.0f));
+    }
+    else {
+        s_lightSpatial->lookInDir(in, glm::vec3(0.0f, 1.0f, 0.0f));
+    }
 }
 
 void RenderSystem::initFBO() {

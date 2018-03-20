@@ -70,8 +70,12 @@ class SpatialComponent : public Component {
     void setRelativeUVW(const glm::vec3 & relativeU, const glm::vec3 & relativeV, const glm::vec3 & relativeW, bool silently = false);
 
     // Adjusts orientation such that -w is pointing toward p, and v is coplanar with up
-    // UP MUST BE UNIT VECTOR
+    // DIR AND UP MUST BE UNIT VECTORS
     void lookAt(const glm::vec3 & p, const glm::vec3 & up);
+    
+    // Adjusts orientation such that -w is pointing in dir, and v is coplanar with up
+    // UP MUST BE UNIT VECTOR
+    void lookInDir(const glm::vec3 & dir, const glm::vec3 & up);
 
     // Get the relative position
     const glm::vec3 & relativePosition() const { return m_relPosition; }

@@ -200,11 +200,15 @@ void SpatialComponent::setRelativeUVW(const glm::vec3 & u, const glm::vec3 & v, 
 }
 
 void SpatialComponent::lookAt(const glm::vec3 & p, const glm::vec3 & up) {
-    glm::vec3 w(glm::normalize(position() - p));
+    lookInDir(Util::safeNorm(p - position()), up);
+}
+
+void SpatialComponent::lookInDir(const glm::vec3 & dir, const glm::vec3 & up) {
+    glm::vec3 w(-dir);
     if (m_parent) {
         w = glm::transpose(m_parent->orientMatrix()) * w;
     }
-    glm::vec3 u(glm::normalize(glm::cross(up, w)));
+    glm::vec3 u(Util::safeNorm(glm::cross(up, w)));
     setRelativeUVW(u, glm::cross(w, u), w);
 }
 

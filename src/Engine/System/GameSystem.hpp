@@ -65,7 +65,8 @@ class GameSystem {
         static const glm::vec3 k_mainHandPosition;
 
         static GameObject * gameObject;
-        static SpatialComponent * spatial;
+        static SpatialComponent * bodySpatial;
+        static SpatialComponent * headSpatial;
         static NewtonianComponent * newtonian;
         static CapsuleBounderComponent * bounder;
         static CameraComponent * camera;
