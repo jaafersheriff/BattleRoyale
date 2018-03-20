@@ -306,6 +306,7 @@ GameObject * GameSystem::Weapons::SrirachaBottle::start(const SpatialComponent &
     SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, hostSpatial.position(), glm::vec3(1.0f), hostSpatial.orientation()));
     BounderComponent & bounderComp(Scene::addComponentAs<SphereBounderComponent, BounderComponent>(obj, 0, Sphere(glm::vec3(0.0f, 0.0f, -k_radius), k_radius)));
     SprayComponent & weaponComp(Scene::addComponentAs<SprayComponent, MeleeComponent>(obj, &hostSpatial, offset, k_damage));
+    ParticleComponent & particleComp(ParticleSystem::addSrirachaPC())
 
     SoundSystem::playSound3D("sword_slash.wav", spatComp.position());
 

@@ -135,3 +135,35 @@ ParticleComponent & ParticleSystem::addSodaGrenadePC(SpatialComponent & spatial)
         fade
     );
 }
+
+ParticleComponent & ParticleSystem::addSrirachaPC(SpatialComponent & spatial) {
+    float minSpeed(2.0f);
+    float maxSpeed(5.0f);
+    float angle(glm::radians(40.0f));
+    bool randomDistrib(true);
+    auto initializer(UniquePtr<ConeParticleInitializer>::make(minSpeed, maxSpeed, angle, randomDistrib));
+    auto updater(UniquePtr<GravityParticleUpdater>::make());
+    Mesh & mesh(*Loader::getMesh("particles/Blood_Drop.obj"));
+    ModelTexture modelTexture(Loader::getTexture("particles/Blood_Drop_Tex.png"));
+    int maxN(2000);
+    float rate(1000.0f);
+    float duration(2.0f);
+    bool loop(true);
+    float scale(1.0f);
+    bool variation(true);
+    bool fade(true);
+    return Scene::addComponent<ParticleComponent>(spatial.gameObject(),
+        std::move(initializer),
+        std::move(updater),
+        maxN,
+        rate,
+        duration,
+        loop,
+        mesh,
+        scale,
+        modelTexture,
+        spatial,
+        variation,
+        fade
+    );
+}
