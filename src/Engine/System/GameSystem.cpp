@@ -170,7 +170,7 @@ const bool GameSystem::Weapons::PizzaSlice::k_isToon = true;
 const glm::vec3 GameSystem::Weapons::PizzaSlice::k_scale = glm::vec3(1.0f);
 const unsigned int GameSystem::Weapons::PizzaSlice::k_weight = 0;
 const float GameSystem::Weapons::PizzaSlice::k_speed = 30.0f; 
-const float GameSystem::Weapons::PizzaSlice::k_damage = 25.0f;
+const float GameSystem::Weapons::PizzaSlice::k_damage = 50.0f;
 
 GameObject * GameSystem::Weapons::PizzaSlice::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel, const glm::quat & orient) {
     const Mesh * mesh(Loader::getMesh(k_meshName));
