@@ -31,9 +31,8 @@ struct Util {
         return random() * (max - min) + min;
     }
 
-    static inline void printVector(const String & name, const glm::vec3 & vec) {
-        std::cout << name << ": <" <<
-            vec.x << ", " << vec.y << " " << vec.z << ">" << std::endl;
+    static inline void printVector(const glm::vec3 & vec) {
+        std::cout << "<" << vec.x << ", " << vec.y << " " << vec.z << ">" << std::endl;
     }
 
     static inline glm::vec3 axisVec(int axis, bool sign) {

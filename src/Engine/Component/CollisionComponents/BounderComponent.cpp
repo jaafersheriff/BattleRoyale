@@ -107,6 +107,10 @@ bool AABBounderComponent::isCritical() const {
     return glm::abs(delta.x) > boxRadii.x || glm::abs(delta.y) > boxRadii.y || glm::abs(delta.z) > boxRadii.z;
 }
 
+glm::vec3 AABBounderComponent::groundPosition() const {
+    return glm::vec3((m_transBox.min.x + m_transBox.max.x) * 0.5f, m_transBox.min.y, (m_transBox.min.z + m_transBox.max.z) * 0.5f);
+}
+
 
 
 Sphere SphereBounderComponent::transformSphere(const Sphere & sphere, const glm::mat4 & transMat, const glm::vec3 & scale) {
@@ -161,6 +165,10 @@ bool SphereBounderComponent::isCritical() const {
     }
 
     return glm::length2(m_transSphere.origin - m_prevTransSphere.origin) > m_transSphere.radius * m_transSphere.radius;
+}
+
+glm::vec3 SphereBounderComponent::groundPosition() const {
+    return glm::vec3(m_transSphere.origin.x, m_transSphere.origin.y - m_transSphere.radius, m_transSphere.origin.z);
 }
 
 
@@ -245,4 +253,8 @@ bool CapsuleBounderComponent::isCritical() const {
     }
 
     return false;
+}
+
+glm::vec3 CapsuleBounderComponent::groundPosition() const {
+    return glm::vec3(m_transCapsule.center.x, m_transCapsule.center.y - m_transCapsule.height * 0.5f - m_transCapsule.radius, m_transCapsule.center.z);
 }
