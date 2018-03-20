@@ -18,9 +18,6 @@
 
 #include "System/SpatialSystem.hpp"
 
-
-
-
 class Scene;
 class SpatialComponent;
 class MapExploreSystem;
@@ -51,15 +48,15 @@ class MapExploreComponent : public Component {
     //void readInGraph(String fileName); 
     //void print_queue(std::queue<glm::vec3> q);
     //void drawCup(glm::vec3 position);
-    void writeToFile(vecvectorMap &graph); 
+    void writeToFile(PathfindingSystem::vecvectorMap &graph); 
     bool findInVisited(glm::vec3 vec, float stepSize);
     std::string vectorToString(Vector<glm::vec3> vec);
     glm::vec3 closestPos(glm::vec3 vec);
     void drawCup(glm::vec3 position);
 
-    bool removeOutliers(std::unordered_set<glm::vec3, vecHash, gridCompare> &graphSet);
+    bool removeOutliers(std::unordered_set<glm::vec3, PathfindingSystem::vecHash, PathfindingSystem::gridCompare> &graphSet);
     bool validNeighbor(glm::vec3 curPos, glm::vec3 candidate);
-    Vector<glm::vec3> gridFind(std::unordered_set<glm::vec3, vecHash, gridCompare> &graphSet, int xPos, int zPos);
+    Vector<glm::vec3> gridFind(std::unordered_set<glm::vec3, PathfindingSystem::vecHash, PathfindingSystem::gridCompare> &graphSet, int xPos, int zPos);
 
     // cosine of most severe angle that can still be considered "ground"
     float m_cosCriticalAngle;
@@ -113,10 +110,10 @@ class MapExploreComponent : public Component {
     bool findNeighbors = false;
 
     int collisionCount = 0;
-    std::unordered_set<glm::vec3, vecHash, gridCompare>::iterator visitIterator;
+    std::unordered_set<glm::vec3, PathfindingSystem::vecHash, PathfindingSystem::gridCompare>::iterator visitIterator;
     glm::vec3 collisionTestPoint;
-    std::unordered_set<glm::vec3, vecHash, gridCompare> visitedSet;
-    std::unordered_set<glm::vec3, vecHash, gridCompare> graphSet;
+    std::unordered_set<glm::vec3, PathfindingSystem::vecHash, PathfindingSystem::gridCompare> visitedSet;
+    std::unordered_set<glm::vec3, PathfindingSystem::vecHash, PathfindingSystem::gridCompare> graphSet;
 
     int nodeCount = 0;
 
@@ -129,7 +126,7 @@ class MapExploreComponent : public Component {
     glm::vec3 prevMove;
     std::queue<glm::vec3> pos_queue;
     
-    vecvectorMap graph;
+    PathfindingSystem::vecvectorMap graph;
     Vector<glm::vec3> validNeighbors;
 
 

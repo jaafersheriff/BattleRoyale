@@ -8,39 +8,11 @@
 
 #include "Component/Component.hpp"
 
-class PathfindingSystem;
+#include "System/PathfindingSystem.hpp"
+
+
 class BounderComponent;
-
-
-struct vecHash
-{
-  size_t operator()(const glm::vec3 &v) const {
-  	size_t h1 = std::hash<int>()(round(v.x));
-	size_t h2 = std::hash<int>()(round(v.y));
-	size_t h3 = std::hash<int>()(round(v.z));
-	return (h1 ^ (h2 << 1)) ^ h3;
-  }
-};
-
-
-struct gridCompare {
-
-    bool operator()(const glm::vec3& lhs, const glm::vec3& rhs) const
-    {
-        if (round(lhs.x) == round(rhs.x) && round(lhs.z) == round(rhs.z)) {
-            if (glm::distance(lhs.y, rhs.y) < .5) {
-                return true;
-            }
-        }
-        return false;
-    }
-};
-
-
-typedef std::unordered_map<glm::vec3, glm::vec3, vecHash, gridCompare> vecvecMap;
-typedef std::unordered_map<glm::vec3, double, vecHash, gridCompare> vecdoubleMap;
-typedef std::unordered_map<glm::vec3, Vector<glm::vec3>, vecHash, gridCompare> vecvectorMap;
-
+//class PathfindingSystem;
 
 struct Node {
 	glm::vec3 position;
@@ -84,7 +56,7 @@ class PathfindingComponent : public Component {
     virtual void init() override;
 
     void readInGraph(String);
-    Vector<glm::vec3> reconstructPath(glm::vec3 start, glm::vec3 playerPos, vecvecMap &cameFrom);
+    Vector<glm::vec3> reconstructPath(glm::vec3 start, glm::vec3 playerPos, PathfindingSystem::vecvecMap &cameFrom);
 
 
     // cosine of most severe angle that can still be considered "ground"
@@ -94,8 +66,8 @@ class PathfindingComponent : public Component {
 
     virtual void update(float) override;
 
-    static bool aStarSearch(vecvectorMap &graph, glm::vec3 start, glm::vec3 playerPos, vecvecMap &cameFrom);
-    static glm::vec3 closestPos(vecvectorMap &graph, glm::vec3 pos);
+    static bool aStarSearch(PathfindingSystem::vecvectorMap &graph, glm::vec3 start, glm::vec3 playerPos, PathfindingSystem::vecvecMap &cameFrom);
+    static glm::vec3 closestPos(PathfindingSystem::vecvectorMap &graph, glm::vec3 pos);
 
     // TODO : just add enable/disable options for all components?
     void setMoveSpeed(float f) { this->m_moveSpeed = f; }
@@ -128,9 +100,9 @@ class PathfindingComponent : public Component {
     int pathCount;
     bool noPath = false;
 
-    vecvectorMap graph;
+    //vecvectorMap graph;
     //std::unordered_map<glm::vec3, Node, vecHash, gridCompare> vecToNode;
-    vecvecMap cameFrom;
+    PathfindingSystem::vecvecMap cameFrom;
     Vector<glm::vec3> path;
     std::vector<glm::vec3>::iterator pathIT;
 

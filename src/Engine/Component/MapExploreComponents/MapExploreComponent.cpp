@@ -23,8 +23,8 @@ void MapExploreComponent::init() {
 
     slowTime = 0;
 
-    visitedSet = std::unordered_set<glm::vec3, vecHash, gridCompare>();
-    graphSet = std::unordered_set<glm::vec3, vecHash, gridCompare>();
+    visitedSet = std::unordered_set<glm::vec3, PathfindingSystem::vecHash, PathfindingSystem::gridCompare>();
+    graphSet = std::unordered_set<glm::vec3, PathfindingSystem::vecHash, PathfindingSystem::gridCompare>();
     //visitedSet = Vector<glm::vec3>();
     pos_queue = std::queue<glm::vec3>();
     //curPos = m_spatial->position();
@@ -239,7 +239,7 @@ void MapExploreComponent::update(float dt) {
 					drawCup(iter->first);
 			}
 // int loopCount = 0;
-		vecvecMap cameFrom = vecvecMap();
+		PathfindingSystem::vecvecMap cameFrom = PathfindingSystem::vecvecMap();
 // 			for (auto iter = graph.begin(); iter != graph.end();) {
 // 				std::cout << "path loop: " << loopCount++ << std::endl;
 // 				if (!PathfindingComponent::aStarSearch(graph, glm::vec3(-9, -1.688156, -172), iter->first, cameFrom)) {
@@ -287,7 +287,7 @@ void MapExploreComponent::update(float dt) {
 }
 
 // Get rid of posistions that shouldn't be part of the map's graph, such as positions on top of the tables
-bool MapExploreComponent::removeOutliers(std::unordered_set<glm::vec3, vecHash, gridCompare> &graphSet) {
+bool MapExploreComponent::removeOutliers(std::unordered_set<glm::vec3, PathfindingSystem::vecHash, PathfindingSystem::gridCompare> &graphSet) {
 	// if the posistion doesn't have at least 3 additional nodes in the graph next to it with the same y then get rid of it
 
 	const int xdir[] = {0, 1, 0, -1};
@@ -350,7 +350,7 @@ bool MapExploreComponent::validNeighbor(glm::vec3 curPos, glm::vec3 candidate) {
 }
 
 // Find the pos with given x and z coords, could return 0, 1, or 2 because of the raised walkways
-Vector<glm::vec3> MapExploreComponent::gridFind(std::unordered_set<glm::vec3, vecHash, gridCompare> &graphSet, int xPos, int zPos) {
+Vector<glm::vec3> MapExploreComponent::gridFind(std::unordered_set<glm::vec3, PathfindingSystem::vecHash, PathfindingSystem::gridCompare> &graphSet, int xPos, int zPos) {
 	Vector<glm::vec3> found = Vector<glm::vec3>();
 
 	for (auto iter = graphSet.begin(); iter != graphSet.end(); ++iter) {
@@ -362,7 +362,7 @@ Vector<glm::vec3> MapExploreComponent::gridFind(std::unordered_set<glm::vec3, ve
 	return found;
 }
 
-void MapExploreComponent::writeToFile(vecvectorMap &graph) {
+void MapExploreComponent::writeToFile(PathfindingSystem::vecvectorMap &graph) {
 	std::ofstream outFile;
 
 	outFile.open(filename);
