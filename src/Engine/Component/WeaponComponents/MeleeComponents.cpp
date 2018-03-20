@@ -21,16 +21,12 @@ MeleeComponent::MeleeComponent(GameObject & gameObject, const SpatialComponent *
 void MeleeComponent::init() {
     assert(gameObject().getSpatial());
     assert(m_bounder = gameObject().getComponentByType<BounderComponent>());
+}
 
+void MeleeComponent::update(float dt) {
     if (m_hostSpatial) {
-        auto hostSpatialChangeCallback([&] (const Message & msg_) {
-            const SpatialChangeMessage & msg(static_cast<const SpatialChangeMessage &>(msg_));
-            if (&msg.spatial == m_hostSpatial) {
-                gameObject().getSpatial()->setRelativePosition(glm::vec3(m_hostSpatial->modelMatrix() * glm::vec4(m_hostOffset, 1.0f)));
-                gameObject().getSpatial()->setRelativeOrientation(m_hostSpatial->orientation());
-            }
-        });
-        Scene::addReceiver<SpatialChangeMessage>(&m_hostSpatial->gameObject(), hostSpatialChangeCallback);
+        gameObject().getSpatial()->setRelativePosition(glm::vec3(m_hostSpatial->modelMatrix() * glm::vec4(m_hostOffset, 1.0f)));
+        gameObject().getSpatial()->setRelativeOrientation(m_hostSpatial->orientation());
     }
 }
 
@@ -59,5 +55,7 @@ void SprayComponent::init() {
 }
 
 void SprayComponent::update(float dt) {
+    MeleeComponent::update(dt);
+
     m_dt = dt;
 }

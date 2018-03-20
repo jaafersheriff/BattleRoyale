@@ -249,6 +249,7 @@ class GameSystem {
     static Store s_store;
     static bool s_changeStore;
     static Store s_newStore;
+    static bool s_useWeapon;
 
 };
 

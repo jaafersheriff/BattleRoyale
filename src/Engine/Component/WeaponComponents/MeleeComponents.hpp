@@ -29,6 +29,10 @@ class MeleeComponent : public Component {
 
     virtual void init() override;
 
+    public:
+
+    virtual void update(float dt) override;
+
     protected:
 
     BounderComponent * m_bounder;

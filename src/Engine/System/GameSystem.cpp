@@ -343,6 +343,8 @@ void GameSystem::Weapons::SrirachaBottle::unequip() {
         Scene::removeComponent(*Player::handDiffuse);
         Player::handDiffuse = nullptr;
     }
+
+    if (s_playerSriracha) toggleForPlayer();
 }
 
 //------------------------------------------------------------------------------
@@ -427,6 +429,7 @@ const Vector<MeleeComponent *> & GameSystem::s_meleeComponents(Scene::getCompone
 GameSystem::Store GameSystem::s_store = Store::none;
 bool GameSystem::s_changeStore = false;
 GameSystem::Store GameSystem::s_newStore = Store::none;
+bool GameSystem::s_useWeapon = false;
 
 void GameSystem::init() {
 
@@ -484,6 +487,14 @@ void GameSystem::update(float dt) {
     if (s_changeStore) {
         setStore(s_newStore);
         s_changeStore = false;
+    }
+    if (s_useWeapon) {
+        switch (s_store) {
+            case Store::american: Weapons::SodaGrenade::fireFromPlayer(); break;
+            case Store::asian: Weapons::SrirachaBottle::toggleForPlayer(); break;
+            case Store::italian: Weapons::PizzaSlice::fireFromPlayer(); break;
+        }
+        s_useWeapon = false;
     }
 
     // Update components
@@ -558,17 +569,14 @@ void GameSystem::setupMessageCallbacks() {
     });
     Scene::addReceiver<KeyMessage>(nullptr, setStoreCallback);
 
-    // Shoot pizza slice (click) or fire soda grenade (right-click)
-    auto fireCallback([&](const Message & msg_) {
+    // Use weapon (click)
+    auto useWeaponCallback([&](const Message & msg_) {
         const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
         if (msg.button == GLFW_MOUSE_BUTTON_1 && !(msg.mods & GLFW_MOD_CONTROL) && msg.action == GLFW_PRESS) {
-            Weapons::PizzaSlice::fireFromPlayer();
-        }
-        else if (msg.button == GLFW_MOUSE_BUTTON_2 && !(msg.mods & GLFW_MOD_CONTROL) && msg.action == GLFW_PRESS) {
-            Weapons::SrirachaBottle::toggleForPlayer();
+            s_useWeapon = true;
         }
     });
-    Scene::addReceiver<MouseMessage>(nullptr, fireCallback);
+    Scene::addReceiver<MouseMessage>(nullptr, useWeaponCallback);
 
     // Spawn enemy (enter)
     auto spawnEnemyCallback([&](const Message & msg_) {
