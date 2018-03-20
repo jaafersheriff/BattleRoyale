@@ -41,11 +41,15 @@ class GameSystem {
         static int k_waveNumber;
         static float k_spawnTimer;
         static float k_spawnTimerMax;
-        static int k_enemiesInWave;
         static int k_enemiesAlive;
-        
-        static int computeWaveEnemies(int waveNumber);
+        static int k_enemiesInWave;
+        static float k_enemyHealth;
+        static float k_enemySpeed;
+
         static glm::vec3 randomSpawnPoint();
+        static int computeEnemiesInWave();
+        static float computeEnemyHealth();
+        static float computeEnemySpeed();
     };
 
     //--------------------------------------------------------------------------
@@ -110,7 +114,7 @@ class GameSystem {
             static const float k_moveSpeed;
             static const float k_maxHP;
 
-            static void create(const glm::vec3 & position);
+            static void create(const glm::vec3 & position, float speed, float hp);
 
             static void spawn();
 
