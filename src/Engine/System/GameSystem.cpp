@@ -76,7 +76,14 @@ void GameSystem::Player::init() {
     );
 }
 
-
+//==============================================================================
+// WAVES
+const Vector<glm::vec3> GameSystem::Wave::k_spawnPoints = {};
+int GameSystem::Wave::k_waveNumber = 1;
+float GameSystem::Wave::k_spawnTimer = 0.f;
+float GameSystem::Wave::k_spawnTimerMax = 1.f;
+int GameSystem::Wave::k_enemiesInWave = GameSystem::Wave::k_waveNumber + 2;
+int GameSystem::Wave::k_enemiesAlive = 0;
 
 //==============================================================================
 // ENEMIES
@@ -377,7 +384,7 @@ void GameSystem::init() {
 }
 
 void GameSystem::update(float dt) {
-    for (auto & comp : s_playerControllers) {
+   for (auto & comp : s_playerControllers) {
         comp->update(dt);
     }
     for (auto & comp : s_cameraControllerComponents) {
@@ -397,6 +404,20 @@ void GameSystem::update(float dt) {
     }
     for (auto & comp : s_blastComponents) {
         comp->update(dt);
+    }
+
+    /* Increment wave if all enemies from previous wave are A. done spawning and B. dead */
+    Wave::k_enemiesAlive = s_enemyComponents.size();
+    if (!s_enemyComponents.size() && !Wave::k_enemiesInWave) {
+        Wave::k_waveNumber++;
+        Wave::Wave::k_enemiesInWave = Wave::k_waveNumber + 2; // TODO : better math
+    }
+    /* Spawn enemy based on timer */
+    Wave::k_spawnTimer += dt;
+    if (Wave::k_spawnTimer > Wave::k_spawnTimerMax && Wave::Wave::k_enemiesInWave) {
+        Wave::k_spawnTimer = 0.f;
+        Enemies::Basic::spawn(); // TODO : pick spawn point, change enemy parameters based on wave number (speed, health, etc.)
+        Wave::Wave::k_enemiesInWave--;
     }
 }
 
@@ -568,6 +589,17 @@ void GameSystem::setupImGui() {
             ImGui::Text("  Projectile: %d", Scene::getComponents<ProjectileComponent>().size());
         }
     );
+    
+    // Enemies/Waves
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO, 
+        "Enemies",
+        [&]() {
+            ImGui::Text("Wave number: %d", Wave::k_waveNumber);
+            ImGui::Text("Enemies still spawning: %d", Wave::Wave::k_enemiesInWave);
+            ImGui::Text("Enemies alive: %d", Wave::k_enemiesAlive);
+       }
+    );
 
     // Misc
     Scene::addComponent<ImGuiComponent>(
@@ -584,7 +616,7 @@ void GameSystem::setupImGui() {
             }
         }
     );
-    
+
     // Shadows 
     Scene::addComponent<ImGuiComponent>(
         imguiGO,

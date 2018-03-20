@@ -34,6 +34,19 @@ class GameSystem {
     private:
 
     //--------------------------------------------------------------------------
+    // Waves 
+
+    struct Wave {
+        static const Vector<glm::vec3> k_spawnPoints;
+        static int k_waveNumber;
+        static float k_spawnTimer;
+        static float k_spawnTimerMax;
+        static int k_enemiesInWave;
+        static int k_enemiesAlive;
+        
+    };
+
+    //--------------------------------------------------------------------------
     // Lighting
 
     struct Lighting {
