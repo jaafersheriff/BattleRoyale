@@ -563,7 +563,7 @@ void GameSystem::unequipWeapon() {
 
 void GameSystem::setupMessageCallbacks() {
     
-    // Set culture (1 | 2 | 3)
+    // Set culture (1 | 2 | 3 | 4)
     auto setCultureCallback([&](const Message & msg_) {
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
         if (msg.action != GLFW_PRESS || msg.mods) {
@@ -573,6 +573,7 @@ void GameSystem::setupMessageCallbacks() {
             case GLFW_KEY_1: { s_changeCulture = true; s_newCulture = Culture::american; break; }
             case GLFW_KEY_2: { s_changeCulture = true; s_newCulture = Culture::asian; break; }
             case GLFW_KEY_3: { s_changeCulture = true; s_newCulture = Culture::italian; break; }
+            case GLFW_KEY_4: { s_changeCulture = true; s_newCulture = Culture::none; break; }
         }
     });
     Scene::addReceiver<KeyMessage>(nullptr, setCultureCallback);
