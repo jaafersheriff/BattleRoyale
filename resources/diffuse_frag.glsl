@@ -38,17 +38,17 @@ void main() {
 
     /* Base color */
     vec3 diffuseColor = matDiffuse;
-    float alpha = 1.0;
+    color.a = 1.0;
     if (usesTexture) {
         vec4 texColor = vec4(texture(textureImage, texCoords));
         if (texColor.a < 0.1) {
             discard; 
         }
         diffuseColor = texColor.xyz;
-        alpha = texColor.a;
+        color.a = texColor.a;
     }
 
-    float lambert = dot(L, N);
+    float lambert = max(dot(L, N), 0.0);
     float diffuseContrib, specularContrib;
 
     /* Cell shading */
@@ -64,7 +64,7 @@ void main() {
     /* Blinn-Phong shading */
     else {
         vec3 H = normalize(L + V);
-        diffuseContrib = clamp(lambert, ambience, 1.0);
+        diffuseContrib = lambert;
         specularContrib = pow(max(dot(H, N), 0.0), matShine);
     }
 
@@ -75,13 +75,13 @@ void main() {
             shadowCoords.z > texture(shadowMap, shadowCoords.xy).r + 0.005) {
         visibility -= (shadowCoords.w * (1.0 - shadowAmbience));
     }
-    // Shadows affect ambience value :(
-    vec3 bColor = vec3(diffuseColor * diffuseContrib + matSpecular * specularContrib) * visibility;
+
+    color.rgb = (ambience + (matDiffuse * diffuseContrib + matSpecular * specularContrib) * visibility) * diffuseColor;
 
     /* Silhouettes */
     float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;
 
-    color = vec4(edge * bColor, alpha);
+    color.rgb *= edge;
 
     //float brightness = max(((color.r+color.g+color.b)/3.0 - 0.6)/0.4, 0.0);
     // luminosity: average of min and max components
