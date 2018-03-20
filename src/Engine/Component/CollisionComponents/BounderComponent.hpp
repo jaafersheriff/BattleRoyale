@@ -56,6 +56,8 @@ class BounderComponent : public Component {
 
     bool isChange() const { return m_isChange; }
 
+    virtual glm::vec3 groundPosition() const = 0;
+
     protected:
 
     const SpatialComponent * m_spatial;
@@ -103,6 +105,8 @@ class AABBounderComponent : public BounderComponent {
     const AABox & transBox() const { return m_transBox; }
     const AABox & prevTransBox() const { return m_prevTransBox; }
 
+    virtual glm::vec3 groundPosition() const override;
+
     private:
 
     const AABox m_box;
@@ -149,6 +153,8 @@ class SphereBounderComponent : public BounderComponent {
     const Sphere & transSphere() const { return m_transSphere; }
     const Sphere & prevTransSphere() const { return m_prevTransSphere; }
 
+    virtual glm::vec3 groundPosition() const override;
+
     private:
 
     const Sphere m_sphere;
@@ -194,6 +200,8 @@ class CapsuleBounderComponent : public BounderComponent {
     const Capsule & capsule() const { return m_capsule; }
     const Capsule & transCapsule() const { return m_transCapsule; }
     const Capsule & prevTransCapsule() const { return m_prevTransCapsule; }
+
+    virtual glm::vec3 groundPosition() const override;
 
     private:
 

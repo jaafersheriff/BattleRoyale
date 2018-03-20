@@ -187,7 +187,7 @@ void GameSystem::Weapons::PizzaSlice::fire(const glm::vec3 & initPos, const glm:
     const Texture * tex(Loader::getTexture(k_texName));
     ModelTexture modelTex(tex, Lighting::k_defMaterial);
     GameObject & obj(Scene::createGameObject());
-    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_scale));
+    SpatialComponent & spatComp(Scene::addComponent<SpatialComponent>(obj, initPos, k_scale, Player::camera->orientation()));
     BounderComponent & bounderComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *mesh, false, true, false));
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, true));
     GroundComponent & groundComp(Scene::addComponent<GroundComponent>(obj));
@@ -365,7 +365,7 @@ void GameSystem::init() {
     setupImGui();
 
     // Disable certain shaders
-    //RenderSystem::s_bounderShader->setEnabled(false);
+    RenderSystem::s_bounderShader->setEnabled(false);
     RenderSystem::s_octreeShader->setEnabled(false);
     RenderSystem::s_rayShader->setEnabled(false);
 
