@@ -89,7 +89,7 @@ class MapExploreComponent : public Component {
     bool writeOut;
     bool oneUpdate = false;
 
-    float stepSize = 2.0f;
+    float stepSize = 1.0f;
     
 
     int secondFloorWidth = 97;

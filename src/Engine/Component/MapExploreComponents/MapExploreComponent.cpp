@@ -121,7 +121,7 @@ void MapExploreComponent::update(float dt) {
 
 						if (visitedSet.find(testPoint) == visitedSet.end()) {
 							visitedSet.insert(testPoint);
-							drawCup(testPoint);
+							//drawCup(testPoint);
 						}
 					}
 				}
@@ -153,7 +153,7 @@ void MapExploreComponent::update(float dt) {
 
 						if (visitedSet.find(testPoint) == visitedSet.end()) {
 							visitedSet.insert(testPoint);
-							drawCup(testPoint);
+							//drawCup(testPoint);
 						}
 					}
 				}
@@ -192,9 +192,9 @@ void MapExploreComponent::update(float dt) {
 			Vector<glm::vec3> possibleNeighbors;
 			Vector<glm::vec3> neighbors;
 
-			// std::cout << "Removing Outliers" << std::endl;
-			// removeOutliers(graphSet);
-			// std::cout << "Size After: " << graphSet.size() << std::endl;
+			std::cout << "Removing Outliers" << std::endl;
+			removeOutliers(graphSet);
+			std::cout << "Size After: " << graphSet.size() << std::endl;
 
 			// iterate through the graphSet and find the neighbors of each position
 			for (auto iter = graphSet.begin(); iter != graphSet.end(); ++iter) {
@@ -230,7 +230,7 @@ void MapExploreComponent::update(float dt) {
 				}
 
 				// Don't add nodes which aren't connected
-				if (neighbors.size() > 2)
+				if (neighbors.size() == 8)
 					graph.emplace(curPos, neighbors);
 			}
 
@@ -238,7 +238,7 @@ void MapExploreComponent::update(float dt) {
 
 			 for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
 			 	if (iter->second.size() == 8)
-			 		drawCup(iter->first, 3);
+			 		drawCup(iter->first);
 			 }
 // int loopCount = 0;
 		PathfindingSystem::vecvecMap cameFrom = PathfindingSystem::vecvecMap();
@@ -305,7 +305,7 @@ bool MapExploreComponent::removeOutliers(std::unordered_set<glm::vec3, Pathfindi
 				if (graphSet.find(glm::vec3(iter->x + (xdir[dir] * i), iter->y, iter->z + (zdir[dir] * i))) == graphSet.end()) {
 					break;
 				}
-				
+
 				count++;
 			}
 		}
@@ -341,7 +341,7 @@ bool MapExploreComponent::validNeighbor(glm::vec3 curPos, glm::vec3 candidate, f
 	stepSize += .2;
 	if (abs(curPos.x - candidate.x) < stepSize && abs(curPos.z - candidate.z) < stepSize) {
 		// if step up or drop down
-		if (candidate.y - curPos.y < stepSize || curPos.y > candidate.y) {
+		if (candidate.y - curPos.y < .8f) {//} || curPos.y > candidate.y) {
 			return true;
 		}
 	}

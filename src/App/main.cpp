@@ -13,6 +13,7 @@ extern "C" {
 #include "glm/gtx/transform.hpp"
 
 #include "EngineApp/EngineApp.hpp"
+#include "Scene/Scene.hpp"
 
 void printUsage() {
     std::cout << "Valid arguments: " << std::endl;
