@@ -10,6 +10,7 @@
 #include "EnemyComponents/EnemyComponent.hpp"
 #include "WeaponComponents/ProjectileComponents.hpp"
 #include "WeaponComponents/BlastComponent.hpp"
+#include "WeaponComponents/MeleeComponents.hpp"
 #include "StatComponents/StatComponents.hpp"
 // pathfinding
 #include "PathfindingComponents/PathfindingComponent.hpp"

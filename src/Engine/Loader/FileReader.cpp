@@ -4,6 +4,11 @@
 #include "EngineApp/EngineApp.hpp"
 #include "System/RenderSystem.hpp"
 #include "System/CollisionSystem.hpp"
+#include "Scene/Scene.hpp"
+#include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Model/ModelTexture.hpp"
+#include "Component/CollisionComponents/BounderComponent.hpp"
+#include "Component/RenderComponents/DiffuseRenderComponent.hpp"
 
 SpatialComponent & FileReader::addSpatialComponent(GameObject & gameObject, const rapidjson::Value& jsonTransform) {
     glm::vec3 position, scale;
