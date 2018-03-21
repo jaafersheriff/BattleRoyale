@@ -31724,4 +31724,612 @@
 "boxes":{
 }
 }
+,
+"object583": {
+"transform": 
+{
+    "objName": "Assets/Models/Neon_Ring.obj",
+    "objTexture": "Assets/Models/Yellow_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        -15.829999923706055,
+        1.2899999618530274,
+        -35.970001220703128
+    ],
+    "scale": [
+        0.3768455386161804,
+        0.3768455386161804,
+        0.3768455386161804
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ],
+    "doBloom": true
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object584": {
+"transform": 
+{
+    "objName": "Assets/Models/Column_2.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        16.829999923706056,
+        0.11999999731779099,
+        -35.869998931884769
+    ],
+    "scale": [
+        0.37865832448005679,
+        0.2573697566986084,
+        0.37865832448005679
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ],
+    "doBloom": false
+},
+"capsules":{
+"capsule 0": {
+    "center": [
+        0.0,
+        0.0,
+        -5.960465045973251e-7
+    ],
+    "radius": 2.136638879776001,
+    "height": 25.92198944091797
+}}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object585": {
+"transform": 
+{
+    "objName": "Assets/Models/Neon_Ring.obj",
+    "objTexture": "Assets/Models/Yellow_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        16.849998474121095,
+        2.0799999237060549,
+        -35.90999984741211
+    ],
+    "scale": [
+        0.3768455386161804,
+        0.3768455386161804,
+        0.3768455386161804
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ],
+    "doBloom": true
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object586": {
+"transform": 
+{
+    "objName": "Assets/Models/Neon_Ring.obj",
+    "objTexture": "Assets/Models/Yellow_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        16.849998474121095,
+        1.2899999618530274,
+        -35.90999984741211
+    ],
+    "scale": [
+        0.3768455386161804,
+        0.3768455386161804,
+        0.3768455386161804
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ],
+    "doBloom": true
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object587": {
+"transform": 
+{
+    "objName": "Assets/Models/Column_2.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -15.84999942779541,
+        0.11999999731779099,
+        -65.48999786376953
+    ],
+    "scale": [
+        0.37865832448005679,
+        0.2573697566986084,
+        0.37865832448005679
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ],
+    "doBloom": false
+},
+"capsules":{
+"capsule 0": {
+    "center": [
+        0.0,
+        0.0,
+        -5.960465045973251e-7
+    ],
+    "radius": 2.136638879776001,
+    "height": 25.92198944091797
+}}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object588": {
+"transform": 
+{
+    "objName": "Assets/Models/Neon_Ring.obj",
+    "objTexture": "Assets/Models/Yellow_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        -15.829999923706055,
+        2.0799999237060549,
+        -65.52999877929688
+    ],
+    "scale": [
+        0.3768455386161804,
+        0.3768455386161804,
+        0.3768455386161804
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ],
+    "doBloom": true
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object589": {
+"transform": 
+{
+    "objName": "Assets/Models/Neon_Ring.obj",
+    "objTexture": "Assets/Models/Yellow_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        -15.829999923706055,
+        1.2899999618530274,
+        -65.52999877929688
+    ],
+    "scale": [
+        0.3768455386161804,
+        0.3768455386161804,
+        0.3768455386161804
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ],
+    "doBloom": true
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object590": {
+"transform": 
+{
+    "objName": "Assets/Models/Column_2.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        16.729999542236329,
+        0.11999999731779099,
+        -65.51000213623047
+    ],
+    "scale": [
+        0.37865832448005679,
+        0.2573697566986084,
+        0.37865832448005679
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ],
+    "doBloom": false
+},
+"capsules":{
+"capsule 0": {
+    "center": [
+        0.0,
+        0.0,
+        -5.960465045973251e-7
+    ],
+    "radius": 2.136638879776001,
+    "height": 25.92198944091797
+}}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object591": {
+"transform": 
+{
+    "objName": "Assets/Models/Neon_Ring.obj",
+    "objTexture": "Assets/Models/Yellow_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        16.75,
+        2.0799999237060549,
+        -65.55000305175781
+    ],
+    "scale": [
+        0.3768455386161804,
+        0.3768455386161804,
+        0.3768455386161804
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ],
+    "doBloom": true
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object592": {
+"transform": 
+{
+    "objName": "Assets/Models/Neon_Ring.obj",
+    "objTexture": "Assets/Models/Yellow_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        16.75,
+        1.2899999618530274,
+        -65.55000305175781
+    ],
+    "scale": [
+        0.3768455386161804,
+        0.3768455386161804,
+        0.3768455386161804
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ],
+    "doBloom": true
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object593": {
+"transform": 
+{
+    "objName": "Assets/Models/Column_2.obj",
+    "objTexture": "Assets/Models/Tex_White.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": true,
+    "position": [
+        -15.84999942779541,
+        0.11999999731779099,
+        -35.93000030517578
+    ],
+    "scale": [
+        0.37865832448005679,
+        0.2573697566986084,
+        0.37865832448005679
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ],
+    "doBloom": false
+},
+"capsules":{
+"capsule 0": {
+    "center": [
+        0.0,
+        0.0,
+        -5.960465045973251e-7
+    ],
+    "radius": 2.136638879776001,
+    "height": 25.92198944091797
+}}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
+,
+"object594": {
+"transform": 
+{
+    "objName": "Assets/Models/Neon_Ring.obj",
+    "objTexture": "Assets/Models/Yellow_Tex.png",
+    "tiling": [
+        1.0,
+        1.0
+    ],
+    "isToon": true,
+    "allowColliders": false,
+    "position": [
+        -15.829999923706055,
+        2.0799999237060549,
+        -35.970001220703128
+    ],
+    "scale": [
+        0.3768455386161804,
+        0.3768455386161804,
+        0.3768455386161804
+    ],
+    "rotMat3_0": [
+        -1.0,
+        0.0,
+        -8.742277657347586e-8
+    ],
+    "rotMat3_1": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "rotMat3_2": [
+        8.742277657347586e-8,
+        0.0,
+        -1.0
+    ],
+    "doBloom": true
+},
+"capsules":{
+}
+,
+"spheres":{
+}
+,
+"boxes":{
+}
+}
 }
