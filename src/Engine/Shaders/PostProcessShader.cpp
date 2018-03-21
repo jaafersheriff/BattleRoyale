@@ -26,7 +26,9 @@ bool PostProcessShader::init() {
     addUniform("f_bloomBlur");
     addUniform("exposure");
 
-    tex_pizza = Loader::getTexture("Grey_Tex.png");
+    addUniform("lifePercentage");
+
+    tex_pizza = Loader::getTexture("GUI/Pizza_01.png");
 
     // Initialize frameSquarePos
     glm::vec2 frameSquarePos[4]{
@@ -87,6 +89,9 @@ void PostProcessShader::render(const CameraComponent * camera) {
     glUniform1i(getUniform("f_bloomBlur"), 1);
     glUniform1f(getUniform("exposure"), 1.f);
 
+    // Bloom shader does part of UI as well
+    loadFloat(getUniform("lifePercentage"), .25f);
+
     // Draw
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
 
@@ -96,7 +101,10 @@ void PostProcessShader::render(const CameraComponent * camera) {
 
     glUniform1i(getUniform("v_operation"), 2);
 
-    loadVec2(getUniform("v_scale"), glm::vec2(.125f, .125f));
+    glm::ivec2 size = Window::getFrameSize();
+    float xScale = (float) size.y / (float) size.x;
+
+    loadVec2(getUniform("v_scale"), glm::vec2(.125f * xScale, .125f));
     loadVec2(getUniform("v_translate"), glm::vec2(.825f, .825f));
     loadFloat(getUniform("v_depth"), -.66f);
 
