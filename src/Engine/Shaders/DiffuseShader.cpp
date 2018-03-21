@@ -38,9 +38,11 @@ bool DiffuseShader::init() {
     
     addUniform("L");
     addUniform("shadowMap");
+    addUniform("shadowMapSize");
     addUniform("lightDist");
     addUniform("transitionDistance");
     addUniform("shadowAmbience");
+    addUniform("pcfCount");
 
     addUniform("tiling");
 
@@ -177,10 +179,12 @@ void DiffuseShader::render(const CameraComponent * camera) {
     loadFloat(getUniform("lightDist"), RenderSystem::lightDist);
     loadFloat(getUniform("transitionDistance"), RenderSystem::transitionDistance);
     loadFloat(getUniform("shadowAmbience"), RenderSystem::shadowAmbience);
-    GLuint shadowMap = RenderSystem::getShadowMap();
-    glActiveTexture(GL_TEXTURE0 + shadowMap);
-    glBindTexture(GL_TEXTURE_2D, shadowMap);
-    loadInt(getUniform("shadowMap"), shadowMap);
+    const Texture * shadowMap = RenderSystem::getShadowMap();
+    glActiveTexture(GL_TEXTURE0 + shadowMap->textureId);
+    glBindTexture(GL_TEXTURE_2D, shadowMap->textureId);
+    loadInt(getUniform("shadowMap"), shadowMap->textureId);
+    loadFloat(getUniform("shadowMapSize"), shadowMap->width);
+    loadInt(getUniform("pcfCount"), RenderSystem::pcfCount);
 
     /* Toon shading */
     loadFloat(getUniform("silAngle"), silAngle);
