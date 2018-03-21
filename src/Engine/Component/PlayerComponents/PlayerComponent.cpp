@@ -25,7 +25,7 @@ void PlayerComponent::update(float dt) {
     m_damageCooldown -= dt;
     m_soundCooldown -= dt;
     if (m_health->value() < 0.5f) {
-        Scene::sendMessage<PlayerDeadMessage>(&gameObject(), *this);
+        if (m_damaged) Scene::sendMessage<PlayerDeathMessage>(&gameObject(), *this);
         return;
     }
     else if (m_damaged && m_soundCooldown <= 0.0f) {

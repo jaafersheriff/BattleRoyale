@@ -171,9 +171,9 @@ struct ComponentRemovedMessage : public Message {
 
 
 // The player's health has fallen to 0
-struct PlayerDeadMessage : public Message {
+struct PlayerDeathMessage : public Message {
     const PlayerComponent & player;
-    PlayerDeadMessage(const PlayerComponent & player) : player(player) {}
+    PlayerDeathMessage(const PlayerComponent & player) : player(player) {}
 };
 
 

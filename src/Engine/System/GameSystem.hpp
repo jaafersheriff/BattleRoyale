@@ -134,6 +134,8 @@ class GameSystem {
 
         static bool finished();
 
+        static void restart();
+
     };
 
     //--------------------------------------------------------------------------
@@ -321,6 +323,10 @@ class GameSystem {
 
     static void updateGame(float dt);
 
+    static void startGame();
+
+    static void endGame();
+
     static void setCulture(Culture culture);
 
     static void equipWeapon();
@@ -347,6 +353,7 @@ class GameSystem {
 
     static const glm::vec3 k_defGravity;
     static const float k_restTime;
+    static const float k_purgatoryTime;
 
     static Culture s_culture;
     static bool s_changeCulture;
@@ -356,6 +363,9 @@ class GameSystem {
     static Culture s_shopVisited;
     static bool s_resting;
     static float s_restCooldown;
+    static bool s_inPurgatory;
+    static float s_purgatoryCooldown;
+    static bool s_playerDied;
 
 };
 

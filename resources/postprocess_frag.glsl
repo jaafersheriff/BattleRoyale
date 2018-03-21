@@ -11,6 +11,8 @@ uniform sampler2D f_bloomBlur;
 uniform float lifePercentage;
 uniform float ammoPercentage;
 
+uniform vec3 screenTone;
+
 const vec3 k_minLifeColor = vec3(1.0, 0.0, 0.0);
 const vec3 k_maxLifeColor = vec3(0.0, 1.0, 0.0);
 const vec3 k_ammoColor = vec3(0.0, 0.5, 1.0);
@@ -111,6 +113,8 @@ void doBloom() {
     if (inCrosshair()) {
         color.rgb = 1.0 - color.rgb;
     }
+
+    color.rgb *= screenTone;
 }
 
 void copyTexture() {

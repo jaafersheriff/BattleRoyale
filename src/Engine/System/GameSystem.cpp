@@ -253,6 +253,13 @@ bool GameSystem::Wave::finished() {
     return enemiesLeft <= 0 && s_enemyComponents.empty();
 }
 
+void GameSystem::Wave::restart() {
+    Enemies::killAll();
+    waveNumber = 0;
+    enemiesLeft = 0;
+    spawnCooldown = 0.0f;
+}
+
 
 
 //==============================================================================
@@ -739,7 +746,8 @@ const Vector<BlastComponent *> & GameSystem::s_blastComponents(Scene::getCompone
 const Vector<MeleeComponent *> & GameSystem::s_meleeComponents(Scene::getComponents<MeleeComponent>());
  
 const glm::vec3 GameSystem::k_defGravity = glm::vec3(0.0f, -10.0f, 0.0f);
-const float GameSystem::k_restTime = 10.0f;
+const float GameSystem::k_restTime = 8.0f;
+const float GameSystem::k_purgatoryTime = 16.0f;
 
 GameSystem::Culture GameSystem::s_culture = Culture::none;
 bool GameSystem::s_changeCulture = false;
@@ -749,6 +757,9 @@ bool GameSystem::s_unuseWeapon = false;
 GameSystem::Culture GameSystem::s_shopVisited = Culture::none;
 bool GameSystem::s_resting = true;
 float GameSystem::s_restCooldown = k_restTime;
+bool GameSystem::s_inPurgatory = true;
+float GameSystem::s_purgatoryCooldown = 0.0f;
+bool GameSystem::s_playerDied = false;
 
 void GameSystem::init() {
 
@@ -830,6 +841,26 @@ void GameSystem::update(float dt) {
 }
 
 void GameSystem::updateGame(float dt) {
+    // Player dead, or dying, or whatever. Time between games.
+    if (s_inPurgatory) {
+        // Still in purgatory
+        if ((s_purgatoryCooldown -= dt) > 0.0f) {
+            RenderSystem::s_postProcessShader->setScreenTone(glm::vec3(s_purgatoryCooldown / k_purgatoryTime));
+            return;
+        }
+        // Out of purgatory, lets go
+        RenderSystem::s_postProcessShader->setScreenTone(glm::vec3(1.0f));
+        startGame();
+        return;
+    }
+
+    // Player died
+    if (s_playerDied) {
+        s_playerDied = false;
+        endGame();
+        return;
+    }
+
     // Player uses weapon
     if (s_useWeapon) {
         switch (s_culture) {
@@ -894,6 +925,26 @@ void GameSystem::updateGame(float dt) {
     }
 }
 
+void GameSystem::startGame() {
+    setCulture(Culture::none);
+    Player::bodySpatial->setRelativePosition(Player::k_playerPosition);
+    Player::restore();
+    Wave::restart();
+    Weapons::destroyAllWeapons();
+    Shops::openAll();
+    s_inPurgatory = false;
+    s_resting = true;
+    s_restCooldown = k_restTime;
+}
+
+void GameSystem::endGame() {
+    setCulture(Culture::none);
+    Enemies::killAll();
+    SoundSystem::playSound("player_death.wav");
+    s_inPurgatory = true;
+    s_purgatoryCooldown = k_purgatoryTime;
+}
+
 void GameSystem::setCulture(Culture culture) {
     unequipWeapon();
 
@@ -935,6 +986,25 @@ void GameSystem::endWave() {
 // Message Handling
 
 void GameSystem::setupMessageCallbacks() {
+    // Use weapon (click)
+    auto useWeaponCallback([&](const Message & msg_) {
+        const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
+        if (msg.button == GLFW_MOUSE_BUTTON_1 && !(msg.mods & GLFW_MOD_CONTROL)) {
+            if (msg.action == GLFW_PRESS) {
+                s_useWeapon = true;                
+            }
+            else if (msg.action == GLFW_RELEASE) {
+                s_unuseWeapon = true;
+            }
+        }
+    });
+    Scene::addReceiver<MouseMessage>(nullptr, useWeaponCallback);
+
+    // Player death
+    auto playerDeathCallback([&](const Message & msg_) {
+        if (!s_inPurgatory) s_playerDied = true;
+    });
+    Scene::addReceiver<PlayerDeathMessage>(nullptr, playerDeathCallback);
     
     // Set culture (1 | 2 | 3 | 4)
     auto setCultureCallback([&](const Message & msg_) {
@@ -950,20 +1020,6 @@ void GameSystem::setupMessageCallbacks() {
         }
     });
     Scene::addReceiver<KeyMessage>(nullptr, setCultureCallback);
-
-    // Use weapon (click)
-    auto useWeaponCallback([&](const Message & msg_) {
-        const MouseMessage & msg(static_cast<const MouseMessage &>(msg_));
-        if (msg.button == GLFW_MOUSE_BUTTON_1 && !(msg.mods & GLFW_MOD_CONTROL)) {
-            if (msg.action == GLFW_PRESS) {
-                s_useWeapon = true;                
-            }
-            else if (msg.action == GLFW_RELEASE) {
-                s_unuseWeapon = true;
-            }
-        }
-    });
-    Scene::addReceiver<MouseMessage>(nullptr, useWeaponCallback);
 
     // Game Controls
     auto gameControlsCallback([&](const Message & msg_) {
