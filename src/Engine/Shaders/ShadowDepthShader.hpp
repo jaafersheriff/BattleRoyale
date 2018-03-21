@@ -16,7 +16,7 @@ class ShadowDepthShader : public Shader {
 
         virtual void render(const CameraComponent * camera) override;
         
-        GLuint getShadowMapTexture() { return s_shadowMap->textureId; }
+        Texture * getShadowMapTexture() { return s_shadowMap; }
         const glm::mat4 & getL() { return L; }
         int getMapSize() { return s_shadowMap->width; }
         void setMapSize(int);

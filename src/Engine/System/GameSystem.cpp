@@ -1260,7 +1260,7 @@ void GameSystem::setupImGui() {
             if (ImGui::SliderInt("Shadow Map Size", &mapSize, 1024, 16384)) {
                 RenderSystem::s_shadowShader->setMapSize(mapSize);
             }
-            ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<uintptr_t>(RenderSystem::getShadowMap())), ImVec2(256, 256));
+            ImGui::Image(reinterpret_cast<ImTextureID>(static_cast<uintptr_t>(RenderSystem::getShadowMap()->textureId)), ImVec2(256, 256));
 
             glm::vec3 position = RenderSystem::s_lightSpatial->position();
             if (ImGui::SliderFloat3("Position", glm::value_ptr(position), -300.f, 300.f)) {
@@ -1276,6 +1276,7 @@ void GameSystem::setupImGui() {
             if (ImGui::SliderFloat2("zBounds", glm::value_ptr(zBounds), -300.f, 300.f)) {
                 RenderSystem::s_lightCamera->setNearFar(zBounds.x, zBounds.y);
             }
+            ImGui::SliderInt("PCF", &RenderSystem::pcfCount, 0, 10);
         }
     );
 
