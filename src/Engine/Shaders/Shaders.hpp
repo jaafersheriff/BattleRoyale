@@ -4,3 +4,4 @@
 #include "BounderShader.hpp"
 #include "OctreeShader.hpp"
 #include "RayShader.hpp"
+#include "HealthShader.hpp"
