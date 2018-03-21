@@ -3,6 +3,7 @@
 #include "Scene/Scene.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/BounderComponent.hpp"
+#include "System/CollisionSystem.hpp"
 #include "Util/Util.hpp"
 #include "Loader/Loader.hpp"
 
@@ -26,35 +27,30 @@ void PathfindingComponent::init() {
     cameFrom = PathfindingSystem::vecvecMap();
 
     const glm::vec3 &playerPos = m_player.getSpatial()->position();
-    //const glm::vec3 &pos = m_spatial->position();
     const glm::vec3 &pos = m_bounder->groundPosition();
 
-    // std::cout << "Start: " << pos.x << ", " << pos.y << ", " << pos.z << std::endl;
-
-    // std::cout << "Distance: " << glm::distance(glm::vec3(0, 0, 0), glm::vec3(1, 0, 1)) << std::endl;
-
-    // if (aStarSearch(PathfindingSystem::graph, pos, playerPos, cameFrom)) {
-    //     path = reconstructPath(pos, playerPos, cameFrom);
-    //     pathIT = path.begin();
-    // }
-    // else {
-    //     std::cout << "Init: aStart didn't find a path" << std::endl;
-    // }
-
     updatePath = true;
-
-    std::cout << "End Init" << std::endl;
 }
 
 void PathfindingComponent::update(float dt) {
+    float HALF_STAIRS = 3.f;
     const glm::vec3 & playerPos = m_player.getSpatial()->position();
     const glm::vec3 & pos = m_bounder->groundPosition();
 
     glm::vec3 dir = playerPos - pos;
 
+    glm::vec3 playerGroundPos = playerPos;
+    auto pair(CollisionSystem::pickHeavy(Ray(playerPos, glm::vec3(0, -1, 0.01)), UINT_MAX));
+    if (pair.second.is) {
+        //playerGroundPos = glm::vec3(playerPos.x, playerPos.y - pair.second.dist, playerPos);
+        playerGroundPos.y -= pair.second.dist;
+    }
+
 
     // if enemy is very close to the player just follow them
-    if (glm::length2(dir) < 5.0 || noPath) {
+    //if (glm::length2(dir) < 5.0 || noPath) {
+    float dist = glm::distance2(pos, playerPos);
+    if (dist < 300.0 && abs(pos.y - playerGroundPos.y) < HALF_STAIRS) {
 
         gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
 
@@ -67,8 +63,8 @@ void PathfindingComponent::update(float dt) {
     }
     // probably don't need to update the path everytime, set flag when neccessary
     else if (updatePath) {
-        if (aStarSearch(PathfindingSystem::graph, pos, playerPos, cameFrom)) {
-            path = reconstructPath(pos, playerPos, cameFrom);
+        if (aStarSearch(PathfindingSystem::graph, pos, playerGroundPos, cameFrom)) {
+            path = reconstructPath(pos, playerGroundPos, cameFrom);
             pathIT = path.begin();
 
             noPath = false;
@@ -76,7 +72,6 @@ void PathfindingComponent::update(float dt) {
             dir = *pathIT - pos;
         }
         else {
-            std::cout << "***************aStart didn't find a path" << std::endl;
             noPath = true;
         }
 
@@ -84,10 +79,12 @@ void PathfindingComponent::update(float dt) {
         updatePath = false;
     }
     else {
-        // move on to the next node if you close to the current one
-        if (glm::length2(*pathIT - pos) < 1.0) {
-            // update the path after 50 update loops or when the path is complete
-            if (pathCount++ > 50 || std::next(pathIT) == path.end()) {
+        if (pathCount++ > 500) {
+            updatePath = true;
+            pathCount = 0;
+        }
+        else if (glm::length2(*pathIT - pos) < 1.0f) {
+            if (std::next(pathIT) == path.end()) {
                 updatePath = true;
                 pathCount = 0;
             }
@@ -95,9 +92,11 @@ void PathfindingComponent::update(float dt) {
                 pathIT++;
             }
         }
+
         dir = *pathIT - pos;
 
         gameObject().getSpatial()->move(Util::safeNorm(dir) * m_moveSpeed * dt);
+
     }
     
 }
@@ -123,7 +122,6 @@ bool PathfindingComponent::aStarSearch(PathfindingSystem::vecvectorMap &graph, g
     PathfindingSystem::vecdoubleMap cost = PathfindingSystem::vecdoubleMap();
     std::priority_queue<pathPair, Vector<pathPair>, std::greater<pathPair>> frontier;
 
-    std::cout << "Pos as start in aStar: " << start.x << ", " << start.y << ", " << start.z << std::endl;
     start = PathfindingComponent::closestPos(graph, start);
     end = PathfindingComponent::closestPos(graph, end);
 
@@ -132,7 +130,6 @@ bool PathfindingComponent::aStarSearch(PathfindingSystem::vecvectorMap &graph, g
     cameFrom[start] = start;
     cost[start] = 0.0;
 
-    std::cout << "In A*" << std::endl;
     while (!frontier.empty()) {
         glm::vec3 current = frontier.top().position;
         frontier.pop();
@@ -140,7 +137,6 @@ bool PathfindingComponent::aStarSearch(PathfindingSystem::vecvectorMap &graph, g
 
         if (current == end) {
 
-            std::cout << "true leaving A*" << std::endl;
             return true;
         }
 
@@ -156,13 +152,11 @@ bool PathfindingComponent::aStarSearch(PathfindingSystem::vecvectorMap &graph, g
         }
     }
 
-    std::cout << "false leaving A*" << std::endl;
     return false;
 
 }
 
 Vector<glm::vec3> PathfindingComponent::reconstructPath(glm::vec3 start, glm::vec3 end, PathfindingSystem::vecvecMap &cameFrom) {
-    std::cout << "In RePath" << std::endl;
     Vector<glm::vec3> path;
     int count = 0;
 
@@ -181,49 +175,27 @@ Vector<glm::vec3> PathfindingComponent::reconstructPath(glm::vec3 start, glm::ve
     if (count > cameFrom.size()) {
         path = Vector<glm::vec3>();
         path.push_back(end);
-        std::cout << "Path not reconstructed: just end returned" << std::endl;
         return path;
     }
 
     path.push_back(start);
     std::reverse(path.begin(), path.end());
-    std::cout << "Out RePath" << std::endl;
     return path;
 }
 
 glm::vec3 PathfindingComponent::closestPos(PathfindingSystem::vecvectorMap &graph, glm::vec3 pos) {
-    std::cout << "Start Pos: " << pos.x << ", " << pos.y << ", " << pos.z << std::endl;
-    std::cout << "in closestPos" << std::endl;
-    float HALF_STAIRS = 3.8;
+    float HALF_STAIRS = 3.f;
     float minDist = FLT_MAX;
     glm::vec3 minPos = glm::vec3();
-
-    glm::vec3 rounded = glm::vec3(round(pos.x), pos.y, round(pos.z));
-
-    if (graph.find(glm::vec3(rounded)) != graph.end()) {
-        std::cout << "Returned rounded" << std::endl;
-        return rounded;
-    }
 
     for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
         float dist = glm::distance2(pos, iter->first);
         if (dist < minDist && abs(pos.y - iter->first.y) < HALF_STAIRS) {
-            // If there is a pos this close don't keep checking
-            if (dist < 1.f) {
-                return iter->first;
-            }
             minPos = iter->first;
             minDist = dist;
 
         }
     }
-
-    if (minPos == glm::vec3()) {
-        std::cout << "After Pos: " << pos.x << ", " << pos.y << ", " << pos.z << ", graph size: " << graph.size() << std::endl;
-        std::cout << "Something is off: PathfindingComponent::closestPos" << std::endl;
-    }
-
-    std::cout << "out closestPos: " << minPos.x << ", " << minPos.y << ", " << minPos.z << std::endl;
 
     return minPos;
 }
