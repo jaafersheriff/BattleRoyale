@@ -29,9 +29,9 @@ CameraComponent * RenderSystem::s_lightCamera = nullptr;
 SpatialComponent * RenderSystem::s_lightSpatial = nullptr;
 float RenderSystem::lightDist(350.f);
 float RenderSystem::lightOffset(20.f);
-float RenderSystem::shadowAmbience(0.8f);
+float RenderSystem::shadowAmbience(0.0f);
 float RenderSystem::transitionDistance(50.f);
-int RenderSystem::pcfCount(2);
+int RenderSystem::pcfCount(0);
 
 /* Shaders */
 UniquePtr<ShadowDepthShader> RenderSystem::s_shadowShader;;
