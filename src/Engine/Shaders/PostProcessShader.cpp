@@ -4,6 +4,8 @@
 
 #include "IO/Window.hpp"
 #include "System/RenderSystem.hpp"
+#include "Component/CameraComponents/CameraComponent.hpp"
+#include "Component/StatComponents/StatComponents.hpp"
 
 PostProcessShader::PostProcessShader(const String & vertName, const String & fragName) :
     Shader(vertName, fragName)
@@ -88,7 +90,10 @@ void PostProcessShader::render(const CameraComponent * camera) {
     glUniform1i(getUniform("f_bloomBlur"), 1);
 
     // Bloom shader does part of UI as well
-    loadFloat(getUniform("lifePercentage"), .20f);
+    // Get life percentage
+    HealthComponent *hc = camera->gameObject().getComponentByType<HealthComponent>();
+    float lifePercentage = (hc->value() - hc->minValue()) / (hc->maxValue() - hc->minValue());
+    loadFloat(getUniform("lifePercentage"), lifePercentage);
 
     // Draw
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
