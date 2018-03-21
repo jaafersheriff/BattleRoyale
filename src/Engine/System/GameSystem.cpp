@@ -711,7 +711,7 @@ void GameSystem::setupImGui() {
             ImGui::Text("Player Pos");
             ImGui::Text("%f %f %f",
                 Player::bodySpatial->position().x,
-                Player::bodySpatial->prevPosition().x,
+                Player::bodySpatial->position().y,
                 Player::bodySpatial->position().z
             );
             ImGui::Text("Freecam Pos");
