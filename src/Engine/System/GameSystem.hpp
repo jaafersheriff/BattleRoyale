@@ -214,6 +214,7 @@ class GameSystem {
         struct American {
 
             static BounderComponent * bounder;
+            static bool isOpen;
 
             static void init();
 
@@ -226,6 +227,7 @@ class GameSystem {
         struct Asian {
 
             static BounderComponent * bounder;
+            static bool isOpen;
 
             static void init();
 
@@ -238,6 +240,7 @@ class GameSystem {
         struct Italian {
 
             static BounderComponent * bounder;
+            static bool isOpen;
 
             static void init();
 
@@ -247,9 +250,25 @@ class GameSystem {
 
         };
 
+        static const float k_rotationPeriod;
+
+        static float rotationCooldown;
+
         static void init();
 
+        static void update(float dt);
+
         static void openAll();
+
+        static void openRandom();
+
+        static int numOpen();
+        static int numClosed();
+        static int numAbleToOpen();
+
+        static bool isOpen(Culture shop);
+
+        static void close(Culture shop);
 
     };
 

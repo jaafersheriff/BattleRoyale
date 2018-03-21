@@ -1,6 +1,7 @@
 bgAsianStereotype1.mp3
 bgItalian2.mp3
 bgRock1.mp3
+cash_register.wav
 Enemy_death.wav
 filesinfolder.txt
 footstep.wav

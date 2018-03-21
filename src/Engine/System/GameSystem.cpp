@@ -69,6 +69,7 @@ void GameSystem::Player::init() {
 
 void GameSystem::Player::restore() {
     health->setValue(health->maxValue());
+    if (ammo) ammo->setValue(ammo->maxValue());
 }
 
  
@@ -498,6 +499,7 @@ void GameSystem::Weapons::destroyAllWeapons() {
 // American
 
 BounderComponent * GameSystem::Shops::American::bounder = nullptr;
+bool GameSystem::Shops::American::isOpen = true;
 
 void GameSystem::Shops::American::init() {
     GameObject & obj(Scene::createGameObject());
@@ -514,17 +516,20 @@ void GameSystem::Shops::American::init() {
 }
 
 void GameSystem::Shops::American::open() {
-
+    if (isOpen) return;
+    SoundSystem::playSound3D("cash_register.wav", bounder->center());
+    isOpen = true;
 }
 
-void GameSystem::Shops::American::close() {
-
+void GameSystem::Shops::American::close() {    
+    isOpen = false;
 }
 
 //------------------------------------------------------------------------------
 // Asian
 
 BounderComponent * GameSystem::Shops::Asian::bounder = nullptr;
+bool GameSystem::Shops::Asian::isOpen = true;
 
 void GameSystem::Shops::Asian::init() {
     GameObject & obj(Scene::createGameObject());
@@ -541,17 +546,20 @@ void GameSystem::Shops::Asian::init() {
 }
 
 void GameSystem::Shops::Asian::open() {
-
+    if (isOpen) return;
+    SoundSystem::playSound3D("cash_register.wav", bounder->center());
+    isOpen = true;
 }
 
-void GameSystem::Shops::Asian::close() {
-
+void GameSystem::Shops::Asian::close() {    
+    isOpen = false;
 }
 
 //------------------------------------------------------------------------------
 // Italian
 
 BounderComponent * GameSystem::Shops::Italian::bounder = nullptr;
+bool GameSystem::Shops::Italian::isOpen = true;
 
 void GameSystem::Shops::Italian::init() {
     GameObject & obj(Scene::createGameObject());
@@ -568,15 +576,21 @@ void GameSystem::Shops::Italian::init() {
 }
 
 void GameSystem::Shops::Italian::open() {
-
+    if (isOpen) return;
+    SoundSystem::playSound("cash_register.wav");
+    isOpen = true;
 }
 
-void GameSystem::Shops::Italian::close() {
-
+void GameSystem::Shops::Italian::close() {    
+    isOpen = false;
 }
 
 //------------------------------------------------------------------------------
 // All
+
+const float GameSystem::Shops::k_rotationPeriod = 30.0f; // new shop opens every 30 seconds
+
+float GameSystem::Shops::rotationCooldown = k_rotationPeriod;
 
 void GameSystem::Shops::init() {
     American::init();
@@ -584,10 +598,67 @@ void GameSystem::Shops::init() {
     Italian::init();
 }
 
+void GameSystem::Shops::update(float dt) {
+    if (numAbleToOpen()) {
+        rotationCooldown -= dt;
+        if (rotationCooldown <= 0.0f) {
+            openRandom();
+            rotationCooldown = k_rotationPeriod;
+        }
+    }
+    else {
+        rotationCooldown = k_rotationPeriod;
+    }
+}
+
 void GameSystem::Shops::openAll() {
     American::open();
     Asian::open();
     Italian::open();
+}
+
+void GameSystem::Shops::openRandom() {
+    int n(numAbleToOpen());
+    if (n == 0) return;
+    int i(std::rand() % n);
+    if (American::isOpen || s_culture == Culture::american) ++i;
+    else if (i == 0) { American::open(); return; }
+    if (Asian::isOpen || s_culture == Culture::asian) ++i;
+    else if (i == 1) { Asian::open(); return; }
+    if (Italian::isOpen || s_culture == Culture::italian) ++i;
+    else if (i == 2) { Italian::open(); return; }
+}
+
+int GameSystem::Shops::numOpen() {
+    return int(American::isOpen) + int(Asian::isOpen) + int(Italian::isOpen);
+}
+
+int GameSystem::Shops::numClosed() {
+    return 3 - numOpen();
+}
+
+int GameSystem::Shops::numAbleToOpen() {
+    return
+        int(!American::isOpen && s_culture != Culture::american),
+        int(!Asian::isOpen && s_culture != Culture::asian),
+        int(!Italian::isOpen && s_culture != Culture::italian);
+}
+
+bool GameSystem::Shops::isOpen(Culture shop) {
+    switch (shop) {
+        case Culture::american: return American::isOpen;
+        case Culture::asian: return Asian::isOpen;
+        case Culture::italian: return Italian::isOpen;
+    }
+    return false;
+}
+
+void GameSystem::Shops::close(Culture shop) {
+    switch (shop) {
+        case Culture::american: American::close(); return;
+        case Culture::asian: Asian::close(); return;
+        case Culture::italian: Italian::close(); return;
+    }
 }
 
 
@@ -759,19 +830,6 @@ void GameSystem::update(float dt) {
 }
 
 void GameSystem::updateGame(float dt) {
-    // Player runs out of ammo
-    if (Player::ammo && Player::ammo->value() < 0.5f) {
-        s_changeCulture = true;
-        s_newCulture = Culture::none;
-    }
-
-    // Player visits shop
-    if (s_shopVisited != Culture::none && s_shopVisited != s_culture) {
-        s_changeCulture = true;
-        s_newCulture = s_shopVisited;
-    }
-    s_shopVisited = Culture::none;
-
     // Player uses weapon
     if (s_useWeapon) {
         switch (s_culture) {
@@ -789,6 +847,23 @@ void GameSystem::updateGame(float dt) {
     if (Weapons::SrirachaBottle::playerSriracha && Mouse::isDown(0)) {
         Weapons::SrirachaBottle::updatePlayers(dt);
     }
+
+    // Player runs out of ammo
+    if (Player::ammo && Player::ammo->value() < 0.5f) {
+        s_changeCulture = true;
+        s_newCulture = Culture::none;
+    }
+
+    // Update shops
+    Shops::update(dt);
+
+    // Player visits shop
+    if (s_shopVisited != Culture::none && s_shopVisited != s_culture && Shops::isOpen(s_shopVisited)) {
+        Shops::close(s_shopVisited);
+        s_changeCulture = true;
+        s_newCulture = s_shopVisited;
+    }
+    s_shopVisited = Culture::none;
 
     // Change culture
     if (s_changeCulture) {
@@ -846,11 +921,11 @@ void GameSystem::unequipWeapon() {
 
 void GameSystem::startWave() {
     SoundSystem::playSound("gong.mp3");
-    Player::restore();
     Wave::next();
 }
 
 void GameSystem::endWave() {
+    Player::restore();
     Shops::openAll();
 }
 
