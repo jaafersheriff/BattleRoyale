@@ -4,6 +4,8 @@
 
 #include "IO/Window.hpp"
 #include "System/RenderSystem.hpp"
+#include "Component/CameraComponents/CameraComponent.hpp"
+#include "Component/StatComponents/StatComponents.hpp"
 
 PostProcessShader::PostProcessShader(const String & vertName, const String & fragName) :
     Shader(vertName, fragName)
@@ -25,7 +27,9 @@ bool PostProcessShader::init() {
     addUniform("f_texCol");
     addUniform("f_bloomBlur");
 
-    tex_pizza = Loader::getTexture("Grey_Tex.png");
+    addUniform("lifePercentage");
+
+    tex_pizza = Loader::getTexture("GUI/Pizza_01.png");
 
     // Initialize frameSquarePos
     glm::vec2 frameSquarePos[4]{
@@ -85,6 +89,12 @@ void PostProcessShader::render(const CameraComponent * camera) {
     glUniform1i(getUniform("f_texCol"), 0);
     glUniform1i(getUniform("f_bloomBlur"), 1);
 
+    // Bloom shader does part of UI as well
+    // Get life percentage
+    HealthComponent *hc = camera->gameObject().getComponentByType<HealthComponent>();
+    float lifePercentage = (hc->value() - hc->minValue()) / (hc->maxValue() - hc->minValue());
+    loadFloat(getUniform("lifePercentage"), lifePercentage);
+
     // Draw
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
 
@@ -94,7 +104,10 @@ void PostProcessShader::render(const CameraComponent * camera) {
 
     glUniform1i(getUniform("v_operation"), 2);
 
-    loadVec2(getUniform("v_scale"), glm::vec2(.125f, .125f));
+    glm::ivec2 size = Window::getFrameSize();
+    float xScale = (float) size.y / (float) size.x;
+
+    loadVec2(getUniform("v_scale"), glm::vec2(.125f * xScale, .125f));
     loadVec2(getUniform("v_translate"), glm::vec2(.825f, .825f));
     loadFloat(getUniform("v_depth"), -.66f);
 
