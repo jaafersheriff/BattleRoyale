@@ -66,7 +66,44 @@ void GameSystem::Player::init() {
     handSpatial = &Scene::addComponent<SpatialComponent>(*gameObject, k_mainHandPosition, headSpatial);
 }
 
+//==============================================================================
+// WAVES
+const Vector<glm::vec3> GameSystem::Wave::k_spawnPoints = {
+    glm::vec3(  0.84, -0.54, -37.80),   // door mid 
+    glm::vec3( 12.70,  0.08,  11.77),   // door back right
+    glm::vec3(-12.08, -0.10,  11.80),   // door back left 
+    glm::vec3(-30.14,  5.55,   8.92),   // seating area back left
+    glm::vec3( 33.81,  5.28,   0.67),   // seating area back right
+    glm::vec3( 11.23,  5.21, -39.39),   // seating area mid back right
+    glm::vec3( -6.42,  5.31, -55.36),   // seating area mid front left 
+};
+int GameSystem::Wave::waveNumber = 1;
+float GameSystem::Wave::spawnTimer = 0.f;
+float GameSystem::Wave::spawnTimerMax = 1.f;
+int GameSystem::Wave::enemiesAlive = 0;
+int GameSystem::Wave::enemiesInWave = GameSystem::Wave::computeEnemiesInWave();
+float GameSystem::Wave::enemyHealth = GameSystem::Wave::computeEnemyHealth();
+float GameSystem::Wave::enemySpeed = GameSystem::Wave::computeEnemySpeed();
 
+/* Compute the number of enemies that will be in the current wave */
+int GameSystem::Wave::computeEnemiesInWave() {
+    return 10 + (int)glm::floor(30 * glm::log(waveNumber));
+}
+
+/* Return a random spawn point from the list above plus an offset */
+glm::vec3 GameSystem::Wave::randomSpawnPoint() {
+    return k_spawnPoints[Util::randomUInt(k_spawnPoints.size())] + glm::vec3(Util::random() * 3.f, 0.f, Util::random() * 3.f);
+}
+
+/* Compute the max health for enemies in the current wave */
+float GameSystem::Wave::computeEnemyHealth() {
+    return 100.f + glm::pow(waveNumber, 3.2f) / 15.f;
+}
+
+/* Compute the max speed for enemies in the current wave */
+float GameSystem::Wave::computeEnemySpeed() {
+    return glm::min(Player::k_moveSpeed * 0.95f, waveNumber / 2.f + 2);
+}
 
 //==============================================================================
 // ENEMIES
@@ -81,10 +118,10 @@ const glm::vec3 GameSystem::Enemies::Basic::k_headPosition = glm::vec3(0.0f, 1.0
 const bool GameSystem::Enemies::Basic::k_isToon = true;
 const glm::vec3 GameSystem::Enemies::Basic::k_scale = glm::vec3(0.75f);
 const unsigned int GameSystem::Enemies::Basic::k_weight = 5;
-const float GameSystem::Enemies::Basic::k_moveSpeed = 3.0f;
-const float GameSystem::Enemies::Basic::k_maxHP = 100.0f;
+const float GameSystem::Enemies::Basic::k_moveSpeed = 5.f;
+const float GameSystem::Enemies::Basic::k_maxHP = 100.f;
 
-void GameSystem::Enemies::Basic::create(const glm::vec3 & position) {
+void GameSystem::Enemies::Basic::create(const glm::vec3 & position, const float moveSpeed, const float health) {
     const Mesh * bodyMesh(Loader::getMesh(k_bodyMeshName));
     const Mesh * headMesh(Loader::getMesh(k_headMeshName));
     const Texture * texture(Loader::getTexture(k_textureName));
@@ -97,7 +134,7 @@ void GameSystem::Enemies::Basic::create(const glm::vec3 & position) {
     GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
     BounderComponent & bodyBoundComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *bodyMesh, false, false, true));
     BounderComponent & headBoundComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *headMesh, false, true, false, &headSpatComp));
-    PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *Player::gameObject, k_moveSpeed, false));
+    PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *Player::gameObject, moveSpeed, false));
     DiffuseRenderComponent & bodyRenderComp = Scene::addComponent<DiffuseRenderComponent>(
         obj,
         bodySpatComp,
@@ -116,7 +153,7 @@ void GameSystem::Enemies::Basic::create(const glm::vec3 & position) {
         glm::vec2(1.0f),
         false
     );
-    HealthComponent & healthComp(Scene::addComponent<HealthComponent>(obj, k_maxHP));
+    HealthComponent & healthComp(Scene::addComponent<HealthComponent>(obj, health));
     EnemyComponent & enemyComp(Scene::addComponentAs<BasicEnemyComponent, EnemyComponent>(obj));
 }
 
@@ -129,7 +166,7 @@ void GameSystem::Enemies::Basic::spawn() {
     auto pair(CollisionSystem::pickHeavy(Ray(Player::bodySpatial->position(), dir), UINT_MAX));
     Intersect & inter(pair.second);
     if (inter.dist > 20.0f) {
-        create(Player::bodySpatial->position() + dir * 20.0f);
+        create(Player::bodySpatial->position() + dir * 20.0f, k_moveSpeed, k_maxHP);
     }    
 }
 
@@ -141,7 +178,7 @@ void GameSystem::Enemies::enablePathfinding() {
         GameObject & enemy(comp->gameObject());
         PathfindingComponent * path(enemy.getComponentByType<PathfindingComponent>());
         if (!path) {
-            Scene::addComponent<PathfindingComponent>(enemy, *Player::gameObject, Basic::k_moveSpeed, false);
+            Scene::addComponent<PathfindingComponent>(enemy, *Player::gameObject, GameSystem::Enemies::Basic::k_moveSpeed, false);
         }
     }
 }
@@ -476,7 +513,6 @@ void GameSystem::init() {
     RenderSystem::s_bounderShader->setEnabled(false);
     RenderSystem::s_octreeShader->setEnabled(false);
     RenderSystem::s_rayShader->setEnabled(false);
-    //RenderSystem::s_shadowShader->setEnabled(false);
 
     // Water fountain
     GameObject & fountain(Scene::createGameObject());
@@ -535,6 +571,23 @@ void GameSystem::updateGame(float dt) {
     else if (s_unuseWeapon) {
         if (s_culture == Culture::asian) Weapons::SrirachaBottle::toggleForPlayer();
         s_unuseWeapon = false;
+    }
+
+    /* Increment the wave if all enemies from previous wave done spawning and dead */
+    Wave::enemiesAlive = s_enemyComponents.size();
+    if (!s_enemyComponents.size() && !Wave::enemiesInWave) {
+        Wave::waveNumber++;
+        Wave::enemiesInWave = Wave::computeEnemiesInWave(); 
+        Wave::enemySpeed = Wave::computeEnemySpeed();
+        Wave::enemyHealth = Wave::computeEnemyHealth();
+    }
+    /* Spawn enemy based on timer */
+    Wave::spawnTimer += dt;
+    if (Wave::spawnTimer > Wave::spawnTimerMax && Wave::Wave::enemiesInWave) {
+        Wave::spawnTimer = 0.f;
+        Wave::spawnTimerMax = Util::random() / 2.f;
+        Enemies::Basic::create(Wave::randomSpawnPoint(), Wave::enemySpeed, Wave::enemyHealth);
+        Wave::Wave::enemiesInWave--;
     }
 }
 
@@ -746,6 +799,19 @@ void GameSystem::setupImGui() {
             ImGui::Text("  Projectile: %d", Scene::getComponents<ProjectileComponent>().size());
         }
     );
+    
+    // Enemies/Waves
+    Scene::addComponent<ImGuiComponent>(
+        imguiGO, 
+        "Enemies",
+        [&]() {
+            ImGui::Text("Wave number: %d", Wave::waveNumber);
+            ImGui::Text("Enemies still spawning: %d", Wave::Wave::enemiesInWave);
+            ImGui::Text("Enemies alive: %d", Wave::enemiesAlive);
+            ImGui::Text("Enemy max health: %5.2f", Wave::enemyHealth);
+            ImGui::Text("Enemy max speed: %5.2f", Wave::enemySpeed);
+       }
+    );
 
     // Misc
     Scene::addComponent<ImGuiComponent>(
@@ -762,7 +828,7 @@ void GameSystem::setupImGui() {
             }
         }
     );
-    
+
     // Shadows 
     Scene::addComponent<ImGuiComponent>(
         imguiGO,
