@@ -210,7 +210,7 @@ float GameSystem::Wave::computeEnemyHealth() {
 // Wave 1: 20% player's sprint speed, Wave 2: 40%, Wave 5: 70%, Wave 10: 90%, Wave infinity: 100% 
 float GameSystem::Wave::computeEnemySpeed() {
     //return glm::min(Player::k_moveSpeed * 0.95f, waveNumber / 2.f + 2);
-    return (1.0f - glm::exp(-0.25 * float(waveNumber))) * Player::k_sprintSpeed;
+    return (1.0f - glm::exp(-0.25f * float(waveNumber))) * Player::k_sprintSpeed;
 }
 
 // Time between enemy spawns
@@ -587,7 +587,7 @@ void GameSystem::Freecam::init() {
 // MUSIC
 
 const String GameSystem::Music::k_defMusic = "bgRock1.mp3";
-const String GameSystem::Music::k_american = "bgAmericanFunky1_noIntro.mp3";
+const String GameSystem::Music::k_american = "bgRock1.mp3";
 const String GameSystem::Music::k_asian = "bgAsianStereotype1.mp3";
 const String GameSystem::Music::k_italian = "bgItalian2.mp3";
 

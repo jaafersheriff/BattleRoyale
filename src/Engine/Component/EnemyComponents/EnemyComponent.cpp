@@ -23,7 +23,7 @@ void EnemyComponent::init() {
 
 void EnemyComponent::update(float dt) {
     if (m_health->value() < 0.5f) {
-        SoundSystem::playSound3D("enemy_death.wav", this->gameObject().getSpatial()->position());
+        SoundSystem::playSound3D("Enemy_death.wav", this->gameObject().getSpatial()->position());
         Scene::destroyGameObject(this->gameObject());
     }
     glm::vec3 pos(m_body->position());
