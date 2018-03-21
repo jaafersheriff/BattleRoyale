@@ -19,11 +19,15 @@ class PostProcessShader : public Shader {
 
     virtual void render(const CameraComponent * camera) override;
 
+    void setScreenTone(const glm::vec3 & tone);
+
   private:
 
-    unsigned int s_vaoHandle;
-    unsigned int s_vboHandle;
-    unsigned int s_iboHandle;
+    unsigned int m_vaoHandle;
+    unsigned int m_vboHandle;
+    unsigned int m_iboHandle;
+
+    glm::vec3 m_screenTone;
 
     // UI textures
     Texture *tex_pizza;

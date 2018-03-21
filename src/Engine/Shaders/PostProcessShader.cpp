@@ -6,9 +6,14 @@
 #include "System/RenderSystem.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 #include "Component/StatComponents/StatComponents.hpp"
+#include "System/GameInterface.hpp"
 
 PostProcessShader::PostProcessShader(const String & vertName, const String & fragName) :
-    Shader(vertName, fragName)
+    Shader(vertName, fragName),
+    m_vaoHandle(0),
+    m_vboHandle(0),
+    m_iboHandle(0),
+    m_screenTone(1.0f)
 {}
 
 bool PostProcessShader::init() {
@@ -28,6 +33,9 @@ bool PostProcessShader::init() {
     addUniform("f_bloomBlur");
 
     addUniform("lifePercentage");
+    addUniform("ammoPercentage");
+
+    addUniform("screenTone");
 
     tex_pizza = Loader::getTexture("GUI/Pizza_01.png");
 
@@ -39,12 +47,12 @@ bool PostProcessShader::init() {
         glm::vec2(-1.f, -1.f)
     };
 
-    glGenVertexArrays(1, &s_vaoHandle);
-    glBindVertexArray(s_vaoHandle);
+    glGenVertexArrays(1, &m_vaoHandle);
+    glBindVertexArray(m_vaoHandle);
 
     // Give frameSquarePos to the GPU
-    glGenBuffers(1, &s_vboHandle);
-    glBindBuffer(GL_ARRAY_BUFFER, s_vboHandle);
+    glGenBuffers(1, &m_vboHandle);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vboHandle);
     glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(glm::vec2), frameSquarePos, GL_STATIC_DRAW);
 
     // Initialize frameSquareElem;
@@ -54,8 +62,8 @@ bool PostProcessShader::init() {
     };
 
     // Give frameSquareElem to the GPU
-    glGenBuffers(1, &s_iboHandle);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_iboHandle);
+    glGenBuffers(1, &m_iboHandle);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboHandle);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), frameSquareElem, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(getAttribute("v_vPos"));
@@ -72,7 +80,7 @@ bool PostProcessShader::init() {
 void PostProcessShader::render(const CameraComponent * camera) {
     bind();
 
-    glBindVertexArray(s_vaoHandle);
+    glBindVertexArray(m_vaoHandle);
 
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
@@ -89,15 +97,26 @@ void PostProcessShader::render(const CameraComponent * camera) {
     glUniform1i(getUniform("f_texCol"), 0);
     glUniform1i(getUniform("f_bloomBlur"), 1);
 
+    loadVec3(getUniform("screenTone"), m_screenTone);
+
     // Bloom shader does part of UI as well
     // Get life percentage
-    HealthComponent *hc = camera->gameObject().getComponentByType<HealthComponent>();
-    float lifePercentage = (hc->value() - hc->minValue()) / (hc->maxValue() - hc->minValue());
+    HealthComponent * hc = GameInterface::getPlayer().getComponentByType<HealthComponent>();
+    float lifePercentage;
+    if (hc) lifePercentage = (hc->value() - hc->minValue()) / (hc->maxValue() - hc->minValue());
+    else lifePercentage = 0.0f;
     loadFloat(getUniform("lifePercentage"), lifePercentage);
+
+    AmmoComponent * ac = GameInterface::getPlayer().getComponentByType<AmmoComponent>();
+    float ammoPercentage;
+    if (ac) ammoPercentage = (ac->value() - ac->minValue()) / (ac->maxValue() - ac->minValue());
+    else ammoPercentage = 0.0f;
+    loadFloat(getUniform("ammoPercentage"), ammoPercentage);
 
     // Draw
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
 
+    /* Pizza texture
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex_pizza->textureId);
@@ -113,6 +132,7 @@ void PostProcessShader::render(const CameraComponent * camera) {
 
     // Draw
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
+    */
 
     glBindVertexArray(0);
     
@@ -123,4 +143,8 @@ void PostProcessShader::render(const CameraComponent * camera) {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     unbind();
+}
+
+void PostProcessShader::setScreenTone(const glm::vec3 & tone) {
+    m_screenTone = tone;
 }

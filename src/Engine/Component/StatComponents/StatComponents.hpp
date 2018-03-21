@@ -63,3 +63,17 @@ class HealthComponent : public StatComponent<float> {
     {}
 
 };
+
+
+
+class AmmoComponent : public StatComponent<float> {
+
+    friend Scene;
+
+    protected:
+
+    AmmoComponent(GameObject & gameObject, float maxAmmo) :
+        StatComponent<float>(gameObject, 0.0f, maxAmmo, maxAmmo)
+    {}
+
+};
