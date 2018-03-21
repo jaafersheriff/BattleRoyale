@@ -509,11 +509,6 @@ void GameSystem::init() {
     // Setup ImGui
     setupImGui();
 
-    // Disable certain shaders
-    RenderSystem::s_bounderShader->setEnabled(false);
-    RenderSystem::s_octreeShader->setEnabled(false);
-    RenderSystem::s_rayShader->setEnabled(false);
-
     // Water fountain
     GameObject & fountain(Scene::createGameObject());
     SpatialComponent & fountainSpat(Scene::addComponent<SpatialComponent>(fountain, glm::vec3(1.0f, 7.6f, -51.0f)));
@@ -826,6 +821,7 @@ void GameSystem::setupImGui() {
             if (ImGui::Button("Turn off Path finding")) {
                 Enemies::disablePathfinding();
             }
+            ImGui::SliderFloat2("Health Size", glm::value_ptr(RenderSystem::s_healthShader->m_size), 0.f, 1.f);
         }
     );
 
