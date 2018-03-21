@@ -13,12 +13,7 @@ extern "C" {
 #include "glm/gtx/transform.hpp"
 
 #include "EngineApp/EngineApp.hpp"
-
-
-
-namespace {
-
-
+#include "Scene/Scene.hpp"
 
 void printUsage() {
     std::cout << "Valid arguments: " << std::endl;
@@ -32,6 +27,9 @@ void printUsage() {
 
     std::cout << "\t-n <application_name>" << std::endl;
     std::cout << "\t\tSet the application name" << std::endl;
+
+    std::cout << "\t-m <file_name>" << std::endl;
+    std::cout << "\t\tCreate graph representation of the map, filename of said graph" << std::endl;
 }
 
 int parseArgs(int argc, char **argv) {
@@ -62,19 +60,24 @@ int parseArgs(int argc, char **argv) {
             }
             EngineApp::APP_NAME = argv[i + 1];
         }
+
+        /* Create graph of map for pathfinding */
+        if (!strcmp(argv[i], "-m")) {
+            if (i + 1 >= argc) {
+                printUsage();
+                return 1;
+            }
+            Scene::mapFilename = argv[i + 1];
+            Scene::mapping = true;
+        }
     }
     return 0;
 }
 
-
-
-}
-
-
-
 int main(int argc, char **argv) {
     if (parseArgs(argc, argv) || EngineApp::init()) {
         std::cin.get(); // don't immediately close the console
+
         return EXIT_FAILURE; 
     }
 

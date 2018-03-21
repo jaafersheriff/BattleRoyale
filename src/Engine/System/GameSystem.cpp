@@ -91,7 +91,7 @@ const float GameSystem::Enemies::Basic::k_moveSpeed = 5.0f;
 const float GameSystem::Enemies::Basic::k_maxHP = 100.0f;
 const float GameSystem::Enemies::Basic::k_meleeDamage = 15.0f;
 
-void GameSystem::Enemies::Basic::create(const glm::vec3 & position, const float moveSpeed, const float health) {
+void GameSystem::Enemies::Basic::create(const glm::vec3 & position, const float moveSpeed, const float health, bool mapping) {
     const Mesh * bodyMesh(Loader::getMesh(k_bodyMeshName));
     const Mesh * headMesh(Loader::getMesh(k_headMeshName));
     const Texture * texture(Loader::getTexture(k_textureName));
@@ -101,10 +101,14 @@ void GameSystem::Enemies::Basic::create(const glm::vec3 & position, const float 
     SpatialComponent & bodySpatComp(Scene::addComponent<SpatialComponent>(obj, position, k_scale));
     SpatialComponent & headSpatComp(Scene::addComponent<SpatialComponent>(obj, k_headPosition, &bodySpatComp));
     NewtonianComponent & newtComp(Scene::addComponent<NewtonianComponent>(obj, false));
-    GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
     BounderComponent & bodyBoundComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *bodyMesh, false, false, true));
     BounderComponent & headBoundComp(CollisionSystem::addBounderFromMesh(obj, k_weight, *headMesh, false, true, false, &headSpatComp));
-    PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *Player::gameObject, moveSpeed, false));
+    if (mapping)
+        MapExploreComponent & mapComp(Scene::addComponent<MapExploreComponent>(obj, 0.0f, Scene::mapFilename));
+    else {
+        PathfindingComponent & pathComp(Scene::addComponent<PathfindingComponent>(obj, *Player::gameObject, k_moveSpeed));
+        GravityComponent & gravComp(Scene::addComponentAs<GravityComponent, AcceleratorComponent>(obj));
+    }
     DiffuseRenderComponent & bodyRenderComp = Scene::addComponent<DiffuseRenderComponent>(
         obj,
         bodySpatComp,
@@ -154,7 +158,7 @@ void GameSystem::Enemies::enablePathfinding() {
         GameObject & enemy(comp->gameObject());
         PathfindingComponent * path(enemy.getComponentByType<PathfindingComponent>());
         if (!path) {
-            Scene::addComponent<PathfindingComponent>(enemy, *Player::gameObject, GameSystem::Enemies::Basic::k_moveSpeed, false);
+            Scene::addComponent<PathfindingComponent>(enemy, *Player::gameObject, Basic::k_moveSpeed);
         }
     }
 }
@@ -822,6 +826,9 @@ void GameSystem::init() {
     fountainSpat.setRelativeUVW(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f), true);
     ParticleSystem::addWaterFountainPC(fountainSpat);
     SoundSystem::playSound3D("water_fountain.wav", fountainSpat.position(), true);
+
+    if (Scene::mapping) 
+        Enemies::Basic::create(glm::vec3(0, -1.5, 20), 5.0, 100, true);
 
 }
 

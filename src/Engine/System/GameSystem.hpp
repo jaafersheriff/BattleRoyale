@@ -93,7 +93,7 @@ class GameSystem {
             static const float k_maxHP;
             static const float k_meleeDamage;
 
-            static void create(const glm::vec3 & position, const float speed, const float hp);
+            static void create(const glm::vec3 & position, const float speed, const float hp, bool mapping=false);
 
             static void spawn();
 
