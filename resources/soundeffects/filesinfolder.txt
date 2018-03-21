@@ -17,6 +17,7 @@ burp3.wav
 burp4.wav
 burp5.mp3
 button_press.wav
+cash_register.mp3
 doorbump.wav
 door_bump.wav
 drill.wav
