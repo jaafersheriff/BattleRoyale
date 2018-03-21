@@ -6,7 +6,9 @@ in vec3 fragNor;
 in vec2 texCoords;
 
 uniform sampler2D shadowMap;
+uniform float shadowMapSize;
 uniform float shadowAmbience;
+uniform int pcfCount;
 
 uniform float ambience;
 uniform vec3 matDiffuse;
@@ -27,7 +29,7 @@ uniform sampler1D cellIntensities;
 uniform sampler1D cellDiffuseScales;
 uniform sampler1D cellSpecularScales;
 
-layout(location = 0) out vec4 color;
+layout (location = 0) out vec4 color;
 layout (location = 1) out vec4 BrightColor;
 
 void main() {
@@ -71,9 +73,20 @@ void main() {
     /* Base color + shadow */
     vec4 shadowCoords = fragLPos * 0.5 + 0.5;
     float visibility = 1.0;
-    if (shadowCoords.x >= 0.0 && shadowCoords.x <= 1.0 && shadowCoords.y >= 0.0 && shadowCoords.y <= 1.0 && 
-            shadowCoords.z > texture(shadowMap, shadowCoords.xy).r + 0.005) {
-        visibility -= (shadowCoords.w * (1.0 - shadowAmbience));
+    if (shadowCoords.x >= 0.0 && shadowCoords.x <= 1.0 && shadowCoords.y >= 0.0 && shadowCoords.y <= 1.0) {
+        float texelSize = 1.0 / shadowMapSize;
+        float totalTexels = pcfCount * 2 + 1;
+        float total = 0.0;
+        for (int x = -pcfCount; x <= pcfCount; x++) {
+            for (int y = -pcfCount; y <= pcfCount; y++) {
+                float lightFrag = texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r;
+                if (shadowCoords.z > lightFrag + 0.005) {
+                    total += 1.0;
+                }
+            }
+        }
+        total /= totalTexels;
+        visibility -= (total * shadowCoords.w * (1 - shadowAmbience));
     }
 
     color.rgb = (ambience + (matDiffuse * diffuseContrib + matSpecular * specularContrib) * visibility) * diffuseColor;

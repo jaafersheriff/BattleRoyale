@@ -51,10 +51,11 @@ public:
     static float lightOffset;
     static float shadowAmbience;
     static float transitionDistance;
+    static int pcfCount;
 
     /* Shadows */
     static const glm::mat4 & getL() { return s_shadowShader->getL(); }
-    static const GLuint getShadowMap() { return s_shadowShader->getShadowMapTexture(); }
+    static const Texture * getShadowMap() { return s_shadowShader->getShadowMapTexture(); }
 
     /* Shaders */
     static UniquePtr<DiffuseShader> s_diffuseShader;
