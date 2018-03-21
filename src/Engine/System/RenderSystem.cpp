@@ -93,9 +93,9 @@ void RenderSystem::init() {
     s_healthShader->init();
 
     // Disable certain shaders
-    RenderSystem::s_bounderShader->setEnabled(false);
-    RenderSystem::s_octreeShader->setEnabled(false);
-    RenderSystem::s_rayShader->setEnabled(false);
+    s_bounderShader->setEnabled(false);
+    s_octreeShader->setEnabled(false);
+    s_rayShader->setEnabled(false);
 
     /* Init FBO */
     initFBO();
