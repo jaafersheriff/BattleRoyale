@@ -435,7 +435,7 @@ bool GameSystem::Music::s_playing = false;
 void GameSystem::Music::start() {
     SoundSystem::setBackgroundMusic(k_defMusic, true);
     SoundSystem::playBackgroundMusic();
-    SoundSystem::setBackgroundMusicVolume(0.05f);
+    SoundSystem::setBackgroundMusicVolume(0.1f);
     s_playing = true;
 }
 
