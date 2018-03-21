@@ -35,7 +35,7 @@ void PlayerComponent::update(float dt) {
     m_damaged = false;
 
     // passive heal, 10% per second
-    m_health->changeValue(m_health->maxValue() * 0.1f * dt);
+    //m_health->changeValue(m_health->maxValue() * 0.1f * dt);
 }
 
 void PlayerComponent::damage(float damage) {

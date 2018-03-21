@@ -79,11 +79,7 @@ void PathfindingComponent::update(float dt) {
         updatePath = false;
     }
     else {
-        if (pathCount++ > 500) {
-            updatePath = true;
-            pathCount = 0;
-        }
-        else if (glm::length2(*pathIT - pos) < 1.0f) {
+        if (glm::length2(*pathIT - pos) < 1.0f) {
             if (std::next(pathIT) == path.end()) {
                 updatePath = true;
                 pathCount = 0;

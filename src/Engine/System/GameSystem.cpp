@@ -186,6 +186,8 @@ const Vector<glm::vec3> GameSystem::Wave::k_spawnPoints = {
     glm::vec3( 33.81,  5.28,   0.67),   // seating area back right
     glm::vec3( 11.23,  5.21, -39.39),   // seating area mid back right
     glm::vec3( -6.42,  5.31, -55.36),   // seating area mid front left 
+    glm::vec3(13.74, -0.63, -178.98),
+    glm::vec3(-9.28, -0.71, -178.93),
 };
 int GameSystem::Wave::waveNumber = 0;
 float GameSystem::Wave::spawnPeriod = 0.0f;

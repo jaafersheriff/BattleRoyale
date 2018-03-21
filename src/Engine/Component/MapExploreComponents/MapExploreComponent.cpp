@@ -341,7 +341,7 @@ Vector<glm::vec3> MapExploreComponent::gridFind(std::unordered_set<glm::vec3, Pa
 void MapExploreComponent::writeToFile(PathfindingSystem::vecvectorMap &graph) {
 	std::ofstream outFile;
 
-	outFile.open(filename);
+	outFile.open(convert(filename));
 
 	if (outFile) {
 		for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
