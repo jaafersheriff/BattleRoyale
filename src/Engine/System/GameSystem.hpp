@@ -216,6 +216,7 @@ class GameSystem {
         struct American {
 
             static BounderComponent * bounder;
+            static SpatialComponent * spatial;
             static bool isOpen;
 
             static void init();
@@ -229,6 +230,7 @@ class GameSystem {
         struct Asian {
 
             static BounderComponent * bounder;
+            static SpatialComponent * spatial;
             static bool isOpen;
 
             static void init();
@@ -242,6 +244,7 @@ class GameSystem {
         struct Italian {
 
             static BounderComponent * bounder;
+            static SpatialComponent * spatial;
             static bool isOpen;
 
             static void init();
