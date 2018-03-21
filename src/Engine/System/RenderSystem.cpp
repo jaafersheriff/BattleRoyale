@@ -40,6 +40,7 @@ UniquePtr<RayShader> RenderSystem::s_rayShader;
 UniquePtr<OctreeShader> RenderSystem::s_octreeShader;
 UniquePtr<PostProcessShader> RenderSystem::s_postProcessShader;
 UniquePtr<BlurShader> RenderSystem::s_blurShader;
+UniquePtr<HealthShader> RenderSystem::s_healthShader;
  
 
 void RenderSystem::init() {
@@ -76,7 +77,8 @@ void RenderSystem::init() {
         !(        s_rayShader = UniquePtr<        RayShader>::make(        "ray_vert.glsl",         "ray_frag.glsl")) ||
         !(s_postProcessShader = UniquePtr<PostProcessShader>::make("postprocess_vert.glsl", "postprocess_frag.glsl")) ||
         !(     s_shadowShader = UniquePtr<ShadowDepthShader>::make(     "shadow_vert.glsl",      "shadow_frag.glsl")) ||
-        !(       s_blurShader = UniquePtr<       BlurShader>::make(       "pass_vert.glsl",        "blur_frag.glsl"))
+        !(       s_blurShader = UniquePtr<       BlurShader>::make(       "pass_vert.glsl",        "blur_frag.glsl")) ||
+        !(     s_healthShader = UniquePtr<     HealthShader>::make(     "health_vert.glsl",      "health_frag.glsl"))
     ) {
         std::cin.get();
         std::exit(EXIT_FAILURE);
@@ -88,6 +90,12 @@ void RenderSystem::init() {
     s_postProcessShader->init();
     s_shadowShader->init();
     s_blurShader->init();
+    s_healthShader->init();
+
+    // Disable certain shaders
+    s_bounderShader->setEnabled(false);
+    s_octreeShader->setEnabled(false);
+    s_rayShader->setEnabled(false);
 
     /* Init FBO */
     initFBO();
@@ -134,6 +142,7 @@ void RenderSystem::update(float dt) {
     s_bounderShader->render(s_playerCamera);
     s_octreeShader->render(s_playerCamera);
     s_rayShader->render(s_playerCamera);
+    s_healthShader->render(s_playerCamera);
 
     /* Rebind screen FBO */
     if (s_postProcessShader->isEnabled()) {
