@@ -16,15 +16,16 @@ burp3.wav
 burp4.wav
 burp5.mp3
 button_press.wav
+cash_register.mp3
 doorbump.wav
 door_bump.wav
 drill.wav
-Enemy_death.wav
+enemy_death.wav
 filesinfolder.txt
 footstep.wav
 gameover1.mp3
 gameover2.wav
-gong.wav
+gong.mp3
 grunt1.wav
 grunt2.mp3
 grunt3.wav
@@ -41,5 +42,5 @@ splash3.wav
 splash4.wav
 sword_slash.wav
 victory.wav
-waterFountain.wav
+water_fountain.wav
 woosh.mp3
