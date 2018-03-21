@@ -17,6 +17,7 @@
 #include "Shaders/PostProcessShader.hpp"
 #include "Shaders/ShadowDepthShader.hpp"
 #include "Shaders/BlurShader.hpp"
+#include "Shaders/HealthShader.hpp"
 
 
 
@@ -63,6 +64,7 @@ public:
     static UniquePtr<OctreeShader> s_octreeShader;
     static UniquePtr<PostProcessShader> s_postProcessShader;
     static UniquePtr<BlurShader> s_blurShader;
+    static UniquePtr<HealthShader> s_healthShader;
 
     /* FBO Stuff */
     static GLuint getFBOTexture() { return s_fboColorTexs[0]; }
