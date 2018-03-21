@@ -25,9 +25,8 @@ void MapExploreComponent::init() {
 
     visitedSet = std::unordered_set<glm::vec3, PathfindingSystem::vecHash, PathfindingSystem::gridCompare>();
     graphSet = std::unordered_set<glm::vec3, PathfindingSystem::vecHash, PathfindingSystem::gridCompare>();
-    //visitedSet = Vector<glm::vec3>();
+
     pos_queue = std::queue<glm::vec3>();
-    //curPos = m_spatial->position();
     //std::cout << "curPos: " << curPos.x << ", " << curPos.y << ", " << curPos.z << std::endl;
 
     //auto pair(CollisionSystem::pick(Ray(curPos, glm::vec3(0,-1,0)), &gameObject()));
@@ -107,9 +106,7 @@ void MapExploreComponent::update(float dt) {
 		// Second floor height pass
 		if (secondFloorPass) {
 			for (int zIndex = 0; zIndex < secondFloorDepth; zIndex += stepSize) {
-			//if (zIndex < secondFloorDepth) {
 				for (int xIndex = 0; xIndex < secondFloorWidth; xIndex += stepSize) {
-				//if (xIndex < secondFloorWidth) {
 					xPos = xIndex + secondFloorStart_x;
 					zPos = zIndex + secondFloorStart_z;
 
@@ -125,25 +122,17 @@ void MapExploreComponent::update(float dt) {
 						}
 					}
 				}
-				// else {
-				// 	xIndex = 0;
-				// 	zIndex++;
-				// }
+
 			}
-			//else {
-				std::cout << "Second Floor Done: " << visitedSet.size() << std::endl;
-				secondFloorPass = false;
-				firstFloorPass = true;
-				//zIndex = 0;
-				//xIndex = 0;
-			//}
+			std::cout << "Second Floor Done: " << visitedSet.size() << std::endl;
+			secondFloorPass = false;
+			firstFloorPass = true;
+
 		}
 		// First floor height pass
 		else if (firstFloorPass) {
 			for (int zIndex = 0; zIndex < firstFloorDepth; zIndex += stepSize) {
-			//if (zIndex < firstFloorDepth) {
 				for (int xIndex = 0; xIndex < firstFloorWidth; xIndex += stepSize) {
-				//if (xIndex < firstFloorWidth) {
 					xPos = xIndex + firstFloorStart_x;
 					zPos = zIndex + firstFloorStart_z;
 
@@ -157,19 +146,13 @@ void MapExploreComponent::update(float dt) {
 						}
 					}
 				}
-				// else {
-				// 	xIndex = 0;
-				// 	zIndex++;
-				// }
 			}
-			//else {
-				std::cout << "First Floor Done: " << visitedSet.size() << std::endl;
-				firstFloorPass = false;
-				//collisionCheck = true;
-				findNeighbors = true;
-				visitIterator = visitedSet.begin();
-				graphSet = visitedSet;
-			//}
+			std::cout << "First Floor Done: " << visitedSet.size() << std::endl;
+			firstFloorPass = false;
+			//collisionCheck = true;
+			findNeighbors = true;
+			visitIterator = visitedSet.begin();
+			graphSet = visitedSet;
 		}
 		// else if (collisionCheck) {
 		// 	if (visitIterator != visitedSet.end()) {
@@ -230,15 +213,19 @@ void MapExploreComponent::update(float dt) {
 				}
 
 				// Don't add nodes which aren't connected
-				if (neighbors.size() == 8)
+				if (neighbors.size() > 4)
 					graph.emplace(curPos, neighbors);
 			}
 
 			std::cout << "Find Neighbors Done: " << graph.size() << std::endl;
 
 			 for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
-			 	if (iter->second.size() == 8)
+			 	if (iter->second.size()) {
 			 		drawCup(iter->first);
+			 	}
+			 	else {
+			 		std::cout << "why were you added" << std::endl;
+			 	}
 			 }
 // int loopCount = 0;
 		PathfindingSystem::vecvecMap cameFrom = PathfindingSystem::vecvecMap();
@@ -322,26 +309,12 @@ bool MapExploreComponent::removeOutliers(std::unordered_set<glm::vec3, Pathfindi
 // Checks if there is something between the two points and if they are close enough
 bool MapExploreComponent::validNeighbor(glm::vec3 curPos, glm::vec3 candidate, float stepSize) {
 	glm::vec3 direction = Util::safeNorm(curPos - candidate);
-	//float maxDist = 1.7;
-/*
-	auto pair(CollisionSystem::pick(Ray(curPos, direction), &gameObject()));
-	if (pair.second.is) {
-		if (pair.second.dist > glm::distance(curPos, candidate)) {
-			// must be close or it is a drop
-			if (glm::distance(curPos, candidate) < maxDist || curPos.y > candidate.y) 
-				return true;
-		}
-	}
-	else if (glm::distance(curPos, candidate) < maxDist) {
-		return true;
-	}
-	*/
 
 	// Check that it is a neighbor on the grid
 	stepSize += .2;
 	if (abs(curPos.x - candidate.x) < stepSize && abs(curPos.z - candidate.z) < stepSize) {
 		// if step up or drop down
-		if (candidate.y - curPos.y < .8f) {//} || curPos.y > candidate.y) {
+		if (candidate.y - curPos.y < .4f) {//} || curPos.y > candidate.y) {
 			return true;
 		}
 	}

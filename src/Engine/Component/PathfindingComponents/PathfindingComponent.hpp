@@ -12,7 +12,6 @@
 
 
 class BounderComponent;
-//class PathfindingSystem;
 
 struct Node {
 	glm::vec3 position;
@@ -42,7 +41,6 @@ class PathfindingComponent : public Component {
     protected: // only scene or friends can create component
 
     PathfindingComponent(GameObject & gameObject, GameObject & player, float ms);
-    //PathfindingComponent(GameObject & gameObject, GameObject & player, float ms, bool wander);
 
     public:
 
@@ -79,37 +77,12 @@ class PathfindingComponent : public Component {
     const BounderComponent * m_bounder;
     float m_moveSpeed;
 
-    //glm::vec3 m_groundNorm;
-    //glm::vec3 m_potentialGroundNorm;
-
-    //glm::vec3 curPos;
-    //glm::vec3 searchFromPos;
-    //bool nonGroundCollision;
-    //bool writeOut;
-
-    //int slowTime;
-    //int dirIndex;
-    //int yIndex; 
-    //int *checkedDirections;
-
-    //glm::vec3 prevMove;
-    //std::queue<glm::vec3> pos_queue;
-    //std::unordered_set<glm::vec3, vecHash, gridCompare> visitedSet;
-    //Vector<glm::vec3> visitedSet;
     bool updatePath;
     int pathCount;
     bool noPath = false;
 
-    //vecvectorMap graph;
-    //std::unordered_map<glm::vec3, Node, vecHash, gridCompare> vecToNode;
     PathfindingSystem::vecvecMap cameFrom;
     Vector<glm::vec3> path;
     std::vector<glm::vec3>::iterator pathIT;
 
-    //Vector<glm::vec3> validNeighbors;
-
-    //bool m_wander;
-    //glm::vec3 m_wanderCurrent;
-    //float m_wanderCurrentWeight;
-    //float m_wanderWeight;
 };

@@ -596,6 +596,9 @@ void GameSystem::init() {
     ParticleSystem::addWaterFountainPC(fountainSpat);
     SoundSystem::playSound3D("water_fountain.wav", fountainSpat.position(), true);
 
+    if (Scene::mapping) 
+        Enemies::Basic::create(glm::vec3(0, -1.5, 20), 5.0, 100, true);
+
 }
 
 void GameSystem::update(float dt) {
