@@ -40,9 +40,10 @@ void BulletComponent::init() {
             // If collided with something with health that's not the host, detonate
             HealthComponent * health;
             bool destroy(false);
-            if ((health = msg.bounder2.gameObject().getComponentByType<HealthComponent>()) && &msg.bounder2.gameObject() != m_host) {
+            if ((health = msg.bounder2.gameObject().getComponentByType<HealthComponent>()) && &msg.bounder2.gameObject() != m_host && !m_alreadyCollided) {
                 health->changeValue(-m_damage);
                 destroy = true;
+                m_alreadyCollided = true;
             }
             // If collided with static geometry, destroy bullet
             if (msg.bounder2.weight() == UINT_MAX) {
@@ -55,6 +56,10 @@ void BulletComponent::init() {
         }
     });
     Scene::addReceiver<CollisionMessage>(&gameObject(), collisionCallback);
+}
+
+void BulletComponent::update(float dt) {
+    m_alreadyCollided = false;
 }
 
 

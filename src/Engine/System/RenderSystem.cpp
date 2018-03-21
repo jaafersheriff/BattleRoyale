@@ -67,7 +67,7 @@ void RenderSystem::init() {
     glm::vec3 u = glm::normalize(glm::cross(w, glm::vec3(0.f, 1.f, 0.f)));
     glm::vec3 v = glm::normalize(glm::cross(u, w));
     s_lightSpatial = &Scene::addComponent<SpatialComponent>(*s_lightObject, glm::vec3(-27.26, 5.5, -50), glm::vec3(2.f), glm::mat3(u, v, w));
-    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, glm::vec2(-115.f, 118.f), glm::vec2(-42.f, 234.f), 42.f, 156.f);
+    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, glm::vec2(-115.f, 118.f), glm::vec2(-42.f, 234.f), -40.f, 156.f);
     //Scene::addComponent<DiffuseRenderComponent>(*s_lightObject, *s_lightSpatial, *Loader::getMesh("cube.obj"), ModelTexture(Material(glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 1.f), 16.f)), true, glm::vec2(1, 1));
 
     /* Init shaders */

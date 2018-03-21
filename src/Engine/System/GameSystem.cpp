@@ -114,7 +114,7 @@ float GameSystem::Wave::computeEnemySpeed() {
 const String GameSystem::Enemies::Basic::k_bodyMeshName = "characters/Enemy_Torso.obj";
 const String GameSystem::Enemies::Basic::k_headMeshName = "characters/Enemy_Head.obj";
 const String GameSystem::Enemies::Basic::k_textureName = "characters/Enemy_Tex.png";
-const glm::vec3 GameSystem::Enemies::Basic::k_headPosition = glm::vec3(0.0f, 1.0f, 0.0f);
+const glm::vec3 GameSystem::Enemies::Basic::k_headPosition = glm::vec3(0.0f, 0.8f, 0.0f);
 const bool GameSystem::Enemies::Basic::k_isToon = true;
 const glm::vec3 GameSystem::Enemies::Basic::k_scale = glm::vec3(0.75f);
 const unsigned int GameSystem::Enemies::Basic::k_weight = 5;
