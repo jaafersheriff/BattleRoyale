@@ -6,6 +6,7 @@
 #include "System/RenderSystem.hpp"
 #include "Component/CameraComponents/CameraComponent.hpp"
 #include "Component/StatComponents/StatComponents.hpp"
+#include "System/GameInterface.hpp"
 
 PostProcessShader::PostProcessShader(const String & vertName, const String & fragName) :
     Shader(vertName, fragName)
@@ -28,6 +29,7 @@ bool PostProcessShader::init() {
     addUniform("f_bloomBlur");
 
     addUniform("lifePercentage");
+    addUniform("ammoPercentage");
 
     tex_pizza = Loader::getTexture("GUI/Pizza_01.png");
 
@@ -91,9 +93,17 @@ void PostProcessShader::render(const CameraComponent * camera) {
 
     // Bloom shader does part of UI as well
     // Get life percentage
-    HealthComponent *hc = camera->gameObject().getComponentByType<HealthComponent>();
-    float lifePercentage = (hc->value() - hc->minValue()) / (hc->maxValue() - hc->minValue());
+    HealthComponent * hc = GameInterface::getPlayer().getComponentByType<HealthComponent>();
+    float lifePercentage;
+    if (hc) lifePercentage = (hc->value() - hc->minValue()) / (hc->maxValue() - hc->minValue());
+    else lifePercentage = 0.0f;
     loadFloat(getUniform("lifePercentage"), lifePercentage);
+
+    AmmoComponent * ac = GameInterface::getPlayer().getComponentByType<AmmoComponent>();
+    float ammoPercentage;
+    if (ac) ammoPercentage = (ac->value() - ac->minValue()) / (ac->maxValue() - ac->minValue());
+    else ammoPercentage = 0.0f;
+    loadFloat(getUniform("ammoPercentage"), ammoPercentage);
 
     // Draw
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);

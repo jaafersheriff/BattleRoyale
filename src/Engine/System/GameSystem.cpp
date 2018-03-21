@@ -47,6 +47,7 @@ CameraComponent * GameSystem::Player::camera = nullptr;
 PlayerControllerComponent * GameSystem::Player::controller = nullptr;
 PlayerComponent * GameSystem::Player::playerComp = nullptr;
 HealthComponent * GameSystem::Player::health = nullptr;
+AmmoComponent * GameSystem::Player::ammo = nullptr;
 SpatialComponent * GameSystem::Player::handSpatial = nullptr;
 DiffuseRenderComponent * GameSystem::Player::handDiffuse = nullptr;
 
@@ -265,6 +266,7 @@ const glm::vec3 GameSystem::Weapons::PizzaSlice::k_scale = glm::vec3(1.0f);
 const unsigned int GameSystem::Weapons::PizzaSlice::k_weight = 0;
 const float GameSystem::Weapons::PizzaSlice::k_speed = 30.0f; 
 const float GameSystem::Weapons::PizzaSlice::k_damage = 50.0f;
+const int GameSystem::Weapons::PizzaSlice::k_ammo = 30;
 
 GameObject * GameSystem::Weapons::PizzaSlice::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel, const glm::quat & orient) {
     const Mesh * mesh(Loader::getMesh(k_meshName));
@@ -298,8 +300,6 @@ GameObject * GameSystem::Weapons::PizzaSlice::fireFromPlayer() {
 }
 
 void GameSystem::Weapons::PizzaSlice::equip() {
-    if (Player::handDiffuse) Scene::removeComponent(*Player::handDiffuse);
-
     const Mesh * mesh(Loader::getMesh("weapons/Pizza_Slice.obj"));
     const Texture * tex(Loader::getTexture("weapons/Pizza_Tex.png"));
     ModelTexture modelTex(tex);
@@ -311,12 +311,17 @@ void GameSystem::Weapons::PizzaSlice::equip() {
         glm::vec2(1.0f),
         false   
     );
+    Player::ammo = &Scene::addComponent<AmmoComponent>(*Player::gameObject, float(k_ammo));
 }
 
 void GameSystem::Weapons::PizzaSlice::unequip() {
     if (Player::handDiffuse) {
         Scene::removeComponent(*Player::handDiffuse);
         Player::handDiffuse = nullptr;
+    }
+    if (Player::ammo) {
+        Scene::removeComponent(*Player::ammo);
+        Player::ammo = nullptr;
     }
 }
 
@@ -331,6 +336,7 @@ const unsigned int GameSystem::Weapons::SodaGrenade::k_weight = 1;
 const float GameSystem::Weapons::SodaGrenade::k_speed = 20.0f; 
 const float GameSystem::Weapons::SodaGrenade::k_damage = 50.0f;
 const float GameSystem::Weapons::SodaGrenade::k_radius = 5.0f;
+const int GameSystem::Weapons::SodaGrenade::k_ammo = 15;
 
 GameObject * GameSystem::Weapons::SodaGrenade::fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel) {
     const Mesh * mesh(Loader::getMesh(k_meshName));
@@ -365,8 +371,6 @@ GameObject * GameSystem::Weapons::SodaGrenade::fireFromPlayer() {
 }
 
 void GameSystem::Weapons::SodaGrenade::equip() {
-    if (Player::handDiffuse) Scene::removeComponent(*Player::handDiffuse);
-
     const Mesh * mesh(Loader::getMesh("weapons/SodaCan.obj"));
     const Texture * tex(Loader::getTexture("weapons/SodaCan_Tex.png"));
     ModelTexture modelTex(tex);
@@ -378,12 +382,17 @@ void GameSystem::Weapons::SodaGrenade::equip() {
         glm::vec2(1.0f),
         false   
     );
+    Player::ammo = &Scene::addComponent<AmmoComponent>(*Player::gameObject, float(k_ammo));
 }
 
 void GameSystem::Weapons::SodaGrenade::unequip() {
     if (Player::handDiffuse) {
         Scene::removeComponent(*Player::handDiffuse);
         Player::handDiffuse = nullptr;
+    }
+    if (Player::ammo) {
+        Scene::removeComponent(*Player::ammo);
+        Player::ammo = nullptr;
     }
 }
 
@@ -392,6 +401,7 @@ void GameSystem::Weapons::SodaGrenade::unequip() {
 
 const float GameSystem::Weapons::SrirachaBottle::k_damage = 100.0f;
 const float GameSystem::Weapons::SrirachaBottle::k_radius = 1.5f;
+const float GameSystem::Weapons::SrirachaBottle::k_ammo = 30.0f; // seconds;
 
 GameObject * GameSystem::Weapons::SrirachaBottle::s_playerSriracha;
 
@@ -420,8 +430,6 @@ void GameSystem::Weapons::SrirachaBottle::toggleForPlayer() {
 }
 
 void GameSystem::Weapons::SrirachaBottle::equip() {
-    if (Player::handDiffuse) Scene::removeComponent(*Player::handDiffuse);
-
     const Mesh * mesh(Loader::getMesh("weapons/Sriracha.obj"));
     const Texture * tex(Loader::getTexture("weapons/Sriracha_Tex.png"));
     ModelTexture modelTex(tex);
@@ -433,12 +441,18 @@ void GameSystem::Weapons::SrirachaBottle::equip() {
         glm::vec2(1.0f),
         false   
     );
+
+    Player::ammo = &Scene::addComponent<AmmoComponent>(*Player::gameObject, float(k_ammo));
 }
 
 void GameSystem::Weapons::SrirachaBottle::unequip() {
     if (Player::handDiffuse) {
         Scene::removeComponent(*Player::handDiffuse);
         Player::handDiffuse = nullptr;
+    }
+    if (Player::ammo) {
+        Scene::removeComponent(*Player::ammo);
+        Player::ammo = nullptr;
     }
 
     if (s_playerSriracha) toggleForPlayer();

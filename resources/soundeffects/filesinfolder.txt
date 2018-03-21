@@ -1,12 +1,14 @@
 bgAsianStereotype1.mp3
 bgItalian2.mp3
 bgRock1.mp3
-bgRock1_reverb.mp3
+burp2.wav
+Enemy_death.wav
 filesinfolder.txt
 footstep.wav
 gong.mp3
 listfilesinfolder.py
 splash2.wav
 splash3.wav
+splash4.wav
 sword_slash.wav
 water_fountain.wav

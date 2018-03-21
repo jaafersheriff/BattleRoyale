@@ -9,9 +9,57 @@ uniform sampler2D f_texCol;
 uniform sampler2D f_bloomBlur;
 
 uniform float lifePercentage;
+uniform float ammoPercentage;
+
+const vec3 k_minLifeColor = vec3(1.0, 0.0, 0.0);
+const vec3 k_maxLifeColor = vec3(0.0, 1.0, 0.0);
+const vec3 k_ammoColor = vec3(0.0, 0.5, 1.0);
+const vec3 k_backdropColor = vec3(0.0, 0.0, 0.0);
+
+const vec2 k_lifeCenter = vec2(0.2, 0.1);
+const vec2 k_lifeDim = vec2(0.3, 0.025);
+const vec2 k_ammoCenter = vec2(0.8, 0.1);
+const vec2 k_ammoDim = vec2(0.3, 0.025);
+const float k_border = 0.003;
 
 void onlyYellow() {
-    color = vec4(1.f, 1.f, 0.f, 1.f);
+    color = vec4(1.0, 1.0, 0.0, 1.0);
+}
+
+bool inLifeBackdrop() {
+    return
+        f_texPos.x > (k_lifeCenter.x - k_lifeDim.x * 0.5 - k_border) &&
+        f_texPos.x < (k_lifeCenter.x + k_lifeDim.x * 0.5 + k_border) &&
+        f_texPos.y > (k_lifeCenter.y - k_lifeDim.y * 0.5 - k_border) &&
+        f_texPos.y < (k_lifeCenter.y + k_lifeDim.y * 0.5 + k_border);
+}
+
+bool inLife() {
+    return
+        f_texPos.x > (k_lifeCenter.x - k_lifeDim.x * 0.5) &&
+        f_texPos.x < (k_lifeCenter.x + k_lifeDim.x * 0.5) &&
+        f_texPos.y > (k_lifeCenter.y - k_lifeDim.y * 0.5) &&
+        f_texPos.y < (k_lifeCenter.y + k_lifeDim.y * 0.5) &&
+        // Use life percentage
+        !((f_texPos.x - (k_lifeCenter.x - k_lifeDim.x * 0.5)) / k_lifeDim.x > lifePercentage);
+}
+
+bool inAmmoBackdrop() {
+    return
+        f_texPos.x > (k_ammoCenter.x - k_ammoDim.x * 0.5 - k_border) &&
+        f_texPos.x < (k_ammoCenter.x + k_ammoDim.x * 0.5 + k_border) &&
+        f_texPos.y > (k_ammoCenter.y - k_ammoDim.y * 0.5 - k_border) &&
+        f_texPos.y < (k_ammoCenter.y + k_ammoDim.y * 0.5 + k_border);
+}
+
+bool inAmmo() {
+    return
+        f_texPos.x > (k_ammoCenter.x - k_ammoDim.x * 0.5) &&
+        f_texPos.x < (k_ammoCenter.x + k_ammoDim.x * 0.5) &&
+        f_texPos.y > (k_ammoCenter.y - k_ammoDim.y * 0.5) &&
+        f_texPos.y < (k_ammoCenter.y + k_ammoDim.y * 0.5) &&
+        // Use ammo percentage
+        !((f_texPos.x - (k_ammoCenter.x - k_ammoDim.x * 0.5)) / k_ammoDim.x > lifePercentage);
 }
 
 void doBloom() {
@@ -22,43 +70,23 @@ void doBloom() {
 
     // UI portion of bloom shader
 
-    // Life UI code
-    // Print the border
-    bool inLifeBorder = false;
-    vec2 lifeBorderDim = vec2(.8, .05);
-    vec2 lifeBorderCenter = vec2(.5, .9);
-
-    inLifeBorder = (
-        f_texPos.x > (lifeBorderCenter.x - lifeBorderDim.x / 2) &&
-        f_texPos.x < (lifeBorderCenter.x + lifeBorderDim.x / 2) &&
-        f_texPos.y > (lifeBorderCenter.y - lifeBorderDim.y / 2) &&
-        f_texPos.y < (lifeBorderCenter.y + lifeBorderDim.y / 2)
-    );
-
-    if(inLifeBorder) {
-        color = vec4(0.f, 0.f, 0.f, 1.f);
+    // Life
+    if (inLifeBackdrop()) {
+        if (inLife()) {
+            color.rgb = mix(k_minLifeColor, k_maxLifeColor, lifePercentage);
+        }
+        else {
+            color.rgb = k_backdropColor;			
+        }
     }
-
-    // Print the life
-    bool inLife = false;
-    vec2 lifeDim = vec2(.75, 0.025);
-    vec2 lifeCenter = vec2(.5, .9);
-
-    inLife = (
-        f_texPos.x > (lifeCenter.x - lifeDim.x / 2) &&
-        f_texPos.x < (lifeCenter.x + lifeDim.x / 2) &&
-        f_texPos.y > (lifeCenter.y - lifeDim.y / 2) &&
-        f_texPos.y < (lifeCenter.y + lifeDim.y / 2)
-    );
-
-    // Use life percentage
-    inLife = inLife && !(
-       (f_texPos.x - (1 - lifeDim.x) / 2) / lifeDim.x > lifePercentage 
-    );
-
-    if(inLife) {
-        color = vec4(0.f, 1.f, 0.f, 1.f) * lifePercentage +
-            vec4(1.f, 0.f, 0.f, 1.f) * (1 - lifePercentage);
+    // Ammo
+    else if (inAmmoBackdrop()) {
+        if (inAmmo()) {
+            color.rgb = k_ammoColor;
+        }
+        else {
+            color.rgb = k_backdropColor;			
+        }
     }
 
     // Crosshair UI code
@@ -81,7 +109,7 @@ void doBloom() {
 
     // Finally...
     if(inCrosshair) {
-        color = vec4(1.f - color.x, 1.f - color.y, 1.f - color.z, 1.f);
+        color = vec4(1.0 - color.x, 1.0 - color.y, 1.0 - color.z, 1.0);
     }
 }
 

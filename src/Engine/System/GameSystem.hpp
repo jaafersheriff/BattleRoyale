@@ -65,6 +65,7 @@ class GameSystem {
         static PlayerControllerComponent * controller;
         static PlayerComponent * playerComp;
         static HealthComponent * health;
+        static AmmoComponent * ammo;
         static SpatialComponent * handSpatial;
         static DiffuseRenderComponent * handDiffuse;
 
@@ -148,6 +149,7 @@ class GameSystem {
             static const unsigned int k_weight;
             static const float k_speed; 
             static const float k_damage;
+            static const int k_ammo;
 
             static GameObject * fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel, const glm::quat & orient);
             static GameObject * fireFromPlayer();
@@ -168,6 +170,7 @@ class GameSystem {
             static const float k_speed; 
             static const float k_damage;
             static const float k_radius;
+            static const int k_ammo;
 
             static GameObject * fire(const glm::vec3 & initPos, const glm::vec3 & initDir, const glm::vec3 & srcVel);
             static GameObject * fireFromPlayer();
@@ -182,6 +185,7 @@ class GameSystem {
 
             static const float k_damage;
             static const float k_radius;
+            static const float k_ammo;
 
             static GameObject * s_playerSriracha;
 
