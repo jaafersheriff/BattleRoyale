@@ -96,6 +96,7 @@ void doBloom() {
             color.rgb = k_backdropColor;			
         }
     }
+
     // Ammo
     else if (inAmmoBackdrop()) {
         if (inAmmo()) {
@@ -106,8 +107,7 @@ void doBloom() {
         }
     }
 
-    // Crosshair UI code
-
+    // Crosshair
     if (inCrosshair()) {
         color.rgb = 1.0 - color.rgb;
     }

@@ -108,6 +108,7 @@ void PostProcessShader::render(const CameraComponent * camera) {
     // Draw
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
 
+    /* Pizza texture
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex_pizza->textureId);
@@ -123,6 +124,7 @@ void PostProcessShader::render(const CameraComponent * camera) {
 
     // Draw
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
+    */
 
     glBindVertexArray(0);
     

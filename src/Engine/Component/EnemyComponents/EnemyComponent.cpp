@@ -6,6 +6,8 @@
 #include "System/GameInterface.hpp"
 #include "System/SoundSystem.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
+#include "Component/CollisionComponents/BounderComponent.hpp"
+#include "Component/PlayerComponents/PlayerComponent.hpp"
 
 
 
@@ -53,6 +55,21 @@ void EnemyComponent::damage(float damage) {
 
 
 
-BasicEnemyComponent::BasicEnemyComponent(GameObject & gameObject) :
-    EnemyComponent(gameObject)
+BasicEnemyComponent::BasicEnemyComponent(GameObject & gameObject, float meleeDamage) :
+    EnemyComponent(gameObject),
+    m_meleeDamage(meleeDamage)
 {}
+
+void BasicEnemyComponent::init() {
+    EnemyComponent::init();
+    
+    auto collisionCallback([&](const Message & msg_) {
+        const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
+        // Melee damage to player
+        PlayerComponent * player;
+        if (player = msg.bounder2.gameObject().getComponentByType<PlayerComponent>()) {
+            player->damage(m_meleeDamage);
+        }
+    });
+    Scene::addReceiver<CollisionMessage>(&gameObject(), collisionCallback);
+}

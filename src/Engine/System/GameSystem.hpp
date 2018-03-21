@@ -91,6 +91,7 @@ class GameSystem {
             static const unsigned int k_weight;
             static const float k_moveSpeed;
             static const float k_maxHP;
+            static const float k_meleeDamage;
 
             static void create(const glm::vec3 & position, const float speed, const float hp);
 
@@ -187,11 +188,13 @@ class GameSystem {
             static const float k_radius;
             static const float k_ammo;
 
-            static GameObject * s_playerSriracha;
+            static GameObject * playerSriracha;
 
             static GameObject * start(const SpatialComponent & hostSpatial, const glm::vec3 & offset = glm::vec3());
 
             static void toggleForPlayer();
+
+            static void updatePlayers(float dt);
 
             static void equip();
             

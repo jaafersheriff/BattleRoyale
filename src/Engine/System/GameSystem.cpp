@@ -86,8 +86,9 @@ const glm::vec3 GameSystem::Enemies::Basic::k_headPosition = glm::vec3(0.0f, 0.8
 const bool GameSystem::Enemies::Basic::k_isToon = true;
 const glm::vec3 GameSystem::Enemies::Basic::k_scale = glm::vec3(0.75f);
 const unsigned int GameSystem::Enemies::Basic::k_weight = 5;
-const float GameSystem::Enemies::Basic::k_moveSpeed = 5.f;
-const float GameSystem::Enemies::Basic::k_maxHP = 100.f;
+const float GameSystem::Enemies::Basic::k_moveSpeed = 5.0f;
+const float GameSystem::Enemies::Basic::k_maxHP = 100.0f;
+const float GameSystem::Enemies::Basic::k_meleeDamage = 15.0f;
 
 void GameSystem::Enemies::Basic::create(const glm::vec3 & position, const float moveSpeed, const float health) {
     const Mesh * bodyMesh(Loader::getMesh(k_bodyMeshName));
@@ -122,7 +123,7 @@ void GameSystem::Enemies::Basic::create(const glm::vec3 & position, const float 
         false
     );
     HealthComponent & healthComp(Scene::addComponent<HealthComponent>(obj, health));
-    EnemyComponent & enemyComp(Scene::addComponentAs<BasicEnemyComponent, EnemyComponent>(obj));
+    EnemyComponent & enemyComp(Scene::addComponentAs<BasicEnemyComponent, EnemyComponent>(obj, k_meleeDamage));
 }
 
 void GameSystem::Enemies::Basic::spawn() {
@@ -295,6 +296,10 @@ GameObject * GameSystem::Weapons::PizzaSlice::fire(const glm::vec3 & initPos, co
 }
 
 GameObject * GameSystem::Weapons::PizzaSlice::fireFromPlayer() {
+    if (!Player::ammo || Player::ammo->value() < 0.5f) {
+        return nullptr;
+    }
+    Player::ammo->changeValue(-1.0f);
     glm::vec3 initPos(Player::handSpatial->position());
     return fire(initPos, Player::camera->getLookDir(), Player::handSpatial->effectiveVelocity(), Player::handSpatial->orientation());
 }
@@ -366,6 +371,10 @@ GameObject * GameSystem::Weapons::SodaGrenade::fire(const glm::vec3 & initPos, c
 }
 
 GameObject * GameSystem::Weapons::SodaGrenade::fireFromPlayer() {
+    if (!Player::ammo || Player::ammo->value() < 0.5f) {
+        return nullptr;
+    }
+    Player::ammo->changeValue(-1.0f);
     glm::vec3 initPos(Player::headSpatial->orientMatrix() * Player::k_mainHandPosition + Player::headSpatial->position());
     return fire(initPos, Player::camera->getLookDir(), Player::handSpatial->effectiveVelocity());
 }
@@ -401,9 +410,9 @@ void GameSystem::Weapons::SodaGrenade::unequip() {
 
 const float GameSystem::Weapons::SrirachaBottle::k_damage = 100.0f;
 const float GameSystem::Weapons::SrirachaBottle::k_radius = 1.5f;
-const float GameSystem::Weapons::SrirachaBottle::k_ammo = 30.0f; // seconds;
+const float GameSystem::Weapons::SrirachaBottle::k_ammo = 10.0f; // seconds
 
-GameObject * GameSystem::Weapons::SrirachaBottle::s_playerSriracha;
+GameObject * GameSystem::Weapons::SrirachaBottle::playerSriracha;
 
 GameObject * GameSystem::Weapons::SrirachaBottle::start(const SpatialComponent & hostSpatial, const glm::vec3 & offset) {
     GameObject & obj(Scene::createGameObject());
@@ -418,15 +427,22 @@ GameObject * GameSystem::Weapons::SrirachaBottle::start(const SpatialComponent &
 }
 
 void GameSystem::Weapons::SrirachaBottle::toggleForPlayer() {
-    if (s_playerSriracha) {
-        Scene::destroyGameObject(*s_playerSriracha);
-        s_playerSriracha = nullptr;
+    if (playerSriracha) {
+        Scene::destroyGameObject(*playerSriracha);
+        playerSriracha = nullptr;
         Player::handSpatial->setRelativeScale(glm::vec3(1.0f));
     }
     else {
-        s_playerSriracha = start(*Player::handSpatial);
-        Scene::addComponentAs<ScaleToAnimationComponent, AnimationComponent>(*s_playerSriracha, *Player::handSpatial, glm::vec3(1.0f, 0.5f, 1.0f), 5.0f);
+        playerSriracha = start(*Player::handSpatial);
+        Scene::addComponentAs<ScaleToAnimationComponent, AnimationComponent>(*playerSriracha, *Player::handSpatial, glm::vec3(1.0f, 0.5f, 1.0f), 5.0f);
     }
+}
+
+void GameSystem::Weapons::SrirachaBottle::updatePlayers(float dt) {
+    if (!Player::ammo || Player::ammo->value() < 0.5f) {
+        return;
+    }
+    Player::ammo->changeValue(-dt);
 }
 
 void GameSystem::Weapons::SrirachaBottle::equip() {
@@ -455,7 +471,7 @@ void GameSystem::Weapons::SrirachaBottle::unequip() {
         Player::ammo = nullptr;
     }
 
-    if (s_playerSriracha) toggleForPlayer();
+    if (playerSriracha) toggleForPlayer();
 }
 
 //------------------------------------------------------------------------------
@@ -766,6 +782,10 @@ void GameSystem::updateGame(float dt) {
     else if (s_unuseWeapon) {
         if (s_culture == Culture::asian) Weapons::SrirachaBottle::toggleForPlayer();
         s_unuseWeapon = false;
+    }
+    // Extra logic for depleting sriracha ammo
+    if (Weapons::SrirachaBottle::playerSriracha && Mouse::isDown(0)) {
+        Weapons::SrirachaBottle::updatePlayers(dt);
     }
 
     // In between waves

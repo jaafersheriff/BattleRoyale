@@ -50,6 +50,18 @@ class BasicEnemyComponent : public EnemyComponent {
 
     protected:
 
-    BasicEnemyComponent(GameObject & gameObject);
+    BasicEnemyComponent(GameObject & gameObject, float meleeDamage);
+
+    public:
+
+    BasicEnemyComponent(BasicEnemyComponent && other) = default;
+
+    protected:
+
+    virtual void init() override;
+    
+    private:
+
+    float m_meleeDamage;
 
 };

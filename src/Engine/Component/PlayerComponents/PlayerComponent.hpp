@@ -36,6 +36,7 @@ class PlayerComponent : public Component {
 
     HealthComponent * m_health;
     bool m_damaged;
+    float m_damageCooldown;
     float m_soundCooldown;
 
 };

@@ -13,6 +13,7 @@ PlayerComponent::PlayerComponent(GameObject & gameObject) :
     Component(gameObject),
     m_health(nullptr),
     m_damaged(false),
+    m_damageCooldown(0.0f),
     m_soundCooldown(0.0f)
 {}
 
@@ -21,6 +22,7 @@ void PlayerComponent::init() {
 }
 
 void PlayerComponent::update(float dt) {
+    m_damageCooldown -= dt;
     m_soundCooldown -= dt;
     if (m_health->value() < 0.5f) {
         Scene::sendMessage<PlayerDeadMessage>(&gameObject(), *this);
@@ -36,7 +38,10 @@ void PlayerComponent::update(float dt) {
     m_health->changeValue(m_health->maxValue() * 0.1f * dt);
 }
 
-void PlayerComponent::damage(float damage) {    
-    m_health->changeValue(-damage);
-    m_damaged = true;
+void PlayerComponent::damage(float damage) {
+    if (m_damageCooldown <= 0.0f) {
+        m_health->changeValue(-damage);
+        m_damaged = true;
+        m_damageCooldown = 0.25f;
+    }
 }
