@@ -31,13 +31,13 @@ class GameSystem {
 
     struct Wave {
         static const Vector<glm::vec3> k_spawnPoints;
-        static int k_waveNumber;
-        static float k_spawnTimer;
-        static float k_spawnTimerMax;
-        static int k_enemiesAlive;
-        static int k_enemiesInWave;
-        static float k_enemyHealth;
-        static float k_enemySpeed;
+        static int waveNumber;
+        static float spawnTimer;
+        static float spawnTimerMax;
+        static int enemiesAlive;
+        static int enemiesInWave;
+        static float enemyHealth;
+        static float enemySpeed;
 
         static glm::vec3 randomSpawnPoint();
         static int computeEnemiesInWave();

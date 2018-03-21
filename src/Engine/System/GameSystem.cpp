@@ -77,17 +77,17 @@ const Vector<glm::vec3> GameSystem::Wave::k_spawnPoints = {
     glm::vec3( 11.23,  5.21, -39.39),   // seating area mid back right
     glm::vec3( -6.42,  5.31, -55.36),   // seating area mid front left 
 };
-int GameSystem::Wave::k_waveNumber = 1;
-float GameSystem::Wave::k_spawnTimer = 0.f;
-float GameSystem::Wave::k_spawnTimerMax = 1.f;
-int GameSystem::Wave::k_enemiesAlive = 0;
-int GameSystem::Wave::k_enemiesInWave = GameSystem::Wave::computeEnemiesInWave();
-float GameSystem::Wave::k_enemyHealth = GameSystem::Wave::computeEnemyHealth();
-float GameSystem::Wave::k_enemySpeed = GameSystem::Wave::computeEnemySpeed();
+int GameSystem::Wave::waveNumber = 1;
+float GameSystem::Wave::spawnTimer = 0.f;
+float GameSystem::Wave::spawnTimerMax = 1.f;
+int GameSystem::Wave::enemiesAlive = 0;
+int GameSystem::Wave::enemiesInWave = GameSystem::Wave::computeEnemiesInWave();
+float GameSystem::Wave::enemyHealth = GameSystem::Wave::computeEnemyHealth();
+float GameSystem::Wave::enemySpeed = GameSystem::Wave::computeEnemySpeed();
 
 /* Compute the number of enemies that will be in the current wave */
 int GameSystem::Wave::computeEnemiesInWave() {
-    return 10 + (int)glm::floor(30 * glm::log(k_waveNumber));
+    return 10 + (int)glm::floor(30 * glm::log(waveNumber));
 }
 
 /* Return a random spawn point from the list above plus an offset */
@@ -97,12 +97,12 @@ glm::vec3 GameSystem::Wave::randomSpawnPoint() {
 
 /* Compute the max health for enemies in the current wave */
 float GameSystem::Wave::computeEnemyHealth() {
-    return 100.f + glm::pow(k_waveNumber, 3.2f) / 15.f;
+    return 100.f + glm::pow(waveNumber, 3.2f) / 15.f;
 }
 
 /* Compute the max speed for enemies in the current wave */
 float GameSystem::Wave::computeEnemySpeed() {
-    return glm::min(Player::k_moveSpeed * 0.95f, k_waveNumber / 2.f + 2);
+    return glm::min(Player::k_moveSpeed * 0.95f, waveNumber / 2.f + 2);
 }
 
 //==============================================================================
@@ -552,23 +552,6 @@ void GameSystem::update(float dt) {
     for (auto & comp : s_meleeComponents) {
         comp->update(dt);
     }
-
-    /* Increment the wave if all enemies from previous wave done spawning and dead */
-    Wave::k_enemiesAlive = s_enemyComponents.size();
-    if (!s_enemyComponents.size() && !Wave::k_enemiesInWave) {
-        Wave::k_waveNumber++;
-        Wave::k_enemiesInWave = Wave::computeEnemiesInWave(); 
-        Wave::k_enemySpeed = Wave::computeEnemySpeed();
-        Wave::k_enemyHealth = Wave::computeEnemyHealth();
-    }
-    /* Spawn enemy based on timer */
-    Wave::k_spawnTimer += dt;
-    if (Wave::k_spawnTimer > Wave::k_spawnTimerMax && Wave::Wave::k_enemiesInWave) {
-        Wave::k_spawnTimer = 0.f;
-        Wave::k_spawnTimerMax = Util::random() / 2.f;
-        Enemies::Basic::create(Wave::randomSpawnPoint(), Wave::k_enemySpeed, Wave::k_enemyHealth);
-        Wave::Wave::k_enemiesInWave--;
-    }
 }
 
 void GameSystem::updateGame(float dt) {
@@ -588,6 +571,23 @@ void GameSystem::updateGame(float dt) {
     else if (s_unuseWeapon) {
         if (s_culture == Culture::asian) Weapons::SrirachaBottle::toggleForPlayer();
         s_unuseWeapon = false;
+    }
+
+    /* Increment the wave if all enemies from previous wave done spawning and dead */
+    Wave::enemiesAlive = s_enemyComponents.size();
+    if (!s_enemyComponents.size() && !Wave::enemiesInWave) {
+        Wave::waveNumber++;
+        Wave::enemiesInWave = Wave::computeEnemiesInWave(); 
+        Wave::enemySpeed = Wave::computeEnemySpeed();
+        Wave::enemyHealth = Wave::computeEnemyHealth();
+    }
+    /* Spawn enemy based on timer */
+    Wave::spawnTimer += dt;
+    if (Wave::spawnTimer > Wave::spawnTimerMax && Wave::Wave::enemiesInWave) {
+        Wave::spawnTimer = 0.f;
+        Wave::spawnTimerMax = Util::random() / 2.f;
+        Enemies::Basic::create(Wave::randomSpawnPoint(), Wave::enemySpeed, Wave::enemyHealth);
+        Wave::Wave::enemiesInWave--;
     }
 }
 
@@ -805,11 +805,11 @@ void GameSystem::setupImGui() {
         imguiGO, 
         "Enemies",
         [&]() {
-            ImGui::Text("Wave number: %d", Wave::k_waveNumber);
-            ImGui::Text("Enemies still spawning: %d", Wave::Wave::k_enemiesInWave);
-            ImGui::Text("Enemies alive: %d", Wave::k_enemiesAlive);
-            ImGui::Text("Enemy max health: %5.2f", Wave::k_enemyHealth);
-            ImGui::Text("Enemy max speed: %5.2f", Wave::k_enemySpeed);
+            ImGui::Text("Wave number: %d", Wave::waveNumber);
+            ImGui::Text("Enemies still spawning: %d", Wave::Wave::enemiesInWave);
+            ImGui::Text("Enemies alive: %d", Wave::enemiesAlive);
+            ImGui::Text("Enemy max health: %5.2f", Wave::enemyHealth);
+            ImGui::Text("Enemy max speed: %5.2f", Wave::enemySpeed);
        }
     );
 
