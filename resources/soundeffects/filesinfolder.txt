@@ -21,6 +21,10 @@ doorbump.wav
 door_bump.wav
 drill.wav
 end_wave.mp3
+end_wave2.flac
+end_wave3.mp3
+end_wave4.wav
+end_wave5.wav
 Enemy_death.wav
 filesinfolder.txt
 footstep.wav
