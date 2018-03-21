@@ -2,6 +2,10 @@ bgAsianStereotype1.mp3
 bgItalian2.mp3
 bgRock1.mp3
 cash_register.wav
+end_wave2.flac
+end_wave3.mp3
+end_wave4.wav
+end_wave5.wav
 Enemy_death.wav
 filesinfolder.txt
 footstep.wav
