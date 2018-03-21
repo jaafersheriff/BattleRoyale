@@ -9,6 +9,7 @@ gong.mp3
 grunt1.wav
 grunt3.wav
 listfilesinfolder.py
+player_death.wav
 splash2.wav
 splash3.wav
 splash4.wav
