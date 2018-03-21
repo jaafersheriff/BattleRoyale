@@ -23,11 +23,40 @@ void doBloom() {
     // UI portion of bloom shader
 
     // Life UI code
-    if(f_texPos.x < .03) {
+    // Print the border
+    bool inLifeBorder = false;
+    vec2 lifeBorderDim = vec2(.8, .05);
+    vec2 lifeBorderCenter = vec2(.5, .9);
+
+    inLifeBorder = (
+        f_texPos.x > (lifeBorderCenter.x - lifeBorderDim.x / 2) &&
+        f_texPos.x < (lifeBorderCenter.x + lifeBorderDim.x / 2) &&
+        f_texPos.y > (lifeBorderCenter.y - lifeBorderDim.y / 2) &&
+        f_texPos.y < (lifeBorderCenter.y + lifeBorderDim.y / 2)
+    );
+
+    if(inLifeBorder) {
         color = vec4(0.f, 0.f, 0.f, 1.f);
     }
 
-    if(f_texPos.x < .02 && f_texPos.y < lifePercentage) {
+    // Print the life
+    bool inLife = false;
+    vec2 lifeDim = vec2(.75, 0.025);
+    vec2 lifeCenter = vec2(.5, .9);
+
+    inLife = (
+        f_texPos.x > (lifeCenter.x - lifeDim.x / 2) &&
+        f_texPos.x < (lifeCenter.x + lifeDim.x / 2) &&
+        f_texPos.y > (lifeCenter.y - lifeDim.y / 2) &&
+        f_texPos.y < (lifeCenter.y + lifeDim.y / 2)
+    );
+
+    // Use life percentage
+    inLife = inLife && !(
+       (f_texPos.x - (1 - lifeDim.x) / 2) / lifeDim.x > lifePercentage 
+    );
+
+    if(inLife) {
         color = vec4(0.f, 1.f, 0.f, 1.f) * lifePercentage +
             vec4(1.f, 0.f, 0.f, 1.f) * (1 - lifePercentage);
     }
@@ -37,21 +66,18 @@ void doBloom() {
     float crosshairLong = .02;
     float crosshairShort = .0025;
 
-    // Vertical portion of crosshair
-    if(f_texPos.x > (.50 - crosshairShort / 2) &&
+    // Determines if the texture position is in the crosshair
+    inCrosshair = (
+        f_texPos.x > (.50 - crosshairShort / 2) &&
         f_texPos.x < (.50 + crosshairShort / 2) &&
         f_texPos.y > (.50 - crosshairLong / 2) &&
-        f_texPos.y < (.50 + crosshairLong / 2)) {
-        inCrosshair = true;
-    }
-
-    // Horizontal portion of crosshair
-    if(f_texPos.x > (.50 - crosshairLong / 2) &&
+        f_texPos.y < (.50 + crosshairLong / 2)
+        ) || (
+        f_texPos.x > (.50 - crosshairLong / 2) &&
         f_texPos.x < (.50 + crosshairLong / 2) &&
         f_texPos.y > (.50 - crosshairShort / 2) &&
-        f_texPos.y < (.50 + crosshairShort / 2)) {
-        inCrosshair = true;
-    }
+        f_texPos.y < (.50 + crosshairShort / 2)
+    );
 
     // Finally...
     if(inCrosshair) {

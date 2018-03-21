@@ -88,7 +88,7 @@ void PostProcessShader::render(const CameraComponent * camera) {
     glUniform1i(getUniform("f_bloomBlur"), 1);
 
     // Bloom shader does part of UI as well
-    loadFloat(getUniform("lifePercentage"), .25f);
+    loadFloat(getUniform("lifePercentage"), .20f);
 
     // Draw
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *) 0);
