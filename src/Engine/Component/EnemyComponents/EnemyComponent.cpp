@@ -21,7 +21,7 @@ void EnemyComponent::init() {
 }
 
 void EnemyComponent::update(float dt) {
-    if (Util::isLE(m_health->value(), 0.0f)) {
+    if (m_health->value() < 0.5f) {
         Scene::destroyGameObject(this->gameObject());
     }
     glm::vec3 pos(m_body->position());

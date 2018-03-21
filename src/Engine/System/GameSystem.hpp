@@ -186,6 +186,39 @@ class GameSystem {
     };
 
     //--------------------------------------------------------------------------
+    // Shops
+
+    struct Shops {
+
+        struct American {
+
+            static BounderComponent * bounder;
+
+            static void init();
+
+        };
+
+        struct Asian {
+
+            static BounderComponent * bounder;
+
+            static void init();
+
+        };
+
+        struct Italian {
+
+            static BounderComponent * bounder;
+
+            static void init();
+
+        };
+
+        static void init();
+
+    };
+
+    //--------------------------------------------------------------------------
     // Freecam
 
     struct Freecam {
@@ -259,6 +292,7 @@ class GameSystem {
     static Culture s_newCulture;
     static bool s_useWeapon;
     static bool s_unuseWeapon;
+    static Culture s_storeVisited;
 
 };
 

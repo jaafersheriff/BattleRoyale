@@ -92,12 +92,12 @@ int GameSystem::Wave::computeEnemiesInWave() {
 
 /* Return a random spawn point from the list above plus an offset */
 glm::vec3 GameSystem::Wave::randomSpawnPoint() {
-    return k_spawnPoints[Util::randomUInt(k_spawnPoints.size())] + glm::vec3(Util::random() * 3.f, 0.f, Util::random() * 3.f);
+    return k_spawnPoints[Util::randomUInt(int(k_spawnPoints.size()))] + glm::vec3(Util::random() * 3.f, 0.f, Util::random() * 3.f);
 }
 
 /* Compute the max health for enemies in the current wave */
 float GameSystem::Wave::computeEnemyHealth() {
-    return 100.f + glm::pow(waveNumber, 3.2f) / 15.f;
+    return 100.f + float(glm::pow(waveNumber, 3.2f)) / 15.f;
 }
 
 /* Compute the max speed for enemies in the current wave */
@@ -114,7 +114,7 @@ float GameSystem::Wave::computeEnemySpeed() {
 const String GameSystem::Enemies::Basic::k_bodyMeshName = "characters/Enemy_Torso.obj";
 const String GameSystem::Enemies::Basic::k_headMeshName = "characters/Enemy_Head.obj";
 const String GameSystem::Enemies::Basic::k_textureName = "characters/Enemy_Tex.png";
-const glm::vec3 GameSystem::Enemies::Basic::k_headPosition = glm::vec3(0.0f, 1.0f, 0.0f);
+const glm::vec3 GameSystem::Enemies::Basic::k_headPosition = glm::vec3(0.0f, 0.8f, 0.0f);
 const bool GameSystem::Enemies::Basic::k_isToon = true;
 const glm::vec3 GameSystem::Enemies::Basic::k_scale = glm::vec3(0.75f);
 const unsigned int GameSystem::Enemies::Basic::k_weight = 5;
@@ -409,6 +409,77 @@ void GameSystem::Weapons::destroyAllWeapons() {
 
 
 //==============================================================================
+// STORES
+
+//------------------------------------------------------------------------------
+// American
+
+BounderComponent * GameSystem::Shops::American::bounder = nullptr;
+
+void GameSystem::Shops::American::init() {
+    GameObject & obj(Scene::createGameObject());
+    SpatialComponent & spatial(Scene::addComponent<SpatialComponent>(obj));
+    bounder = &Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, 0, AABox(glm::vec3(-38.0f, -2.0f, -85.5f), glm::vec3(-36.0f, 1.0f, -73.5f)));
+
+    auto collisionCallback([&](const Message & msg_) {
+        const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
+        if (&msg.bounder1 == bounder && &msg.bounder2 == static_cast<const BounderComponent *>(Player::bounder)) {
+            s_storeVisited = Culture::american;
+        }
+    });
+    Scene::addReceiver<CollisionMessage>(&obj, collisionCallback);
+}
+
+//------------------------------------------------------------------------------
+// Asian
+
+BounderComponent * GameSystem::Shops::Asian::bounder = nullptr;
+
+void GameSystem::Shops::Asian::init() {
+    GameObject & obj(Scene::createGameObject());
+    SpatialComponent & spatial(Scene::addComponent<SpatialComponent>(obj));
+    bounder = &Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, 0, AABox(glm::vec3(-14.0f, -2.0f, -172.0f), glm::vec3(-12.0f, 1.0f, -161.0f)));
+
+    auto collisionCallback([&](const Message & msg_) {
+        const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
+        if (&msg.bounder1 == bounder && &msg.bounder2 == static_cast<const BounderComponent *>(Player::bounder)) {
+            s_storeVisited = Culture::asian;
+        }
+    });
+    Scene::addReceiver<CollisionMessage>(&obj, collisionCallback);
+}
+
+//------------------------------------------------------------------------------
+// Italian
+
+BounderComponent * GameSystem::Shops::Italian::bounder = nullptr;
+
+void GameSystem::Shops::Italian::init() {
+    GameObject & obj(Scene::createGameObject());
+    SpatialComponent & spatial(Scene::addComponent<SpatialComponent>(obj));
+    bounder = &Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, 0, AABox(glm::vec3(38.0f, -2.0f, -46.0f), glm::vec3(40.5f, 1.0f, -34.5f)));
+
+    auto collisionCallback([&](const Message & msg_) {
+        const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
+        if (&msg.bounder1 == bounder && &msg.bounder2 == static_cast<const BounderComponent *>(Player::bounder)) {
+            s_storeVisited = Culture::italian;
+        }
+    });
+    Scene::addReceiver<CollisionMessage>(&obj, collisionCallback);
+}
+
+//------------------------------------------------------------------------------
+// All
+
+void GameSystem::Shops::init() {
+    American::init();
+    Asian::init();
+    Italian::init();
+}
+
+
+
+//==============================================================================
 // FREECAM
 
 const float GameSystem::Freecam::k_minSpeed = 0.25f;
@@ -475,6 +546,7 @@ bool GameSystem::s_changeCulture = false;
 GameSystem::Culture GameSystem::s_newCulture = Culture::none;
 bool GameSystem::s_useWeapon = false;
 bool GameSystem::s_unuseWeapon = false;
+GameSystem::Culture GameSystem::s_storeVisited = Culture::none;
 
 void GameSystem::init() {
 
@@ -505,6 +577,9 @@ void GameSystem::init() {
     //if (!Scene::mapping)
     //    CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
 
+    // Init Shops
+    Shops::init();
+
     // Start music
     Music::start();
 
@@ -513,11 +588,6 @@ void GameSystem::init() {
     
     // Setup ImGui
     setupImGui();
-
-    // Disable certain shaders
-    RenderSystem::s_bounderShader->setEnabled(false);
-    RenderSystem::s_octreeShader->setEnabled(false);
-    RenderSystem::s_rayShader->setEnabled(false);
 
     // Water fountain
     GameObject & fountain(Scene::createGameObject());
@@ -563,7 +633,11 @@ void GameSystem::update(float dt) {
 }
 
 void GameSystem::updateGame(float dt) {
-
+    if (s_storeVisited != Culture::none && s_storeVisited != s_culture) {
+        s_changeCulture = true;
+        s_newCulture = s_storeVisited;
+        s_storeVisited = Culture::none;
+    }
     if (s_changeCulture) {
         setCulture(s_newCulture);
         s_changeCulture = false;
@@ -582,21 +656,21 @@ void GameSystem::updateGame(float dt) {
     }
 
     /* Increment the wave if all enemies from previous wave done spawning and dead */
-    // Wave::enemiesAlive = s_enemyComponents.size();
-    // if (!s_enemyComponents.size() && !Wave::enemiesInWave) {
-    //     Wave::waveNumber++;
-    //     Wave::enemiesInWave = Wave::computeEnemiesInWave(); 
-    //     Wave::enemySpeed = Wave::computeEnemySpeed();
-    //     Wave::enemyHealth = Wave::computeEnemyHealth();
-    // }
+    Wave::enemiesAlive = int(s_enemyComponents.size());
+    if (!s_enemyComponents.size() && !Wave::enemiesInWave) {
+        Wave::waveNumber++;
+        Wave::enemiesInWave = Wave::computeEnemiesInWave(); 
+        Wave::enemySpeed = Wave::computeEnemySpeed();
+        Wave::enemyHealth = Wave::computeEnemyHealth();
+    }
     /* Spawn enemy based on timer */
-    // Wave::spawnTimer += dt;
-    // if (Wave::spawnTimer > Wave::spawnTimerMax && Wave::Wave::enemiesInWave) {
-    //     Wave::spawnTimer = 0.f;
-    //     Wave::spawnTimerMax = Util::random() / 2.f;
-    //     Enemies::Basic::create(Wave::randomSpawnPoint(), Wave::enemySpeed, Wave::enemyHealth);
-    //     Wave::Wave::enemiesInWave--;
-    // }
+    Wave::spawnTimer += dt;
+    if (Wave::spawnTimer > Wave::spawnTimerMax && Wave::Wave::enemiesInWave) {
+        Wave::spawnTimer = 0.f;
+        Wave::spawnTimerMax = Util::random() / 2.f;
+        Enemies::Basic::create(Wave::randomSpawnPoint(), Wave::enemySpeed, Wave::enemyHealth);
+        Wave::Wave::enemiesInWave--;
+    }
 }
 
 void GameSystem::setCulture(Culture culture) {
@@ -834,6 +908,7 @@ void GameSystem::setupImGui() {
             if (ImGui::Button("Turn off Path finding")) {
                 Enemies::disablePathfinding();
             }
+            ImGui::SliderFloat2("Health Size", glm::value_ptr(RenderSystem::s_healthShader->m_size), 0.f, 1.f);
         }
     );
 
