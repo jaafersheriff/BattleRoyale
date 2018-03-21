@@ -20,7 +20,8 @@ cash_register.mp3
 doorbump.wav
 door_bump.wav
 drill.wav
-enemy_death.wav
+end_wave.mp3
+Enemy_death.wav
 filesinfolder.txt
 footstep.wav
 gameover1.mp3
@@ -31,6 +32,7 @@ grunt2.mp3
 grunt3.wav
 listfilesinfolder.py
 menu_click.wav
+player_death.wav
 poof.wav
 slash.wav
 soda_open1.wav
