@@ -30,8 +30,13 @@ class PlayerComponent : public Component {
 
     virtual void update(float dt) override;
 
+    void damage(float damage);
+
     protected:
 
     HealthComponent * m_health;
+    bool m_damaged;
+    float m_damageCooldown;
+    float m_soundCooldown;
 
 };

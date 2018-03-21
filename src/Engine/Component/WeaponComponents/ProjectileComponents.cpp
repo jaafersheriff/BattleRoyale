@@ -10,6 +10,7 @@
 #include "Component/StatComponents/StatComponents.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "System/SoundSystem.hpp"
+#include "Component/PlayerComponents/PlayerComponent.hpp"
 
 
 
@@ -41,7 +42,17 @@ void BulletComponent::init() {
             HealthComponent * health;
             bool destroy(false);
             if ((health = msg.bounder2.gameObject().getComponentByType<HealthComponent>()) && &msg.bounder2.gameObject() != m_host && !m_alreadyCollided) {
-                health->changeValue(-m_damage);
+                EnemyComponent * enemy;
+                PlayerComponent * player;
+                if (enemy = msg.bounder2.gameObject().getComponentByType<EnemyComponent>()) {
+                    enemy->damage(m_damage);
+                }
+                else if (player = msg.bounder2.gameObject().getComponentByType<PlayerComponent>()){
+                    player->damage(m_damage);
+                }
+                else {
+                    health->changeValue(-m_damage);
+                }
                 destroy = true;
                 m_alreadyCollided = true;
             }
@@ -51,7 +62,6 @@ void BulletComponent::init() {
             }
             if (destroy) {
                 Scene::destroyGameObject(gameObject());
-                SoundSystem::playSound3D("burp2.wav", gameObject().getSpatial()->position());
             }
         }
     });

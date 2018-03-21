@@ -45,9 +45,19 @@ void SprayComponent::init() {
         const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
         if (&msg.bounder1 == m_bounder) {
             // Damage things that spray hits
-            HealthComponent * health;
-            if ((health = msg.bounder2.gameObject().getComponentByType<HealthComponent>()) && &msg.bounder2.gameObject() != &m_hostSpatial->gameObject()) {
-                health->changeValue(-m_damage * m_dt);
+            HealthComponent * health(msg.bounder2.gameObject().getComponentByType<HealthComponent>());
+            if (health && &msg.bounder2.gameObject() != &m_hostSpatial->gameObject()) {
+                EnemyComponent * enemy;
+                PlayerComponent * player;
+                if (enemy = msg.bounder2.gameObject().getComponentByType<EnemyComponent>()) {
+                    enemy->damage(m_damage * m_dt);
+                }
+                else if (player = msg.bounder2.gameObject().getComponentByType<PlayerComponent>()){
+                    player->damage(m_damage * m_dt);
+                }
+                else {
+                    health->changeValue(-m_damage * m_dt);
+                }
             }
         }
     });
