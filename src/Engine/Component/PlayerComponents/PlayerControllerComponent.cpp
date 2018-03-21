@@ -8,6 +8,7 @@
 #include "Component/SpatialComponents/PhysicsComponents.hpp"
 #include "Component/PostCollisionComponents/GroundComponent.hpp"
 #include "System/SpatialSystem.hpp"
+#include "System/SoundSystem.hpp"
 #include "Util/Util.hpp"
 
 
@@ -23,7 +24,8 @@ PlayerControllerComponent::PlayerControllerComponent(GameObject & gameObject, fl
     m_jumpSpeed(jumpSpeed),
     m_sprintSpeed(sprintSpeed),
     m_jumping(false),
-    m_enabled(true)
+    m_enabled(true),
+    m_stepDistance(0.0f)
 {}
 
 void PlayerControllerComponent::init() {
@@ -74,6 +76,10 @@ void PlayerControllerComponent::update(float dt) {
         m_bodySpatial->move(dir * groundSpeed * dt);
         // remove some velocity against direction of movement
         m_newtonian->removeSomeVelocityAgainstDir(dir, groundSpeed);
+
+        // step distance
+        m_stepDistance += (glm::length(dir) * groundSpeed * dt);
+
     }
 
     // jump
@@ -81,13 +87,25 @@ void PlayerControllerComponent::update(float dt) {
         if (Keyboard::isKeyPressed(GLFW_KEY_SPACE) && m_ground->onGround()) {
             gameObject().getComponentByType<NewtonianComponent>()->addVelocity(-m_jumpSpeed * Util::safeNorm(SpatialSystem::gravity()));
             m_jumping = true;
+        
+
         }
+        
     }
     else {
         if (!Keyboard::isKeyPressed(GLFW_KEY_SPACE)) {
             m_jumping = false;
         }
     }
+
+    if (m_ground->onGround()) {
+        // Play step sound effect only when not jumping
+        if (m_stepDistance > 3.0f) {
+            SoundSystem::playSound3D("footstep.wav", m_bodySpatial->position() - glm::vec3(0.0, 1.0f, 0.0f));
+            m_stepDistance = 0.0f;
+        }
+    } 
+
 }
 
 void PlayerControllerComponent::setOrientation(float theta, float phi) {

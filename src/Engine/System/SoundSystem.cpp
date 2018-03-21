@@ -68,12 +68,19 @@ void SoundSystem::initSoundLibrary() {
 void SoundSystem::setBackgroundMusic(String name, bool loop) {
 #ifdef HAVE_FMOD_LIBRARY
     FMOD::Sound* bgSound = NULL;
-    if (loop) {
-        bgSound = createSound(name, FMOD_LOOP_NORMAL);
+
+    if (s_soundLibrary.count(name + "2D")) {
+        bgSound = s_soundLibrary[name + "2D"];
     }
     else {
-        bgSound = createSound(name, FMOD_DEFAULT);
+        bgSound = createSound(name + "2D", FMOD_DEFAULT);
     }
+
+    if (loop) {
+        bgSound->setMode(FMOD_LOOP_NORMAL);
+    }
+
+
     if (bgSound != NULL) {
         s_bgMusic = new Sound();
         s_bgMusic->sound = bgSound;
