@@ -428,7 +428,7 @@ void GameSystem::Freecam::init() {
 //==============================================================================
 // MUSIC
 
-const String GameSystem::Music::k_defMusic = "bgRock1.mp3";
+const String GameSystem::Music::k_defMusic = "bgAmericanEpic1.mp3";
 
 bool GameSystem::Music::s_playing = false;
 
@@ -519,6 +519,8 @@ void GameSystem::init() {
     SpatialComponent & fountainSpat(Scene::addComponent<SpatialComponent>(fountain, glm::vec3(1.0f, 7.6f, -51.0f)));
     fountainSpat.setRelativeUVW(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f), true);
     ParticleSystem::addWaterFountainPC(fountainSpat);
+    SoundSystem::playSound3D("water_fountain.wav", fountainSpat.position(), true);
+
 }
 
 void GameSystem::update(float dt) {

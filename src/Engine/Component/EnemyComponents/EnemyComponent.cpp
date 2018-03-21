@@ -4,6 +4,7 @@
 #include "Util/Util.hpp"
 #include "Component/StatComponents/StatComponents.hpp"
 #include "System/GameInterface.hpp"
+#include "System/SoundSystem.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 
 
@@ -22,6 +23,7 @@ void EnemyComponent::init() {
 
 void EnemyComponent::update(float dt) {
     if (Util::isLE(m_health->value(), 0.0f)) {
+        SoundSystem::playSound3D("enemy_death.wav", this->gameObject().getSpatial()->position());
         Scene::destroyGameObject(this->gameObject());
     }
     glm::vec3 pos(m_body->position());

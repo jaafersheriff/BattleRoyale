@@ -19,7 +19,7 @@ button_press.wav
 doorbump.wav
 door_bump.wav
 drill.wav
-Enemy_death.wav
+enemy_death.wav
 filesinfolder.txt
 footstep.wav
 gameover1.mp3
@@ -41,5 +41,5 @@ splash3.wav
 splash4.wav
 sword_slash.wav
 victory.wav
-waterFountain.wav
+water_fountain.wav
 woosh.mp3

@@ -61,5 +61,6 @@ class PlayerControllerComponent : public Component {
     float m_sprintSpeed;
     bool m_jumping;
     bool m_enabled; // TODO: make a way to enable/disable any object or component
+    float m_stepDistance;
 
 };
