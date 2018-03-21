@@ -65,7 +65,7 @@ void HealthShader::render(const CameraComponent * camera) {
     for (auto enemy : enemies) {
         auto health = enemy->gameObject().getComponentByType<HealthComponent>();
         auto spatials = enemy->gameObject().getComponentsByType<SpatialComponent>();
-        if (!health || !spatials.size()) {
+        if (!health || spatials.size() < 2) {
             return;
         }
 
@@ -75,11 +75,7 @@ void HealthShader::render(const CameraComponent * camera) {
         loadFloat(getUniform("maxVal"), health->maxValue());
 
         /* Find position based on hierarchy */
-        glm::vec3 position = spatials[0]->position();
-        for (auto spatial : spatials) {
-            position += glm::vec3(0.f, spatial->scale().y, 0.f);
-        }
-        loadVec3(getUniform("center"), position + glm::vec3(0.f, 0.2f, 0.f));
+        loadVec3(getUniform("center"), spatials[1]->position() + glm::vec3(0.0f, 0.75f, 0.0f));
 
         /* Draw */
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

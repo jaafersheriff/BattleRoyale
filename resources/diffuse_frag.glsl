@@ -18,7 +18,8 @@ uniform vec3 lightDir;
 
 uniform sampler2D textureImage;
 uniform bool usesTexture;
-uniform bool doBloom;
+uniform bool allowBloom;
+uniform bool isNeon;
 
 uniform bool isToon;
 uniform float silAngle;
@@ -83,18 +84,17 @@ void main() {
 
     color.rgb *= edge;
 
-    //float brightness = max(((color.r+color.g+color.b)/3.0 - 0.6)/0.4, 0.0);
-    // luminosity: average of min and max components
-    float brightness = (min(min(color.r, color.g), color.b) + max(max(color.r, color.g), color.b)) * 0.5;
-
-    const float bloomThreshold = 0.8f;
-    brightness = max((brightness - bloomThreshold) / (1.0 - bloomThreshold), 0.0);
-    BrightColor.rgb = color.rgb * brightness;
-
-    if(doBloom){
+    if (isNeon) {
         color.rgb = diffuseColor;
         BrightColor.rgb = color.rgb;
     }
+	else if (allowBloom) {
+		// luminosity: average of min and max components
+		float brightness = (min(min(color.r, color.g), color.b) + max(max(color.r, color.g), color.b)) * 0.5;
+		const float bloomThreshold = 0.8f;
+		brightness = max((brightness - bloomThreshold) / (1.0 - bloomThreshold), 0.0);
+		BrightColor.rgb = color.rgb * brightness;
+	}
 
     BrightColor.a = 1.0;
 }
