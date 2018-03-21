@@ -21,10 +21,10 @@ void doBloom() {
 
 void main()
 {             
-    if(f_operation == 1) {
+    if (f_operation == 1) {
         doBloom();
     }
-    else if(f_operation == 2) {
+    else if (f_operation == 2) {
         color = texture(f_texCol, f_texPos);
     }
     else {

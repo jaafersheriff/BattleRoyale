@@ -113,7 +113,6 @@ void RenderSystem::update(float dt) {
         comp->update(dt);
     }
 
-
     if (!s_playerCamera) {
         return;
     }

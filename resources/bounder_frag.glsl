@@ -1,10 +1,13 @@
 #version 330 core
 
-out vec4 out_color;
+layout(location = 0) out vec4 color;
+layout (location = 1) out vec4 BrightColor;
 
 uniform vec3 u_color;
 
 void main() {
-	out_color.rgb = u_color;
-	out_color.a = 1.0f;
+	color.rgb = u_color;
+	color.a = 1.0f;
+
+	BrightColor = vec4(0.0);
 }
