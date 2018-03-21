@@ -27,6 +27,25 @@ class GameSystem {
     private:
 
     //--------------------------------------------------------------------------
+    // Waves 
+
+    struct Wave {
+        static const Vector<glm::vec3> k_spawnPoints;
+        static int waveNumber;
+        static float spawnTimer;
+        static float spawnTimerMax;
+        static int enemiesAlive;
+        static int enemiesInWave;
+        static float enemyHealth;
+        static float enemySpeed;
+
+        static glm::vec3 randomSpawnPoint();
+        static int computeEnemiesInWave();
+        static float computeEnemyHealth();
+        static float computeEnemySpeed();
+    };
+
+    //--------------------------------------------------------------------------
     // Lighting
 
     struct Lighting {
@@ -89,7 +108,7 @@ class GameSystem {
             static const float k_moveSpeed;
             static const float k_maxHP;
 
-            static void create(const glm::vec3 & position);
+            static void create(const glm::vec3 & position, const float speed, const float hp);
 
             static void spawn();
 

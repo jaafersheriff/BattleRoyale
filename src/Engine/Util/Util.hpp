@@ -31,6 +31,11 @@ struct Util {
         return random() * (max - min) + min;
     }
 
+    // Random uint less than max
+    static unsigned randomUInt(int max) {
+        return (int)floor(random() * (max));
+    }
+
     static inline void printVector(const glm::vec3 & vec) {
         std::cout << "<" << vec.x << ", " << vec.y << " " << vec.z << ">" << std::endl;
     }
