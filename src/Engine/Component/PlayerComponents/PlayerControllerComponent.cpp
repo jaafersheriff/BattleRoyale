@@ -77,12 +77,9 @@ void PlayerControllerComponent::update(float dt) {
         // remove some velocity against direction of movement
         m_newtonian->removeSomeVelocityAgainstDir(dir, groundSpeed);
 
-        // step sound Effect
+        // step distance
         m_stepDistance += (glm::length(dir) * groundSpeed * dt);
-        if (m_stepDistance > 3.0f) {
-            SoundSystem::playSound3D("footstep.wav", m_bodySpatial->position() - glm::vec3(0.0, 1.0f, 0.0f));
-            m_stepDistance = 0.0f;
-        }
+
     }
 
     // jump
@@ -90,7 +87,10 @@ void PlayerControllerComponent::update(float dt) {
         if (Keyboard::isKeyPressed(GLFW_KEY_SPACE) && m_ground->onGround()) {
             gameObject().getComponentByType<NewtonianComponent>()->addVelocity(-m_jumpSpeed * Util::safeNorm(SpatialSystem::gravity()));
             m_jumping = true;
+        
+
         }
+        
     }
     else {
         if (!Keyboard::isKeyPressed(GLFW_KEY_SPACE)) {
@@ -98,7 +98,13 @@ void PlayerControllerComponent::update(float dt) {
         }
     }
 
-    
+    if (m_ground->onGround()) {
+        // Play step sound effect only when not jumping
+        if (m_stepDistance > 3.0f) {
+            SoundSystem::playSound3D("footstep.wav", m_bodySpatial->position() - glm::vec3(0.0, 1.0f, 0.0f));
+            m_stepDistance = 0.0f;
+        }
+    } 
 
 }
 
