@@ -30,11 +30,15 @@ class EnemyComponent : public Component {
 
     virtual void update(float dt) override;
 
+    virtual void damage(float damage);
+
     protected:
 
     SpatialComponent * m_body;
     SpatialComponent * m_head;
     HealthComponent * m_health;
+    bool m_damaged;
+    float m_soundCooldown;
 
 };
 

@@ -22,6 +22,9 @@ const vec2 k_ammoCenter = vec2(0.8, 0.1);
 const vec2 k_ammoDim = vec2(0.3, 0.025);
 const float k_border = 0.003;
 
+const float k_crosshairLong = 0.02;
+const float k_crosshairShort = 0.0025;
+
 void onlyYellow() {
     color = vec4(1.0, 1.0, 0.0, 1.0);
 }
@@ -59,7 +62,21 @@ bool inAmmo() {
         f_texPos.y > (k_ammoCenter.y - k_ammoDim.y * 0.5) &&
         f_texPos.y < (k_ammoCenter.y + k_ammoDim.y * 0.5) &&
         // Use ammo percentage
-        !((f_texPos.x - (k_ammoCenter.x - k_ammoDim.x * 0.5)) / k_ammoDim.x > lifePercentage);
+        !((f_texPos.x - (k_ammoCenter.x - k_ammoDim.x * 0.5)) / k_ammoDim.x > ammoPercentage);
+}
+
+bool inCrosshair() {
+    return (
+        f_texPos.x > (0.5 - k_crosshairShort * 0.5) &&
+        f_texPos.x < (0.5 + k_crosshairShort * 0.5) &&
+        f_texPos.y > (0.5 - k_crosshairLong * 0.5) &&
+        f_texPos.y < (0.5 + k_crosshairLong * 0.5)
+        ) || (
+        f_texPos.x > (0.5 - k_crosshairLong * 0.5) &&
+        f_texPos.x < (0.5 + k_crosshairLong * 0.5) &&
+        f_texPos.y > (0.5 - k_crosshairShort * 0.5) &&
+        f_texPos.y < (0.5 + k_crosshairShort * 0.5)
+    );
 }
 
 void doBloom() {
@@ -90,26 +107,9 @@ void doBloom() {
     }
 
     // Crosshair UI code
-    bool inCrosshair = false;
-    float crosshairLong = .02;
-    float crosshairShort = .0025;
 
-    // Determines if the texture position is in the crosshair
-    inCrosshair = (
-        f_texPos.x > (.50 - crosshairShort / 2) &&
-        f_texPos.x < (.50 + crosshairShort / 2) &&
-        f_texPos.y > (.50 - crosshairLong / 2) &&
-        f_texPos.y < (.50 + crosshairLong / 2)
-        ) || (
-        f_texPos.x > (.50 - crosshairLong / 2) &&
-        f_texPos.x < (.50 + crosshairLong / 2) &&
-        f_texPos.y > (.50 - crosshairShort / 2) &&
-        f_texPos.y < (.50 + crosshairShort / 2)
-    );
-
-    // Finally...
-    if(inCrosshair) {
-        color = vec4(1.0 - color.x, 1.0 - color.y, 1.0 - color.z, 1.0);
+    if (inCrosshair()) {
+        color.rgb = 1.0 - color.rgb;
     }
 }
 

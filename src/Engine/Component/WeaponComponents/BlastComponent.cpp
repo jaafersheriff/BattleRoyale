@@ -7,6 +7,8 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "System/ParticleSystem.hpp"
 #include "Component/ParticleComponents/ParticleAssasinComponent.hpp"
+#include "Component/EnemyComponents/EnemyComponent.hpp"
+#include "Component/PlayerComponents/PlayerComponent.hpp"
 
 
 
@@ -30,7 +32,17 @@ void BlastComponent::init() {
             float r(m_bounder->transSphere().radius);
             if (d2 < r * r) {
                 float proximity(1.0f - std::sqrt(d2) / r);
-                health->changeValue(-m_damage * proximity);
+                EnemyComponent * enemy;
+                PlayerComponent * player;
+                if (enemy = msg.bounder2.gameObject().getComponentByType<EnemyComponent>()) {
+                    enemy->damage(m_damage * proximity);
+                }
+                else if (player = msg.bounder2.gameObject().getComponentByType<PlayerComponent>()){
+                    player->damage(m_damage * proximity);
+                }
+                else {
+                    health->changeValue(-m_damage * proximity);
+                }
             }
         }
     });
