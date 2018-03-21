@@ -759,16 +759,18 @@ void GameSystem::update(float dt) {
 }
 
 void GameSystem::updateGame(float dt) {
+    // Player runs out of ammo
+    if (Player::ammo && Player::ammo->value() < 0.5f) {
+        s_changeCulture = true;
+        s_newCulture = Culture::none;
+    }
+
     // Player visits shop
     if (s_shopVisited != Culture::none && s_shopVisited != s_culture) {
         s_changeCulture = true;
         s_newCulture = s_shopVisited;
-        s_shopVisited = Culture::none;
     }
-    if (s_changeCulture) {
-        setCulture(s_newCulture);
-        s_changeCulture = false;
-    }
+    s_shopVisited = Culture::none;
 
     // Player uses weapon
     if (s_useWeapon) {
@@ -786,6 +788,12 @@ void GameSystem::updateGame(float dt) {
     // Extra logic for depleting sriracha ammo
     if (Weapons::SrirachaBottle::playerSriracha && Mouse::isDown(0)) {
         Weapons::SrirachaBottle::updatePlayers(dt);
+    }
+
+    // Change culture
+    if (s_changeCulture) {
+        setCulture(s_newCulture);
+        s_changeCulture = false;
     }
 
     // In between waves
