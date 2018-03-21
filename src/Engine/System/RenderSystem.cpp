@@ -40,6 +40,7 @@ UniquePtr<RayShader> RenderSystem::s_rayShader;
 UniquePtr<OctreeShader> RenderSystem::s_octreeShader;
 UniquePtr<PostProcessShader> RenderSystem::s_postProcessShader;
 UniquePtr<BlurShader> RenderSystem::s_blurShader;
+UniquePtr<HealthShader> RenderSystem::s_healthShader;
  
 
 void RenderSystem::init() {
@@ -66,7 +67,7 @@ void RenderSystem::init() {
     glm::vec3 u = glm::normalize(glm::cross(w, glm::vec3(0.f, 1.f, 0.f)));
     glm::vec3 v = glm::normalize(glm::cross(u, w));
     s_lightSpatial = &Scene::addComponent<SpatialComponent>(*s_lightObject, glm::vec3(-27.26, 5.5, -50), glm::vec3(2.f), glm::mat3(u, v, w));
-    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, glm::vec2(-115.f, 118.f), glm::vec2(-42.f, 234.f), 42.f, 156.f);
+    s_lightCamera = &Scene::addComponent<CameraComponent>(*s_lightObject, glm::vec2(-115.f, 118.f), glm::vec2(-42.f, 234.f), -40.f, 156.f);
     //Scene::addComponent<DiffuseRenderComponent>(*s_lightObject, *s_lightSpatial, *Loader::getMesh("cube.obj"), ModelTexture(Material(glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 1.f), 16.f)), true, glm::vec2(1, 1));
 
     /* Init shaders */
@@ -76,7 +77,8 @@ void RenderSystem::init() {
         !(        s_rayShader = UniquePtr<        RayShader>::make(        "ray_vert.glsl",         "ray_frag.glsl")) ||
         !(s_postProcessShader = UniquePtr<PostProcessShader>::make("postprocess_vert.glsl", "postprocess_frag.glsl")) ||
         !(     s_shadowShader = UniquePtr<ShadowDepthShader>::make(     "shadow_vert.glsl",      "shadow_frag.glsl")) ||
-        !(       s_blurShader = UniquePtr<       BlurShader>::make(       "pass_vert.glsl",        "blur_frag.glsl"))
+        !(       s_blurShader = UniquePtr<       BlurShader>::make(       "pass_vert.glsl",        "blur_frag.glsl")) ||
+        !(     s_healthShader = UniquePtr<     HealthShader>::make(     "health_vert.glsl",      "health_frag.glsl"))
     ) {
         std::cin.get();
         std::exit(EXIT_FAILURE);
@@ -88,6 +90,12 @@ void RenderSystem::init() {
     s_postProcessShader->init();
     s_shadowShader->init();
     s_blurShader->init();
+    s_healthShader->init();
+
+    // Disable certain shaders
+    s_bounderShader->setEnabled(false);
+    s_octreeShader->setEnabled(false);
+    s_rayShader->setEnabled(false);
 
     /* Init FBO */
     initFBO();
@@ -105,7 +113,6 @@ void RenderSystem::update(float dt) {
         comp->update(dt);
     }
 
-
     if (!s_playerCamera) {
         return;
     }
@@ -119,6 +126,12 @@ void RenderSystem::update(float dt) {
     }
 
     /* Reset rendering display */
+    //const glm::vec4 mainClearColor(0.5f, 0.8f, 0.9f, 1.f);
+    //const glm::vec4 brightClearColor(0.0f);
+    //const float clearDepth(1.0f);
+    //glClearBufferfv(GL_COLOR, 0, reinterpret_cast<const float *>(&mainClearColor));
+    //glClearBufferfv(GL_COLOR, 1, reinterpret_cast<const float *>(&brightClearColor));
+    //glClearBufferfv(GL_DEPTH, 0, &clearDepth);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glm::ivec2 size = Window::getFrameSize();
     glViewport(0, 0, size.x, size.y);
@@ -128,6 +141,7 @@ void RenderSystem::update(float dt) {
     s_bounderShader->render(s_playerCamera);
     s_octreeShader->render(s_playerCamera);
     s_rayShader->render(s_playerCamera);
+    s_healthShader->render(s_playerCamera);
 
     /* Rebind screen FBO */
     if (s_postProcessShader->isEnabled()) {

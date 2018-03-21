@@ -54,9 +54,12 @@ class BulletComponent : public ProjectileComponent {
 
     virtual void init() override;
 
+    virtual void update(float dt) override;
+
     protected:
 
     float m_damage;
+    bool m_alreadyCollided;
 
 };
 
