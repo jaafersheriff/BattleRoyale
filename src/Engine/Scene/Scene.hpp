@@ -100,6 +100,9 @@ class Scene {
     static float soundDT;
     static float soundMessagingDT;
 
+    static bool mapping;
+    static String mapFilename;
+
 };
 
 
