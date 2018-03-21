@@ -93,7 +93,7 @@ void main() {
 
     if(doBloom){
         color.rgb = diffuseColor;
-        BrightColor.rgb = color.rbg;
+        BrightColor.rgb = color.rgb;
     }
 
     BrightColor.a = 1.0;
