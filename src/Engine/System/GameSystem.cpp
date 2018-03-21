@@ -500,17 +500,20 @@ void GameSystem::Freecam::init() {
 // MUSIC
 
 const String GameSystem::Music::k_defMusic = "bgRock1.mp3";
+const String GameSystem::Music::k_american = "bgAmericanFunky1.mp3";
+const String GameSystem::Music::k_asian = "bgAsianStereotype1.mp3";
+const String GameSystem::Music::k_italian = "bgItalian2.mp3";
 
 bool GameSystem::Music::s_playing = false;
 
 void GameSystem::Music::start() {
-    SoundSystem::setBackgroundMusic(k_defMusic, true);
+    if (s_playing) return;
     SoundSystem::playBackgroundMusic();
-    SoundSystem::setBackgroundMusicVolume(0.05f);
     s_playing = true;
 }
 
 void GameSystem::Music::stop() {
+    if (!s_playing) return;
     SoundSystem::pauseBackgroundMusic();
     s_playing = false;
 }
@@ -519,6 +522,17 @@ void GameSystem::Music::toggle() {
     s_playing = !s_playing;
     if (s_playing) start();
     else stop();
+}
+
+void GameSystem::Music::set() {
+    stop();
+    switch (s_culture) {
+        case Culture::american: SoundSystem::setBackgroundMusic(k_american, true); break;
+        case Culture::asian: SoundSystem::setBackgroundMusic(k_asian, true); break;
+        case Culture::italian: SoundSystem::setBackgroundMusic(k_italian, true); break;
+        case Culture::none: stop(); return;
+    }
+    start();
 }
 
 
@@ -575,8 +589,8 @@ void GameSystem::init() {
     // Init Shops
     Shops::init();
 
-    // Start music
-    Music::start();
+    // Set music volume
+    SoundSystem::setBackgroundMusicVolume(0.1f);
 
     // Set message callbacks
     setupMessageCallbacks();
@@ -671,6 +685,7 @@ void GameSystem::setCulture(Culture culture) {
     s_culture = culture;
 
     equipWeapon();
+    Music::set();
 }
 
 void GameSystem::equipWeapon() {

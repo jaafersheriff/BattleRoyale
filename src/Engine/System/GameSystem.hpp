@@ -241,6 +241,7 @@ class GameSystem {
     struct Music {
 
         static const String k_defMusic;
+        static const String k_american, k_asian, k_italian;
 
         static bool s_playing;
 
@@ -249,6 +250,8 @@ class GameSystem {
         static void start();
 
         static void toggle();
+
+        static void set();
 
     };
     
