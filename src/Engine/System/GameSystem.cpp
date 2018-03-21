@@ -85,18 +85,22 @@ int GameSystem::Wave::k_enemiesInWave = GameSystem::Wave::computeEnemiesInWave()
 float GameSystem::Wave::k_enemyHealth = GameSystem::Wave::computeEnemyHealth();
 float GameSystem::Wave::k_enemySpeed = GameSystem::Wave::computeEnemySpeed();
 
+/* Compute the number of enemies that will be in the current wave */
 int GameSystem::Wave::computeEnemiesInWave() {
     return 10 + (int)glm::floor(30 * glm::log(k_waveNumber));
 }
 
+/* Return a random spawn point from the list above plus an offset */
 glm::vec3 GameSystem::Wave::randomSpawnPoint() {
     return k_spawnPoints[Util::randomUInt(k_spawnPoints.size())] + glm::vec3(Util::random() * 3.f, 0.f, Util::random() * 3.f);
 }
 
+/* Compute the max health for enemies in the current wave */
 float GameSystem::Wave::computeEnemyHealth() {
     return 100.f + glm::pow(k_waveNumber, 3.2f) / 15.f;
 }
 
+/* Compute the max speed for enemies in the current wave */
 float GameSystem::Wave::computeEnemySpeed() {
     return glm::min(Player::k_moveSpeed * 0.95f, k_waveNumber / 2.f + 2);
 }
@@ -549,7 +553,7 @@ void GameSystem::update(float dt) {
         comp->update(dt);
     }
 
-    /* Increment wave if all enemies from previous wave are A. done spawning and B. dead */
+    /* Increment the wave if all enemies from previous wave done spawning and dead */
     Wave::k_enemiesAlive = s_enemyComponents.size();
     if (!s_enemyComponents.size() && !Wave::k_enemiesInWave) {
         Wave::k_waveNumber++;
