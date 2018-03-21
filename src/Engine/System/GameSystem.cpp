@@ -66,44 +66,11 @@ void GameSystem::Player::init() {
     handSpatial = &Scene::addComponent<SpatialComponent>(*gameObject, k_mainHandPosition, headSpatial);
 }
 
-//==============================================================================
-// WAVES
-const Vector<glm::vec3> GameSystem::Wave::k_spawnPoints = {
-    glm::vec3(  0.84, -0.54, -37.80),   // door mid 
-    glm::vec3( 12.70,  0.08,  11.77),   // door back right
-    glm::vec3(-12.08, -0.10,  11.80),   // door back left 
-    glm::vec3(-30.14,  5.55,   8.92),   // seating area back left
-    glm::vec3( 33.81,  5.28,   0.67),   // seating area back right
-    glm::vec3( 11.23,  5.21, -39.39),   // seating area mid back right
-    glm::vec3( -6.42,  5.31, -55.36),   // seating area mid front left 
-};
-int GameSystem::Wave::waveNumber = 1;
-float GameSystem::Wave::spawnTimer = 0.f;
-float GameSystem::Wave::spawnTimerMax = 1.f;
-int GameSystem::Wave::enemiesAlive = 0;
-int GameSystem::Wave::enemiesInWave = GameSystem::Wave::computeEnemiesInWave();
-float GameSystem::Wave::enemyHealth = GameSystem::Wave::computeEnemyHealth();
-float GameSystem::Wave::enemySpeed = GameSystem::Wave::computeEnemySpeed();
-
-/* Compute the number of enemies that will be in the current wave */
-int GameSystem::Wave::computeEnemiesInWave() {
-    return 10 + (int)glm::floor(30 * glm::log(waveNumber));
+void GameSystem::Player::restore() {
+    health->setValue(health->maxValue());
 }
 
-/* Return a random spawn point from the list above plus an offset */
-glm::vec3 GameSystem::Wave::randomSpawnPoint() {
-    return k_spawnPoints[Util::randomUInt(int(k_spawnPoints.size()))] + glm::vec3(Util::random() * 3.f, 0.f, Util::random() * 3.f);
-}
-
-/* Compute the max health for enemies in the current wave */
-float GameSystem::Wave::computeEnemyHealth() {
-    return 100.f + float(glm::pow(waveNumber, 3.2f)) / 15.f;
-}
-
-/* Compute the max speed for enemies in the current wave */
-float GameSystem::Wave::computeEnemySpeed() {
-    return glm::min(Player::k_moveSpeed * 0.95f, waveNumber / 2.f + 2);
-}
+ 
 
 //==============================================================================
 // ENEMIES
@@ -173,6 +140,12 @@ void GameSystem::Enemies::Basic::spawn() {
 //------------------------------------------------------------------------------
 // All
 
+void GameSystem::Enemies::killAll() {
+    for (EnemyComponent * enemy : s_enemyComponents) {
+        Scene::destroyGameObject(enemy->gameObject());
+    }
+}
+
 void GameSystem::Enemies::enablePathfinding() {
     for (EnemyComponent * comp : s_enemyComponents) {
         GameObject & enemy(comp->gameObject());
@@ -191,6 +164,90 @@ void GameSystem::Enemies::disablePathfinding() {
             Scene::removeComponent(*path);
         }
     }
+}
+
+
+
+//==============================================================================
+// WAVES
+
+const Vector<glm::vec3> GameSystem::Wave::k_spawnPoints = {
+    glm::vec3(  0.84, -0.54, -37.80),   // door mid 
+    glm::vec3( 12.70,  0.08,  11.77),   // door back right
+    glm::vec3(-12.08, -0.10,  11.80),   // door back left 
+    glm::vec3(-30.14,  5.55,   8.92),   // seating area back left
+    glm::vec3( 33.81,  5.28,   0.67),   // seating area back right
+    glm::vec3( 11.23,  5.21, -39.39),   // seating area mid back right
+    glm::vec3( -6.42,  5.31, -55.36),   // seating area mid front left 
+};
+int GameSystem::Wave::waveNumber = 0;
+float GameSystem::Wave::spawnPeriod = 0.0f;
+float GameSystem::Wave::spawnCooldown = 0.0f;
+int GameSystem::Wave::enemiesLeft = 0;
+float GameSystem::Wave::enemyHealth = 0.0f;
+float GameSystem::Wave::enemySpeed = 0.0f;
+
+/* Compute the number of enemies that will be in the current wave */
+// Wave 1: 5, Wave 2: 13, Wave 5: 31, Wave 10: 51, Wave 100: 148
+int GameSystem::Wave::computeEnemiesInWave() {
+    //return 10 + (int)glm::floor(30 * glm::log(waveNumber));
+    return int(glm::floor(5.0f + 30.0f * glm::log(float(waveNumber))));
+}
+
+/* Return a random spawn point from the list above plus an offset */
+glm::vec3 GameSystem::Wave::randomSpawnPoint() {
+    return k_spawnPoints[Util::randomUInt(int(k_spawnPoints.size()))] + glm::vec3(Util::random() * 3.f, 0.f, Util::random() * 3.f);
+}
+
+/* Compute the max health for enemies in the current wave */
+// Extra 10 hp per wave
+float GameSystem::Wave::computeEnemyHealth() {
+    //return 100.f + float(glm::pow(waveNumber, 3.2f)) / 15.f;
+    return 100.0f + float((waveNumber - 1) * 10);
+}
+
+/* Compute the max speed for enemies in the current wave */
+// Wave 1: 20% player's sprint speed, Wave 2: 40%, Wave 5: 70%, Wave 10: 90%, Wave infinity: 100% 
+float GameSystem::Wave::computeEnemySpeed() {
+    //return glm::min(Player::k_moveSpeed * 0.95f, waveNumber / 2.f + 2);
+    return (1.0f - glm::exp(-0.25 * float(waveNumber))) * Player::k_sprintSpeed;
+}
+
+// Time between enemy spawns
+// Wave 1: 3s, Wave 2: 2s, Wave 5: 0.8s, Wave 10+: 0.5s
+float GameSystem::Wave::computeSpawnTimerMax() {
+    return glm::exp(0.5f * (3.0f - waveNumber)) + 0.5f;
+}
+
+void GameSystem::Wave::next() {
+    ++waveNumber;
+    enemiesLeft = computeEnemiesInWave();
+    enemySpeed = computeEnemySpeed();
+    enemyHealth = computeEnemyHealth();
+    spawnPeriod = computeSpawnTimerMax();
+    spawnCooldown = Util::random(0.5f, 1.5f) * spawnPeriod;
+}
+
+void GameSystem::Wave::spawnAny(float dt) {
+    if (!enemiesLeft) {
+        return;
+    }
+
+    spawnCooldown -= dt;
+    if (spawnCooldown <= 0.0f) {
+        Enemies::Basic::create(Wave::randomSpawnPoint(), Wave::enemySpeed, Wave::enemyHealth);
+        spawnCooldown = Util::random(0.5f, 1.5f) * spawnPeriod;
+        --enemiesLeft;
+    }
+}
+
+void GameSystem::Wave::end() {
+    Enemies::killAll();
+    enemiesLeft = 0;
+}
+
+bool GameSystem::Wave::finished() {
+    return enemiesLeft <= 0 && s_enemyComponents.empty();
 }
 
 
@@ -405,7 +462,7 @@ void GameSystem::Weapons::destroyAllWeapons() {
 
 
 //==============================================================================
-// STORES
+// SHOPS
 
 //------------------------------------------------------------------------------
 // American
@@ -420,10 +477,18 @@ void GameSystem::Shops::American::init() {
     auto collisionCallback([&](const Message & msg_) {
         const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
         if (&msg.bounder1 == bounder && &msg.bounder2 == static_cast<const BounderComponent *>(Player::bounder)) {
-            s_storeVisited = Culture::american;
+            s_shopVisited = Culture::american;
         }
     });
     Scene::addReceiver<CollisionMessage>(&obj, collisionCallback);
+}
+
+void GameSystem::Shops::American::open() {
+
+}
+
+void GameSystem::Shops::American::close() {
+
 }
 
 //------------------------------------------------------------------------------
@@ -439,10 +504,18 @@ void GameSystem::Shops::Asian::init() {
     auto collisionCallback([&](const Message & msg_) {
         const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
         if (&msg.bounder1 == bounder && &msg.bounder2 == static_cast<const BounderComponent *>(Player::bounder)) {
-            s_storeVisited = Culture::asian;
+            s_shopVisited = Culture::asian;
         }
     });
     Scene::addReceiver<CollisionMessage>(&obj, collisionCallback);
+}
+
+void GameSystem::Shops::Asian::open() {
+
+}
+
+void GameSystem::Shops::Asian::close() {
+
 }
 
 //------------------------------------------------------------------------------
@@ -458,10 +531,18 @@ void GameSystem::Shops::Italian::init() {
     auto collisionCallback([&](const Message & msg_) {
         const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
         if (&msg.bounder1 == bounder && &msg.bounder2 == static_cast<const BounderComponent *>(Player::bounder)) {
-            s_storeVisited = Culture::italian;
+            s_shopVisited = Culture::italian;
         }
     });
     Scene::addReceiver<CollisionMessage>(&obj, collisionCallback);
+}
+
+void GameSystem::Shops::Italian::open() {
+
+}
+
+void GameSystem::Shops::Italian::close() {
+
 }
 
 //------------------------------------------------------------------------------
@@ -471,6 +552,12 @@ void GameSystem::Shops::init() {
     American::init();
     Asian::init();
     Italian::init();
+}
+
+void GameSystem::Shops::openAll() {
+    American::open();
+    Asian::open();
+    Italian::open();
 }
 
 
@@ -500,7 +587,7 @@ void GameSystem::Freecam::init() {
 // MUSIC
 
 const String GameSystem::Music::k_defMusic = "bgRock1.mp3";
-const String GameSystem::Music::k_american = "bgAmericanFunky1.mp3";
+const String GameSystem::Music::k_american = "bgAmericanFunky1_noIntro.mp3";
 const String GameSystem::Music::k_asian = "bgAsianStereotype1.mp3";
 const String GameSystem::Music::k_italian = "bgItalian2.mp3";
 
@@ -509,6 +596,7 @@ bool GameSystem::Music::s_playing = false;
 void GameSystem::Music::start() {
     if (s_playing) return;
     SoundSystem::playBackgroundMusic();
+    SoundSystem::setBackgroundMusicVolume(0.05f);
     s_playing = true;
 }
 
@@ -530,7 +618,7 @@ void GameSystem::Music::set() {
         case Culture::american: SoundSystem::setBackgroundMusic(k_american, true); break;
         case Culture::asian: SoundSystem::setBackgroundMusic(k_asian, true); break;
         case Culture::italian: SoundSystem::setBackgroundMusic(k_italian, true); break;
-        case Culture::none: stop(); return;
+        case Culture::none: return;
     }
     start();
 }
@@ -539,8 +627,6 @@ void GameSystem::Music::set() {
 
 //==============================================================================
 // Game System
- 
-const glm::vec3 GameSystem::k_defGravity = glm::vec3(0.0f, -10.0f, 0.0f);
 
 const Vector<CameraComponent *> & GameSystem::s_cameraComponents(Scene::getComponents<CameraComponent>());
 const Vector<CameraControllerComponent *> & GameSystem::s_cameraControllerComponents(Scene::getComponents<CameraControllerComponent>());
@@ -550,13 +636,18 @@ const Vector<EnemyComponent *> & GameSystem::s_enemyComponents(Scene::getCompone
 const Vector<ProjectileComponent *> & GameSystem::s_projectileComponents(Scene::getComponents<ProjectileComponent>());
 const Vector<BlastComponent *> & GameSystem::s_blastComponents(Scene::getComponents<BlastComponent>());
 const Vector<MeleeComponent *> & GameSystem::s_meleeComponents(Scene::getComponents<MeleeComponent>());
+ 
+const glm::vec3 GameSystem::k_defGravity = glm::vec3(0.0f, -10.0f, 0.0f);
+const float GameSystem::k_restTime = 10.0f;
 
 GameSystem::Culture GameSystem::s_culture = Culture::none;
 bool GameSystem::s_changeCulture = false;
 GameSystem::Culture GameSystem::s_newCulture = Culture::none;
 bool GameSystem::s_useWeapon = false;
 bool GameSystem::s_unuseWeapon = false;
-GameSystem::Culture GameSystem::s_storeVisited = Culture::none;
+GameSystem::Culture GameSystem::s_shopVisited = Culture::none;
+bool GameSystem::s_resting = true;
+float GameSystem::s_restCooldown = k_restTime;
 
 void GameSystem::init() {
 
@@ -588,9 +679,6 @@ void GameSystem::init() {
 
     // Init Shops
     Shops::init();
-
-    // Set music volume
-    SoundSystem::setBackgroundMusicVolume(0.1f);
 
     // Set message callbacks
     setupMessageCallbacks();
@@ -641,15 +729,18 @@ void GameSystem::update(float dt) {
 }
 
 void GameSystem::updateGame(float dt) {
-    if (s_storeVisited != Culture::none && s_storeVisited != s_culture) {
+    // Player visits shop
+    if (s_shopVisited != Culture::none && s_shopVisited != s_culture) {
         s_changeCulture = true;
-        s_newCulture = s_storeVisited;
-        s_storeVisited = Culture::none;
+        s_newCulture = s_shopVisited;
+        s_shopVisited = Culture::none;
     }
     if (s_changeCulture) {
         setCulture(s_newCulture);
         s_changeCulture = false;
     }
+
+    // Player uses weapon
     if (s_useWeapon) {
         switch (s_culture) {
             case Culture::american: Weapons::SodaGrenade::fireFromPlayer(); break;
@@ -663,21 +754,26 @@ void GameSystem::updateGame(float dt) {
         s_unuseWeapon = false;
     }
 
-    /* Increment the wave if all enemies from previous wave done spawning and dead */
-    Wave::enemiesAlive = int(s_enemyComponents.size());
-    if (!s_enemyComponents.size() && !Wave::enemiesInWave) {
-        Wave::waveNumber++;
-        Wave::enemiesInWave = Wave::computeEnemiesInWave(); 
-        Wave::enemySpeed = Wave::computeEnemySpeed();
-        Wave::enemyHealth = Wave::computeEnemyHealth();
+    // In between waves
+    if (s_resting) {
+        s_restCooldown -= dt;
+        // Rest over
+        if (s_restCooldown <= 0.0f) {
+            startWave();
+            s_resting = false;
+        }
     }
-    /* Spawn enemy based on timer */
-    Wave::spawnTimer += dt;
-    if (Wave::spawnTimer > Wave::spawnTimerMax && Wave::Wave::enemiesInWave) {
-        Wave::spawnTimer = 0.f;
-        Wave::spawnTimerMax = Util::random() / 2.f;
-        Enemies::Basic::create(Wave::randomSpawnPoint(), Wave::enemySpeed, Wave::enemyHealth);
-        Wave::Wave::enemiesInWave--;
+    // Wave ongoing
+    else {
+        // Wave finished
+        if (Wave::finished()) {
+            endWave();
+            s_resting = true;
+            s_restCooldown = k_restTime;
+        }
+        else {
+            Wave::spawnAny(dt);
+        }
     }
 }
 
@@ -704,6 +800,16 @@ void GameSystem::unequipWeapon() {
         case Culture::asian: Weapons::SrirachaBottle::unequip(); break;
         case Culture::italian: Weapons::PizzaSlice::unequip(); break;
     }
+}
+
+void GameSystem::startWave() {
+    SoundSystem::playSound("gong.mp3");
+    Player::restore();
+    Wave::next();
+}
+
+void GameSystem::endWave() {
+    Shops::openAll();
 }
 
 
@@ -742,14 +848,32 @@ void GameSystem::setupMessageCallbacks() {
     });
     Scene::addReceiver<MouseMessage>(nullptr, useWeaponCallback);
 
-    // Spawn enemy (enter)
-    auto spawnEnemyCallback([&](const Message & msg_) {
+    // Game Controls
+    auto gameControlsCallback([&](const Message & msg_) {
         const KeyMessage & msg(static_cast<const KeyMessage &>(msg_));
-        if (msg.key == GLFW_KEY_ENTER && msg.action == GLFW_PRESS) {
+        if (msg.action != GLFW_PRESS) {
+            return;
+        }
+        
+        // Spawn Enemy (enter)
+        if (msg.key == GLFW_KEY_ENTER) {
             Enemies::Basic::spawn();
         }
+        // Kill all enemies (delete)
+        else if (msg.key == GLFW_KEY_DELETE) {
+            Enemies::killAll();
+        }
+        // End wave or end rest (backspace)
+        else if (msg.key == GLFW_KEY_BACKSPACE) {
+            if (s_resting) {
+                s_restCooldown = 0.0f;
+            }
+            else {
+                Wave::end();
+            }
+        }
     });
-    Scene::addReceiver<KeyMessage>(nullptr, spawnEnemyCallback);
+    Scene::addReceiver<KeyMessage>(nullptr, gameControlsCallback);
 
     // Shoot ray (ctrl-click)
     auto rayPickCallback([&](const Message & msg_) {
@@ -891,16 +1015,20 @@ void GameSystem::setupImGui() {
         }
     );
     
-    // Enemies/Waves
+    // Game stats
     Scene::addComponent<ImGuiComponent>(
         imguiGO, 
-        "Enemies",
+        "Game Stats",
         [&]() {
             ImGui::Text("Wave number: %d", Wave::waveNumber);
-            ImGui::Text("Enemies still spawning: %d", Wave::Wave::enemiesInWave);
-            ImGui::Text("Enemies alive: %d", Wave::enemiesAlive);
-            ImGui::Text("Enemy max health: %5.2f", Wave::enemyHealth);
-            ImGui::Text("Enemy max speed: %5.2f", Wave::enemySpeed);
+            ImGui::Text("Enemies still to spawn: %d", Wave::enemiesLeft);
+            ImGui::Text("Enemies alive: %d", s_enemyComponents.size());
+            ImGui::Text("Enemy health: %5.2f", Wave::enemyHealth);
+            ImGui::Text("Enemy speed: %5.2f", Wave::enemySpeed);
+            ImGui::Text("Enemy spawn period: %5.2f", Wave::spawnPeriod);
+            ImGui::Text("Enemy spawn cooldown: %5.2f", Wave::spawnCooldown);
+            ImGui::Text("Resting: %d", s_resting);
+            ImGui::Text("Rest time left: %5.2f", s_restCooldown);
        }
     );
 

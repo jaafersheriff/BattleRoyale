@@ -27,25 +27,6 @@ class GameSystem {
     private:
 
     //--------------------------------------------------------------------------
-    // Waves 
-
-    struct Wave {
-        static const Vector<glm::vec3> k_spawnPoints;
-        static int waveNumber;
-        static float spawnTimer;
-        static float spawnTimerMax;
-        static int enemiesAlive;
-        static int enemiesInWave;
-        static float enemyHealth;
-        static float enemySpeed;
-
-        static glm::vec3 randomSpawnPoint();
-        static int computeEnemiesInWave();
-        static float computeEnemyHealth();
-        static float computeEnemySpeed();
-    };
-
-    //--------------------------------------------------------------------------
     // Lighting
 
     struct Lighting {
@@ -89,6 +70,8 @@ class GameSystem {
 
         static void init();
 
+        static void restore();
+
     };
 
     //--------------------------------------------------------------------------
@@ -114,9 +97,40 @@ class GameSystem {
 
         };
 
+        static void killAll();
+
         static void enablePathfinding();
 
         static void disablePathfinding();
+
+    };
+
+    //--------------------------------------------------------------------------
+    // Waves 
+
+    struct Wave {
+
+        static const Vector<glm::vec3> k_spawnPoints;
+        static int waveNumber;
+        static float spawnCooldown;
+        static float spawnPeriod;
+        static int enemiesLeft;
+        static float enemyHealth;
+        static float enemySpeed;
+
+        static glm::vec3 randomSpawnPoint();
+        static int computeEnemiesInWave();
+        static float computeEnemyHealth();
+        static float computeEnemySpeed();
+        static float computeSpawnTimerMax();
+
+        static void next();
+
+        static void spawnAny(float dt);
+
+        static void end();
+
+        static bool finished();
 
     };
 
@@ -196,6 +210,10 @@ class GameSystem {
 
             static void init();
 
+            static void open();
+
+            static void close();
+
         };
 
         struct Asian {
@@ -203,6 +221,10 @@ class GameSystem {
             static BounderComponent * bounder;
 
             static void init();
+
+            static void open();
+
+            static void close();
 
         };
 
@@ -212,9 +234,15 @@ class GameSystem {
 
             static void init();
 
+            static void open();
+
+            static void close();
+
         };
 
         static void init();
+
+        static void openAll();
 
     };
 
@@ -272,13 +300,14 @@ class GameSystem {
     static void equipWeapon();
     static void unequipWeapon();
 
+    static void startWave();
+    static void endWave();
+
     static void setupMessageCallbacks();
 
     static void setupImGui();
 
     private:
-
-    static const glm::vec3 k_defGravity;
 
     static const Vector<CameraComponent *> & s_cameraComponents;
     static const Vector<CameraControllerComponent *> & s_cameraControllerComponents;
@@ -290,12 +319,17 @@ class GameSystem {
     static const Vector<BlastComponent *> & s_blastComponents;
     static const Vector<MeleeComponent *> & s_meleeComponents;
 
+    static const glm::vec3 k_defGravity;
+    static const float k_restTime;
+
     static Culture s_culture;
     static bool s_changeCulture;
     static Culture s_newCulture;
     static bool s_useWeapon;
     static bool s_unuseWeapon;
-    static Culture s_storeVisited;
+    static Culture s_shopVisited;
+    static bool s_resting;
+    static float s_restCooldown;
 
 };
 
