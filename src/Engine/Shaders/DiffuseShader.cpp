@@ -38,6 +38,9 @@ bool DiffuseShader::init() {
     
     addUniform("L");
     addUniform("shadowMap");
+    addUniform("lightDist");
+    addUniform("transitionDistance");
+    addUniform("shadowAmbience");
 
     addUniform("tiling");
 
@@ -50,7 +53,8 @@ bool DiffuseShader::init() {
     addUniform("matShine");
     addUniform("textureImage");
     addUniform("usesTexture");
-    addUniform("doBloom");
+    addUniform("allowBloom");
+    addUniform("isNeon");
 
     addUniform("isToon");
     addUniform("silAngle");
@@ -166,9 +170,13 @@ void DiffuseShader::render(const CameraComponent * camera) {
     loadVec3(getUniform("lightDir"), RenderSystem::getLightDir());
     loadVec3(getUniform("camPos"), camera->gameObject().getSpatial()->position());
     loadFloat(getUniform("ambience"), GameInterface::getAmbience());
+    loadBool(getUniform("allowBloom"), true);
 
     /* Shadows */
     loadMat4(getUniform("L"), RenderSystem::getL());
+    loadFloat(getUniform("lightDist"), RenderSystem::lightDist);
+    loadFloat(getUniform("transitionDistance"), RenderSystem::transitionDistance);
+    loadFloat(getUniform("shadowAmbience"), RenderSystem::shadowAmbience);
     GLuint shadowMap = RenderSystem::getShadowMap();
     glActiveTexture(GL_TEXTURE0 + shadowMap);
     glBindTexture(GL_TEXTURE_2D, shadowMap);
@@ -215,7 +223,7 @@ void DiffuseShader::render(const CameraComponent * camera) {
         loadVec2(getUniform("tiling"), drc->tiling());
 
         /* Bloom option*/
-        loadBool(getUniform("doBloom"), drc->doBloom());
+        loadBool(getUniform("isNeon"), drc->isNeon());
 
         /* Model matrix */
         loadMat4(getUniform("M"), drc->m_spatial->modelMatrix());

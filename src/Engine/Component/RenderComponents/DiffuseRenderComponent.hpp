@@ -32,7 +32,7 @@ class DiffuseRenderComponent : public Component {
         DiffuseRenderComponent(
             GameObject & gameObject, const SpatialComponent & spatial,
             const Mesh & mesh, const ModelTexture & texture,
-            bool toon, const glm::vec2 & tiling, bool doBloom
+            bool toon, const glm::vec2 & tiling, bool isNeon
         );
 
     public:
@@ -47,7 +47,7 @@ class DiffuseRenderComponent : public Component {
 
         bool isToon() const  { return m_isToon; }
 
-        bool doBloom() const { return m_doBloom; }
+        bool isNeon() const { return m_isNeon; }
 
         const glm::vec2 & tiling() const { return m_tiling; }
 
@@ -59,7 +59,7 @@ class DiffuseRenderComponent : public Component {
         ModelTexture m_modelTexture;
         bool m_isToon;
         glm::vec2 m_tiling;
-        bool m_doBloom;
+        bool m_isNeon;
         const SpatialComponent * m_spatial;
         Sphere m_sphere;
         Sphere m_transSphere;

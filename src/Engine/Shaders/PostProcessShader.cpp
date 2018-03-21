@@ -24,7 +24,6 @@ bool PostProcessShader::init() {
     
     addUniform("f_texCol");
     addUniform("f_bloomBlur");
-    addUniform("exposure");
 
     addUniform("lifePercentage");
 
@@ -87,7 +86,6 @@ void PostProcessShader::render(const CameraComponent * camera) {
 
     glUniform1i(getUniform("f_texCol"), 0);
     glUniform1i(getUniform("f_bloomBlur"), 1);
-    glUniform1f(getUniform("exposure"), 1.f);
 
     // Bloom shader does part of UI as well
     loadFloat(getUniform("lifePercentage"), .25f);

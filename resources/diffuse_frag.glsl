@@ -6,6 +6,7 @@ in vec3 fragNor;
 in vec2 texCoords;
 
 uniform sampler2D shadowMap;
+uniform float shadowAmbience;
 
 uniform float ambience;
 uniform vec3 matDiffuse;
@@ -17,7 +18,8 @@ uniform vec3 lightDir;
 
 uniform sampler2D textureImage;
 uniform bool usesTexture;
-uniform bool doBloom;
+uniform bool allowBloom;
+uniform bool isNeon;
 
 uniform bool isToon;
 uniform float silAngle;
@@ -29,15 +31,6 @@ uniform sampler1D cellSpecularScales;
 layout(location = 0) out vec4 color;
 layout (location = 1) out vec4 BrightColor;
 
-float inShade(vec3 lPos, float bias) {
-    float worldDepth = texture(shadowMap, lPos.xy).r;
-    float lightDepth = lPos.z;
-    if (lightDepth > worldDepth + bias) {
-        return 1.0;
-    }
-    return 0.0;
-}
-
 void main() {
     vec3 viewDir = camPos - fragPos;
     vec3 V = normalize(viewDir);
@@ -46,14 +39,14 @@ void main() {
 
     /* Base color */
     vec3 diffuseColor = matDiffuse;
-    float alpha = 1.0;
+    color.a = 1.0;
     if (usesTexture) {
         vec4 texColor = vec4(texture(textureImage, texCoords));
         if (texColor.a < 0.1) {
             discard; 
         }
         diffuseColor = texColor.xyz;
-        alpha = texColor.a;
+        color.a = texColor.a;
     }
 
     float lambert = dot(L, N);
@@ -71,32 +64,37 @@ void main() {
     }
     /* Blinn-Phong shading */
     else {
-        vec3 H = (L + V) / 2.0;
-        diffuseContrib = clamp(lambert, ambience, 1.0);
+        vec3 H = normalize(L + V);
+        diffuseContrib = max(lambert, 0.0f);
         specularContrib = pow(max(dot(H, N), 0.0), matShine);
     }
 
     /* Base color + shadow */
-    vec3 shift = fragLPos.xyz * 0.5 + 0.5;
-    float shade = 0.0;
-    if (shift.x >= 0.0 && shift.x <= 1.0 && shift.y >= 0.0 && shift.y <= 1.0) {
-        shade = inShade(shift, 0.01);
+    vec4 shadowCoords = fragLPos * 0.5 + 0.5;
+    float visibility = 1.0;
+    if (shadowCoords.x >= 0.0 && shadowCoords.x <= 1.0 && shadowCoords.y >= 0.0 && shadowCoords.y <= 1.0 && 
+            shadowCoords.z > texture(shadowMap, shadowCoords.xy).r + 0.005) {
+        visibility -= (shadowCoords.w * (1.0 - shadowAmbience));
     }
-    vec3 bColor = vec3(diffuseColor*diffuseContrib + matSpecular*specularContrib) * max((1 - shade), ambience);
+
+    color.rgb = (ambience + (matDiffuse * diffuseContrib + matSpecular * specularContrib) * visibility) * diffuseColor;
 
     /* Silhouettes */
     float edge = (isToon && (clamp(dot(N, V), 0.0, 1.0) < silAngle)) ? 0.0 : 1.0;
 
-    color = vec4(edge * bColor, alpha);
+    color.rgb *= edge;
 
-    float brightness = max(((color.r+color.g+color.b)/3.0 - 0.6)/0.4, 0.0f);
-
-    BrightColor.rgb = vec3(brightness);;
-
-    BrightColor.a = 1;
-
-	if(doBloom){
-		color.rgb =  texture(textureImage, texCoords).rgb;
-		BrightColor.rgb = color.rbg;
+    if (isNeon) {
+        color.rgb = diffuseColor;
+        BrightColor.rgb = color.rgb;
+    }
+	else if (allowBloom) {
+		// luminosity: average of min and max components
+		float brightness = (min(min(color.r, color.g), color.b) + max(max(color.r, color.g), color.b)) * 0.5;
+		const float bloomThreshold = 0.8f;
+		brightness = max((brightness - bloomThreshold) / (1.0 - bloomThreshold), 0.0);
+		BrightColor.rgb = color.rgb * brightness;
 	}
+
+    BrightColor.a = 1.0;
 }

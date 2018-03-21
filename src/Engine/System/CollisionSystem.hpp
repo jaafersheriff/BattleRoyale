@@ -51,6 +51,18 @@ class CollisionSystem {
         Vector<const BounderComponent *> * r_passed = nullptr,
         float maxDist = std::numeric_limits<float>::infinity()
     );
+    // Ray will pass through all bounders and store them in r_passed, if not null
+    static std::pair<const BounderComponent *, Intersect> pickAll(
+        const Ray & ray,
+        Vector<const BounderComponent *> * r_passed = nullptr,
+        float maxDist = std::numeric_limits<float>::infinity()
+    );
+    static std::pair<const BounderComponent *, Intersect> pickAll(
+        const Ray & ray,
+        const std::function<bool(const BounderComponent &)> & conditional,
+        Vector<const BounderComponent *> * r_passed = nullptr,
+        float maxDist = std::numeric_limits<float>::infinity()
+    );
 
     static void setOctree(const glm::vec3 & min, const glm::vec3 & max, float minCellSize);
 

@@ -53,4 +53,27 @@ class SpinAnimationComponent : public AnimationComponent {
 
 
 
+class ScaleToAnimationComponent : public AnimationComponent {
+
+    friend Scene;
+
+    protected:
+
+    ScaleToAnimationComponent(GameObject & gameObject, SpatialComponent & spatial, const glm::vec3 & scale, float speed);
+
+    public:
+
+    ScaleToAnimationComponent(ScaleToAnimationComponent && other) = default;
+
+    virtual void update(float dt) override;
+
+    protected:
+
+    glm::vec3 m_scale;
+    float m_speed;
+
+};
+
+
+
 // More to be added as demanded
