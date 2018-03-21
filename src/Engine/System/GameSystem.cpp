@@ -506,12 +506,13 @@ void GameSystem::Weapons::destroyAllWeapons() {
 // American
 
 BounderComponent * GameSystem::Shops::American::bounder = nullptr;
-bool GameSystem::Shops::American::isOpen = true;
+SpatialComponent * GameSystem::Shops::American::spatial = nullptr;
+bool GameSystem::Shops::American::isOpen = false;
 
 void GameSystem::Shops::American::init() {
     GameObject & obj(Scene::createGameObject());
-    SpatialComponent & spatial(Scene::addComponent<SpatialComponent>(obj));
-    bounder = &Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, 0, AABox(glm::vec3(-38.0f, -2.0f, -85.5f), glm::vec3(-36.0f, 1.0f, -73.5f)));
+    spatial = &Scene::addComponent<SpatialComponent>(obj, glm::vec3(-37.0f, 0.5f, -79.5f), glm::vec3(1.0f), glm::mat3(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0)));
+    bounder = &Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, 0, AABox(glm::vec3(-6.0f, -1.5f, -1.0f), glm::vec3(6.0f, 1.5f, 1.0f)));
 
     auto collisionCallback([&](const Message & msg_) {
         const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
@@ -525,10 +526,15 @@ void GameSystem::Shops::American::init() {
 void GameSystem::Shops::American::open() {
     if (isOpen) return;
     SoundSystem::playSound3D("cash_register.wav", bounder->center());
+    ParticleSystem::addTwinklePC(*spatial);
     isOpen = true;
 }
 
-void GameSystem::Shops::American::close() {    
+void GameSystem::Shops::American::close() {  
+    ParticleComponent * comp(spatial->gameObject().getComponentByType<ParticleComponent>());
+    if (comp) {
+        Scene::removeComponent(*comp);
+    }  
     isOpen = false;
 }
 
@@ -536,12 +542,13 @@ void GameSystem::Shops::American::close() {
 // Asian
 
 BounderComponent * GameSystem::Shops::Asian::bounder = nullptr;
-bool GameSystem::Shops::Asian::isOpen = true;
+SpatialComponent * GameSystem::Shops::Asian::spatial = nullptr;
+bool GameSystem::Shops::Asian::isOpen = false;
 
 void GameSystem::Shops::Asian::init() {
     GameObject & obj(Scene::createGameObject());
-    SpatialComponent & spatial(Scene::addComponent<SpatialComponent>(obj));
-    bounder = &Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, 0, AABox(glm::vec3(-14.0f, -2.0f, -172.0f), glm::vec3(-12.0f, 1.0f, -161.0f)));
+    spatial = &Scene::addComponent<SpatialComponent>(obj, glm::vec3(-13.0f, -0.5f, -166.0f), glm::vec3(1.0f), glm::mat3(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0)));
+    bounder = &Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, 0, AABox(glm::vec3(-6.0f, -1.5f, -1.0f), glm::vec3(6.0f, 1.5f, 1.0f)));
 
     auto collisionCallback([&](const Message & msg_) {
         const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
@@ -555,10 +562,15 @@ void GameSystem::Shops::Asian::init() {
 void GameSystem::Shops::Asian::open() {
     if (isOpen) return;
     SoundSystem::playSound3D("cash_register.wav", bounder->center());
+    ParticleSystem::addTwinklePC(*spatial);
     isOpen = true;
 }
 
-void GameSystem::Shops::Asian::close() {    
+void GameSystem::Shops::Asian::close() {
+    ParticleComponent * comp(spatial->gameObject().getComponentByType<ParticleComponent>());
+    if (comp) {
+        Scene::removeComponent(*comp);
+    }
     isOpen = false;
 }
 
@@ -566,12 +578,13 @@ void GameSystem::Shops::Asian::close() {
 // Italian
 
 BounderComponent * GameSystem::Shops::Italian::bounder = nullptr;
-bool GameSystem::Shops::Italian::isOpen = true;
+SpatialComponent * GameSystem::Shops::Italian::spatial = nullptr;
+bool GameSystem::Shops::Italian::isOpen = false;
 
 void GameSystem::Shops::Italian::init() {
     GameObject & obj(Scene::createGameObject());
-    SpatialComponent & spatial(Scene::addComponent<SpatialComponent>(obj));
-    bounder = &Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, 0, AABox(glm::vec3(38.0f, -2.0f, -46.0f), glm::vec3(40.5f, 1.0f, -34.5f)));
+    spatial = &Scene::addComponent<SpatialComponent>(obj, glm::vec3(39.0f, -0.5f, -40.0f), glm::vec3(1.0f), glm::mat3(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0)));
+    bounder = &Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, 0, AABox(glm::vec3(-6.0f, -1.5f, -1.0f), glm::vec3(6.0f, 1.5f, 1.0f)));
 
     auto collisionCallback([&](const Message & msg_) {
         const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
@@ -585,10 +598,15 @@ void GameSystem::Shops::Italian::init() {
 void GameSystem::Shops::Italian::open() {
     if (isOpen) return;
     SoundSystem::playSound("cash_register.wav");
+    ParticleSystem::addTwinklePC(*spatial);
     isOpen = true;
 }
 
-void GameSystem::Shops::Italian::close() {    
+void GameSystem::Shops::Italian::close() {
+    ParticleComponent * comp(spatial->gameObject().getComponentByType<ParticleComponent>());
+    if (comp) {
+        Scene::removeComponent(*comp);
+    }
     isOpen = false;
 }
 
