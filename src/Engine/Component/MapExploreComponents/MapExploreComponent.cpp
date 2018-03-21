@@ -220,7 +220,7 @@ void MapExploreComponent::update(float dt) {
 			std::cout << "Find Neighbors Done: " << graph.size() << std::endl;
 
 			 for (auto iter = graph.begin(); iter != graph.end(); ++iter) {
-			 	if (iter->second.size()) {
+			 	if (iter->second.size() == 8) {
 			 		drawCup(iter->first);
 			 	}
 			 	else {
@@ -308,13 +308,13 @@ bool MapExploreComponent::removeOutliers(std::unordered_set<glm::vec3, Pathfindi
 
 // Checks if there is something between the two points and if they are close enough
 bool MapExploreComponent::validNeighbor(glm::vec3 curPos, glm::vec3 candidate, float stepSize) {
-	glm::vec3 direction = Util::safeNorm(curPos - candidate);
+	//glm::vec3 direction = Util::safeNorm(curPos - candidate);
 
 	// Check that it is a neighbor on the grid
 	stepSize += .2;
 	if (abs(curPos.x - candidate.x) < stepSize && abs(curPos.z - candidate.z) < stepSize) {
 		// if step up or drop down
-		if (candidate.y - curPos.y < .4f) {//} || curPos.y > candidate.y) {
+		if (abs(candidate.y - curPos.y) < .5f) {//} || curPos.y > candidate.y) {
 			return true;
 		}
 	}

@@ -575,7 +575,7 @@ void GameSystem::init() {
     Loader::loadLevel(EngineApp::RESOURCE_DIR + "GameLevel_03.json");
     // Set octree. Needs to be manually adjusted to fit level size
     //if (!Scene::mapping)
-    //    CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
+    CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
 
     // Init Shops
     Shops::init();
@@ -666,7 +666,7 @@ void GameSystem::updateGame(float dt) {
         Wave::enemyHealth = Wave::computeEnemyHealth();
     }
     /* Spawn enemy based on timer */
-    Wave::spawnTimer += dt;
+     Wave::spawnTimer += dt;
     if (Wave::spawnTimer > Wave::spawnTimerMax && Wave::Wave::enemiesInWave) {
         Wave::spawnTimer = 0.f;
         Wave::spawnTimerMax = Util::random() / 2.f;
