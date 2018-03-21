@@ -121,7 +121,7 @@ const unsigned int GameSystem::Enemies::Basic::k_weight = 5;
 const float GameSystem::Enemies::Basic::k_moveSpeed = 5.f;
 const float GameSystem::Enemies::Basic::k_maxHP = 100.f;
 
-void GameSystem::Enemies::Basic::create(const glm::vec3 & position, const float moveSpeed, const float health) {
+void GameSystem::Enemies::Basic::create(const glm::vec3 & position, const float moveSpeed, const float health, bool mapping) {
     const Mesh * bodyMesh(Loader::getMesh(k_bodyMeshName));
     const Mesh * headMesh(Loader::getMesh(k_headMeshName));
     const Texture * texture(Loader::getTexture(k_textureName));
@@ -526,7 +526,7 @@ void GameSystem::init() {
     ParticleSystem::addWaterFountainPC(fountainSpat);
 
     if (Scene::mapping) 
-        Enemies::Basic::create(glm::vec3(0, -1.5, 20), true);
+        Enemies::Basic::create(glm::vec3(0, -1.5, 20), 100, 5.f, true);
 }
 
 void GameSystem::update(float dt) {
@@ -582,21 +582,21 @@ void GameSystem::updateGame(float dt) {
     }
 
     /* Increment the wave if all enemies from previous wave done spawning and dead */
-    Wave::enemiesAlive = s_enemyComponents.size();
-    if (!s_enemyComponents.size() && !Wave::enemiesInWave) {
-        Wave::waveNumber++;
-        Wave::enemiesInWave = Wave::computeEnemiesInWave(); 
-        Wave::enemySpeed = Wave::computeEnemySpeed();
-        Wave::enemyHealth = Wave::computeEnemyHealth();
-    }
+    // Wave::enemiesAlive = s_enemyComponents.size();
+    // if (!s_enemyComponents.size() && !Wave::enemiesInWave) {
+    //     Wave::waveNumber++;
+    //     Wave::enemiesInWave = Wave::computeEnemiesInWave(); 
+    //     Wave::enemySpeed = Wave::computeEnemySpeed();
+    //     Wave::enemyHealth = Wave::computeEnemyHealth();
+    // }
     /* Spawn enemy based on timer */
-    Wave::spawnTimer += dt;
-    if (Wave::spawnTimer > Wave::spawnTimerMax && Wave::Wave::enemiesInWave) {
-        Wave::spawnTimer = 0.f;
-        Wave::spawnTimerMax = Util::random() / 2.f;
-        Enemies::Basic::create(Wave::randomSpawnPoint(), Wave::enemySpeed, Wave::enemyHealth);
-        Wave::Wave::enemiesInWave--;
-    }
+    // Wave::spawnTimer += dt;
+    // if (Wave::spawnTimer > Wave::spawnTimerMax && Wave::Wave::enemiesInWave) {
+    //     Wave::spawnTimer = 0.f;
+    //     Wave::spawnTimerMax = Util::random() / 2.f;
+    //     Enemies::Basic::create(Wave::randomSpawnPoint(), Wave::enemySpeed, Wave::enemyHealth);
+    //     Wave::Wave::enemiesInWave--;
+    // }
 }
 
 void GameSystem::setCulture(Culture culture) {
