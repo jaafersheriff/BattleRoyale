@@ -16,7 +16,6 @@ void doBloom() {
     vec3 hdrColor = texture(f_texCol, f_texPos).rgb;      
     vec3 bloomColor = texture(f_bloomBlur, f_texPos).rgb;
 
-    vec3 additive = hdrColor + bloomColor;
     color = vec4(hdrColor + bloomColor, 1.0);
 }
 

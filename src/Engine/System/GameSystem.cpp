@@ -405,6 +405,77 @@ void GameSystem::Weapons::destroyAllWeapons() {
 
 
 //==============================================================================
+// STORES
+
+//------------------------------------------------------------------------------
+// American
+
+BounderComponent * GameSystem::Shops::American::bounder = nullptr;
+
+void GameSystem::Shops::American::init() {
+    GameObject & obj(Scene::createGameObject());
+    SpatialComponent & spatial(Scene::addComponent<SpatialComponent>(obj));
+    bounder = &Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, 0, AABox(glm::vec3(-38.0f, -2.0f, -85.5f), glm::vec3(-36.0f, 1.0f, -73.5f)));
+
+    auto collisionCallback([&](const Message & msg_) {
+        const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
+        if (&msg.bounder1 == bounder && &msg.bounder2 == static_cast<const BounderComponent *>(Player::bounder)) {
+            s_storeVisited = Culture::american;
+        }
+    });
+    Scene::addReceiver<CollisionMessage>(&obj, collisionCallback);
+}
+
+//------------------------------------------------------------------------------
+// Asian
+
+BounderComponent * GameSystem::Shops::Asian::bounder = nullptr;
+
+void GameSystem::Shops::Asian::init() {
+    GameObject & obj(Scene::createGameObject());
+    SpatialComponent & spatial(Scene::addComponent<SpatialComponent>(obj));
+    bounder = &Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, 0, AABox(glm::vec3(-14.0f, -2.0f, -172.0f), glm::vec3(-12.0f, 1.0f, -161.0f)));
+
+    auto collisionCallback([&](const Message & msg_) {
+        const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
+        if (&msg.bounder1 == bounder && &msg.bounder2 == static_cast<const BounderComponent *>(Player::bounder)) {
+            s_storeVisited = Culture::asian;
+        }
+    });
+    Scene::addReceiver<CollisionMessage>(&obj, collisionCallback);
+}
+
+//------------------------------------------------------------------------------
+// Italian
+
+BounderComponent * GameSystem::Shops::Italian::bounder = nullptr;
+
+void GameSystem::Shops::Italian::init() {
+    GameObject & obj(Scene::createGameObject());
+    SpatialComponent & spatial(Scene::addComponent<SpatialComponent>(obj));
+    bounder = &Scene::addComponentAs<AABBounderComponent, BounderComponent>(obj, 0, AABox(glm::vec3(38.0f, -2.0f, -46.0f), glm::vec3(40.5f, 1.0f, -34.5f)));
+
+    auto collisionCallback([&](const Message & msg_) {
+        const CollisionMessage & msg(static_cast<const CollisionMessage &>(msg_));
+        if (&msg.bounder1 == bounder && &msg.bounder2 == static_cast<const BounderComponent *>(Player::bounder)) {
+            s_storeVisited = Culture::italian;
+        }
+    });
+    Scene::addReceiver<CollisionMessage>(&obj, collisionCallback);
+}
+
+//------------------------------------------------------------------------------
+// All
+
+void GameSystem::Shops::init() {
+    American::init();
+    Asian::init();
+    Italian::init();
+}
+
+
+
+//==============================================================================
 // FREECAM
 
 const float GameSystem::Freecam::k_minSpeed = 0.25f;
@@ -471,6 +542,7 @@ bool GameSystem::s_changeCulture = false;
 GameSystem::Culture GameSystem::s_newCulture = Culture::none;
 bool GameSystem::s_useWeapon = false;
 bool GameSystem::s_unuseWeapon = false;
+GameSystem::Culture GameSystem::s_storeVisited = Culture::none;
 
 void GameSystem::init() {
 
@@ -500,6 +572,9 @@ void GameSystem::init() {
     // Set octree. Needs to be manually adjusted to fit level size
     CollisionSystem::setOctree(glm::vec3(-70.0f, -10.0f, -210.0f), glm::vec3(70.0f, 50.0f, 40.0f), 1.0f);
 
+    // Init Shops
+    Shops::init();
+
     // Start music
     Music::start();
 
@@ -513,6 +588,7 @@ void GameSystem::init() {
     RenderSystem::s_bounderShader->setEnabled(false);
     RenderSystem::s_octreeShader->setEnabled(false);
     RenderSystem::s_rayShader->setEnabled(false);
+    //RenderSystem::s_shadowShader->setEnabled(false);
 
     // Water fountain
     GameObject & fountain(Scene::createGameObject());
@@ -555,7 +631,11 @@ void GameSystem::update(float dt) {
 }
 
 void GameSystem::updateGame(float dt) {
-
+    if (s_storeVisited != Culture::none && s_storeVisited != s_culture) {
+        s_changeCulture = true;
+        s_newCulture = s_storeVisited;
+        s_storeVisited = Culture::none;
+    }
     if (s_changeCulture) {
         setCulture(s_newCulture);
         s_changeCulture = false;

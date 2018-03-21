@@ -119,6 +119,12 @@ void RenderSystem::update(float dt) {
     }
 
     /* Reset rendering display */
+    //const glm::vec4 mainClearColor(0.5f, 0.8f, 0.9f, 1.f);
+    //const glm::vec4 brightClearColor(0.0f);
+    //const float clearDepth(1.0f);
+    //glClearBufferfv(GL_COLOR, 0, reinterpret_cast<const float *>(&mainClearColor));
+    //glClearBufferfv(GL_COLOR, 1, reinterpret_cast<const float *>(&brightClearColor));
+    //glClearBufferfv(GL_DEPTH, 0, &clearDepth);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glm::ivec2 size = Window::getFrameSize();
     glViewport(0, 0, size.x, size.y);
