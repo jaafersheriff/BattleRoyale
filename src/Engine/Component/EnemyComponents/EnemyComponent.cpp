@@ -8,6 +8,8 @@
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/BounderComponent.hpp"
 #include "Component/PlayerComponents/PlayerComponent.hpp"
+#include "System/ParticleSystem.hpp"
+#include "Component/ParticleComponents/ParticleAssasinComponent.hpp"
 
 
 
@@ -32,6 +34,12 @@ void EnemyComponent::update(float dt) {
     m_soundCooldown -= dt;
     if (m_health->value() < 0.5f) {
         SoundSystem::playSound3D("Enemy_death.wav", m_head->position());
+
+        GameObject & obj(Scene::createGameObject());
+        SpatialComponent & spat(Scene::addComponent<SpatialComponent>(obj, m_body->position()));
+        ParticleSystem::addBodyExplosionPC(spat);
+        Scene::addComponent<ParticleAssasinComponent>(obj);
+
         Scene::destroyGameObject(this->gameObject());
         return;
     }
