@@ -218,11 +218,11 @@ glm::vec3 SpatialComponent::relativePosition(float interpP) const {
 }
 
 glm::vec3 SpatialComponent::position() const {
-    return m_parent ? m_parent->modelMatrix() * glm::vec4(m_relPosition, 1.0f) : m_relPosition;
+    return m_parent ? glm::vec3(m_parent->modelMatrix() * glm::vec4(m_relPosition, 1.0f)) : m_relPosition;
 }
 
 glm::vec3 SpatialComponent::prevPosition() const {
-    return m_parent ? m_parent->prevModelMatrix() * glm::vec4(m_prevRelPosition, 1.0f) : m_prevRelPosition;
+    return m_parent ? glm::vec3(m_parent->prevModelMatrix() * glm::vec4(m_prevRelPosition, 1.0f)) : m_prevRelPosition;
 }
 
 glm::vec3 SpatialComponent::position(float interpP) const {

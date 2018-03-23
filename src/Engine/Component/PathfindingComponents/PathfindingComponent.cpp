@@ -1,5 +1,7 @@
 #include "PathfindingComponent.hpp"
 
+#include <algorithm>
+
 #include "Scene/Scene.hpp"
 #include "Component/SpatialComponents/SpatialComponent.hpp"
 #include "Component/CollisionComponents/BounderComponent.hpp"
