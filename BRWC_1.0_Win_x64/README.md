@@ -1,5 +1,5 @@
 
-You will also need to download the resources folder
+# You will also need to download the resources folder found in BattleRoyale/
 
 ## Controls
 
