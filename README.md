@@ -1,4 +1,4 @@
-# [Battle Royale With Cheese](https://users.csc.calpoly.edu/~idunn01/teaching/csc476/finalw18/battleroyalewithcheese/ "Website Showcase")
+# [Battle Royale With Cheese](https://www.youtube.com/watch?v=1JBL9S6lXSI)
 
 ## Running
 Windows executable can be found in `BRWC_1.0_Win_x64`
